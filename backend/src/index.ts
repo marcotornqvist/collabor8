@@ -29,6 +29,8 @@ import { DateTimeResolver } from "graphql-scalars";
 import { context } from "./graphql/context";
 import { GraphQLScalarType } from "graphql";
 
+const PORT = process.env.PORT || 3000;
+
 const app = async () => {
   // tq.registerEnumType(SortOrder, {
   //   name: "SortOrder",
@@ -39,8 +41,8 @@ const app = async () => {
     scalarsMap: [{ type: GraphQLScalarType, scalar: DateTimeResolver }],
   });
 
-  new ApolloServer({ schema, context: context }).listen({ port: 4000 }, () =>
-    console.log(`Server ready at: http://localhost:4000`)
+  new ApolloServer({ schema, context: context }).listen(PORT, () =>
+    console.log(`Server ready at: http://localhost:${PORT}`)
   );
 };
 
