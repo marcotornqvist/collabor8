@@ -12,7 +12,7 @@ import {
   Field,
 } from "type-graphql";
 // import { Post } from "./Post";
-import { User } from "../entity/User";
+import { User } from "../types/User";
 import { Context } from "../context";
 // import { PostCreateInput } from "./PostResolver";
 
