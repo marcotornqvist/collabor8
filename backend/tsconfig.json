@@ -1,9 +1,14 @@
 {
   "compilerOptions": {
+    "target": "ES2016",
+    "module": "commonjs",
+    "lib": ["esnext.asynciterable", "ES2016", "dom"],
     "sourceMap": true,
-    "outDir": "dist",
-    "strict": true,
-    "lib": ["esnext"],
-    "esModuleInterop": true
+    "strict": true /* Enable all strict type-checking options. */,
+    "strictPropertyInitialization": false /* Enable strict checking of property initialization in classes. */,
+    "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
   }
 }
