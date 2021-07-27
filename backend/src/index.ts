@@ -29,7 +29,7 @@ import { DateTimeResolver } from "graphql-scalars";
 import { context } from "./graphql/context";
 import { GraphQLScalarType } from "graphql";
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 const app = async () => {
   // tq.registerEnumType(SortOrder, {

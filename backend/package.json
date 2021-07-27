@@ -5,11 +5,10 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "tsc",
-    "start": "ts-node src/index.ts",
     "clean": "rm -rf dist",
-    "build": "npm -s run clean && npm -s run generate && tsc",
-    "generate": "npm -s run generate:prisma",
-    "generate:prisma": "prisma generate"
+    "start": "ts-node src/index.ts",
+    "build": "prisma generate && npm -s run clean && tsc",
+    "dev": "PORT=4000 node src/index.ts"
   },
   "keywords": [],
   "author": "Marco Törnqvist",
