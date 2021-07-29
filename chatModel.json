@@ -1,0 +1,47 @@
+{
+  "projects": [
+    {
+      "id": 1,
+      "title": "Project Title",
+      "creator": {
+        "id": 40,
+        "name": "marco"
+      },
+      "members": [
+        {
+          "id": 40,
+          "name": "marco"
+        },
+        {
+          "id": 2,
+          "name": "Sam Smith"
+        }
+      ]
+    }
+  ],
+  "chat": [
+    {
+      "id": 1,
+      "messages": [
+        {
+          "id": 1,
+          "content": "moi",
+          "fromId": 1,
+          "chatId": 1
+        },
+        {
+          "id": 2,
+          "content": "moi",
+          "fromId": 2,
+          "chatId": 1
+        },
+        {
+          "id": 3,
+          "content": "moi",
+          "fromId": 3,
+          "chatId": 1
+        }
+      ]
+    }
+  ]
+}

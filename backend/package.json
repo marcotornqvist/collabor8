@@ -8,7 +8,7 @@
     "clean": "rm -rf dist",
     "start": "ts-node src/index.ts",
     "build": "prisma generate && npm -s run clean && tsc",
-    "dev": "PORT=4000 node src/index.ts"
+    "dev": "tsnd --respawn src/index.ts"
   },
   "keywords": [],
   "author": "Marco Törnqvist",

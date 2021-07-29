@@ -26,8 +26,7 @@ export class UserResolver {
 
   @Mutation(() => User)
   async addUser(
-    @Arg("data")
-    { email, firstName, lastName, password, confirmPassword }: UserCreateInput,
+    @Arg("data") { email, firstName, lastName }: UserCreateInput,
     @Ctx() ctx: Context
   ): Promise<User> {
     const newUser = await ctx.prisma.user.create({
@@ -35,7 +34,6 @@ export class UserResolver {
         email,
         firstName,
         lastName,
-        password,
       },
     });
 

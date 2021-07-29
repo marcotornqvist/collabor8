@@ -10,28 +10,109 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// model Post {
-//   id        Int      @default(autoincrement()) @id
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-//   title     String   @db.VarChar(255)
-//   content   String?
-//   published Boolean  @default(false)
-// }
-
-// model Profile {
-//   id     Int     @default(autoincrement()) @id
-//   bio    String?
-//   user   User    @relation(fields: [userId], references: [id])
-//   userId Int     @unique
-// }
-
 model User {
-  id      Int      @default(autoincrement()) @id
-  name    String
-  email   String   @unique
-  // id      Int      @default(autoincrement()) @id
-  // email   String   @unique
-  // name    String?
-  // profile Profile?
+  id            String      @default(uuid()) @id 
+  firstName     String?
+  lastName      String?
+  email         String      @unique
+  password      String      
+  profile       Profile?    
+  socials       Social?
+  projects      Project[]   // projects which a user is owner of
+  contacts      Contact[]   
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime?   @updatedAt
+}
+
+model Profile {
+  @@id([userId])
+  user            User        @relation(fields: [userId], references: [id])
+  userId          String      
+  country         String?
+  city            String?
+  bio             String?
+  profileImage    String?
+  createdAt       DateTime    @default(now()) 
+  updatedAt       DateTime?   @updatedAt
+}
+
+model Social {
+  @@id([userId])
+  user          User        @relation(fields: [userId], references: [id])
+  userId        String      
+  instagram     String?
+  linkedin      String?
+  dribbble      String?
+  behance       String?
+  pinterest     String?
+  soundcloud    String?
+  spotify       String?
+  medium        String?
+  vimeo         String?
+  youtube       String?
+  github        String?
+  discord       String?     
+  createdAt     DateTime    @default(now()) 
+  updatedAt     DateTime?   @updatedAt
+}
+
+model Discipline {
+  id          Int       @default(autoincrement()) @id
+  title       String    @unique
+  users       String[]  
+}
+
+model Project {
+  id              String      @default(uuid()) @id 
+  title           String      @db.VarChar(255)
+  body            String?
+  creator         User        @relation(fields: [userId], references: [id])
+  userId          String      
+  members         Member[]    
+  messages        GroupMessage[]   
+  disabled        Boolean     @default(false)
+  createdAt       DateTime    @default(now())  
+  updatedAt       DateTime?   @updatedAt
+}
+
+model Member {
+  id           Int        @id @default(autoincrement())
+  userId       String     
+  project      Project    @relation(fields: [projectId], references: [id])
+  projectId    String     
+  assignedAt   DateTime   @default(now())
+}
+
+model GroupMessage {
+  id              String      @default(uuid()) @id 
+  content         String    
+  fromId          String     
+  project         Project     @relation(fields: [projectId], references: [id])
+  projectId       String       
+  createdAt       DateTime    @default(now())
+}
+
+model Contact {
+  id          String      @default(uuid()) @id
+  user        User        @relation(fields: [userId], references: [id])
+  userId      String      
+  contactId   String      
+  messages    Message[]   
+  status      StatusCode  @default(NOTFRIEND)
+  createdAt   DateTime    @default(now())
+}
+
+model Message {
+  id              String     @default(uuid()) @id 
+  content         String     
+  fromId          String     
+  contact         Contact    @relation(fields: [contactId], references: [id])
+  contactId       String     
+  createdAt       DateTime   @default(now())
+}
+
+enum StatusCode {
+  NOTFRIEND
+  PENDING
+  FRIEND
 }
