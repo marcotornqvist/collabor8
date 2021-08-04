@@ -13,7 +13,7 @@ import {
 } from "type-graphql";
 import { User } from "../entities/User";
 // import { Post } from "./Post";
-import { Context } from "../context";
+import { Context } from "../utils/context";
 // import { PostCreateInput } from "./PostResolver";
 import { UserCreateInput } from "./types/UserCreateInput";
 

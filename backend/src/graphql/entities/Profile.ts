@@ -1,28 +1,30 @@
 import "reflect-metadata";
 import { ObjectType, Field, ID } from "type-graphql";
-import { IsEmail } from "class-validator";
 import { User } from "./User";
 
 @ObjectType()
 export class Profile {
-  @Field((type) => ID)
-  id: string;
-
-  @Field(() => [User])
-  user: User[];
+  @Field((type) => User, { nullable: true })
+  user?: User | null;
 
   @Field(() => ID)
   userId: string;
 
-  @Field(() => [String])
-  disciplines: string[];
+  @Field(() => String, { nullable: true })
+  country?: string | null;
 
-  @Field(() => ID)
-  country: string;
+  @Field(() => String, { nullable: true })
+  city?: string | null;
+
+  @Field(() => String, { nullable: true })
+  bio?: string | null;
+
+  @Field(() => String, { nullable: true })
+  profileImage?: string | null;
 
   @Field(() => Date)
   createdAt: Date;
 
-  @Field(() => Date)
-  updatedAt: Date;
+  @Field(() => Date, { nullable: true })
+  updatedAt?: Date | null;
 }

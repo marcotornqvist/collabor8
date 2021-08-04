@@ -18,7 +18,7 @@ model User {
   password      String      
   profile       Profile?    
   socials       Social?
-  projects      Project[]   // projects which a user is owner of
+  projects      Project[]   
   contacts      Contact[]   
   createdAt     DateTime    @default(now())
   updatedAt     DateTime?   @updatedAt
@@ -27,7 +27,7 @@ model User {
 model Profile {
   @@id([userId])
   user            User        @relation(fields: [userId], references: [id])
-  userId          String      
+  userId          String
   country         String?
   city            String?
   bio             String?

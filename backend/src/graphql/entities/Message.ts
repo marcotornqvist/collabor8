@@ -1,19 +1,20 @@
 import "reflect-metadata";
 import { ObjectType, Field, ID } from "type-graphql";
-import { IsEmail } from "class-validator";
-// import { Project } from "./Project";
 
 @ObjectType()
 export class Message {
   @Field(() => ID)
-  id: string;
+  id: number;
 
-  @Field((type) => String)
+  @Field(() => String)
   content: string;
 
-  @Field((type) => String)
-  from: string;
+  @Field(() => ID)
+  fromId: string;
 
-  // @Field((type) => User)
-  // author?: User | null;
+  @Field(() => ID)
+  contactId: string;
+
+  @Field(() => Date)
+  createdAt: Date;
 }

@@ -1,9 +1,11 @@
 import "reflect-metadata";
+require("dotenv").config();
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./graphql/resolvers/UserResolver";
+import { ProjectResolver } from "./graphql/resolvers/ProjectResolver";
 import { ApolloServer } from "apollo-server";
 import { DateTimeResolver } from "graphql-scalars";
-import { context } from "./graphql/context";
+import { context } from "./graphql/utils/context";
 import { GraphQLScalarType } from "graphql";
 
 const PORT = process.env.PORT || 4000;
@@ -14,7 +16,7 @@ const app = async () => {
   // });
 
   const schema = await buildSchema({
-    resolvers: [UserResolver],
+    resolvers: [UserResolver, ProjectResolver],
     scalarsMap: [{ type: GraphQLScalarType, scalar: DateTimeResolver }],
   });
 

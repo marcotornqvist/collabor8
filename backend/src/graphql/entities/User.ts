@@ -1,7 +1,8 @@
 import "reflect-metadata";
 import { ObjectType, Field, ID } from "type-graphql";
-import { IsEmail } from "class-validator";
+import { IsEmail, MinLength, Length } from "class-validator";
 import { Profile } from "./Profile";
+import { Social } from "./Social";
 import { Project } from "./Project";
 import { Contact } from "./Contact";
 
@@ -10,9 +11,11 @@ export class User {
   @Field(() => ID)
   id: string;
 
+  @Length(1, 255)
   @Field(() => String, { nullable: true })
   firstName?: string | null;
 
+  @Length(1, 255)
   @Field(() => String, { nullable: true })
   lastName?: string | null;
 
@@ -21,20 +24,27 @@ export class User {
   email: string;
 
   // @Field()
-  // password: string;
+  @MinLength(6)
+  password: string;
 
-  // @Field(() => Profile)
-  // profile: Profile;
+  @Field(() => Profile, { nullable: true })
+  profile?: Profile | null;
 
-  // @Field(() => Date)
-  // createdAt: Date;
+  @Field(() => Social, { nullable: true })
+  socials?: Social | null;
 
-  // @Field(() => Date)
-  // updatedAt: Date;
+  @Field(() => [Project], { nullable: true })
+  projects?: [Project] | null;
 
-  // @Field(() => [Project])
-  // projects: Project[];
+  @Field(() => [Contact], { nullable: true })
+  contacts?: [Contact] | null;
 
-  // @Field(() => [Contact])
-  // contacts: Contact[];
+  @Field(() => Date)
+  createdAt: Date;
+
+  @Field(() => Date, { nullable: true })
+  updatedAt?: Date | null;
+
+  @Field()
+  token?: String;
 }

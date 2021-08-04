@@ -1,20 +1,24 @@
 import "reflect-metadata";
 import { InputType, Field } from "type-graphql";
+import { IsEmail, MinLength } from "class-validator";
 
-@InputType({ description: "The data for a new user" })
+@InputType({ description: "Create a new user" })
 export class UserCreateInput {
+  @IsEmail()
   @Field()
   email: string;
 
-  @Field({ nullable: true })
-  firstName: string;
+  @Field(() => String, { nullable: true })
+  firstName?: string | null;
 
-  @Field({ nullable: true })
-  lastName: string;
+  @Field(() => String, { nullable: true })
+  lastName?: string | null;
 
+  @MinLength(6)
   @Field()
   password: string;
 
+  @MinLength(6)
   @Field()
   confirmPassword: string;
 }

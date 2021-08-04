@@ -1,30 +1,35 @@
 import "reflect-metadata";
-import { ObjectType, Field, ID, Int } from "type-graphql";
-import { User } from "./User";
+import { ObjectType, Field, ID, registerEnumType } from "type-graphql";
+import { Message } from "./Message";
 
 @ObjectType()
 export class Contact {
   @Field(() => ID)
   id: string;
 
+  @Field(() => ID)
+  userId: string;
+
+  @Field(() => ID)
+  contactId: string;
+
+  @Field(() => [Message], { nullable: true })
+  messages?: [Message] | null;
+
+  @Field(() => StatusCode) // it's very important
+  status: StatusCode;
+
   @Field(() => Date)
   createdAt: Date;
-
-  @Field(() => Date)
-  updatedAt: Date;
-
-  @Field()
-  title: string;
-
-  @Field(() => String, { nullable: true })
-  content: string | null;
-
-  @Field(() => Boolean, { nullable: true })
-  published?: boolean | null;
-
-  @Field(() => Int)
-  viewCount: number;
-
-  @Field(() => User, { nullable: true })
-  author?: User | null;
 }
+
+enum StatusCode {
+  NOTFRIEND = "NOTFRIEND",
+  PENDING = "PENDING",
+  FRIEND = "FRIEND",
+}
+
+registerEnumType(StatusCode, {
+  name: "StatusCode",
+  description: "Status Code enum", // this one is optional
+});
