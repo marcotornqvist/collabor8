@@ -13,7 +13,7 @@ import {
 } from "type-graphql";
 // import { User } from "../entities/User";
 import { Project } from "../entities/Project";
-import { Context } from "../utils/context";
+import { Context } from "./types/Interfaces";
 
 @Resolver(() => Project)
 export class ProjectResolver {

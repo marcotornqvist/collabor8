@@ -15,7 +15,7 @@ import { User } from "../entities/User";
 // import { Post } from "./Post";
 import { Context } from "../utils/context";
 // import { PostCreateInput } from "./PostResolver";
-import { UserCreateInput } from "./types/UserCreateInput";
+import { UserCreateInput } from "./types/UserInput";
 
 @Resolver(User)
 export class UserResolver {

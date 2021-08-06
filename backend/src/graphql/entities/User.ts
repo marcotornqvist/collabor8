@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { ObjectType, Field, ID } from "type-graphql";
+import { ObjectType, Field, ID, Int } from "type-graphql";
 import { IsEmail, MinLength, Length } from "class-validator";
 import { Profile } from "./Profile";
 import { Social } from "./Social";
@@ -45,6 +45,6 @@ export class User {
   @Field(() => Date, { nullable: true })
   updatedAt?: Date | null;
 
-  @Field()
-  token?: String;
+  @Field(() => Int)
+  tokenVersion: number;
 }

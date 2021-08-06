@@ -9,51 +9,71 @@ import {
   // Root,
   // Int,
   // InputType,
-  // Field,
+  UseMiddleware,
 } from "type-graphql";
 // import { PostCreateInput } from "./PostResolver";
+import { UserInputError } from "apollo-server-express";
+import { hash, compare } from "bcryptjs";
 import { User } from "../entities/User";
-import { Context } from "../utils/context";
-import { UserCreateInput } from "./types/UserCreateInput";
-import { UserInputError } from "apollo-server";
-import { generateToken } from "../utils/generateToken";
-import { LooseObject } from "../interfaces/Types";
-import bcrypt from "bcryptjs";
-// import { isAuth } from "../utils/isAuth";
+import { Context, LooseObject } from "./types/Interfaces";
+import { LoginInput, RegisterInput } from "./types/UserInput";
+import { AuthResponse } from "./types/AuthResponse";
+import { createAccessToken, createRefreshToken } from "../utils/auth";
+import { sendRefreshToken } from "../utils/sendRefreshToken";
+import { isAuth } from "../utils/isAuth";
 
 @Resolver(User)
 export class UserResolver {
   @Query(() => [User])
-  async users(@Ctx() ctx: Context) {
-    const users = await ctx.prisma.user.findMany({
-      include: {
-        projects: true,
-      },
+  async users(@Ctx() { prisma }: Context) {
+    const users = await prisma.user.findMany({
+      // include: {
+      //   projects: true,
+      // },
     });
 
     return users;
   }
 
   @Query(() => User, { nullable: true })
-  async userById(@Arg("id") id: string, @Ctx() ctx: Context) {
-    const user = await ctx.prisma.user.findUnique({
+  async userById(@Arg("id") id: string, @Ctx() { prisma }: Context) {
+    const user = await prisma.user.findUnique({
       where: {
         id: id,
       },
       include: {
-        projects: true,
+        projects: {
+          include: {
+            messages: true,
+          },
+        },
       },
     });
 
     return user;
   }
 
-  @Mutation(() => User)
+  @Query(() => User)
+  @UseMiddleware(isAuth)
+  async loggedInUser(@Ctx() { payload, prisma }: Context) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: payload!.userId,
+      },
+      // include: {
+      //   projects: true,
+      // },
+    });
+
+    return user;
+  }
+
+  @Mutation(() => AuthResponse)
   async register(
     @Arg("data")
-    { email, firstName, lastName, password, confirmPassword }: UserCreateInput,
-    @Ctx() ctx: Context
-  ): Promise<User> {
+    { email, firstName, lastName, password, confirmPassword }: RegisterInput,
+    @Ctx() { res, prisma }: Context
+  ): Promise<AuthResponse> {
     let errors: LooseObject = {};
 
     try {
@@ -68,7 +88,7 @@ export class UserResolver {
       }
 
       // Make sure email doesnt already exist
-      const emailExists = await ctx.prisma.user.findUnique({
+      const emailExists = await prisma.user.findUnique({
         where: {
           email,
         },
@@ -83,10 +103,10 @@ export class UserResolver {
       }
 
       // Hash password and create an auth token
-      password = await bcrypt.hash(password, 12);
+      password = await hash(password, 12);
 
       // Create user
-      const newUser = await ctx.prisma.user.create({
+      const newUser = await prisma.user.create({
         data: {
           email,
           firstName,
@@ -95,29 +115,75 @@ export class UserResolver {
         },
       });
 
-      const token = generateToken(newUser);
+      sendRefreshToken(res, createRefreshToken(newUser));
 
-      return { ...newUser, token: token };
+      return {
+        accessToken: createAccessToken(newUser),
+        user: newUser,
+      };
     } catch (err) {
       console.log(err);
       throw new UserInputError("Errors", { errors });
     }
   }
 
-  @Query(() => User, { nullable: true })
-  async checkAuthentication(@Arg("id") id: string, @Ctx() ctx: Context) {
-    console.log(ctx);
-    // const currentUser = isAuth(ctx);
-
-    const user = await ctx.prisma.user.findUnique({
+  @Mutation(() => AuthResponse)
+  async login(
+    @Arg("data")
+    { email, password }: LoginInput,
+    @Ctx() { res, prisma }: Context
+  ): Promise<AuthResponse> {
+    const user = await prisma.user.findUnique({
       where: {
-        id: id,
-      },
-      include: {
-        projects: true,
+        email: email,
       },
     });
 
-    return user;
+    if (!user) {
+      throw new UserInputError(
+        "The email or password you entered is incorrect"
+      );
+    }
+
+    const valid = await compare(password, user.password);
+
+    if (!valid) {
+      throw new UserInputError(
+        "The email or password you entered is incorrect"
+      );
+    }
+
+    sendRefreshToken(res, createRefreshToken(user));
+
+    return {
+      accessToken: createAccessToken(user),
+      user,
+    };
   }
+
+  @Mutation(() => Boolean)
+  async logout(@Ctx() { res }: Context) {
+    sendRefreshToken(res, "");
+
+    return true;
+  }
+
+  // @Mutation(() => Boolean)
+  // async revokeRefreshTokensForUser(
+  //   @Arg("id") id: string,
+  //   @Ctx() { prisma }: Context
+  // ): Promise<Boolean> {
+  //   await prisma.user.update({
+  //     where: {
+  //       id,
+  //     },
+  //     data: {
+  //       tokenVersion: {
+  //         increment: 1,
+  //       },
+  //     },
+  //   });
+
+  //   return true;
+  // }
 }

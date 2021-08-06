@@ -1,28 +1,51 @@
 import "reflect-metadata";
 require("dotenv").config();
+import express from "express";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./graphql/resolvers/UserResolver";
 import { ProjectResolver } from "./graphql/resolvers/ProjectResolver";
-import { ApolloServer } from "apollo-server";
+import { ApolloServer } from "apollo-server-express";
 import { DateTimeResolver } from "graphql-scalars";
-import { context } from "./graphql/utils/context";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import { prisma } from "./graphql/utils/context";
+import { Context } from "./graphql/resolvers/types/Interfaces";
 import { GraphQLScalarType } from "graphql";
+import { corsOptions } from "./graphql/utils/corsOptions";
+import { refreshToken } from "./graphql/utils/refreshToken";
 
 const PORT = process.env.PORT || 4000;
 
 const app = async () => {
-  // tq.registerEnumType(SortOrder, {
-  //   name: "SortOrder",
-  // });
+  const app = express();
+
+  app.use(cors(corsOptions));
+
+  app.post("/refresh_token", cookieParser(), async (req, res) => {
+    refreshToken(req, res);
+  });
 
   const schema = await buildSchema({
     resolvers: [UserResolver, ProjectResolver],
     scalarsMap: [{ type: GraphQLScalarType, scalar: DateTimeResolver }],
   });
 
-  new ApolloServer({ schema, context: context }).listen(PORT, () =>
-    console.log(`Server ready at: http://localhost:${PORT}`)
-  );
+  const apolloServer = new ApolloServer({
+    schema,
+    context: ({ res, req }): Context => ({
+      res,
+      req,
+      prisma,
+    }),
+  });
+
+  await apolloServer.start();
+
+  apolloServer.applyMiddleware({ app, cors: corsOptions, path: "/" });
+
+  app.listen(PORT, () => {
+    console.log(`Server ready at: http://localhost:${PORT}`);
+  });
 };
 
 app();
