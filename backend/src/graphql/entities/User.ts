@@ -1,29 +1,25 @@
 import "reflect-metadata";
 import { ObjectType, Field, ID, Int } from "type-graphql";
-import { IsEmail, MinLength, Length } from "class-validator";
+import { IsEmail, MinLength } from "class-validator";
 import { Profile } from "./Profile";
 import { Social } from "./Social";
 import { Project } from "./Project";
 import { Contact } from "./Contact";
+import { Member } from "./Member";
+import { Message } from "./Message";
+import { Notification } from "./Notification";
+import { BlockedUser } from "./BlockedUser";
+import { ReportUser } from "./Report";
 
 @ObjectType()
 export class User {
   @Field(() => ID)
   id: string;
 
-  @Length(1, 255)
-  @Field(() => String, { nullable: true })
-  firstName?: string | null;
-
-  @Length(1, 255)
-  @Field(() => String, { nullable: true })
-  lastName?: string | null;
-
   @Field()
   @IsEmail()
   email: string;
 
-  // @Field()
   @MinLength(6)
   password: string;
 
@@ -36,15 +32,36 @@ export class User {
   @Field(() => [Project], { nullable: true })
   projects?: [Project] | null;
 
+  @Field(() => [Member], { nullable: true })
+  member?: [Member] | null;
+
   @Field(() => [Contact], { nullable: true })
-  contacts?: [Contact] | null;
+  contactsSent?: [Contact] | null;
+
+  @Field(() => [Contact], { nullable: true })
+  contactsRcvd?: [Contact] | null;
+
+  @Field(() => [Message], { nullable: true })
+  Messages?: [Message] | null;
+
+  @Field(() => [Notification], { nullable: true })
+  notifications?: [Notification] | null;
+
+  @Field(() => [BlockedUser], { nullable: true })
+  blockedUsers?: [BlockedUser] | null;
+
+  @Field(() => [ReportUser], { nullable: true })
+  reports?: [ReportUser] | null;
+
+  @Field(() => Int)
+  tokenVersion: number;
+
+  @Field(() => Boolean)
+  disabled: boolean;
 
   @Field(() => Date)
   createdAt: Date;
 
   @Field(() => Date, { nullable: true })
   updatedAt?: Date | null;
-
-  @Field(() => Int)
-  tokenVersion: number;
 }

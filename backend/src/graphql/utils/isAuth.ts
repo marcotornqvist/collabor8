@@ -1,6 +1,6 @@
 import { MiddlewareFn } from "type-graphql";
 import { verify } from "jsonwebtoken";
-import { Context } from "../resolvers/types/Interfaces";
+import { Context } from "../types/Interfaces";
 
 // bearer 102930ajslkdaoq01
 

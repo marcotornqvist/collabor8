@@ -1,14 +1,27 @@
 import "reflect-metadata";
 import { ObjectType, Field, ID } from "type-graphql";
+import { Length } from "class-validator";
 import { User } from "./User";
+import { Discipline } from "./Discipline";
 
 @ObjectType()
 export class Profile {
-  @Field((type) => User, { nullable: true })
+  @Field(() => ID)
+  id: number;
+
+  @Field(() => User, { nullable: true })
   user?: User | null;
 
   @Field(() => ID)
   userId: string;
+
+  @Length(1, 255)
+  @Field(() => String, { nullable: true })
+  firstName?: string | null;
+
+  @Length(1, 255)
+  @Field(() => String, { nullable: true })
+  lastName?: string | null;
 
   @Field(() => String, { nullable: true })
   country?: string | null;
@@ -18,6 +31,9 @@ export class Profile {
 
   @Field(() => String, { nullable: true })
   bio?: string | null;
+
+  @Field(() => [Discipline], { nullable: true })
+  disciplines?: [Discipline] | null;
 
   @Field(() => String, { nullable: true })
   profileImage?: string | null;

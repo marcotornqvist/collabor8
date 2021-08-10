@@ -4,12 +4,15 @@ import express from "express";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./graphql/resolvers/UserResolver";
 import { ProjectResolver } from "./graphql/resolvers/ProjectResolver";
+import { SocialResolver } from "./graphql/resolvers/SocialResolver";
+import { MessageResolver } from "./graphql/resolvers/MessageResolver";
+import { MemberResolver } from "./graphql/resolvers/MemberResolver";
 import { ApolloServer } from "apollo-server-express";
 import { DateTimeResolver } from "graphql-scalars";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { prisma } from "./graphql/utils/context";
-import { Context } from "./graphql/resolvers/types/Interfaces";
+import { Context } from "./graphql/types/Interfaces";
 import { GraphQLScalarType } from "graphql";
 import { corsOptions } from "./graphql/utils/corsOptions";
 import { refreshToken } from "./graphql/utils/refreshToken";
@@ -26,7 +29,13 @@ const app = async () => {
   });
 
   const schema = await buildSchema({
-    resolvers: [UserResolver, ProjectResolver],
+    resolvers: [
+      UserResolver,
+      SocialResolver,
+      ProjectResolver,
+      MemberResolver,
+      MessageResolver,
+    ],
     scalarsMap: [{ type: GraphQLScalarType, scalar: DateTimeResolver }],
   });
 

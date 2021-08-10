@@ -1,17 +1,23 @@
 import "reflect-metadata";
 import { ObjectType, Field, ID } from "type-graphql";
-import { Profile } from "./Profile";
+import { User } from "./User";
 
 @ObjectType()
-export class Discipline {
+export class Notification {
   @Field(() => ID)
-  id: number;
+  id: string;
+
+  @Field(() => Boolean)
+  read: boolean;
 
   @Field(() => String)
-  title: string;
+  message: string;
 
-  @Field(() => [Profile], { nullable: true })
-  profiles?: [Profile] | null;
+  @Field(() => User, { nullable: true })
+  user?: User | null;
+
+  @Field(() => ID)
+  userId: string;
 
   @Field(() => Date)
   createdAt: Date;

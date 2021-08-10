@@ -5,26 +5,35 @@ import {
   Mutation,
   Arg,
   Ctx,
-  // FieldResolver,
-  // Root,
-  // Int,
-  // InputType,
   UseMiddleware,
 } from "type-graphql";
-// import { PostCreateInput } from "./PostResolver";
 import { UserInputError } from "apollo-server-express";
 import { hash, compare } from "bcryptjs";
 import { User } from "../entities/User";
-import { Context, LooseObject } from "./types/Interfaces";
-import { LoginInput, RegisterInput } from "./types/UserInput";
-import { AuthResponse } from "./types/AuthResponse";
+import { Context, LooseObject } from "../types/Interfaces";
+import { LoginInput, RegisterInput } from "../types/inputs/UserInput";
+import { AuthResponse } from "../types/responses/UserResponse";
 import { createAccessToken, createRefreshToken } from "../utils/auth";
 import { sendRefreshToken } from "../utils/sendRefreshToken";
 import { isAuth } from "../utils/isAuth";
 
+// TODO: Remember to implement pagination/infinite scroll both on the back/front end
+// so that a query like getAllUsers doesn't return the whole database but instead the first 100
+
+// TODO: Resolvers to be implemented:
+// users:         Return all users - In Progress (pagination and filtering)
+// userbyId:      Return a single user by id - In Progress ()
+// loggedInUser:  Return the currently logged in user - Done
+// register:      Create a new user - Done
+// login:         Login to existing user - Done
+// logout:        Logout from the current user - Done
+
+// This resolver handles all the user actions such as register & login
 @Resolver(User)
 export class UserResolver {
-  @Query(() => [User])
+  @Query(() => [User], {
+    description: "Returns all users",
+  })
   async users(@Ctx() { prisma }: Context) {
     const users = await prisma.user.findMany({
       // include: {
@@ -35,40 +44,38 @@ export class UserResolver {
     return users;
   }
 
-  @Query(() => User, { nullable: true })
+  @Query(() => User, {
+    nullable: true,
+    description: "Returns a single user by ID",
+  })
   async userById(@Arg("id") id: string, @Ctx() { prisma }: Context) {
     const user = await prisma.user.findUnique({
       where: {
         id: id,
-      },
-      include: {
-        projects: {
-          include: {
-            messages: true,
-          },
-        },
       },
     });
 
     return user;
   }
 
-  @Query(() => User)
+  @Query(() => User, {
+    description: `Returns the "user" data for the user that is currently logged in `,
+  })
   @UseMiddleware(isAuth)
   async loggedInUser(@Ctx() { payload, prisma }: Context) {
     const user = await prisma.user.findUnique({
       where: {
         id: payload!.userId,
       },
-      // include: {
-      //   projects: true,
-      // },
+      include: {
+        profile: true,
+      },
     });
 
     return user;
   }
 
-  @Mutation(() => AuthResponse)
+  @Mutation(() => AuthResponse, { description: "Creates a new User" })
   async register(
     @Arg("data")
     { email, firstName, lastName, password, confirmPassword }: RegisterInput,
@@ -109,8 +116,8 @@ export class UserResolver {
       const newUser = await prisma.user.create({
         data: {
           email,
-          firstName,
-          lastName,
+          // firstName,
+          // lastName,
           password,
         },
       });
@@ -127,7 +134,9 @@ export class UserResolver {
     }
   }
 
-  @Mutation(() => AuthResponse)
+  @Mutation(() => AuthResponse, {
+    description: "Login to a already existing account",
+  })
   async login(
     @Arg("data")
     { email, password }: LoginInput,
@@ -136,6 +145,9 @@ export class UserResolver {
     const user = await prisma.user.findUnique({
       where: {
         email: email,
+      },
+      include: {
+        profile: true,
       },
     });
 
@@ -161,14 +173,16 @@ export class UserResolver {
     };
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Boolean, {
+    description: "Logout from the currently logged in account",
+  })
   async logout(@Ctx() { res }: Context) {
     sendRefreshToken(res, "");
 
     return true;
   }
 
-  // @Mutation(() => Boolean)
+  // @Mutation(() => Boolean, {description: "Revoke the refreshToken which will sign a user out by id "})
   // async revokeRefreshTokensForUser(
   //   @Arg("id") id: string,
   //   @Ctx() { prisma }: Context

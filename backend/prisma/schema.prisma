@@ -11,109 +11,182 @@ generator client {
 }
 
 model User {
-  id            String      @default(uuid()) @id 
-  firstName     String?
-  lastName      String?
-  email         String      @unique
-  password      String      
-  profile       Profile?    
+  id            String         @id @default(uuid())
+  email         String         @unique
+  password      String
+  profile       Profile?
   socials       Social?
-  projects      Project[]   
-  contacts      Contact[]   
-  tokenVersion  Int         @default(0)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime?   @updatedAt
+  projects      Project[]
+  member        Member[]
+  contactsSent  Contact[]      @relation("Contact")
+  contactsRcvd  Contact[]
+  messages      Message[]      @relation("Message")
+  notifications Notification[]
+  blockedUsers  BlockedUser[]
+  reports       ReportUser[]
+  tokenVersion  Int            @default(0)
+  disabled      Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime?      @updatedAt
 }
 
 model Profile {
-  @@id([userId])
-  user            User        @relation(fields: [userId], references: [id])
-  userId          String
-  country         String?
-  city            String?
-  bio             String?
-  profileImage    String?
-  createdAt       DateTime    @default(now()) 
-  updatedAt       DateTime?   @updatedAt
+  id           Int          @id @default(autoincrement())
+  user         User         @relation(fields: [userId], references: [id])
+  userId       String       @unique
+  firstName    String?
+  lastName     String?
+  country      String?
+  city         String?
+  bio          String?
+  disciplines  Discipline[] @relation(references: [id])
+  profileImage String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime?    @updatedAt
 }
 
 model Social {
-  @@id([userId])
-  user          User        @relation(fields: [userId], references: [id])
-  userId        String      
-  instagram     String?
-  linkedin      String?
-  dribbble      String?
-  behance       String?
-  pinterest     String?
-  soundcloud    String?
-  spotify       String?
-  medium        String?
-  vimeo         String?
-  youtube       String?
-  github        String?
-  discord       String?     
-  createdAt     DateTime    @default(now()) 
-  updatedAt     DateTime?   @updatedAt
+  id         Int       @id @default(autoincrement())
+  user       User      @relation(fields: [userId], references: [id])
+  userId     String    @unique
+  instagram  String?
+  linkedin   String?
+  dribbble   String?
+  behance    String?
+  pinterest  String?
+  soundcloud String?
+  spotify    String?
+  medium     String?
+  vimeo      String?
+  youtube    String?
+  github     String?
+  discord    String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime? @updatedAt
 }
 
 model Discipline {
-  id          Int       @default(autoincrement()) @id
-  title       String    @unique
-  users       String[]  
+  id        Int       @id @default(autoincrement())
+  title     String    @unique
+  profile   Profile[] @relation(references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model Project {
-  id              String      @default(uuid()) @id 
-  title           String      @db.VarChar(255)
-  body            String?
-  creator         User        @relation(fields: [userId], references: [id])
-  userId          String      
-  members         Member[]    
-  messages        GroupMessage[]   
-  disabled        Boolean     @default(false)
-  createdAt       DateTime    @default(now())  
-  updatedAt       DateTime?   @updatedAt
+  id        String          @id @default(uuid())
+  title     String
+  body      String?
+  creator   User            @relation(fields: [userId], references: [id])
+  userId    String
+  members   Member[]
+  reports   ReportProject[]
+  chatRoom  ChatRoom?
+  disabled  Boolean         @default(false)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime?       @updatedAt
 }
 
 model Member {
-  id           Int        @id @default(autoincrement())
-  userId       String     
-  project      Project    @relation(fields: [projectId], references: [id])
-  projectId    String     
-  assignedAt   DateTime   @default(now())
-}
-
-model GroupMessage {
-  id              String      @default(uuid()) @id 
-  content         String    
-  fromId          String     
-  project         Project     @relation(fields: [projectId], references: [id])
-  projectId       String       
-  createdAt       DateTime    @default(now())
+  id         Int        @id @default(autoincrement())
+  user       User       @relation(fields: [userId], references: [id])
+  userId     String
+  project    Project    @relation(fields: [projectId], references: [id])
+  projectId  String
+  status     StatusCode @default(PENDING)
+  assignedAt DateTime   @default(now())
+  updatedAt  DateTime?  @updatedAt
 }
 
 model Contact {
-  id          String      @default(uuid()) @id
-  user        User        @relation(fields: [userId], references: [id])
-  userId      String      
-  contactId   String      
-  messages    Message[]   
-  status      StatusCode  @default(NOTFRIEND)
-  createdAt   DateTime    @default(now())
+  id        String     @unique @default(uuid())
+  user      User       @relation("Contact", fields: [userId], references: [id])
+  userId    String
+  contact   User       @relation(fields: [contactId], references: [id])
+  contactId String
+  chatRoom  ChatRoom?
+  status    StatusCode @default(PENDING)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime?  @updatedAt
+
+  @@id([userId, contactId])
+}
+
+model ChatRoom {
+  id        String    @id @default(uuid())
+  project   Project?  @relation(fields: [projectId], references: [id])
+  projectId String?   @unique
+  contact   Contact?  @relation(fields: [contactId], references: [id])
+  contactId String?   @unique
+  messages  Message[]
+  readBy    String[] // Add userId to array if user opens chat (to check if message is read)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model Message {
-  id              String     @default(uuid()) @id 
-  content         String     
-  fromId          String     
-  contact         Contact    @relation(fields: [contactId], references: [id])
-  contactId       String     
-  createdAt       DateTime   @default(now())
+  id        String   @id @default(uuid())
+  body      String
+  user      User     @relation("Message", fields: [userId], references: [id])
+  userId    String
+  chat      ChatRoom @relation(fields: [chatId], references: [id])
+  chatId    String
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  read      Boolean   @default(false)
+  message   String
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model ReportUser {
+  id        String    @id @default(uuid())
+  violation Violation @default(SPAM)
+  title     String
+  body      String
+  senderId  String
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime  @default(now())
+}
+
+model ReportProject {
+  id        String    @id @default(uuid())
+  violation Violation @default(SPAM)
+  title     String
+  body      String
+  senderId  String
+  project   Project   @relation(fields: [projectId], references: [id])
+  projectId String
+  createdAt DateTime  @default(now())
+}
+
+model BlockedUser {
+  id            String    @id @default(uuid())
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String
+  blockedUserId String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime? @updatedAt
 }
 
 enum StatusCode {
-  NOTFRIEND
+  FALSE
   PENDING
-  FRIEND
+  TRUE
+}
+
+enum Violation {
+  SPAM
+  HARRASMENT
+  ADULTCONTENT
+  PLAGIARISM
+  SCAM
+  FAKE
+  SOMETHINGELSE
 }
