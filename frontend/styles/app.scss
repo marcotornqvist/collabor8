@@ -1,0 +1,17 @@
+// Abstracts
+// @import "../styles/abstracts/mixins";
+
+// All main styling
+@import "./main";
+
+// Components
+@import "./components/dropdown";
+
+// Layout
+@import "./layout/navbar";
+@import "./layout/menu";
+@import "./layout/footer";
+
+// Pages
+@import "./pages/landing";
+@import "./pages/my-profile";

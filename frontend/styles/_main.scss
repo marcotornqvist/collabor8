@@ -1,0 +1,188 @@
+// @font-face {
+//   font-family: "Inter";
+//   src: url("/fonts/Inter-Regular.woff") format("woff");
+//   font-weight: 400;
+//   font-style: normal;
+//   font-display: swap;
+// }
+
+// @font-face {
+//   font-family: "Inter";
+//   src: url("/fonts/Inter-Medium.woff") format("woff");
+//   font-weight: 500;
+//   font-style: normal;
+//   font-display: swap;
+// }
+
+// @font-face {
+//   font-family: "Inter";
+//   font-style: normal;
+//   font-weight: 600;
+//   font-display: swap;
+//   src: url("/fonts/Inter-SemiBold.woff") format("woff");
+// }
+
+// @font-face {
+//   font-family: "Roboto Slab";
+//   src: url("/fonts/RobotoSlab-ExtraBold.woff") format("woff");
+//   font-weight: 800;
+//   font-style: normal;
+//   font-display: swap;
+// }
+
+// @font-face {
+//   font-family: "Roboto Slab";
+//   src: url("/fonts/RobotoSlab-ExtraBold.woff") format("woff");
+//   font-weight: 800;
+//   font-style: normal;
+//   font-display: swap;
+// }
+
+// @font-face {
+//   font-family: "Roboto Slab";
+//   src: url("/fonts/RobotoSlab-Black.woff") format("woff");
+//   font-weight: 900;
+//   font-style: normal;
+//   font-display: swap;
+// }
+
+// Colors
+$blue: #2e56c5;
+$red: #ec2f3c;
+$black: #222222;
+$black-lighter: #222222fa;
+$light-grey: #fafafa;
+$background-light-grey: #eeeeee;
+$hover-light-grey: #f0f0f0;
+$grey: #8a8a8a;
+$white: #ffffff;
+
+// Hover Colors
+$hover-blue: #213e8f;
+$hover-red: #ca2833;
+
+// Shadows
+$box-shadow1: 1px 1px 3px rgba(0, 0, 0, 0.09), 0 4px 8px rgba(0, 0, 0, 0.06);
+$box-shadow2: 0 0 3px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.05);
+$box-shadow3: 0 0 1px rgba(0, 0, 0, 0.03), 0 6px 12px rgba(0, 0, 0, 0.02);
+$text-shadow1: 1px 1px 3px rgba(0, 0, 0, 0.15);
+$text-shadow2: 0 2px 6px rgba(0, 0, 0, 0.09);
+
+// Border Colors
+$border-color1: #e9e9e9;
+$border-color2: #f1f1f1;
+
+// Backdrops
+$backdrop1: rgba(0, 0, 0, 0.5);
+
+// Breakpoints
+$breakpoint-xs: 320px;
+$breakpoint-sm: 480px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1440px;
+
+// Border radius
+$small-radius: 1px;
+$medium-radius: 3px;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: $black;
+  letter-spacing: 0.5px;
+  font-family: "Inter", sans-serif;
+}
+
+body,
+html,
+#__next {
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  margin: 0;
+}
+
+// Prevent scroll hook under 768px
+.body-prevent-scroll {
+  overflow: hidden;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: 1.5px;
+  font-weight: 800;
+  font-family: "Roboto Slab", serif;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+h2 {
+  font-size: 2.5rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+h4 {
+  font-size: 1rem;
+}
+
+p,
+span {
+  font-size: 14px;
+}
+
+button {
+  cursor: pointer;
+}
+
+.navbar,
+.menu,
+footer {
+  ul,
+  li {
+    list-style-type: none;
+  }
+}
+
+a {
+  color: $blue;
+  text-decoration: none;
+}
+
+input[type="text"],
+input[type="number"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.container {
+  padding: 0 1rem;
+  height: 100%;
+  margin: 0 auto;
+}
+
+@media only screen and (min-width: $breakpoint-sm) {
+  .container {
+    padding: 0 1.5rem;
+  }
+}
+
+@media only screen and (min-width: $breakpoint-md) {
+  .body-prevent-scroll {
+    overflow: initial;
+  }
+}
+
+@media only screen and (min-width: $breakpoint-xl) {
+  .container {
+    max-width: $breakpoint-xl;
+  }
+}
