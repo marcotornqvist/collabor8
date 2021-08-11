@@ -37,7 +37,6 @@ model Profile {
   firstName    String?
   lastName     String?
   country      String?
-  city         String?
   bio          String?
   disciplines  Discipline[] @relation(references: [id])
   profileImage String?

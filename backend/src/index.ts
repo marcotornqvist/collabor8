@@ -3,6 +3,7 @@ require("dotenv").config();
 import express from "express";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./graphql/resolvers/UserResolver";
+import { ProfileResolver } from "./graphql/resolvers/ProfileResolver";
 import { ProjectResolver } from "./graphql/resolvers/ProjectResolver";
 import { SocialResolver } from "./graphql/resolvers/SocialResolver";
 import { MessageResolver } from "./graphql/resolvers/MessageResolver";
@@ -31,6 +32,7 @@ const app = async () => {
   const schema = await buildSchema({
     resolvers: [
       UserResolver,
+      ProfileResolver,
       SocialResolver,
       ProjectResolver,
       MemberResolver,
