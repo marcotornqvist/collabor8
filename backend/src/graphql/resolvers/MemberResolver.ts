@@ -12,7 +12,7 @@ import { User } from "../entities/User";
 import { Project } from "../entities/Project";
 import { isAuth } from "../utils/isAuth";
 import { Context, LooseObject } from "../types/Interfaces";
-import { MemberResponse } from "../types/responses/MemberResponse";
+import { MemberResponse } from "./responses/MemberResponse";
 
 // TODO: Resolvers to be implemented:
 // membersByProject:     Return the owner and all the members by projectId - In Progress

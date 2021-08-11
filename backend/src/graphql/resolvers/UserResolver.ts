@@ -11,8 +11,8 @@ import { UserInputError } from "apollo-server-express";
 import { hash, compare } from "bcryptjs";
 import { User } from "../entities/User";
 import { Context, LooseObject } from "../types/Interfaces";
-import { LoginInput, RegisterInput } from "../types/inputs/UserInput";
-import { AuthResponse } from "../types/responses/UserResponse";
+import { LoginInput, RegisterInput } from "./inputs/UserInput";
+import { AuthResponse } from "./responses/UserResponse";
 import { createAccessToken, createRefreshToken } from "../utils/auth";
 import { sendRefreshToken } from "../utils/sendRefreshToken";
 import { isAuth } from "../utils/isAuth";
@@ -54,7 +54,7 @@ export class UserResolver {
         id: id,
       },
     });
-
+ 
     return user;
   }
 
@@ -116,9 +116,16 @@ export class UserResolver {
       const newUser = await prisma.user.create({
         data: {
           email,
-          // firstName,
-          // lastName,
           password,
+          profile: {
+            create: {
+              firstName,
+              lastName,
+            },
+          },
+        },
+        include: {
+          profile: true,
         },
       });
 
