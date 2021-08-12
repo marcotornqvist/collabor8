@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { ObjectType, Field, ID, Int } from "type-graphql";
-import { IsEmail, MinLength } from "class-validator";
+import { IsEmail, MinLength, Length, IsLowercase } from "class-validator";
 import { Profile } from "./Profile";
 import { Social } from "./Social";
 import { Project } from "./Project";
@@ -15,6 +15,11 @@ import { ReportUser } from "./Report";
 export class User {
   @Field(() => ID)
   id: string;
+
+  @IsLowercase()
+  @Length(3, 50)
+  @Field(() => String)
+  username: string;
 
   @Field()
   @IsEmail()

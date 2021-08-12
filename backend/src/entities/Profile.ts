@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { ObjectType, Field, ID } from "type-graphql";
-import { Length } from "class-validator";
+import { MaxLength } from "class-validator";
 import { User } from "./User";
 import { Discipline } from "./Discipline";
 
@@ -15,11 +15,11 @@ export class Profile {
   @Field(() => ID)
   userId: string;
 
-  @Length(1, 255)
+  @MaxLength(255)
   @Field(() => String, { nullable: true })
   firstName?: string | null;
 
-  @Length(1, 255)
+  @MaxLength(255)
   @Field(() => String, { nullable: true })
   lastName?: string | null;
 

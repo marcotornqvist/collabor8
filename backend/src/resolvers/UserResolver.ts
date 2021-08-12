@@ -11,22 +11,32 @@ import { UserInputError } from "apollo-server-express";
 import { hash, compare } from "bcryptjs";
 import { User } from "../entities/User";
 import { Context, LooseObject } from "../types/Interfaces";
-import { LoginInput, RegisterInput } from "./inputs/UserInput";
+import {
+  LoginInput,
+  RegisterInput,
+  UpdateEmailInput,
+  UpdatePasswordInput,
+  UpdateUsernameInput,
+} from "./inputs/UserInput";
 import { AuthResponse } from "./responses/UserResponse";
 import { createAccessToken, createRefreshToken } from "../utils/auth";
 import { sendRefreshToken } from "../utils/sendRefreshToken";
 import { isAuth } from "../utils/isAuth";
+import { makeId } from "../helpers/makeId";
 
 // TODO: Remember to implement pagination/infinite scroll both on the back/front end
 // so that a query like getAllUsers doesn't return the whole database but instead the first 100
 
 // TODO: Resolvers to be implemented:
-// users:         Return all users - In Progress (pagination and filtering)
-// userbyId:      Return a single user by id - In Progress ()
-// loggedInUser:  Return the currently logged in user - Done
-// register:      Create a new user - Done
-// login:         Login to existing user - Done
-// logout:        Logout from the current user - Done
+// users:           Return all users - In Progress (pagination and filtering)
+// userbyId:        Return a single user by id - In Progress ()
+// loggedInUser:    Return the currently logged in user - Done
+// updateUsername:  Update the username - In Progress
+// updateEmail:     Update the email    - In Progress
+// updatePassword:  Update the password - In Progress
+// register:        Create a new user - Done
+// login:           Login to existing user - Done
+// logout:          Logout from the current user - Done
 
 // This resolver handles all the user actions such as register & login
 @Resolver(User)
@@ -54,7 +64,7 @@ export class UserResolver {
         id: id,
       },
     });
- 
+
     return user;
   }
 
@@ -84,6 +94,40 @@ export class UserResolver {
     let errors: LooseObject = {};
 
     try {
+      let username = "";
+      if (firstName) username += firstName;
+      if (lastName) username += lastName;
+      username = username.toLowerCase();
+      const usernameLength = username.trim().length;
+
+      // Checks that length is between 3 and 41 characters
+      // The reason is that "-" and makeId is 9 characters
+      // this will make sure that username doesn't exceed the 50 character username limit
+      if (usernameLength >= 3 && usernameLength <= 41) {
+        // Make sure username doesn't already exist
+        const usernameExists = await prisma.user.findUnique({
+          where: {
+            username,
+          },
+        });
+
+        if (usernameExists) {
+          username += "-" + makeId(8);
+
+          const usernameExistsAgain = await prisma.user.findUnique({
+            where: {
+              username,
+            },
+          });
+
+          if (usernameExistsAgain) {
+            throw new Error("Server Error");
+          }
+        }
+      } else {
+        username = makeId(32);
+      }
+
       if (email.trim() === "") {
         errors.email = "Email cannot be empty";
       }
@@ -115,6 +159,7 @@ export class UserResolver {
       // Create user
       const newUser = await prisma.user.create({
         data: {
+          username,
           email,
           password,
           profile: {
@@ -178,6 +223,118 @@ export class UserResolver {
       accessToken: createAccessToken(user),
       user,
     };
+  }
+
+  @Mutation(() => String, {
+    description: "Update Username",
+  })
+  @UseMiddleware(isAuth)
+  async updateUsername(
+    @Arg("username") { username }: UpdateUsernameInput,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    const usernameLength = username.trim().length;
+
+    if (usernameLength < 3 && usernameLength > 50) {
+      throw new UserInputError(
+        "Username has to be longer than 3 characters and less than 50"
+      );
+    }
+
+    const usernameExists = await prisma.user.findUnique({
+      where: {
+        username,
+      },
+    });
+
+    if (usernameExists) {
+      throw new UserInputError("Username already exists");
+    }
+
+    await prisma.user.update({
+      where: {
+        id: payload!.userId,
+      },
+      data: { username },
+    });
+
+    return username;
+  }
+
+  @Mutation(() => String, {
+    description: "Update Email",
+  })
+  @UseMiddleware(isAuth)
+  async updateEmail(
+    @Arg("email") { email }: UpdateEmailInput,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    if (email.trim() === "") {
+      throw new UserInputError("Email cannot be empty");
+    }
+
+    const emailExists = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (emailExists) {
+      throw new UserInputError("Email already exists");
+    }
+
+    await prisma.user.update({
+      where: {
+        id: payload!.userId,
+      },
+      data: { email },
+    });
+
+    return email;
+  }
+
+  @Mutation(() => Boolean, {
+    description: "Update Password",
+  })
+  @UseMiddleware(isAuth)
+  async updatePassword(
+    @Arg("data")
+    { currentPassword, newPassword, confirmPassword }: UpdatePasswordInput,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    let errors: LooseObject = {};
+
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: payload!.userId,
+        },
+      });
+
+      const valid = await compare(currentPassword, user!.password);
+
+      if (!valid) {
+        errors.currentPassword = "The current password is not correct";
+      }
+
+      if (newPassword.length < 6) {
+        errors.newPassword = "Password must be atleast 6 characters";
+      } else if (newPassword !== confirmPassword) {
+        errors.confirmPassword = "Passwords don't match";
+      }
+
+      await prisma.user.update({
+        where: {
+          id: payload!.userId,
+        },
+        data: { password: newPassword },
+      });
+
+      return true;
+    } catch (err) {
+      console.log(err);
+      throw new UserInputError("Errors", { errors });
+    }
   }
 
   @Mutation(() => Boolean, {
