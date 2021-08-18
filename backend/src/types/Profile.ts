@@ -6,9 +6,6 @@ import { Discipline } from "./Discipline";
 
 @ObjectType()
 export class Profile {
-  @Field(() => ID)
-  id: number;
-
   @Field(() => User, { nullable: true })
   user?: User | null;
 
@@ -26,14 +23,15 @@ export class Profile {
   @Field(() => String, { nullable: true })
   country?: string | null;
 
-  @Field(() => String, { nullable: true })
-  city?: string | null;
-
+  @MaxLength(500)
   @Field(() => String, { nullable: true })
   bio?: string | null;
 
-  @Field(() => [Discipline], { nullable: true })
-  disciplines?: [Discipline] | null;
+  @Field(() => Discipline, { nullable: true })
+  discipline?: Discipline | null;
+
+  @Field(() => ID, { nullable: true })
+  disciplineId?: number | null;
 
   @Field(() => String, { nullable: true })
   profileImage?: string | null;

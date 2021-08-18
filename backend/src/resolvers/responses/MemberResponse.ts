@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { User } from "../../entities/User";
-import { Member } from "../../entities/Member";
+import { User } from "../../types/User";
+import { Member } from "../../types/Member";
 import { ObjectType, Field } from "type-graphql";
 
 @ObjectType()

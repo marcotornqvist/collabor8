@@ -7,9 +7,9 @@ import {
   Ctx,
   UseMiddleware,
 } from "type-graphql";
-import { Message } from "../entities/Message";
-import { User } from "../entities/User";
-import { Project } from "../entities/Project";
+import { Message } from "../types/Message";
+import { User } from "../types/User";
+import { Project } from "../types/Project";
 import { isAuth } from "../utils/isAuth";
 import { Context, LooseObject } from "../types/Interfaces";
 

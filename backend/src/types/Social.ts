@@ -4,9 +4,6 @@ import { User } from "./User";
 
 @ObjectType()
 export class Social {
-  @Field(() => ID)
-  id: number;
-
   @Field(() => User, { nullable: true })
   user?: User | null;
 

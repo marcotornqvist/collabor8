@@ -9,15 +9,18 @@ import {
 } from "type-graphql";
 import { UserInputError } from "apollo-server-express";
 import { hash, compare } from "bcryptjs";
-import { Profile } from "../entities/Profile";
+import { Profile } from "../types/Profile";
 import { Context } from "../types/Interfaces";
 import { CountryResponse } from "./responses/CountryResponse";
 import countries from "../data/countries";
 import { isAuth } from "../utils/isAuth";
+import { UpdateProfileInput } from "./inputs/ProfileInput";
 
 // TODO: Resolvers to be implemented:
-// users:         Return all users - In Progress (pagination and filtering)
-// userbyId:      Return a single user by id - In Progress ()
+// getCountries:            Return all countries - Done
+// getLoggedInProfile:      Set a country - Done
+// updateImage:             Update Image - In Progress
+// updateProfile:           Update profile Settings - Done
 
 @Resolver(Profile)
 export class ProfileResolver {
@@ -41,17 +44,76 @@ export class ProfileResolver {
     return filtered;
   }
 
-  // Set the country in the profile
-  // Validate to check if country key exists then add country to country value
-  // Validate to check if user owns the profile
+  @Query(() => Profile, {
+    nullable: true,
+    description: "Returns logged in user profile",
+  })
+  @UseMiddleware(isAuth)
+  async getLoggedInProfile(@Ctx() { payload, prisma }: Context) {
+    const profile = await prisma.profile.findUnique({
+      where: {
+        userId: payload!.userId,
+      },
+      include: {
+        discipline: true,
+      },
+    });
 
-  // change to mutation
-  // @Query(() => CountryResponse, {
-  //   nullable: true,
-  //   description: "Updates a users profile",
-  // })
-  // async updateProfile(@Arg("data") search: string) {
+    return profile;
+  }
 
-  //   return test;
-  // }
+  @Mutation(() => Profile, {
+    description: "Update Profile",
+  })
+  @UseMiddleware(isAuth)
+  async updateProfile(
+    @Arg("data")
+    { firstName, lastName, country, disciplineId, bio }: UpdateProfileInput,
+    @Ctx() { payload, prisma }: Context
+  ): Promise<Profile> {
+    let dataFields;
+
+    const countryExists = countries.filter((item) => item.country === country);
+
+    if (countryExists.length < 1) {
+      country = null;
+    }
+
+    if (!disciplineId) {
+      dataFields = {
+        firstName,
+        lastName,
+        country,
+        // If disciplineId is undefined or null, disconnect relation.
+        discipline: {
+          disconnect: true,
+        },
+        bio,
+      };
+    } else {
+      dataFields = {
+        firstName,
+        lastName,
+        country,
+        discipline: {
+          connect: {
+            id: disciplineId,
+          },
+        },
+        bio,
+      };
+    }
+
+    const profile = await prisma.profile.update({
+      where: {
+        userId: payload!.userId,
+      },
+      data: dataFields,
+      include: {
+        discipline: true,
+      },
+    });
+
+    return profile;
+  }
 }

@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { User } from "../../entities/User";
+import { User } from "../../types/User";
 import { ObjectType, Field } from "type-graphql";
 
 @ObjectType()

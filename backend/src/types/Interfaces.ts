@@ -12,5 +12,5 @@ export interface Context extends Prisma {
 }
 
 export interface LooseObject {
-  [key: string]: string;
+  [key: string]: string | null | undefined;
 }

@@ -21,8 +21,8 @@ export class Project {
   @Field(() => User, { nullable: true })
   creator?: User | null;
 
-  @Field(() => ID)
-  userId: string;
+  @Field(() => ID, { nullable: true })
+  userId?: string | null;
 
   @Field(() => [Member], { nullable: true })
   members?: [Member] | null;

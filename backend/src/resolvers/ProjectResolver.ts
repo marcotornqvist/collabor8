@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import { Resolver, Query, Ctx, UseMiddleware, Arg } from "type-graphql";
-import { Project } from "../entities/Project";
+import { Project } from "../types/Project";
 import { UserInputError } from "apollo-server-express";
-import { User } from "../entities/User";
+import { User } from "../types/User";
 import { Context, LooseObject } from "../types/Interfaces";
 import { isAuth } from "../utils/isAuth";
 

@@ -9,7 +9,7 @@ import {
 } from "type-graphql";
 import { UserInputError } from "apollo-server-express";
 import { hash, compare } from "bcryptjs";
-import { User } from "../entities/User";
+import { User } from "../types/User";
 import { Context, LooseObject } from "../types/Interfaces";
 import {
   LoginInput,
@@ -31,12 +31,13 @@ import { makeId } from "../helpers/makeId";
 // users:           Return all users - In Progress (pagination and filtering)
 // userbyId:        Return a single user by id - In Progress ()
 // loggedInUser:    Return the currently logged in user - Done
-// updateUsername:  Update the username - In Progress
+// updateUsername:  Update the username - Done
 // updateEmail:     Update the email    - In Progress
-// updatePassword:  Update the password - In Progress
+// updatePassword:  Update the password - Done
 // register:        Create a new user - Done
 // login:           Login to existing user - Done
 // logout:          Logout from the current user - Done
+// deleteAccount:   Delete Account - In Progress
 
 // This resolver handles all the user actions such as register & login
 @Resolver(User)
@@ -46,9 +47,13 @@ export class UserResolver {
   })
   async users(@Ctx() { prisma }: Context) {
     const users = await prisma.user.findMany({
-      // include: {
-      //   projects: true,
-      // },
+      include: {
+        profile: {
+          include: {
+            discipline: true,
+          },
+        },
+      },
     });
 
     return users;
@@ -171,6 +176,7 @@ export class UserResolver {
         },
         include: {
           profile: true,
+          socials: true,
         },
       });
 
@@ -187,7 +193,7 @@ export class UserResolver {
   }
 
   @Mutation(() => AuthResponse, {
-    description: "Login to a already existing account",
+    description: "Login to an account",
   })
   async login(
     @Arg("data")
@@ -341,6 +347,22 @@ export class UserResolver {
     description: "Logout from the currently logged in account",
   })
   async logout(@Ctx() { res }: Context) {
+    sendRefreshToken(res, "");
+
+    return true;
+  }
+
+  @Mutation(() => Boolean, {
+    description: "Delete Account",
+  })
+  @UseMiddleware(isAuth)
+  async deleteAccount(@Ctx() { res, payload, prisma }: Context) {
+    await prisma.user.delete({
+      where: {
+        id: payload!.userId,
+      },
+    });
+
     sendRefreshToken(res, "");
 
     return true;
