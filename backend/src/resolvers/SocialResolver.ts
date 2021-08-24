@@ -8,61 +8,105 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { Social } from "../types/Social";
-import { User } from "../types/User";
-import { Project } from "../types/Project";
 import { isAuth } from "../utils/isAuth";
 import { Context, LooseObject } from "../types/Interfaces";
-import {
-  githubValidator,
-  instagramValidator,
-} from "./validations/socialValidator";
-import { SocialInputs } from "./inputs/SocialInputs";
-import { UserInputError } from "apollo-server-express";
+import { validateSocials } from "./validations/socialValidator";
+import { SocialInput } from "./inputs/SocialInput";
 
-// TODO: Resolvers to be implemented:
-// createSocials:     Create all socials for a user
-// updateSocials:     Update all socials for a user
-// socialsByUserId:   Return all socials by userId
+// TODO: Queries/mutations to be implemented:
+// updateSocials:           Update all socials for a user
+// socialsByLoggedInUser    Get all socials by logged in user
+// socialsByUserId:         Return all socials by userId
 
 // This resolver handles the updating of social accounts
 @Resolver(Social)
 export class SocialResolver {
-  // Create a resolver that checks if user is authorized (isAuth middleware)
-  // validate: Check that user is updating its own socials.
-  // validate: Validate to check if social links are correct to what they should
-  // format them in the right way before saving them.
-  // Also do error handling
-  @Mutation(() => Social, {
-    description: "Create socials",
+  @Query(() => Social, {
+    description: `Returns the social data for the user that is currently logged in `,
   })
   @UseMiddleware(isAuth)
-  async createSocials(
-    @Arg("data") { instagram, github }: SocialInputs,
+  async socialsByLoggedInUser(@Ctx() { payload, prisma }: Context) {
+    const social = await prisma.social.findUnique({
+      where: {
+        userId: payload!.userId,
+      },
+    });
+
+    return social;
+  }
+
+  @Query(() => Social, {
+    description: `Returns the social data for the user that is currently logged in `,
+  })
+  @UseMiddleware(isAuth)
+  async socialsByUserId(@Arg("id") id: string, @Ctx() { prisma }: Context) {
+    const social = await prisma.social.findUnique({
+      where: {
+        userId: id,
+      },
+    });
+
+    return social;
+  }
+
+  @Mutation(() => Social, {
+    description: "Update socials",
+  })
+  @UseMiddleware(isAuth)
+  async updateSocials(
+    @Arg("data")
+    {
+      instagram,
+      linkedin,
+      dribbble,
+      behance,
+      pinterest,
+      soundcloud,
+      spotify,
+      medium,
+      vimeo,
+      youtube,
+      github,
+      discord,
+    }: SocialInput,
     @Ctx() { payload, prisma }: Context
   ): Promise<Social> {
-    let errors: LooseObject = {};
+    // Destructuring values returned in function that validates all social usernames
+    const validated = validateSocials(
+      instagram,
+      linkedin,
+      dribbble,
+      behance,
+      pinterest,
+      soundcloud,
+      spotify,
+      medium,
+      vimeo,
+      youtube,
+      github,
+      discord
+    );
 
-    try {
-      if (instagramValidator(instagram).error) {
-        errors.instagram = instagramValidator(instagram).error;
-      }
+    const socials = await prisma.social.update({
+      where: {
+        userId: payload!.userId,
+      },
+      data: {
+        instagram: validated.instagram,
+        linkedin: validated.linkedin,
+        dribbble: validated.dribbble,
+        behance: validated.behance,
+        pinterest: validated.pinterest,
+        soundcloud: validated.soundcloud,
+        spotify: validated.spotify,
+        medium: validated.medium,
+        vimeo: validated.vimeo,
+        youtube: validated.youtube,
+        github: validated.github,
+        discord: validated.discord,
+      },
+    });
 
-      if (Object.keys(errors).length > 0) {
-        throw errors;
-      }
-
-      const socials = await prisma.social.create({
-        data: {
-          userId: payload!.userId,
-          instagram: instagramValidator(instagram).input,
-          github,
-        },
-      });
-
-      return socials;
-    } catch (err) {
-      console.log(err);
-      throw new UserInputError("Errors", { errors });
-    }
+    return socials;
   }
 }

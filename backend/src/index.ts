@@ -17,6 +17,7 @@ import { Context } from "./types/Interfaces";
 import { GraphQLScalarType } from "graphql";
 import { corsOptions } from "./utils/corsOptions";
 import { refreshToken } from "./utils/refreshToken";
+import { NotificationResolver } from "./resolvers/NotificationResolver";
 
 const PORT = process.env.PORT || 4000;
 
@@ -37,6 +38,7 @@ const app = async () => {
       ProjectResolver,
       MemberResolver,
       MessageResolver,
+      NotificationResolver
     ],
     scalarsMap: [{ type: GraphQLScalarType, scalar: DateTimeResolver }],
   });

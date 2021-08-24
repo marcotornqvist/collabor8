@@ -30,7 +30,7 @@ model User {
   tokenVersion  Int            @default(0)
   disabled      Boolean        @default(false)
   createdAt     DateTime       @default(now())
-  updatedAt     DateTime?      @updatedAt
+  updatedAt     DateTime?      @default(now()) @updatedAt
 }
 
 model Profile {
@@ -44,7 +44,7 @@ model Profile {
   discipline   Discipline? @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
   disciplineId Int?
   createdAt    DateTime    @default(now())
-  updatedAt    DateTime?   @updatedAt
+  updatedAt    DateTime?   @default(now()) @updatedAt
 
   @@id(userId)
 }
@@ -65,7 +65,7 @@ model Social {
   github     String?
   discord    String?
   createdAt  DateTime  @default(now())
-  updatedAt  DateTime? @updatedAt
+  updatedAt  DateTime? @default(now()) @updatedAt
 
   @@id(userId)
 }
@@ -73,23 +73,25 @@ model Social {
 model Discipline {
   id        Int       @id @default(autoincrement())
   title     String    @unique
-  profile   Profile[]
+  profiles  Profile[]
+  projects  Project[]
   createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+  updatedAt DateTime? @default(now()) @updatedAt
 }
 
 model Project {
-  id        String          @id @default(uuid())
-  title     String
-  body      String?
-  creator   User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
-  userId    String?
-  members   Member[]
-  reports   ReportProject[]
-  chatRoom  ChatRoom?
-  disabled  Boolean         @default(false)
-  createdAt DateTime        @default(now())
-  updatedAt DateTime?       @updatedAt
+  id          String          @id @default(uuid())
+  title       String
+  body        String?
+  owner       User            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId      String
+  members     Member[]
+  reports     ReportProject[]
+  chatRoom    ChatRoom?
+  disciplines Discipline[]
+  disabled    Boolean         @default(false)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime?       @default(now()) @updatedAt
 }
 
 model Member {
@@ -100,7 +102,7 @@ model Member {
   projectId  String
   status     StatusCode @default(PENDING)
   assignedAt DateTime   @default(now())
-  updatedAt  DateTime?  @updatedAt
+  updatedAt  DateTime?  @default(now()) @updatedAt
 }
 
 model Contact {
@@ -112,7 +114,7 @@ model Contact {
   chatRoom  ChatRoom?
   status    StatusCode @default(PENDING)
   createdAt DateTime   @default(now())
-  updatedAt DateTime?  @updatedAt
+  updatedAt DateTime?  @default(now()) @updatedAt
 
   @@id([userId, contactId])
 }
@@ -126,7 +128,7 @@ model ChatRoom {
   messages  Message[]
   readBy    String[] // Add userId to array if user opens chat (to check if message is read)
   createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+  updatedAt DateTime? @default(now()) @updatedAt
 }
 
 model Message {
@@ -146,7 +148,7 @@ model Notification {
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+  updatedAt DateTime? @default(now()) @updatedAt
 }
 
 model ReportUser {
@@ -177,7 +179,7 @@ model BlockedUser {
   userId        String
   blockedUserId String
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime? @updatedAt
+  updatedAt     DateTime? @default(now()) @updatedAt
 }
 
 enum StatusCode {

@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { ObjectType, Field, ID } from "type-graphql";
 import { Profile } from "./Profile";
+import { Project } from "./Project";
 
 @ObjectType()
 export class Discipline {
@@ -11,7 +12,10 @@ export class Discipline {
   title: string;
 
   @Field(() => [Profile], { nullable: true })
-  profiles?: [Profile] | null;
+  profiles?: Profile[] | null;
+
+  @Field(() => [Project], { nullable: true })
+  projects?: Project[] | null;
 
   @Field(() => Date)
   createdAt: Date;

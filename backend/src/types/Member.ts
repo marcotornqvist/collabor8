@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { ObjectType, Field, ID, registerEnumType } from "type-graphql";
 import { User } from "./User";
 import { Project } from "./Project";
-import { StatusCode } from "../types/Enums";
+import { StatusCode } from "@prisma/client";
 
 @ObjectType()
 export class Member {
@@ -33,5 +33,5 @@ export class Member {
 
 registerEnumType(StatusCode, {
   name: "StatusCode",
-  description: "Status Code enum", // this one is optional
+  description: "Status Code enum",
 });

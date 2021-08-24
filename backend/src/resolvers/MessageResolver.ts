@@ -13,7 +13,7 @@ import { Project } from "../types/Project";
 import { isAuth } from "../utils/isAuth";
 import { Context, LooseObject } from "../types/Interfaces";
 
-// TODO: Resolvers to be implemented:
+// TODO: Queries/mutations to be implemented:
 // messagesByProjectId:   Return all messages by projectId
 // sendMessageToGroup:    Sends a new message to a group(messages) by projectId
 // sendMessageToContact:  Sends a new message to another contact

@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { ObjectType, Field, ID } from "type-graphql";
 import { User } from "./User";
 import { ChatRoom } from "./ChatRoom";
-import { StatusCode } from "../types/Enums";
+import { StatusCode } from ".prisma/client";
 
 @ObjectType()
 export class Contact {

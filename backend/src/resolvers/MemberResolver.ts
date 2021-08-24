@@ -14,7 +14,7 @@ import { isAuth } from "../utils/isAuth";
 import { Context, LooseObject } from "../types/Interfaces";
 import { MemberResponse } from "./responses/MemberResponse";
 
-// TODO: Resolvers to be implemented:
+// TODO: Queries/mutations to be implemented:
 // membersByProject:     Return the owner and all the members by projectId - In Progress
 // addMember:            Add member to a project as owner by projectId - In Progress
 

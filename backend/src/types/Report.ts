@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { ObjectType, Field, ID, registerEnumType } from "type-graphql";
 import { Project } from "./Project";
 import { User } from "./User";
-import { Violation } from "../types/Enums";
+import { Violation } from ".prisma/client";
 
 @ObjectType()
 export class ReportProject {

@@ -27,7 +27,7 @@ import { makeId } from "../helpers/makeId";
 // TODO: Remember to implement pagination/infinite scroll both on the back/front end
 // so that a query like getAllUsers doesn't return the whole database but instead the first 100
 
-// TODO: Resolvers to be implemented:
+// TODO: Queries/mutations to be implemented:
 // users:           Return all users - In Progress (pagination and filtering)
 // userbyId:        Return a single user by id - In Progress ()
 // loggedInUser:    Return the currently logged in user - Done
@@ -143,7 +143,7 @@ export class UserResolver {
         errors.confirmPassword = "Passwords don't match";
       }
 
-      // Make sure email doesnt already exist
+      // Make sure email doesn't already exist
       const emailExists = await prisma.user.findUnique({
         where: {
           email,
@@ -176,9 +176,17 @@ export class UserResolver {
         },
         include: {
           profile: true,
-          socials: true,
         },
       });
+
+      // Initialize row in socials table based on the new userId
+      if (newUser) {
+        await prisma.social.create({
+          data: {
+            userId: newUser.id,
+          },
+        });
+      }
 
       sendRefreshToken(res, createRefreshToken(newUser));
 

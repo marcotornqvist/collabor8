@@ -16,9 +16,9 @@ import countries from "../data/countries";
 import { isAuth } from "../utils/isAuth";
 import { UpdateProfileInput } from "./inputs/ProfileInput";
 
-// TODO: Resolvers to be implemented:
-// getCountries:            Return all countries - Done
-// getLoggedInProfile:      Set a country - Done
+// TODO: Queries/mutations to be implemented:
+// countries:            Return all countries - Done
+// loggedInProfile:      Set a country - Done
 // updateImage:             Update Image - In Progress
 // updateProfile:           Update profile Settings - Done
 
@@ -28,7 +28,7 @@ export class ProfileResolver {
     nullable: true,
     description: "Returns countries based on search argument",
   })
-  async getCountries(@Arg("search") search: string) {
+  async countries(@Arg("search") search: string) {
     const regex = new RegExp(`${search}`, "gi");
 
     const filtered = countries.filter((item: CountryResponse) => {
@@ -49,7 +49,7 @@ export class ProfileResolver {
     description: "Returns logged in user profile",
   })
   @UseMiddleware(isAuth)
-  async getLoggedInProfile(@Ctx() { payload, prisma }: Context) {
+  async loggedInProfile(@Ctx() { payload, prisma }: Context) {
     const profile = await prisma.profile.findUnique({
       where: {
         userId: payload!.userId,

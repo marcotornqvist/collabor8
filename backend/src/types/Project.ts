@@ -1,10 +1,11 @@
 import "reflect-metadata";
 import { ObjectType, Field, ID } from "type-graphql";
-import { Length } from "class-validator";
+import { Length, MaxLength } from "class-validator";
 import { User } from "./User";
 import { Member } from "./Member";
 import { ReportProject } from "./Report";
 import { ChatRoom } from "./ChatRoom";
+import { Discipline } from "./Discipline";
 
 @ObjectType()
 export class Project {
@@ -15,20 +16,24 @@ export class Project {
   @Field(() => String)
   title: string;
 
+  @MaxLength(1000)
   @Field(() => String, { nullable: true })
   body?: string | null;
 
   @Field(() => User, { nullable: true })
-  creator?: User | null;
+  owner?: User | null;
 
   @Field(() => ID, { nullable: true })
   userId?: string | null;
 
+  @Field(() => [Discipline], { nullable: true })
+  disciplines?: Discipline[] | null;
+
   @Field(() => [Member], { nullable: true })
-  members?: [Member] | null;
+  members?: Member[] | null;
 
   @Field(() => [ReportProject], { nullable: true })
-  reports?: [ReportProject] | null;
+  reports?: ReportProject[] | null;
 
   @Field(() => ChatRoom, { nullable: true })
   chatRoom?: ChatRoom | null;

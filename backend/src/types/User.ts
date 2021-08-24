@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { ObjectType, Field, ID, Int } from "type-graphql";
+import { ObjectType, Field, ID, Int, registerEnumType } from "type-graphql";
 import { IsEmail, MinLength, Length, IsLowercase } from "class-validator";
 import { Profile } from "./Profile";
 import { Social } from "./Social";
@@ -10,6 +10,7 @@ import { Message } from "./Message";
 import { Notification } from "./Notification";
 import { BlockedUser } from "./BlockedUser";
 import { ReportUser } from "./Report";
+// import { StatusCode } from "./Enums";
 
 @ObjectType()
 export class User {
@@ -35,28 +36,28 @@ export class User {
   socials?: Social | null;
 
   @Field(() => [Project], { nullable: true })
-  projects?: [Project] | null;
+  projects?: Project[] | null;
 
   @Field(() => [Member], { nullable: true })
-  member?: [Member] | null;
+  member?: Member[] | null;
 
   @Field(() => [Contact], { nullable: true })
-  contactsSent?: [Contact] | null;
+  contactsSent?: Contact[] | null;
 
   @Field(() => [Contact], { nullable: true })
-  contactsRcvd?: [Contact] | null;
+  contactsRcvd?: Contact[] | null;
 
   @Field(() => [Message], { nullable: true })
-  Messages?: [Message] | null;
+  Messages?: Message[] | null;
 
   @Field(() => [Notification], { nullable: true })
-  notifications?: [Notification] | null;
+  notifications?: Notification[] | null;
 
   @Field(() => [BlockedUser], { nullable: true })
-  blockedUsers?: [BlockedUser] | null;
+  blockedUsers?: BlockedUser[] | null;
 
   @Field(() => [ReportUser], { nullable: true })
-  reports?: [ReportUser] | null;
+  reports?: ReportUser[] | null;
 
   @Field(() => Int)
   tokenVersion: number;
@@ -70,3 +71,8 @@ export class User {
   @Field(() => Date, { nullable: true })
   updatedAt?: Date | null;
 }
+
+// registerEnumType(StatusCode, {
+//   name: "StatusCode",
+//   description: "Status Code enum",
+// });
