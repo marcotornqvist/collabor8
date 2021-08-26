@@ -83,9 +83,10 @@ model Project {
   id          String          @id @default(uuid())
   title       String
   body        String?
+  country     String?
+  chatRoom    ChatRoom?
   members     Member[]
   reports     ReportProject[]
-  chatRoom    ChatRoom?
   disciplines Discipline[]
   disabled    Boolean         @default(false)
   createdAt   DateTime        @default(now())
@@ -155,7 +156,7 @@ model ReportUser {
   id        String    @id @default(uuid())
   violation Violation @default(SPAM)
   title     String
-  body      String
+  body      String?
   senderId  String
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
@@ -166,7 +167,7 @@ model ReportProject {
   id        String    @id @default(uuid())
   violation Violation @default(SPAM)
   title     String
-  body      String
+  body      String?
   senderId  String
   project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
@@ -174,11 +175,11 @@ model ReportProject {
 }
 
 model BlockedUser {
-  user          User      @relation("Blocked", fields: [userId], references: [id], onDelete: Cascade)
+  user          User     @relation("Blocked", fields: [userId], references: [id], onDelete: Cascade)
   userId        String
-  blockedUser   User      @relation(fields: [blockedUserId], references: [id])
+  blockedUser   User     @relation(fields: [blockedUserId], references: [id])
   blockedUserId String
-  createdAt     DateTime  @default(now())
+  createdAt     DateTime @default(now())
 
   @@id([userId, blockedUserId])
 }

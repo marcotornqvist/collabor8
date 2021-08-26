@@ -26,6 +26,7 @@ export class MessageResolver {
   // validate: Check that user is a part of the project or the owner.
   // validate: Return only projects that are not disabled
   @Query(() => Project, {
+    nullable: true,
     description: "Return messages for a single project by projectId",
   })
   @UseMiddleware(isAuth)

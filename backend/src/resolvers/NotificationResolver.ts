@@ -30,6 +30,11 @@ export class NotificationResolver {
           },
         },
         contactsRcvd: {
+          where: {
+            status: {
+              in: ["PENDING"],
+            },
+          },
           orderBy: {
             updatedAt: "desc",
           },

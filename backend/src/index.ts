@@ -9,6 +9,8 @@ import { SocialResolver } from "./resolvers/SocialResolver";
 import { MessageResolver } from "./resolvers/MessageResolver";
 import { MemberResolver } from "./resolvers/MemberResolver";
 import { BlockedUserResolver } from "./resolvers/BlockedResolver";
+import { ReportResolver } from "./resolvers/ReportResolver";
+import { NotificationResolver } from "./resolvers/NotificationResolver";
 import { ApolloServer } from "apollo-server-express";
 import { DateTimeResolver } from "graphql-scalars";
 import cookieParser from "cookie-parser";
@@ -18,7 +20,6 @@ import { Context } from "./types/Interfaces";
 import { GraphQLScalarType } from "graphql";
 import { corsOptions } from "./utils/corsOptions";
 import { refreshToken } from "./utils/refreshToken";
-import { NotificationResolver } from "./resolvers/NotificationResolver";
 
 const PORT = process.env.PORT || 4000;
 
@@ -40,6 +41,7 @@ const app = async () => {
       MemberResolver,
       MessageResolver,
       NotificationResolver,
+      ReportResolver,
       BlockedUserResolver,
     ],
     scalarsMap: [{ type: GraphQLScalarType, scalar: DateTimeResolver }],

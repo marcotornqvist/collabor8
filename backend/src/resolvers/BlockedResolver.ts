@@ -30,7 +30,7 @@ export class BlockedUserResolver {
         userId: payload!.userId,
       },
       include: {
-        blockedUser: true
+        blockedUser: true,
       },
     });
 
@@ -38,7 +38,6 @@ export class BlockedUserResolver {
   }
 
   @Mutation(() => Boolean, {
-    nullable: true,
     description: "Block a user by id",
   })
   @UseMiddleware(isAuth)
@@ -49,9 +48,6 @@ export class BlockedUserResolver {
     const blocked = await isBlocked(payload!.userId, id);
 
     if (blocked) throw new Error("User is already blocked");
-
-    if (id === payload!.userId)
-      throw new UserInputError("Cannot block yourself");
 
     const userExist = await prisma.user.findUnique({
       where: {
@@ -74,7 +70,6 @@ export class BlockedUserResolver {
   }
 
   @Mutation(() => Boolean, {
-    nullable: true,
     description: "Unblock a blocked user by id",
   })
   @UseMiddleware(isAuth)

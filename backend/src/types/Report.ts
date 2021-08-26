@@ -3,33 +3,7 @@ import { ObjectType, Field, ID, registerEnumType } from "type-graphql";
 import { Project } from "./Project";
 import { User } from "./User";
 import { Violation } from ".prisma/client";
-
-@ObjectType()
-export class ReportProject {
-  @Field(() => ID)
-  id: string;
-
-  @Field(() => Violation)
-  violation: Violation;
-
-  @Field(() => String)
-  title: string;
-
-  @Field(() => String)
-  body: string;
-
-  @Field(() => String)
-  senderId: string;
-
-  @Field(() => Project, { nullable: true })
-  project?: Project | null;
-
-  @Field(() => String)
-  projectId: string;
-
-  @Field(() => Date)
-  createdAt: Date;
-}
+import { Length, MaxLength } from "class-validator";
 
 @ObjectType()
 export class ReportUser {
@@ -39,11 +13,13 @@ export class ReportUser {
   @Field(() => Violation)
   violation: Violation;
 
+  @Length(10, 255)
   @Field(() => String)
   title: string;
 
-  @Field(() => String)
-  body: string;
+  @MaxLength(1000)
+  @Field(() => String, { nullable: true })
+  body?: string | null;
 
   @Field(() => String)
   senderId: string;
@@ -53,6 +29,35 @@ export class ReportUser {
 
   @Field(() => String)
   userId: string;
+
+  @Field(() => Date)
+  createdAt: Date;
+}
+
+@ObjectType()
+export class ReportProject {
+  @Field(() => ID)
+  id: string;
+
+  @Field(() => Violation)
+  violation: Violation;
+
+  @Length(10, 255)
+  @Field(() => String)
+  title: string;
+
+  @MaxLength(1000)
+  @Field(() => String, { nullable: true })
+  body?: string | null;
+
+  @Field(() => String)
+  senderId: string;
+
+  @Field(() => Project, { nullable: true })
+  project?: Project | null;
+
+  @Field(() => String)
+  projectId: string;
 
   @Field(() => Date)
   createdAt: Date;

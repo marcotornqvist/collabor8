@@ -8,10 +8,17 @@ import {
   Mutation,
 } from "type-graphql";
 import { Project } from "../types/Project";
-import { UserInputError } from "apollo-server-express";
-import { Context } from "../types/Interfaces";
+import { Member } from "../types/Member";
+import { Context, LooseObject } from "../types/Interfaces";
+import {
+  MemberInput,
+  CreateProjectInput,
+  UpdateProjectInput,
+} from "./inputs/ProjectInput";
+import { UserInputError, ForbiddenError } from "apollo-server-express";
 import { isAuth } from "../utils/isAuth";
-import { CreateProjectInput } from "./inputs/ProjectInput";
+import { isBlocked } from "../utils/isBlocked";
+import countries from "../data/countries";
 
 // Queries/mutations to be implemented:
 // projects:                  Return all projects - In Progress (implement pagination)
@@ -21,10 +28,12 @@ import { CreateProjectInput } from "./inputs/ProjectInput";
 // createProject:             Create new project - In Progress
 // deleteProject:             Delete a project by id - Done
 // LeaveProject:              Leave a project by id - Done
-// updateProject:
-// Disable project by id (if creator)
-// Add member to project by Id (if creator)
-// Report project by id (sends email to me)
+// updateProjectDetails:      Update project detais - Done
+// addMember:                 Add member to project by Id - Done
+// deleteMember:              Delete member to project by Id - Done
+// toggleProjectDisabled:     Toggle a project disabled boolean state - Done
+// acceptInvite:              Accept Invitation to a project - In Progress
+// deleteInvite:              Delete Invitation to a project - In Progress
 
 @Resolver(() => Project)
 export class ProjectResolver {
@@ -95,49 +104,75 @@ export class ProjectResolver {
     return projects;
   }
 
-  // Create new project
   @Mutation(() => Project, { description: "Creates a new Project" })
   @UseMiddleware(isAuth)
   async createProject(
     @Arg("data")
-    { title, body, disciplines, members }: CreateProjectInput,
+    { title, body, country, disciplines, members }: CreateProjectInput,
     @Ctx() { payload, prisma }: Context
   ): Promise<Project> {
-    const project = await prisma.project.create({
-      data: {
-        title,
-        body,
-        disciplines: {
-          connect: disciplines?.map((item) => ({ id: item })) || [],
-        },
-        // Add members to the project and set the logged in user as "ADMIN"
-        members: {
-          create: { userId: payload!.userId, role: "ADMIN" },
-          createMany: {
-            data: members?.map((item) => ({ userId: item })) || [],
-          },
-        },
-      },
-      include: {
-        disciplines: true,
-        members: {
-          include: {
-            user: true,
-          },
-        },
-      },
-    });
+    let errors: LooseObject = {};
+    try {
+      const countryExists = countries.filter(
+        (item) => item.country === country
+      );
 
-    // Initialize row in ChatRoom table based on the new projectId
-    if (project) {
-      await prisma.chatRoom.create({
+      if (countryExists.length < 1) {
+        country = null;
+      }
+
+      if (title.length < 1 && title.length > 50) {
+        errors.title = "Title cannot be empty or more than 50 characters";
+      }
+
+      if (body && body.length > 1000) {
+        errors.body = "Description cannot be more than 1000 characters";
+      }
+
+      if (Object.keys(errors).length > 0) {
+        throw errors;
+      }
+
+      const project = await prisma.project.create({
         data: {
-          projectId: project.id,
+          title,
+          body,
+          country,
+          disciplines: {
+            connect: disciplines?.map((item) => ({ id: item })) || [],
+          },
+          // Add members to the project and set the logged in user as "ADMIN"
+          members: {
+            create: { userId: payload!.userId, role: "ADMIN" },
+            createMany: {
+              data: members?.map((item) => ({ userId: item })) || [],
+            },
+          },
+        },
+        include: {
+          disciplines: true,
+          members: {
+            include: {
+              user: true,
+            },
+          },
         },
       });
-    }
 
-    return project;
+      // Initialize row in ChatRoom table based on the new projectId
+      if (project) {
+        await prisma.chatRoom.create({
+          data: {
+            projectId: project.id,
+          },
+        });
+      }
+
+      return project;
+    } catch (err) {
+      console.log(err);
+      throw new UserInputError("Errors", { errors });
+    }
   }
 
   // Delete Project
@@ -171,7 +206,7 @@ export class ProjectResolver {
     );
 
     if (!currentUser) {
-      throw new UserInputError("You are not part of the project");
+      throw new ForbiddenError("You are not a member of the project");
     }
 
     if (currentUser.role === "ADMIN") {
@@ -198,7 +233,7 @@ export class ProjectResolver {
         });
       }
     } else {
-      throw new Error("You are not the Admin of this project");
+      throw new ForbiddenError("You are not the Admin of this project");
     }
 
     return true;
@@ -240,7 +275,7 @@ export class ProjectResolver {
     );
 
     if (!currentUser) {
-      throw new UserInputError("You are not part of the project");
+      throw new ForbiddenError("Not Authorized");
     }
 
     // Returns all other members
@@ -303,6 +338,315 @@ export class ProjectResolver {
         },
       });
     }
+
+    return true;
+  }
+
+  // Update Project Details
+  @Mutation(() => Project, { description: "Updates a Project by id" })
+  @UseMiddleware(isAuth)
+  async updateProjectDetails(
+    @Arg("data")
+    { id, title, body, country, disciplines }: UpdateProjectInput,
+    @Ctx() { payload, prisma }: Context
+  ): Promise<Project> {
+    let errors: LooseObject = {};
+    try {
+      const countryExists = countries.filter(
+        (item) => item.country === country
+      );
+
+      if (countryExists.length < 1) {
+        country = null;
+      }
+
+      if (title.length < 1 && title.length > 50) {
+        errors.title = "Title cannot be empty or more than 50 characters";
+      }
+
+      if (body && body.length > 1000) {
+        errors.body = "Description cannot be more than 1000 characters";
+      }
+
+      if (Object.keys(errors).length > 0) {
+        throw errors;
+      }
+
+      const project = await prisma.project.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          members: {
+            where: {
+              status: "TRUE",
+            },
+          },
+          disciplines: true,
+        },
+      });
+
+      if (!project) {
+        throw new UserInputError("Project doesn't exist.");
+      }
+
+      // List that deletes disconnects disciplines
+      const removeDisciplines = project.disciplines.filter(
+        (item) => !disciplines?.some((item2) => item.id === item2)
+      );
+
+      // Returns the logged in user
+      const currentUser = project.members.find(
+        (item) => item.userId === payload!.userId
+      );
+
+      if (!currentUser || currentUser.role !== "ADMIN") {
+        throw new ForbiddenError("Not Authorized");
+      }
+
+      const updatedProject = await prisma.project.update({
+        where: {
+          id,
+        },
+        data: {
+          title,
+          body,
+          country,
+          disciplines: {
+            connect: disciplines?.map((item) => ({ id: item })),
+            disconnect: removeDisciplines?.map((item) => ({ id: item.id })),
+          },
+        },
+        include: {
+          disciplines: true,
+        },
+      });
+
+      return updatedProject;
+    } catch (err) {
+      console.log(err);
+      throw new UserInputError("Errors", { errors });
+    }
+  }
+
+  @Mutation(() => Member, {
+    description: "Add member to project, by project id",
+  })
+  @UseMiddleware(isAuth)
+  async addMember(
+    @Arg("data") { userId, projectId }: MemberInput,
+    @Ctx() { payload, prisma }: Context
+  ): Promise<Member> {
+    const blocked = await isBlocked(payload!.userId, userId);
+
+    if (blocked) throw new Error("Blocked user cannot be added to project");
+
+    // Check if user exists
+    const userExists = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!userExists) throw new UserInputError("User doens't exist");
+
+    const project = await prisma.project.findUnique({
+      where: {
+        id: projectId,
+      },
+      include: {
+        members: true,
+      },
+    });
+
+    if (!project) throw new UserInputError("Project doesn't exist");
+
+    // Returns the logged in user
+    const currentUser = project.members.find(
+      (item) => item.userId === payload!.userId
+    );
+
+    if (!currentUser || currentUser.role !== "ADMIN") {
+      throw new ForbiddenError("Not Authorized");
+    }
+
+    // Checks if member exists
+    const memberExists = project.members.find((item) => item.userId === userId);
+
+    if (memberExists) {
+      throw new UserInputError("Member already exists");
+    }
+
+    const newMember = await prisma.member.create({
+      data: {
+        userId,
+        projectId,
+      },
+      include: { user: true },
+    });
+
+    return newMember;
+  }
+
+  @Mutation(() => Boolean, {
+    description: "Delete member from project, by project id",
+  })
+  @UseMiddleware(isAuth)
+  async deleteMember(
+    @Arg("data") { userId, projectId }: MemberInput,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    const project = await prisma.project.findUnique({
+      where: {
+        id: projectId,
+      },
+      include: {
+        members: true,
+      },
+    });
+
+    if (!project) throw new UserInputError("Project doesn't exist");
+
+    // Returns the logged in user
+    const currentUser = project.members.find(
+      (item) => item.userId === payload!.userId
+    );
+
+    if (!currentUser || currentUser.role !== "ADMIN") {
+      throw new ForbiddenError("Not Authorized");
+    }
+
+    // Checks if member exists
+    const memberExists = project.members.find((item) => item.userId === userId);
+
+    if (!memberExists) {
+      throw new UserInputError("Member doesn't exist");
+    }
+
+    await prisma.member.delete({
+      where: {
+        userId_projectId: {
+          userId,
+          projectId,
+        },
+      },
+    });
+
+    return true;
+  }
+
+  @Mutation(() => Boolean, {
+    description: "Toggle Project disabled value to true or false",
+  })
+  @UseMiddleware(isAuth)
+  async toggleProjectDisabled(
+    @Arg("projectId") projectId: string,
+    @Ctx() { payload, prisma }: Context
+  ): Promise<Boolean> {
+    const project = await prisma.project.findUnique({
+      where: {
+        id: projectId,
+      },
+      include: {
+        members: true,
+      },
+    });
+
+    if (!project) throw new UserInputError("Project doesn't exist");
+
+    // Returns the logged in user
+    const currentUser = project.members.find(
+      (item) => item.userId === payload!.userId
+    );
+
+    if (!currentUser || currentUser.role !== "ADMIN") {
+      throw new ForbiddenError("Not Authorized");
+    }
+
+    const toggleDisabled = await prisma.project.update({
+      where: {
+        id: projectId,
+      },
+      data: {
+        disabled: !project.disabled,
+      },
+      select: {
+        disabled: true,
+      },
+    });
+
+    return toggleDisabled.disabled;
+  }
+
+  @Mutation(() => Boolean, {
+    description: "Accept a project invitation",
+  })
+  @UseMiddleware(isAuth)
+  async acceptInvite(
+    @Arg("projectId") projectId: string,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    const member = await prisma.member.findUnique({
+      where: {
+        userId_projectId: {
+          userId: payload!.userId,
+          projectId,
+        },
+      },
+      select: {
+        status: true,
+      },
+    });
+
+    if (!member || member.status !== "PENDING")
+      throw new UserInputError("Invite doesn't exist");
+
+    await prisma.member.update({
+      where: {
+        userId_projectId: {
+          userId: payload!.userId,
+          projectId,
+        },
+      },
+      data: {
+        status: "TRUE",
+      },
+    });
+
+    return true;
+  }
+
+  @Mutation(() => Boolean, {
+    description: "Delete/decline a project invitation",
+  })
+  @UseMiddleware(isAuth)
+  async deleteInvite(
+    @Arg("projectId") projectId: string,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    const member = await prisma.member.findUnique({
+      where: {
+        userId_projectId: {
+          userId: payload!.userId,
+          projectId,
+        },
+      },
+      select: {
+        status: true,
+      },
+    });
+
+    if (!member || member.status !== "PENDING")
+      throw new UserInputError("Invite doesn't exist");
+
+    await prisma.member.delete({
+      where: {
+        userId_projectId: {
+          userId: payload!.userId,
+          projectId,
+        },
+      },
+    });
 
     return true;
   }
