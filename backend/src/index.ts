@@ -8,6 +8,7 @@ import { ProjectResolver } from "./resolvers/ProjectResolver";
 import { SocialResolver } from "./resolvers/SocialResolver";
 import { MessageResolver } from "./resolvers/MessageResolver";
 import { MemberResolver } from "./resolvers/MemberResolver";
+import { BlockedUserResolver } from "./resolvers/BlockedResolver";
 import { ApolloServer } from "apollo-server-express";
 import { DateTimeResolver } from "graphql-scalars";
 import cookieParser from "cookie-parser";
@@ -38,7 +39,8 @@ const app = async () => {
       ProjectResolver,
       MemberResolver,
       MessageResolver,
-      NotificationResolver
+      NotificationResolver,
+      BlockedUserResolver,
     ],
     scalarsMap: [{ type: GraphQLScalarType, scalar: DateTimeResolver }],
   });

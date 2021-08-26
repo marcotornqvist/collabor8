@@ -20,12 +20,6 @@ export class Project {
   @Field(() => String, { nullable: true })
   body?: string | null;
 
-  @Field(() => User, { nullable: true })
-  owner?: User | null;
-
-  @Field(() => ID, { nullable: true })
-  userId?: string | null;
-
   @Field(() => [Discipline], { nullable: true })
   disciplines?: Discipline[] | null;
 

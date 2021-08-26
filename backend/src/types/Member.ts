@@ -2,13 +2,10 @@ import "reflect-metadata";
 import { ObjectType, Field, ID, registerEnumType } from "type-graphql";
 import { User } from "./User";
 import { Project } from "./Project";
-import { StatusCode } from "@prisma/client";
+import { Role, StatusCode } from "@prisma/client";
 
 @ObjectType()
 export class Member {
-  @Field(() => ID)
-  id: number;
-
   @Field(() => User)
   user: User;
 
@@ -21,6 +18,9 @@ export class Member {
   @Field(() => ID)
   projectId: string;
 
+  @Field(() => Role)
+  role: Role;
+
   @Field(() => StatusCode)
   status: StatusCode;
 
@@ -30,6 +30,11 @@ export class Member {
   @Field(() => Date, { nullable: true })
   updatedAt?: Date | null;
 }
+
+registerEnumType(Role, {
+  name: "Role",
+  description: "Role enum for projects ADMIN/MEMBER",
+});
 
 registerEnumType(StatusCode, {
   name: "StatusCode",

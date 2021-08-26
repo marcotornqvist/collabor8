@@ -70,6 +70,10 @@ export class UserResolver {
       },
     });
 
+    if (!user) {
+      throw new UserInputError("User doesn't exist")
+    }
+
     return user;
   }
 

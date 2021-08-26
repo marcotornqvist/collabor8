@@ -19,13 +19,13 @@ model User {
   password      String
   profile       Profile?
   socials       Social?
-  projects      Project[]
-  member        Member[]
+  projects      Member[]
   contactsSent  Contact[]      @relation("Contact")
   contactsRcvd  Contact[]
   messages      Message[]      @relation("Message")
   notifications Notification[]
-  blockedUsers  BlockedUser[]
+  blockedUsers  BlockedUser[]  @relation("Blocked")
+  blockedBy     BlockedUser[]
   reports       ReportUser[]
   tokenVersion  Int            @default(0)
   disabled      Boolean        @default(false)
@@ -83,8 +83,6 @@ model Project {
   id          String          @id @default(uuid())
   title       String
   body        String?
-  owner       User            @relation(fields: [userId], references: [id], onDelete: SetNull)
-  userId      String
   members     Member[]
   reports     ReportProject[]
   chatRoom    ChatRoom?
@@ -95,14 +93,16 @@ model Project {
 }
 
 model Member {
-  id         Int        @id @default(autoincrement())
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
   project    Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId  String
+  role       Role       @default(MEMBER)
   status     StatusCode @default(PENDING)
   assignedAt DateTime   @default(now())
   updatedAt  DateTime?  @default(now()) @updatedAt
+
+  @@id([userId, projectId])
 }
 
 model Contact {
@@ -174,18 +174,24 @@ model ReportProject {
 }
 
 model BlockedUser {
-  id            String    @id @default(uuid())
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User      @relation("Blocked", fields: [userId], references: [id], onDelete: Cascade)
   userId        String
+  blockedUser   User      @relation(fields: [blockedUserId], references: [id])
   blockedUserId String
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime? @default(now()) @updatedAt
+
+  @@id([userId, blockedUserId])
 }
 
 enum StatusCode {
   FALSE
   PENDING
   TRUE
+}
+
+enum Role {
+  ADMIN
+  MEMBER
 }
 
 enum Violation {

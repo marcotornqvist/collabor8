@@ -19,7 +19,7 @@ export class NotificationResolver {
         id: payload!.userId,
       },
       select: {
-        member: {
+        projects: {
           where: {
             status: {
               in: ["PENDING"],
@@ -45,14 +45,3 @@ export class NotificationResolver {
     return notifications;
   }
 }
-
-// // Send a notification to the members that were invited
-// if (project.members.length > 0) {
-//   await prisma.notification.createMany({
-//     data:
-//       project.members?.map((item) => ({
-//         userId: item.userId,
-//         message: `You have been invited to join ${project.title}`,
-//       })) || [],
-//   });
-// }

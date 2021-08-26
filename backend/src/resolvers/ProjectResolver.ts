@@ -9,20 +9,19 @@ import {
 } from "type-graphql";
 import { Project } from "../types/Project";
 import { UserInputError } from "apollo-server-express";
-import { User } from "../types/User";
-import { Context, LooseObject } from "../types/Interfaces";
+import { Context } from "../types/Interfaces";
 import { isAuth } from "../utils/isAuth";
 import { CreateProjectInput } from "./inputs/ProjectInput";
-import { Discipline } from "../types/Discipline";
 
 // Queries/mutations to be implemented:
 // projects:                  Return all projects - In Progress (implement pagination)
 // projectById:               Return single project by projectId - In Progress (implement pagination)
 // projectsByUserId:          Return all projects by userId - In Progress (implement pagination)
 // projectsByloggedInUser:    Return projects by loggedInUser - In Progress
-// Create new project
-// Delete project by id (if creator)
-// Leave project
+// createProject:             Create new project - In Progress
+// deleteProject:             Delete a project by id - Done
+// LeaveProject:              Leave a project by id - Done
+// updateProject:
 // Disable project by id (if creator)
 // Add member to project by Id (if creator)
 // Report project by id (sends email to me)
@@ -65,7 +64,11 @@ export class ProjectResolver {
   async projectsByUserId(@Arg("id") id: string, @Ctx() { prisma }: Context) {
     const projects = await prisma.project.findMany({
       where: {
-        userId: id,
+        members: {
+          some: {
+            userId: id,
+          },
+        },
         disabled: false,
       },
     });
@@ -81,7 +84,11 @@ export class ProjectResolver {
   async projectsByloggedInUser(@Ctx() { payload, prisma }: Context) {
     const projects = await prisma.project.findMany({
       where: {
-        userId: payload?.userId,
+        members: {
+          some: {
+            userId: payload?.userId,
+          },
+        },
       },
     });
 
@@ -100,16 +107,15 @@ export class ProjectResolver {
       data: {
         title,
         body,
-        owner: {
-          connect: {
-            id: payload!.userId,
-          },
-        },
         disciplines: {
           connect: disciplines?.map((item) => ({ id: item })) || [],
         },
+        // Add members to the project and set the logged in user as "ADMIN"
         members: {
-          create: members?.map((item) => ({ userId: item })) || [],
+          create: { userId: payload!.userId, role: "ADMIN" },
+          createMany: {
+            data: members?.map((item) => ({ userId: item })) || [],
+          },
         },
       },
       include: {
@@ -146,20 +152,156 @@ export class ProjectResolver {
       where: {
         id,
       },
+      include: {
+        members: {
+          where: {
+            status: "TRUE",
+          },
+        },
+      },
     });
 
     if (!project) {
       throw new UserInputError("Project doesn't exist.");
     }
 
-    if (project?.userId === payload!.userId) {
-      await prisma.project.delete({
+    // Returns the logged in user
+    const currentUser = project.members.find(
+      (item) => item.userId === payload!.userId
+    );
+
+    if (!currentUser) {
+      throw new UserInputError("You are not part of the project");
+    }
+
+    if (currentUser.role === "ADMIN") {
+      // Project is deleted by id
+      const projectDeleted = await prisma.project.delete({
         where: {
           id,
         },
       });
+
+      // Returns all other members
+      const otherMembers = project.members.filter(
+        (item) => item.userId !== payload!.userId
+      );
+
+      // Send a notification to other members that the project has been deleted
+      if (otherMembers.length > 0 && projectDeleted) {
+        await prisma.notification.createMany({
+          data:
+            otherMembers.map((item) => ({
+              userId: item.userId,
+              message: `${project.title} has been deleted`,
+            })) || [],
+        });
+      }
     } else {
-      throw new UserInputError("Current user is not the owner the project.");
+      throw new Error("You are not the Admin of this project");
+    }
+
+    return true;
+  }
+
+  // Leave Project
+  @Mutation(() => Boolean, { description: "Leave Project by projectId" })
+  @UseMiddleware(isAuth)
+  async leaveProject(
+    @Arg("id") id: string,
+    @Ctx()
+    { payload, prisma }: Context
+  ) {
+    const project = await prisma.project.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        members: {
+          orderBy: {
+            assignedAt: "asc",
+          },
+          where: {
+            status: {
+              in: ["TRUE"],
+            },
+          },
+        },
+      },
+    });
+
+    if (!project) {
+      throw new UserInputError("Project doesn't exist");
+    }
+
+    // Returns the logged in user
+    const currentUser = project.members.find(
+      (item) => item.userId === payload!.userId
+    );
+
+    if (!currentUser) {
+      throw new UserInputError("You are not part of the project");
+    }
+
+    // Returns all other members
+    const otherMembers = project.members.filter(
+      (item) => item.userId !== payload!.userId
+    );
+
+    // Check if logged in user is Admin
+    if (currentUser.role === "ADMIN") {
+      // Check if there are other members if not delete project
+      if (otherMembers.length > 0) {
+        // Update the oldest member besides the previous admin, as the new admin of the project
+        const updateMember = await prisma.member.update({
+          where: {
+            userId_projectId: {
+              userId: otherMembers[0].userId,
+              projectId: id,
+            },
+          },
+          data: {
+            role: "ADMIN",
+          },
+        });
+
+        if (updateMember) {
+          // Delete the previous admin
+          await prisma.member.delete({
+            where: {
+              userId_projectId: {
+                userId: payload!.userId,
+                projectId: id,
+              },
+            },
+          });
+
+          // Send a notification to the new Admin
+          await prisma.notification.create({
+            data: {
+              userId: updateMember.userId,
+              message: `You have been assigned as admin of ${project.title}`,
+            },
+          });
+        }
+      } else {
+        // Delete project if no otherMembers
+        await prisma.project.delete({
+          where: {
+            id,
+          },
+        });
+      }
+    } else {
+      // Delete logged in member from project
+      await prisma.member.delete({
+        where: {
+          userId_projectId: {
+            userId: payload!.userId,
+            projectId: id,
+          },
+        },
+      });
     }
 
     return true;
