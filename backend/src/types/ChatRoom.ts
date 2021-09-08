@@ -24,9 +24,6 @@ export class ChatRoom {
   @Field(() => [Message], { nullable: true })
   messages?: [Message] | null;
 
-  @Field(() => [String], { nullable: true })
-  readBy?: [string] | null;
-
   @Field(() => Date)
   createdAt: Date;
 

@@ -18,6 +18,9 @@ export class Member {
   @Field(() => ID)
   projectId: string;
 
+  @Field(() => Date)
+  readChatAt: Date;
+
   @Field(() => Role)
   role: Role;
 

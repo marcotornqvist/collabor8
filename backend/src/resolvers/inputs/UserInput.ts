@@ -7,6 +7,7 @@ import {
   MinLength,
   MaxLength,
 } from "class-validator";
+import { Sort } from "../../types/Enums";
 
 @InputType({ description: "Create a new user" })
 export class RegisterInput {
@@ -71,4 +72,33 @@ export class UpdatePasswordInput {
   @MinLength(6)
   @Field()
   confirmPassword: string;
+}
+
+@InputType({
+  description: "Filter Users",
+})
+export class UsersFilterArgs {
+  @Field(() => String, { nullable: true })
+  searchText?: string | null;
+
+  @Field(() => [Number], { nullable: true })
+  disciplines?: number[] | null;
+
+  @Field(() => String, { nullable: true })
+  country?: string | null;
+
+  @Field(() => String, { nullable: true })
+  after?: string | null;
+
+  @Field(() => String, { nullable: true })
+  before?: string | null;
+
+  @Field(() => Number, { nullable: true })
+  first?: number | null;
+
+  @Field(() => Number, { nullable: true })
+  last?: number | null;
+
+  @Field(() => Sort, { nullable: true })
+  sort?: Sort | null;
 }

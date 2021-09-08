@@ -15,11 +15,17 @@ export class Contact {
   @Field(() => ID)
   userId: string;
 
+  @Field(() => Date)
+  userReadChatAt: Date;
+
   @Field(() => Contact, { nullable: true })
   contact?: Contact | null;
 
   @Field(() => ID)
   contactId: string;
+
+  @Field(() => Date)
+  contactReadChatAt: Date;
 
   @Field(() => ChatRoom, { nullable: true })
   chatRoom?: ChatRoom | null;

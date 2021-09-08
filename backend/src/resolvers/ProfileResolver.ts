@@ -7,8 +7,6 @@ import {
   Ctx,
   UseMiddleware,
 } from "type-graphql";
-import { UserInputError } from "apollo-server-express";
-import { hash, compare } from "bcryptjs";
 import { Profile } from "../types/Profile";
 import { Context } from "../types/Interfaces";
 import { CountryResponse } from "./responses/CountryResponse";
@@ -17,10 +15,10 @@ import { isAuth } from "../utils/isAuth";
 import { UpdateProfileInput } from "./inputs/ProfileInput";
 
 // TODO: Queries/mutations to be implemented:
-// countries:            Return all countries - Done
-// loggedInProfile:      Set a country - Done
-// updateImage:             Update Image - In Progress
-// updateProfile:           Update profile Settings - Done
+// countries:             Return all countries - Done
+// loggedInProfile:       Set a country - Done
+// updateImage:           Update Image - In Progress
+// updateProfile:         Update profile Settings - Done
 
 @Resolver(Profile)
 export class ProfileResolver {
@@ -71,7 +69,12 @@ export class ProfileResolver {
     { firstName, lastName, country, disciplineId, bio }: UpdateProfileInput,
     @Ctx() { payload, prisma }: Context
   ): Promise<Profile> {
-    let dataFields;
+    let fields = {
+      firstName,
+      lastName,
+      country,
+      bio,
+    };
 
     const countryExists = countries.filter((item) => item.country === country);
 
@@ -79,41 +82,29 @@ export class ProfileResolver {
       country = null;
     }
 
-    if (!disciplineId) {
-      dataFields = {
-        firstName,
-        lastName,
-        country,
-        // If disciplineId is undefined or null, disconnect relation.
-        discipline: {
-          disconnect: true,
-        },
-        bio,
-      };
-    } else {
-      dataFields = {
-        firstName,
-        lastName,
-        country,
+    if (disciplineId) {
+      Object.assign(fields, {
         discipline: {
           connect: {
             id: disciplineId,
           },
         },
-        bio,
-      };
+      });
+    } else {
+      Object.assign(fields, {
+        discipline: {
+          disconnect: true,
+        },
+      });
     }
 
-    const profile = await prisma.profile.update({
+    const updateProfile = await prisma.profile.update({
       where: {
         userId: payload!.userId,
       },
-      data: dataFields,
-      include: {
-        discipline: true,
-      },
+      data: fields,
     });
 
-    return profile;
+    return updateProfile;
   }
 }

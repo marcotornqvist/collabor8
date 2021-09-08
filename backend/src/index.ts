@@ -6,7 +6,7 @@ import { UserResolver } from "./resolvers/UserResolver";
 import { ProfileResolver } from "./resolvers/ProfileResolver";
 import { ProjectResolver } from "./resolvers/ProjectResolver";
 import { SocialResolver } from "./resolvers/SocialResolver";
-import { MessageResolver } from "./resolvers/MessageResolver";
+import { ChatResolver } from "./resolvers/ChatResolver";
 import { MemberResolver } from "./resolvers/MemberResolver";
 import { BlockedUserResolver } from "./resolvers/BlockedResolver";
 import { ReportResolver } from "./resolvers/ReportResolver";
@@ -21,7 +21,7 @@ import { GraphQLScalarType } from "graphql";
 import { corsOptions } from "./utils/corsOptions";
 import { refreshToken } from "./utils/refreshToken";
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 
 const app = async () => {
   const app = express();
@@ -39,7 +39,7 @@ const app = async () => {
       SocialResolver,
       ProjectResolver,
       MemberResolver,
-      MessageResolver,
+      ChatResolver,
       NotificationResolver,
       ReportResolver,
       BlockedUserResolver,

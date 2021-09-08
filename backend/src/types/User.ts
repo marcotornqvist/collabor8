@@ -35,8 +35,8 @@ export class User {
   @Field(() => Social, { nullable: true })
   socials?: Social | null;
 
-  @Field(() => [Project], { nullable: true })
-  projects?: Project[] | null;
+  @Field(() => [Member], { nullable: true })
+  memberOf?: Member[] | null;
 
   @Field(() => [Member], { nullable: true })
   member?: Member[] | null;

@@ -17,12 +17,15 @@ import {
   UpdateEmailInput,
   UpdatePasswordInput,
   UpdateUsernameInput,
+  UsersFilterArgs,
 } from "./inputs/UserInput";
 import { AuthResponse } from "./responses/UserResponse";
 import { createAccessToken, createRefreshToken } from "../utils/auth";
 import { sendRefreshToken } from "../utils/sendRefreshToken";
 import { isAuth } from "../utils/isAuth";
 import { makeId } from "../helpers/makeId";
+import countries from "../data/countries";
+import { pagination } from "../utils/pagination";
 
 // TODO: Remember to implement pagination/infinite scroll both on the back/front end
 // so that a query like getAllUsers doesn't return the whole database but instead the first 100
@@ -43,20 +46,73 @@ import { makeId } from "../helpers/makeId";
 @Resolver(User)
 export class UserResolver {
   @Query(() => [User], {
-    description: "Returns all users",
+    nullable: true,
+    description: "Returns all users/profiles that are not disabled",
   })
-  async users(@Ctx() { prisma }: Context) {
-    const users = await prisma.user.findMany({
-      include: {
+  async users(
+    @Arg("data")
+    {
+      searchText,
+      disciplines,
+      country,
+      after,
+      before,
+      first,
+      last,
+      sort,
+    }: UsersFilterArgs,
+    @Ctx() { prisma }: Context
+  ) {
+    const filters = {};
+
+    if (searchText) {
+      Object.assign(filters, {
+        OR: [
+          {
+            username: {
+              contains: searchText,
+              mode: "insensitive",
+            },
+          },
+          {
+            profile: {
+              firstName: { contains: searchText, mode: "insensitive" },
+              lastName: { contains: searchText, mode: "insensitive" },
+            },
+          },
+        ],
+      });
+    }
+
+    if (disciplines && disciplines.length > 0) {
+      Object.assign(filters, {
         profile: {
-          include: {
-            discipline: true,
+          disciplineId: {
+            in: disciplines,
           },
         },
-      },
-    });
+      });
+    }
 
-    return users;
+    const countryExists = countries.filter((item) => item.country === country);
+
+    if (countryExists.length > 0) {
+      Object.assign(filters, {
+        country,
+      });
+    }
+
+    return prisma.user.findMany({
+      ...pagination({ after, before, first, last }),
+      where: {
+        ...filters,
+        disabled: false,
+      },
+      include: {
+        profile: true,
+      },
+      orderBy: { createdAt: sort ?? "desc" },
+    });
   }
 
   @Query(() => User, {
@@ -71,7 +127,7 @@ export class UserResolver {
     });
 
     if (!user) {
-      throw new UserInputError("User doesn't exist")
+      throw new UserInputError("User doesn't exist");
     }
 
     return user;
@@ -269,12 +325,58 @@ export class UserResolver {
       throw new UserInputError("Username already exists");
     }
 
-    await prisma.user.update({
+    const oldUsername = await prisma.user.findUnique({
+      where: {
+        id: payload!.userId,
+      },
+      select: {
+        username: true,
+      },
+    });
+
+    // Updates username and returns contacts
+    const user = await prisma.user.update({
       where: {
         id: payload!.userId,
       },
       data: { username },
+      include: {
+        contactsSent: {
+          where: {
+            status: {
+              in: ["TRUE"],
+            },
+          },
+          select: {
+            contactId: true,
+          },
+        },
+        contactsRcvd: {
+          where: {
+            status: {
+              in: ["TRUE"],
+            },
+          },
+          select: {
+            userId: true,
+          },
+        },
+      },
     });
+
+    const contactsSent = user?.contactsSent.map((item) => item.contactId) ?? [];
+    const contactsRcvd = user?.contactsRcvd.map((item) => item.userId) ?? [];
+    const contactIds = contactsSent.concat(contactsRcvd);
+
+    // Send a notification to all contacts, that logged in user has changed username
+    if (contactIds.length > 0) {
+      await prisma.notification.createMany({
+        data: contactIds.map((item) => ({
+          userId: item,
+          message: `${oldUsername?.username} has changed username to ${user.username}`,
+        })),
+      });
+    }
 
     return username;
   }

@@ -1,5 +1,7 @@
 import { Length } from "class-validator";
-import { Field, InputType, ID } from "type-graphql";
+import { Field, InputType, ID, registerEnumType } from "type-graphql";
+import { Sort } from "../../types/Enums";
+import { PaginationArgs } from "./GlobalInputs";
 
 @InputType({ description: "Input Arguments for Project" })
 export class CreateProjectInput {
@@ -49,3 +51,33 @@ export class MemberInput {
   @Field(() => ID)
   projectId: string;
 }
+
+@InputType({
+  description: "Filter Projects",
+})
+export class ProjectsFilterArgs extends PaginationArgs {
+  @Field(() => String, { nullable: true })
+  searchText?: string | null;
+
+  @Field(() => [Number], { nullable: true })
+  disciplines?: number[] | null;
+
+  @Field(() => String, { nullable: true })
+  country?: string | null;
+
+  @Field(() => Sort, { nullable: true })
+  sort?: Sort | null;
+}
+
+@InputType({
+  description: "Pagination Args With UserId Argument",
+})
+export class PaginationUserArgs extends PaginationArgs {
+  @Field(() => ID)
+  id: string;
+}
+
+registerEnumType(Sort, {
+  name: "Sort",
+  description: "Sort by most recent or oldest",
+});

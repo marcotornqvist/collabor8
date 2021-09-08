@@ -11,6 +11,7 @@ export const isBlocked = async (userId: string, id: string) => {
     },
   });
 
+
   if (isBlocked) {
     return true;
   } else {

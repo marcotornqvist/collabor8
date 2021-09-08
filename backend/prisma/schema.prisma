@@ -9,7 +9,6 @@ datasource db {
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["referentialActions"]
-
 }
 
 model User {
@@ -19,7 +18,7 @@ model User {
   password      String
   profile       Profile?
   socials       Social?
-  projects      Member[]
+  memberOf      Member[]
   contactsSent  Contact[]      @relation("Contact")
   contactsRcvd  Contact[]
   messages      Message[]      @relation("Message")
@@ -100,6 +99,7 @@ model Member {
   projectId  String
   role       Role       @default(MEMBER)
   status     StatusCode @default(PENDING)
+  readChatAt DateTime   @default(now())
   assignedAt DateTime   @default(now())
   updatedAt  DateTime?  @default(now()) @updatedAt
 
@@ -107,15 +107,17 @@ model Member {
 }
 
 model Contact {
-  id        String     @unique @default(uuid())
-  user      User       @relation("Contact", fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  contact   User       @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  contactId String
-  chatRoom  ChatRoom?
-  status    StatusCode @default(PENDING)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime?  @default(now()) @updatedAt
+  id                String     @unique @default(uuid())
+  user              User       @relation("Contact", fields: [userId], references: [id], onDelete: Cascade)
+  userId            String
+  userReadChatAt    DateTime   @default(now())
+  contact           User       @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId         String
+  contactReadChatAt DateTime   @default(now())
+  chatRoom          ChatRoom?
+  status            StatusCode @default(PENDING)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime?  @default(now()) @updatedAt
 
   @@id([userId, contactId])
 }
@@ -127,7 +129,6 @@ model ChatRoom {
   contact   Contact?  @relation(fields: [contactId], references: [id], onDelete: Cascade)
   contactId String?   @unique
   messages  Message[]
-  readBy    String[] // Add userId to array if user opens chat (to check if message is read)
   createdAt DateTime  @default(now())
   updatedAt DateTime? @default(now()) @updatedAt
 }

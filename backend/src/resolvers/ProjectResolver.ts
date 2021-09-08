@@ -14,26 +14,30 @@ import {
   MemberInput,
   CreateProjectInput,
   UpdateProjectInput,
+  ProjectsFilterArgs,
+  PaginationUserArgs,
 } from "./inputs/ProjectInput";
+import { PaginationArgs } from "./inputs/GlobalInputs";
 import { UserInputError, ForbiddenError } from "apollo-server-express";
 import { isAuth } from "../utils/isAuth";
 import { isBlocked } from "../utils/isBlocked";
 import countries from "../data/countries";
+import { pagination } from "../utils/pagination";
 
 // Queries/mutations to be implemented:
-// projects:                  Return all projects - In Progress (implement pagination)
-// projectById:               Return single project by projectId - In Progress (implement pagination)
-// projectsByUserId:          Return all projects by userId - In Progress (implement pagination)
-// projectsByloggedInUser:    Return projects by loggedInUser - In Progress
-// createProject:             Create new project - In Progress
+// projects:                  Return all projects - Done
+// projectById:               Return single project by projectId - Done
+// projectsByUserId:          Return all projects by userId - Done
+// projectsByloggedInUser:    Return projects by loggedInUser - Done
+// createProject:             Create new project - Done
 // deleteProject:             Delete a project by id - Done
-// LeaveProject:              Leave a project by id - Done
+// leaveProject:              Leave a project by id - Done
 // updateProjectDetails:      Update project detais - Done
 // addMember:                 Add member to project by Id - Done
 // deleteMember:              Delete member to project by Id - Done
 // toggleProjectDisabled:     Toggle a project disabled boolean state - Done
-// acceptInvite:              Accept Invitation to a project - In Progress
-// deleteInvite:              Delete Invitation to a project - In Progress
+// acceptInvite:              Accept Invitation to a project - Done
+// rejectInvite:              Rejects Invitation to a project - Done
 
 @Resolver(() => Project)
 export class ProjectResolver {
@@ -41,14 +45,62 @@ export class ProjectResolver {
     nullable: true,
     description: "Returns all projects that are not disabled",
   })
-  async projects(@Ctx() { prisma }: Context) {
-    const projects = await prisma.project.findMany({
+  async projects(
+    @Arg("data")
+    {
+      searchText,
+      disciplines,
+      country,
+      after,
+      before,
+      first,
+      last,
+      sort,
+    }: ProjectsFilterArgs,
+    @Ctx() { prisma }: Context
+  ) {
+    const filters = {};
+
+    if (searchText) {
+      Object.assign(filters, {
+        OR: [
+          { title: { contains: searchText, mode: "insensitive" } },
+          { body: { contains: searchText, mode: "insensitive" } },
+        ],
+      });
+    }
+
+    if (disciplines && disciplines.length > 0) {
+      Object.assign(filters, {
+        disciplines: {
+          some: {
+            id: {
+              in: disciplines,
+            },
+          },
+        },
+      });
+    }
+
+    const countryExists = countries.filter((item) => item.country === country);
+
+    if (countryExists.length > 0) {
+      Object.assign(filters, {
+        country,
+      });
+    }
+
+    return prisma.project.findMany({
+      ...pagination({ after, before, first, last }),
       where: {
+        ...filters,
         disabled: false,
       },
+      include: {
+        disciplines: true,
+      },
+      orderBy: { createdAt: sort ?? "desc" },
     });
-
-    return projects;
   }
 
   @Query(() => Project, {
@@ -70,8 +122,12 @@ export class ProjectResolver {
     nullable: true,
     description: "Return all projects by userId which are not disabled",
   })
-  async projectsByUserId(@Arg("id") id: string, @Ctx() { prisma }: Context) {
+  async projectsByUserId(
+    @Arg("data") { id, after, before, first, last }: PaginationUserArgs,
+    @Ctx() { prisma }: Context
+  ) {
     const projects = await prisma.project.findMany({
+      ...pagination({ after, before, first, last }),
       where: {
         members: {
           some: {
@@ -90,12 +146,16 @@ export class ProjectResolver {
     description: "Return all projects for the currently logged in user",
   })
   @UseMiddleware(isAuth)
-  async projectsByloggedInUser(@Ctx() { payload, prisma }: Context) {
+  async projectsByloggedInUser(
+    @Arg("data") { after, before, first, last }: PaginationArgs,
+    @Ctx() { payload, prisma }: Context
+  ) {
     const projects = await prisma.project.findMany({
+      ...pagination({ after, before, first, last }),
       where: {
         members: {
           some: {
-            userId: payload?.userId,
+            userId: payload!.userId,
           },
         },
       },
@@ -225,11 +285,10 @@ export class ProjectResolver {
       // Send a notification to other members that the project has been deleted
       if (otherMembers.length > 0 && projectDeleted) {
         await prisma.notification.createMany({
-          data:
-            otherMembers.map((item) => ({
-              userId: item.userId,
-              message: `${project.title} has been deleted`,
-            })) || [],
+          data: otherMembers.map((item) => ({
+            userId: item.userId,
+            message: `${project.title} has been deleted`,
+          })),
         });
       }
     } else {
@@ -585,7 +644,46 @@ export class ProjectResolver {
   async acceptInvite(
     @Arg("projectId") projectId: string,
     @Ctx() { payload, prisma }: Context
-  ) {
+  ): Promise<Boolean> {
+    const member = await prisma.member.findUnique({
+      where: {
+        userId_projectId: {
+          userId: payload!.userId,
+          projectId,
+        },
+      },
+      select: {
+        status: true,
+      },
+    });
+
+    // Checks that the invite exists and that it isn't pending
+    if (!member || member.status !== "PENDING")
+      throw new Error("Invite doesn't exist");
+
+    await prisma.member.update({
+      where: {
+        userId_projectId: {
+          userId: payload!.userId,
+          projectId,
+        },
+      },
+      data: {
+        status: "TRUE",
+      },
+    });
+
+    return true;
+  }
+
+  @Mutation(() => Boolean, {
+    description: "Delete/decline a project invitation",
+  })
+  @UseMiddleware(isAuth)
+  async rejectInvite(
+    @Arg("projectId") projectId: string,
+    @Ctx() { payload, prisma }: Context
+  ): Promise<Boolean> {
     const member = await prisma.member.findUnique({
       where: {
         userId_projectId: {
@@ -609,42 +707,7 @@ export class ProjectResolver {
         },
       },
       data: {
-        status: "TRUE",
-      },
-    });
-
-    return true;
-  }
-
-  @Mutation(() => Boolean, {
-    description: "Delete/decline a project invitation",
-  })
-  @UseMiddleware(isAuth)
-  async deleteInvite(
-    @Arg("projectId") projectId: string,
-    @Ctx() { payload, prisma }: Context
-  ) {
-    const member = await prisma.member.findUnique({
-      where: {
-        userId_projectId: {
-          userId: payload!.userId,
-          projectId,
-        },
-      },
-      select: {
-        status: true,
-      },
-    });
-
-    if (!member || member.status !== "PENDING")
-      throw new UserInputError("Invite doesn't exist");
-
-    await prisma.member.delete({
-      where: {
-        userId_projectId: {
-          userId: payload!.userId,
-          projectId,
-        },
+        status: "FALSE",
       },
     });
 

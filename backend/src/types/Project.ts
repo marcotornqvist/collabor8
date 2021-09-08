@@ -20,6 +20,9 @@ export class Project {
   @Field(() => String, { nullable: true })
   body?: string | null;
 
+  @Field(() => String, { nullable: true })
+  country?: string | null;
+
   @Field(() => [Discipline], { nullable: true })
   disciplines?: Discipline[] | null;
 

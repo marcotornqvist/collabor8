@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { InputType, Field, ID } from "type-graphql";
 import { MaxLength } from "class-validator";
+import { Sort } from "../../types/Enums";
 
 @InputType({ description: "Update Profile Input" })
 export class UpdateProfileInput {
