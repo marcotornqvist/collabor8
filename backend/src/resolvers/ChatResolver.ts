@@ -12,10 +12,16 @@ import { Project } from "../types/Project";
 import { isAuth } from "../utils/isAuth";
 import { Context } from "../types/Interfaces";
 import { ChatRoomResponse, ContactResponse } from "./responses/ChatResponse";
+import { SearchArgs } from "./inputs/GlobalInputs";
+import { pagination } from "../utils/pagination";
+
+//        chat/:id/
 
 // TODO: Queries/mutations/subscriptions to be implemented:
 // projectsChatRoom:        Return all chatrooms for projects
+// contactsChatRoom:        Return all chatrooms for contacts, implement search
 // messagesByProjectId:     Return all messages by projectId, implement infinite scroll to only get 10 messages before scroll.
+// messagesByContactId:     Return all messages by projectId, implement infinite scroll to only get 10 messages before scroll.
 // newMessagesByProjectId:  Return a list of all the ChatRooms which have new messages
 // sendMessageToGroup:      Sends a new message to a group(messages) by projectId
 // sendMessageToContact:    Sends a new message to another contact
@@ -54,12 +60,14 @@ export class ChatResolver {
               userId: {
                 not: payload!.userId,
               },
+              // Checks if there are any new message with never datetime values than when the logged in user visited the chatroom.
               createdAt: {
                 gte: new Date(item.readChatAt),
               },
             },
           },
         })),
+        // Doesn't return projects that are disabled
         project: {
           disabled: false,
         },
@@ -114,22 +122,62 @@ export class ChatResolver {
     description: "Returns all contact chatRooms",
   })
   @UseMiddleware(isAuth)
-  async contactsChatRoom(@Ctx() { payload, prisma }: Context) {
+  async contactsChatRoom(
+    @Arg("data") { searchText, after, before, first, last }: SearchArgs,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    const filters = {};
+
+    if (searchText) {
+      Object.assign(filters, {
+        OR: [
+          {
+            user: {
+              profile: {
+                fullName: {
+                  contains: searchText,
+                  mode: "insensitive",
+                },
+              },
+            },
+            contactId: payload!.userId,
+          },
+          {
+            contact: {
+              profile: {
+                fullName: {
+                  contains: searchText,
+                  mode: "insensitive",
+                },
+              },
+            },
+            userId: payload!.userId,
+          },
+        ],
+      });
+    } else {
+      Object.assign(filters, {
+        OR: [
+          {
+            contactId: payload!.userId,
+          },
+          {
+            userId: payload!.userId,
+          },
+        ],
+      });
+    }
+
     // Returns a list of all the contacts for the logged in user
     const contacts = await prisma.contact
       .findMany({
         where: {
-          OR: [
-            { contactId: payload!.userId },
-            {
-              userId: payload!.userId,
-            },
-          ],
+          ...filters,
           status: "TRUE",
         },
       })
-      // Reformatted contacts list so that userId, userReadChatAt has always the logged in user values
-      // And the contactId has always the logged in users contact values
+      // // Reformatted contacts list so that userId, userReadChatAt has always the logged in user values
+      // // And the contactId has always the logged in users contact values
       .then((contacts) =>
         contacts.map((item) => {
           if (item.userId === payload!.userId) {
@@ -150,6 +198,8 @@ export class ChatResolver {
         })
       );
 
+    console.log(contacts);
+
     // Returns all contact relationships where there are unread new messages
     const contactsWithNewMessages = await prisma.contact.findMany({
       where: {
@@ -161,6 +211,7 @@ export class ChatResolver {
                 userId: {
                   not: item.userId,
                 },
+                // Checks if there are any new message with never datetime values than when the logged in user visited the chatroom.
                 createdAt: {
                   gte: new Date(item.userReadChatAt),
                 },
@@ -187,8 +238,7 @@ export class ChatResolver {
         id: true,
         profile: {
           select: {
-            firstName: true,
-            lastName: true,
+            fullName: true,
             profileImage: true,
             discipline: {
               select: {
@@ -210,14 +260,14 @@ export class ChatResolver {
     // Returns all users who have don't have new messages
     const usersWithOldMessages = await prisma.user.findMany({
       where: {
+        ...pagination({ after, before, first, last }),
         OR: remainingContacts,
       },
       select: {
         id: true,
         profile: {
           select: {
-            firstName: true,
-            lastName: true,
+            fullName: true,
             profileImage: true,
             discipline: {
               select: {
@@ -244,15 +294,17 @@ export class ChatResolver {
     @Arg("id") id: string,
     @Ctx() { payload, prisma }: Context
   ) {
-    // Check that user is part of the chatroom
-    // Check if messages are readBy that user
+    // Query:
+    // project: title,
+    // users: id, profileImage,
+    // messages: body, profile > firstname, lastname & profileImage
 
-    const messages = await prisma.chatRoom.findUnique({
+    const project = await prisma.project.findUnique({
       where: {
         id,
       },
     });
 
-    return messages;
+    return project;
   }
 }

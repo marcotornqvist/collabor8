@@ -23,7 +23,7 @@ import { AuthResponse } from "./responses/UserResponse";
 import { createAccessToken, createRefreshToken } from "../utils/auth";
 import { sendRefreshToken } from "../utils/sendRefreshToken";
 import { isAuth } from "../utils/isAuth";
-import { makeId } from "../helpers/makeId";
+import { createUsername } from "../helpers/createUsername";
 import countries from "../data/countries";
 import { pagination } from "../utils/pagination";
 
@@ -76,8 +76,7 @@ export class UserResolver {
           },
           {
             profile: {
-              firstName: { contains: searchText, mode: "insensitive" },
-              lastName: { contains: searchText, mode: "insensitive" },
+              fullName: { contains: searchText, mode: "insensitive" },
             },
           },
         ],
@@ -160,15 +159,27 @@ export class UserResolver {
 
     try {
       let username = "";
-      if (firstName) username += firstName;
-      if (lastName) username += lastName;
-      username = username.toLowerCase();
-      const usernameLength = username.trim().length;
 
-      // Checks that length is between 3 and 41 characters
-      // The reason is that "-" and makeId is 9 characters
+      if (firstName) {
+        firstName = firstName.trim();
+        username += firstName;
+      }
+      if (lastName) {
+        lastName = lastName.trim();
+        username += lastName;
+      }
+
+      // Sets username string to lowercase and replaces all whitespace
+      username = username.toLowerCase().replace(/ /g, "");
+
+      // Letters between A-z with length of 3-50
+      const regex = new RegExp(/[A-z]{3,50}/);
+      const match = username.match(regex);
+
+      // Checks that length is between 3 and 50 characters
+      // The reason is that "-" and createUsername is 9 characters
       // this will make sure that username doesn't exceed the 50 character username limit
-      if (usernameLength >= 3 && usernameLength <= 41) {
+      if (match?.includes(username)) {
         // Make sure username doesn't already exist
         const usernameExists = await prisma.user.findUnique({
           where: {
@@ -177,7 +188,7 @@ export class UserResolver {
         });
 
         if (usernameExists) {
-          username += "-" + makeId(8);
+          username += "-" + createUsername(8);
 
           const usernameExistsAgain = await prisma.user.findUnique({
             where: {
@@ -190,17 +201,34 @@ export class UserResolver {
           }
         }
       } else {
-        username = makeId(32);
+        // if no firstname or lastname was provided create a random id username
+        username = createUsername(32);
       }
 
-      if (email.trim() === "") {
-        errors.email = "Email cannot be empty";
+      // Check that first name length is not more than 255 characters
+      if (firstName && firstName.length > 255) {
+        errors.firstName = "First name cannot be more than 255 characters";
+      }
+
+      // Check that last name length is not more than 255 characters
+      if (lastName && lastName.length > 255) {
+        errors.lastName = "Last name cannot be more than 255 characters";
       }
 
       if (password.length < 6) {
         errors.password = "Password must be atleast 6 characters";
       } else if (password !== confirmPassword) {
         errors.confirmPassword = "Passwords don't match";
+      }
+
+      // Check that email length is not more than 255 characters
+      if (email.length > 255) {
+        errors.email = "Email cannot be more than 255 characters";
+      }
+
+      // Check that email input is not empty
+      if (email.trim() === "") {
+        errors.email = "Email cannot be empty";
       }
 
       // Make sure email doesn't already exist
@@ -221,6 +249,16 @@ export class UserResolver {
       // Hash password and create an auth token
       password = await hash(password, 12);
 
+      const fields = {};
+
+      if (firstName || lastName) {
+        Object.assign(fields, {
+          firstName,
+          lastName,
+          fullName: ((firstName ?? "") + " " + (lastName ?? "")).trim(),
+        });
+      }
+
       // Create user
       const newUser = await prisma.user.create({
         data: {
@@ -228,10 +266,7 @@ export class UserResolver {
           email,
           password,
           profile: {
-            create: {
-              firstName,
-              lastName,
-            },
+            create: fields,
           },
         },
         include: {
@@ -239,7 +274,7 @@ export class UserResolver {
         },
       });
 
-      // Initialize row in socials table based on the new userId
+      // // Initialize row in socials table based on the new userId
       if (newUser) {
         await prisma.social.create({
           data: {
@@ -307,11 +342,15 @@ export class UserResolver {
     @Arg("username") { username }: UpdateUsernameInput,
     @Ctx() { payload, prisma }: Context
   ) {
-    const usernameLength = username.trim().length;
+    username = username.toLowerCase().replace(/ /g, "");
 
-    if (usernameLength < 3 && usernameLength > 50) {
+    // Letters between A-z with length of 3-50
+    const regex = new RegExp(/[A-z]{3,50}/);
+    const match = username.match(regex);
+
+    if (!match?.includes(username)) {
       throw new UserInputError(
-        "Username has to be longer than 3 characters and less than 50"
+        "Username cannot be less than 3 characters or more than 50 characters and can only contain letters(A-z)"
       );
     }
 
@@ -364,8 +403,8 @@ export class UserResolver {
       },
     });
 
-    const contactsSent = user?.contactsSent.map((item) => item.contactId) ?? [];
-    const contactsRcvd = user?.contactsRcvd.map((item) => item.userId) ?? [];
+    const contactsSent = user?.contactsSent.map((item) => item.contactId) || [];
+    const contactsRcvd = user?.contactsRcvd.map((item) => item.userId) || [];
     const contactIds = contactsSent.concat(contactsRcvd);
 
     // Send a notification to all contacts, that logged in user has changed username

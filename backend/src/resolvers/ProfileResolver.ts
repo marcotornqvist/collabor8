@@ -8,11 +8,12 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { Profile } from "../types/Profile";
-import { Context } from "../types/Interfaces";
+import { Context, LooseObject } from "../types/Interfaces";
 import { CountryResponse } from "./responses/CountryResponse";
 import countries from "../data/countries";
 import { isAuth } from "../utils/isAuth";
 import { UpdateProfileInput } from "./inputs/ProfileInput";
+import { UserInputError } from "apollo-server-errors";
 
 // TODO: Queries/mutations to be implemented:
 // countries:             Return all countries - Done
@@ -48,6 +49,7 @@ export class ProfileResolver {
   })
   @UseMiddleware(isAuth)
   async loggedInProfile(@Ctx() { payload, prisma }: Context) {
+    // Return logged in profile details
     const profile = await prisma.profile.findUnique({
       where: {
         userId: payload!.userId,
@@ -69,42 +71,93 @@ export class ProfileResolver {
     { firstName, lastName, country, disciplineId, bio }: UpdateProfileInput,
     @Ctx() { payload, prisma }: Context
   ): Promise<Profile> {
-    let fields = {
-      firstName,
-      lastName,
-      country,
-      bio,
-    };
+    let errors: LooseObject = {};
 
-    const countryExists = countries.filter((item) => item.country === country);
+    try {
+      // trim() removes whitespace from the beginning and end
+      firstName = firstName?.trim();
+      lastName = lastName?.trim();
+      bio = bio?.trim();
 
-    if (countryExists.length < 1) {
-      country = null;
-    }
+      let fields = {
+        firstName: firstName,
+        lastName: lastName,
+        fullName: ((firstName ?? "") + " " + (lastName ?? "")).trim() || null,
+        country: country || null,
+        bio: bio,
+      };
 
-    if (disciplineId) {
-      Object.assign(fields, {
-        discipline: {
-          connect: {
+      // Check that first name length is not more than 255 characters
+      if (firstName && firstName.length > 255) {
+        errors.firstName = "First name cannot be more than 255 characters";
+      }
+
+      // Check that last name length is not more than 255 characters
+      if (lastName && lastName.length > 255) {
+        errors.lastName = "Last name cannot be more than 255 characters";
+      }
+
+      // Check that bio length is not more than 500 characters
+      if (bio && bio.length > 500) {
+        errors.bio = "Bio cannot be more than 500 characters";
+      }
+
+      // Check that country exists by comparing selected country with countries list
+      const countryExists = countries.filter(
+        (item) => item.country === country
+      );
+
+      if (countryExists.length < 1) {
+        country = null;
+      }
+
+      // Checks if a disciplineId was provided else disconnect the single disciplineId
+      if (disciplineId) {
+        // Checks if discipline exist
+        const disciplineExists = await prisma.discipline.findUnique({
+          where: {
             id: disciplineId,
           },
+        });
+
+        if (disciplineExists) {
+          Object.assign(fields, {
+            discipline: {
+              connect: {
+                id: disciplineId,
+              },
+            },
+          });
+        } else {
+          throw new UserInputError("Discipline doesn't exist");
+        }
+      } else {
+        Object.assign(fields, {
+          discipline: {
+            disconnect: true,
+          },
+        });
+      }
+
+      if (Object.keys(errors).length > 0) {
+        throw errors;
+      }
+
+      // Update the profile
+      const updateProfile = await prisma.profile.update({
+        where: {
+          userId: payload!.userId,
+        },
+        data: fields,
+        include: {
+          discipline: true,
         },
       });
-    } else {
-      Object.assign(fields, {
-        discipline: {
-          disconnect: true,
-        },
-      });
+
+      return updateProfile;
+    } catch (err) {
+      console.log(err);
+      throw new UserInputError("Errors", { errors });
     }
-
-    const updateProfile = await prisma.profile.update({
-      where: {
-        userId: payload!.userId,
-      },
-      data: fields,
-    });
-
-    return updateProfile;
   }
 }

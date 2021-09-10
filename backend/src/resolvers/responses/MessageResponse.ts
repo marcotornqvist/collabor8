@@ -7,11 +7,9 @@ export class MessageResponse {
   @Field(() => ID)
   id: string;
 
-  @Length(1, 255)
   @Field(() => String, { nullable: true })
   firstName?: string | null;
 
-  @Length(1, 255)
   @Field(() => String, { nullable: true })
   lastName?: string | null;
 

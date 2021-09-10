@@ -20,7 +20,7 @@ import {
 import { PaginationArgs } from "./inputs/GlobalInputs";
 import { UserInputError, ForbiddenError } from "apollo-server-express";
 import { isAuth } from "../utils/isAuth";
-import { isBlocked } from "../utils/isBlocked";
+// import { isBlocked } from "../utils/isBlocked";
 import countries from "../data/countries";
 import { pagination } from "../utils/pagination";
 
@@ -496,9 +496,9 @@ export class ProjectResolver {
     @Arg("data") { userId, projectId }: MemberInput,
     @Ctx() { payload, prisma }: Context
   ): Promise<Member> {
-    const blocked = await isBlocked(payload!.userId, userId);
+    // const blocked = await isBlocked(payload!.userId, userId);
 
-    if (blocked) throw new Error("Blocked user cannot be added to project");
+    // if (blocked) throw new Error("Blocked user cannot be added to project");
 
     // Check if user exists
     const userExists = await prisma.user.findUnique({

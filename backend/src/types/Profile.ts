@@ -21,6 +21,9 @@ export class Profile {
   lastName?: string | null;
 
   @Field(() => String, { nullable: true })
+  fullName?: string | null;
+
+  @Field(() => String, { nullable: true })
   country?: string | null;
 
   @MaxLength(500)

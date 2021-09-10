@@ -1,11 +1,10 @@
 import { Length } from "class-validator";
 import { Field, InputType, ID, registerEnumType } from "type-graphql";
 import { Sort } from "../../types/Enums";
-import { PaginationArgs } from "./GlobalInputs";
+import { PaginationArgs, SearchArgs } from "./GlobalInputs";
 
 @InputType({ description: "Input Arguments for Project" })
 export class CreateProjectInput {
-  @Length(1, 50)
   @Field(() => String)
   title: string;
 
@@ -55,10 +54,7 @@ export class MemberInput {
 @InputType({
   description: "Filter Projects",
 })
-export class ProjectsFilterArgs extends PaginationArgs {
-  @Field(() => String, { nullable: true })
-  searchText?: string | null;
-
+export class ProjectsFilterArgs extends SearchArgs {
   @Field(() => [Number], { nullable: true })
   disciplines?: number[] | null;
 

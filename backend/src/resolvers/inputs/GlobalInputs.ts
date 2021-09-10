@@ -16,3 +16,11 @@ export class PaginationArgs {
   @Field(() => Number, { nullable: true })
   last?: number | null;
 }
+
+@InputType({
+  description: "Search Args",
+})
+export class SearchArgs extends PaginationArgs {
+  @Field(() => String, { nullable: true })
+  searchText?: string | null;
+}

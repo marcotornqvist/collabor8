@@ -11,7 +11,7 @@ import { isAuth } from "../utils/isAuth";
 import { Context } from "../types/Interfaces";
 import { BlockedUser } from "../types/BlockedUser";
 import { UserInputError } from "apollo-server-express";
-import { isBlocked } from "../utils/isBlocked";
+// import { isBlocked } from "../utils/isBlocked";
 import { Contact } from "../types/Contact";
 
 // TODO: Queries/mutations to be implemented:
@@ -45,9 +45,9 @@ export class ContactResolver {
     // Check if user exists
 
     // Checks if user is blocked
-    const blocked = await isBlocked(payload!.userId, id);
+    // const blocked = await isBlocked(payload!.userId, id);
 
-    if (blocked) throw new Error("You cannot add user since user is blocked");
+    // if (blocked) throw new Error("You cannot add user since user is blocked");
 
     // Checks if contact exists
     const contactExist = await prisma.user.findUnique({
@@ -68,7 +68,7 @@ export class ContactResolver {
       },
     });
 
-    console.log(contactExist)
+    console.log(contactExist);
 
     // if (!contactExist) {
     //   throw new Error("User is already in your contacts list");

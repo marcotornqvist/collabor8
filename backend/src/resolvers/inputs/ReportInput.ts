@@ -25,11 +25,9 @@ export class ReportProjectInput {
   @Field(() => Violation)
   violation: Violation;
 
-  @Length(10, 255)
   @Field(() => String)
   title: string;
 
-  @MaxLength(1000)
   @Field(() => String, { nullable: true })
   body?: string | null;
 

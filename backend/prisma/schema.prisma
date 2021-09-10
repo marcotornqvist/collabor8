@@ -7,8 +7,7 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["referentialActions"]
+  provider = "prisma-client-js"
 }
 
 model User {
@@ -37,6 +36,7 @@ model Profile {
   userId       String      @unique
   firstName    String?
   lastName     String?
+  fullName     String?      
   country      String?
   bio          String?
   profileImage String?

@@ -1,11 +1,13 @@
 // Source - https://github.com/prisma-labs/nextjs-graphql-api-examples/blob/main/packages/graphql-with-prisma-relay/services/utils.ts
 
-export declare type PaginationArgs = {
-  first?: number | null;
-  after?: string | null;
-  last?: number | null;
-  before?: string | null;
-};
+import { PaginationArgs } from "../resolvers/inputs/GlobalInputs";
+
+// export declare type PaginationArgs = {
+//   first?: number | null;
+//   after?: string | null;
+//   last?: number | null;
+//   before?: string | null;
+// };
 
 export function pagination({ first, after, last, before }: PaginationArgs): {
   cursor?: { id: string };

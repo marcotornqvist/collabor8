@@ -11,24 +11,19 @@ import { Sort } from "../../types/Enums";
 
 @InputType({ description: "Create a new user" })
 export class RegisterInput {
-  @MaxLength(254)
   @IsEmail()
   @Field()
   email: string;
 
-  @MaxLength(255)
   @Field(() => String, { nullable: true })
   firstName?: string | null;
 
-  @MaxLength(255)
   @Field(() => String, { nullable: true })
   lastName?: string | null;
 
-  @MinLength(6)
   @Field()
   password: string;
 
-  @MinLength(6)
   @Field()
   confirmPassword: string;
 }
@@ -39,15 +34,12 @@ export class LoginInput {
   @Field()
   email: string;
 
-  @MinLength(6)
   @Field()
   password: string;
 }
 
 @InputType({ description: "Update Username Input" })
 export class UpdateUsernameInput {
-  @IsLowercase()
-  @Length(3, 50)
   @Field(() => String)
   username: string;
 }
@@ -61,15 +53,12 @@ export class UpdateEmailInput {
 
 @InputType({ description: "Update Password Input" })
 export class UpdatePasswordInput {
-  @MinLength(6)
   @Field()
   currentPassword: string;
 
-  @MinLength(6)
   @Field()
   newPassword: string;
 
-  @MinLength(6)
   @Field()
   confirmPassword: string;
 }

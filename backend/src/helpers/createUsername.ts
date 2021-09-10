@@ -1,4 +1,4 @@
-export const makeId = (length: number) => {
+export const createUsername = (length: number) => {
   let result = "";
   const characters = "abcdefghijklmnopqrstuvwxyz0123456789";
   const charactersLength = characters.length;

@@ -1,6 +1,12 @@
 import "reflect-metadata";
 import { ObjectType, Field, ID, Int, registerEnumType } from "type-graphql";
-import { IsEmail, MinLength, Length, IsLowercase } from "class-validator";
+import {
+  IsEmail,
+  MinLength,
+  Length,
+  IsLowercase,
+  MaxLength,
+} from "class-validator";
 import { Profile } from "./Profile";
 import { Social } from "./Social";
 import { Project } from "./Project";
@@ -18,10 +24,11 @@ export class User {
   id: string;
 
   @IsLowercase()
-  @Length(3, 50)
+  @Length(3, 59)
   @Field(() => String)
   username: string;
 
+  @MaxLength(255)
   @Field()
   @IsEmail()
   email: string;
