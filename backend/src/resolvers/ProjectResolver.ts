@@ -23,6 +23,7 @@ import { isAuth } from "../utils/isAuth";
 // import { isBlocked } from "../utils/isBlocked";
 import countries from "../data/countries";
 import { pagination } from "../utils/pagination";
+import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
 
 // Queries/mutations to be implemented:
 // projects:                  Return all projects - Done
@@ -82,6 +83,7 @@ export class ProjectResolver {
       });
     }
 
+    // Returns projects based on country filter
     const countryExists = countries.filter((item) => item.country === country);
 
     if (countryExists.length > 0) {
@@ -173,6 +175,9 @@ export class ProjectResolver {
   ): Promise<Project> {
     let errors: LooseObject = {};
     try {
+      title = capitalizeFirstLetter(title.trim());
+      body = body ? capitalizeFirstLetter(body.trim()) : null;
+
       const countryExists = countries.filter(
         (item) => item.country === country
       );
@@ -468,8 +473,8 @@ export class ProjectResolver {
           id,
         },
         data: {
-          title,
-          body,
+          title: title && capitalizeFirstLetter(title.trim()),
+          body: body && capitalizeFirstLetter(body.trim()),
           country,
           disciplines: {
             connect: disciplines?.map((item) => ({ id: item })),
@@ -507,13 +512,13 @@ export class ProjectResolver {
       },
     });
 
-    if (!userExists) throw new UserInputError("User doens't exist");
+    if (!userExists) throw new UserInputError("User doesn't exist");
 
     const project = await prisma.project.findUnique({
       where: {
         id: projectId,
       },
-      include: {
+      select: {
         members: true,
       },
     });

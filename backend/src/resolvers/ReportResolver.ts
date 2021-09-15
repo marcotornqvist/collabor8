@@ -6,6 +6,7 @@ import { Context } from "../types/Interfaces";
 import { UserInputError } from "apollo-server-express";
 import { ReportUserInput, ReportProjectInput } from "./inputs/ReportInput";
 import { LooseObject } from "../types/Interfaces";
+import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
 
 // TODO: Queries/mutations to be implemented:
 // reportUser - In Progress (implement send email to host)
@@ -50,7 +51,7 @@ export class ReportResolver {
         data: {
           violation,
           title,
-          body,
+          body: body && capitalizeFirstLetter(body.trim()),
           senderId: payload!.userId,
           userId,
         },
@@ -100,7 +101,7 @@ export class ReportResolver {
         data: {
           violation,
           title,
-          body,
+          body: body && capitalizeFirstLetter(body.trim()),
           senderId: payload!.userId,
           projectId,
         },

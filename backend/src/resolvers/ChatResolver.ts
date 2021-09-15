@@ -6,6 +6,10 @@ import {
   Arg,
   Ctx,
   UseMiddleware,
+  PubSub,
+  Subscription,
+  Root,
+  Publisher,
 } from "type-graphql";
 import { ChatRoom } from "../types/ChatRoom";
 import { Project } from "../types/Project";
@@ -14,18 +18,21 @@ import { Context } from "../types/Interfaces";
 import { ChatRoomResponse, ContactResponse } from "./responses/ChatResponse";
 import { SearchArgs } from "./inputs/GlobalInputs";
 import { pagination } from "../utils/pagination";
-
-//        chat/:id/
+import { ForbiddenError, UserInputError } from "apollo-server-express";
+import { Message } from "../types/Message";
+import { ChatInput, CreateMessageInput } from "./inputs/ChatInput";
+import { User } from "../types/User";
 
 // TODO: Queries/mutations/subscriptions to be implemented:
-// projectsChatRoom:        Return all chatrooms for projects
-// contactsChatRoom:        Return all chatrooms for contacts, implement search
-// messagesByProjectId:     Return all messages by projectId, implement infinite scroll to only get 10 messages before scroll.
-// messagesByContactId:     Return all messages by projectId, implement infinite scroll to only get 10 messages before scroll.
-// newMessagesByProjectId:  Return a list of all the ChatRooms which have new messages
-// sendMessageToGroup:      Sends a new message to a group(messages) by projectId
-// sendMessageToContact:    Sends a new message to another contact
-// subscribe:               Check for a new message
+// projectsChatRoom:        Return all chatrooms for projects - Done
+// contactsChatRoom:        Return all chatrooms for contacts - Done
+// projectChatRoomDetails:  Return details for a project chatroom - Done
+// contactChatRoomDetails:  Return details for a contact chatroom - Done
+// projectMessages:         Return all messages by projectId - Done
+// contactMessages:         Return all messages by contactId - Done
+// projectAddMessage:       Creates a new message to project by projectId - Done
+// contactAddMessage:       Creates a new message to contact by contactId - Done
+// newMessage:              Checks for a new message in the active chat window (subscription)
 
 @Resolver(ChatRoom)
 export class ChatResolver {
@@ -128,6 +135,7 @@ export class ChatResolver {
   ) {
     const filters = {};
 
+    // Checks if there's any searchText if so apply that, else search all contacts for a certain user
     if (searchText) {
       Object.assign(filters, {
         OR: [
@@ -176,8 +184,8 @@ export class ChatResolver {
           status: "TRUE",
         },
       })
-      // // Reformatted contacts list so that userId, userReadChatAt has always the logged in user values
-      // // And the contactId has always the logged in users contact values
+      // Reformatted contacts list so that userId, userReadChatAt has always the logged in user values
+      // And the contactId has always the logged in users contact values
       .then((contacts) =>
         contacts.map((item) => {
           if (item.userId === payload!.userId) {
@@ -197,8 +205,6 @@ export class ChatResolver {
           }
         })
       );
-
-    console.log(contacts);
 
     // Returns all contact relationships where there are unread new messages
     const contactsWithNewMessages = await prisma.contact.findMany({
@@ -285,26 +291,408 @@ export class ChatResolver {
     };
   }
 
-  @Query(() => ChatRoom, {
+  @Query(() => Project, {
+    nullable: true,
+    description: "Return details for a project",
+  })
+  @UseMiddleware(isAuth)
+  async projectChatRoomDetails(
+    @Arg("id") id: string,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    const project = await prisma.project.findFirst({
+      where: {
+        id,
+        members: {
+          some: {
+            userId: payload!.userId,
+            status: "TRUE",
+          },
+        },
+        disabled: false,
+      },
+      select: {
+        title: true,
+        members: {
+          select: {
+            user: {
+              select: {
+                username: true,
+                profile: {
+                  select: {
+                    fullName: true,
+                    profileImage: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!project) {
+      throw new ForbiddenError("Not Authorized");
+    }
+
+    return project;
+  }
+
+  @Query(() => User, {
+    nullable: true,
+    description: "Return details for a contact",
+  })
+  @UseMiddleware(isAuth)
+  async contactChatRoomDetails(
+    @Arg("id") id: string,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    const contact = await prisma.contact.findFirst({
+      where: {
+        OR: [
+          {
+            userId: payload!.userId,
+            contactId: id,
+          },
+          {
+            userId: id,
+            contactId: payload!.userId,
+          },
+        ],
+        status: "TRUE",
+      },
+      select: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            profile: {
+              select: {
+                fullName: true,
+                profileImage: true,
+              },
+            },
+          },
+        },
+        contact: {
+          select: {
+            id: true,
+            username: true,
+            profile: {
+              select: {
+                fullName: true,
+                profileImage: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!contact) {
+      throw new ForbiddenError("Not Authorized");
+    }
+
+    // Returns the contact and not the logged in user
+    const otherUser = contact.user.id.includes(payload!.userId)
+      ? contact.contact
+      : contact.user;
+
+    return otherUser;
+  }
+
+  @Query(() => [Message], {
     nullable: true,
     description: "Return messages for a ChatRoom by projectId",
   })
   @UseMiddleware(isAuth)
-  async messagesByProjectId(
-    @Arg("id") id: string,
+  async projectMessages(
+    @Arg("data") { id, after, before, first, last }: ChatInput,
     @Ctx() { payload, prisma }: Context
   ) {
-    // Query:
-    // project: title,
-    // users: id, profileImage,
-    // messages: body, profile > firstname, lastname & profileImage
-
-    const project = await prisma.project.findUnique({
+    // Checks that project exists and logged in user is a member
+    const project = await prisma.project.findFirst({
       where: {
         id,
+        members: {
+          some: {
+            userId: payload!.userId,
+            status: "TRUE",
+          },
+        },
+        disabled: false,
       },
     });
 
-    return project;
+    if (!project) {
+      throw new ForbiddenError("Not Authorized");
+    }
+
+    // Sets the last time logged in member read the project chat
+    await prisma.member.update({
+      where: {
+        userId_projectId: {
+          userId: payload!.userId,
+          projectId: id,
+        },
+      },
+      data: {
+        readChatAt: new Date().toISOString(),
+      },
+    });
+
+    const messages = await prisma.message.findMany({
+      ...pagination({ after, before, first, last }),
+      where: {
+        chat: {
+          projectId: id,
+        },
+      },
+      select: {
+        id: true,
+        body: true,
+        user: {
+          select: {
+            username: true,
+            profile: {
+              select: {
+                fullName: true,
+                profileImage: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return messages;
+  }
+
+  @Query(() => [Message], {
+    nullable: true,
+    description: "Return messages for a ChatRoom by contactId",
+  })
+  @UseMiddleware(isAuth)
+  async contactMessages(
+    @Arg("data") { id, after, before, first, last }: ChatInput,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    // Checks that contact exists and logged in user is part of it
+    const contact = await prisma.contact.findFirst({
+      where: {
+        OR: [
+          {
+            userId: payload!.userId,
+            contactId: id,
+          },
+          {
+            userId: id,
+            contactId: payload!.userId,
+          },
+        ],
+        status: "TRUE",
+      },
+    });
+
+    if (!contact) {
+      throw new ForbiddenError("Not Authorized");
+    }
+
+    // Sets the last time that logged in user visited chat
+    if (contact.userId === payload!.userId) {
+      await prisma.contact.update({
+        where: {
+          id: contact.id,
+        },
+        data: {
+          userReadChatAt: new Date().toISOString(),
+        },
+      });
+    } else {
+      await prisma.contact.update({
+        where: {
+          id: contact.id,
+        },
+        data: {
+          contactReadChatAt: new Date().toISOString(),
+        },
+      });
+    }
+
+    const messages = await prisma.message.findMany({
+      ...pagination({ after, before, first, last }),
+      where: {
+        chat: {
+          contactId: contact.id,
+        },
+      },
+      select: {
+        id: true,
+        body: true,
+        user: {
+          select: {
+            username: true,
+            profile: {
+              select: {
+                fullName: true,
+                profileImage: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return messages;
+  }
+
+  @Mutation(() => Message, {
+    description: "Add Message to project, by project id",
+  })
+  @UseMiddleware(isAuth)
+  async projectAddMessage(
+    @Arg("data") { id, body }: CreateMessageInput,
+    @Ctx() { payload, prisma }: Context,
+    @PubSub("NEW_CHATROOM_MESSAGE") publish: Publisher<Message>
+  ): Promise<Message> {
+    // Validate length of body
+    if (body.length > 0 && body.length > 255) {
+      throw new UserInputError(
+        "Message cannot be empty or longer than 255 characters"
+      );
+    }
+
+    // Checks that project exists and logged in user is part of it
+    const project = await prisma.project.findFirst({
+      where: {
+        id,
+        members: {
+          some: {
+            userId: payload!.userId,
+            status: "TRUE",
+          },
+        },
+        disabled: false,
+      },
+      select: {
+        chatRoom: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    if (!project) {
+      throw new ForbiddenError("Not Authorized");
+    }
+
+    // Creates a newMessage
+    const newMessage = await prisma.message.create({
+      data: {
+        chatId: project.chatRoom!.id,
+        userId: payload!.userId,
+        body,
+      },
+      include: {
+        user: {
+          include: {
+            profile: {
+              select: {
+                fullName: true,
+                profileImage: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Sends a new message to all subscribers
+    await publish(newMessage);
+
+    return newMessage;
+  }
+
+  @Mutation(() => Message, {
+    description: "Add Message to contact by contact id",
+  })
+  @UseMiddleware(isAuth)
+  async contactAddMessage(
+    @Arg("data") { id, body }: CreateMessageInput,
+    @Ctx() { payload, prisma }: Context,
+    @PubSub("NEW_CHATROOM_MESSAGE") publish: Publisher<Message>
+  ): Promise<Message> {
+    // Validate length of body
+    if (body.length > 0 && body.length > 255) {
+      throw new UserInputError(
+        "Message cannot be empty or longer than 255 characters"
+      );
+    }
+
+    // Checks that contact exists and logged in user is part of it
+    const contact = await prisma.contact.findFirst({
+      where: {
+        OR: [
+          {
+            userId: payload!.userId,
+            contactId: id,
+          },
+          {
+            userId: id,
+            contactId: payload!.userId,
+          },
+        ],
+        status: "TRUE",
+      },
+      select: {
+        chatRoom: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    if (!contact) {
+      throw new UserInputError("Not Authorized");
+    }
+
+    const newMessage = await prisma.message.create({
+      data: {
+        chatId: contact.chatRoom!.id,
+        userId: payload!.userId,
+        body,
+      },
+      include: {
+        user: {
+          include: {
+            profile: {
+              select: {
+                fullName: true,
+                profileImage: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Sends a new message to all subscribers
+    await publish(newMessage);
+
+    return newMessage;
+  }
+
+  @Subscription({
+    topics: "NEW_CHATROOM_MESSAGE",
+    filter: ({ payload, args, context }) => {
+      return payload.chatId === args.chatId;
+    },
+  })
+  newMessage(@Root() message: Message, @Arg("chatId") chatId: string): Message {
+    return message;
   }
 }

@@ -42,8 +42,10 @@
     "express": "^4.17.1",
     "graphql": "^15.5.1",
     "graphql-scalars": "^1.10.0",
+    "http": "^0.0.1-security",
     "jsonwebtoken": "^8.5.1",
     "reflect-metadata": "^0.1.13",
+    "subscriptions-transport-ws": "^0.9.19",
     "type-graphql": "^1.1.1"
   }
 }

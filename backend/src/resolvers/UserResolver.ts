@@ -26,6 +26,7 @@ import { isAuth } from "../utils/isAuth";
 import { createUsername } from "../helpers/createUsername";
 import countries from "../data/countries";
 import { pagination } from "../utils/pagination";
+import { capitalizeWords } from "../helpers/capitalizeWords";
 
 // TODO: Remember to implement pagination/infinite scroll both on the back/front end
 // so that a query like getAllUsers doesn't return the whole database but instead the first 100
@@ -161,11 +162,11 @@ export class UserResolver {
       let username = "";
 
       if (firstName) {
-        firstName = firstName.trim();
+        firstName = capitalizeWords(firstName.trim());
         username += firstName;
       }
       if (lastName) {
-        lastName = lastName.trim();
+        lastName = capitalizeWords(lastName.trim());
         username += lastName;
       }
 

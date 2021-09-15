@@ -1,3 +1,4 @@
+// Create username based on given characters and length
 export const createUsername = (length: number) => {
   let result = "";
   const characters = "abcdefghijklmnopqrstuvwxyz0123456789";

@@ -14,6 +14,8 @@ import countries from "../data/countries";
 import { isAuth } from "../utils/isAuth";
 import { UpdateProfileInput } from "./inputs/ProfileInput";
 import { UserInputError } from "apollo-server-errors";
+import { capitalizeWords } from "../helpers/capitalizeWords";
+import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
 
 // TODO: Queries/mutations to be implemented:
 // countries:             Return all countries - Done
@@ -75,16 +77,18 @@ export class ProfileResolver {
 
     try {
       // trim() removes whitespace from the beginning and end
-      firstName = firstName?.trim();
-      lastName = lastName?.trim();
-      bio = bio?.trim();
+      firstName = firstName ? capitalizeWords(firstName.trim()) : null;
+      lastName = lastName ? capitalizeWords(lastName.trim()) : null;
+      let fullName = ((firstName ?? "") + " " + (lastName ?? "")).trim() || null
+      country = country || null;
+      bio = bio ? capitalizeFirstLetter(bio.trim()) : null;
 
       let fields = {
-        firstName: firstName,
-        lastName: lastName,
-        fullName: ((firstName ?? "") + " " + (lastName ?? "")).trim() || null,
-        country: country || null,
-        bio: bio,
+        firstName,
+        lastName,
+        fullName,
+        country,
+        bio,
       };
 
       // Check that first name length is not more than 255 characters
