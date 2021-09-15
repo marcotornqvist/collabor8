@@ -15,10 +15,11 @@ import { Contact } from "../types/Contact";
 import { User } from "../types/User";
 
 // TODO: Queries/mutations to be implemented:
-// contacts         Return all contacts for logged in user - Done
-// addUser          Add a new user to your contacts - In Progress
-// removeContact    Remove contact by updating status to false - In Progress
-// acceptContact    Accept a pending contact request - In Progress
+// contacts             Return all contacts for logged in user - Done
+// sendContactRequest   Add a new user to your contacts - Done
+// deleteContact        Delete contact request - Done
+// acceptContact        Accept a pending contact request - Done
+// rejectContact        Reject contact request (for users that have received a contact where status is pending) - Done
 
 @Resolver(Contact)
 export class ContactResolver {
@@ -38,6 +39,7 @@ export class ContactResolver {
               contactId: payload!.userId,
             },
           ],
+          status: "TRUE",
         },
         select: {
           user: {
@@ -95,13 +97,37 @@ export class ContactResolver {
   }
 
   @Mutation(() => Boolean, {
-    description: "Add a user to contacts",
+    description: "Add a user to contact list",
   })
   @UseMiddleware(isAuth)
-  async addUser(@Arg("id") id: string, @Ctx() { payload, prisma }: Context) {
-    // Check if user is blocked
-    // Check if user is already part of your contact list
-    // Check if user exists
+  async sendContactRequest(
+    @Arg("id") id: string,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    // Checks that user isn't adding himself
+    if (id === payload!.userId) {
+      throw new Error("You cannot add yourself");
+    }
+
+    // Checks that contact doesn't already exist
+    const contactExists = await prisma.contact.findFirst({
+      where: {
+        OR: [
+          {
+            userId: payload!.userId,
+            contactId: id,
+          },
+          {
+            userId: id,
+            contactId: payload!.userId,
+          },
+        ],
+      },
+    });
+
+    if (contactExists) {
+      throw new Error("User is already in your contacts list");
+    }
 
     // Checks if user is blocked
     const isBlocked = await prisma.blockedUser.findUnique({
@@ -113,50 +139,134 @@ export class ContactResolver {
       },
     });
 
-    if (isBlocked) throw new Error("You cannot add user since user is blocked");
+    if (isBlocked)
+      throw new Error("You cannot add user since you've blocked the user");
 
-    // Checks if contact exists
-    const contactExist = await prisma.user.findUnique({
-      where: {
-        id,
+    // Create a new contact between logged in user and another user id
+    await prisma.contact.create({
+      data: {
+        userId: payload!.userId,
+        contactId: id,
       },
-      select: {
-        contactsSent: {
-          select: {
-            contactId: true,
+    });
+
+    return true;
+  }
+
+  @Mutation(() => Boolean, {
+    description: "Delete contact from contacts list",
+  })
+  @UseMiddleware(isAuth)
+  async deleteContact(
+    @Arg("id") id: string,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    // Checks that contact exists
+    const contact = await prisma.contact.findFirst({
+      where: {
+        OR: [
+          {
+            userId: payload!.userId,
+            contactId: id,
           },
-        },
-        contactsRcvd: {
-          select: {
-            userId: true,
+          {
+            userId: id,
+            contactId: payload!.userId,
           },
+        ],
+        status: "TRUE",
+      },
+    });
+
+    console.log(contact);
+
+    if (!contact) {
+      throw new Error("Contact doesn't exist");
+    }
+
+    // Delete contact from contacts list
+    await prisma.contact.delete({
+      where: {
+        id: contact.id,
+      },
+    });
+
+    return true;
+  }
+
+  @Mutation(() => Boolean, {
+    description: "Accept contact request",
+  })
+  @UseMiddleware(isAuth)
+  async acceptContact(
+    @Arg("id") id: string,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    // Checks that contact request exists
+    const contact = await prisma.contact.findUnique({
+      where: {
+        userId_contactId: {
+          userId: id,
+          contactId: payload!.userId,
         },
       },
     });
 
-    console.log(contactExist);
+    if (!contact || (contact.status === "TRUE")) {
+      throw new Error("Contact request doesn't exist");
+    }
 
-    // if (!contactExist) {
-    //   throw new Error("User is already in your contacts list");
-    // }
+    // Accept contact request
+    await prisma.contact.update({
+      where: {
+        userId_contactId: {
+          userId: id,
+          contactId: payload!.userId,
+        },
+      },
+      data: {
+        status: "TRUE",
+      },
+    });
 
-    // // Checks if user exists
-    // const userExist = await prisma.user.findUnique({
-    //   where: {
-    //     id,
-    //   },
-    // });
+    return true;
+  }
 
-    // if (!userExist) {
-    //   throw new UserInputError("User doesn't exist");
-    // }
+  @Mutation(() => Boolean, {
+    description: "Reject contact request",
+  })
+  @UseMiddleware(isAuth)
+  async rejectContact(
+    @Arg("id") id: string,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    // Checks that contact request exists
+    const contact = await prisma.contact.findUnique({
+      where: {
+        userId_contactId: {
+          userId: id,
+          contactId: payload!.userId,
+        },
+      },
+    });
 
-    // await prisma.blockedUser.create({
-    //   data: {
-    //     userId: payload!.userId,
-    //     blockedUserId: id,
-    //   },
-    // });
+    // Checks that contact request exists and is pending
+    if (!contact || contact.status !== "PENDING") {
+      throw new Error("Contact request doesn't exist");
+    }
+
+    // Reject contact request
+    await prisma.contact.update({
+      where: {
+        userId_contactId: {
+          userId: id,
+          contactId: payload!.userId,
+        },
+      },
+      data: {
+        status: "FALSE",
+      },
+    });
 
     return true;
   }

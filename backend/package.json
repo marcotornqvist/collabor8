@@ -15,7 +15,7 @@
   "author": "Marco Törnqvist",
   "license": "ISC",
   "engines": {
-    "node": ">=v13"
+    "node": ">=13 <14.17.4"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
@@ -26,6 +26,7 @@
     "@types/jest": "^26.0.24",
     "@types/jsonwebtoken": "^8.5.4",
     "@types/node": "^16.4.3",
+    "@types/ws": "^7.4.7",
     "prisma": "^3.0.2",
     "ts-jest": "^27.0.4",
     "ts-node": "^10.1.0",

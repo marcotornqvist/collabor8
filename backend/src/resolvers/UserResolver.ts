@@ -16,7 +16,6 @@ import {
   RegisterInput,
   UpdateEmailInput,
   UpdatePasswordInput,
-  UpdateUsernameInput,
   UsersFilterArgs,
 } from "./inputs/UserInput";
 import { AuthResponse } from "./responses/UserResponse";
@@ -24,24 +23,21 @@ import { createAccessToken, createRefreshToken } from "../utils/auth";
 import { sendRefreshToken } from "../utils/sendRefreshToken";
 import { isAuth } from "../utils/isAuth";
 import { createUsername } from "../helpers/createUsername";
-import countries from "../data/countries";
 import { pagination } from "../utils/pagination";
 import { capitalizeWords } from "../helpers/capitalizeWords";
-
-// TODO: Remember to implement pagination/infinite scroll both on the back/front end
-// so that a query like getAllUsers doesn't return the whole database but instead the first 100
+import countries from "../data/countries";
 
 // TODO: Queries/mutations to be implemented:
-// users:           Return all users - In Progress (pagination and filtering)
-// userbyId:        Return a single user by id - In Progress ()
+// users:           Return all users - Done
+// userbyId:        Return a single user by id - Done
 // loggedInUser:    Return the currently logged in user - Done
 // updateUsername:  Update the username - Done
-// updateEmail:     Update the email    - In Progress
+// updateEmail:     Update the email    - Done
 // updatePassword:  Update the password - Done
 // register:        Create a new user - Done
 // login:           Login to existing user - Done
 // logout:          Logout from the current user - Done
-// deleteAccount:   Delete Account - In Progress
+// deleteAccount:   Delete Account - Done
 
 // This resolver handles all the user actions such as register & login
 @Resolver(User)
@@ -109,7 +105,11 @@ export class UserResolver {
         disabled: false,
       },
       include: {
-        profile: true,
+        profile: {
+          include: {
+            discipline: true,
+          },
+        },
       },
       orderBy: { createdAt: sort ?? "desc" },
     });
@@ -247,7 +247,7 @@ export class UserResolver {
         throw errors;
       }
 
-      // Hash password and create an auth token
+      // Hash password
       password = await hash(password, 12);
 
       const fields = {};
@@ -275,7 +275,7 @@ export class UserResolver {
         },
       });
 
-      // // Initialize row in socials table based on the new userId
+      // Initialize row in socials table based on the new userId
       if (newUser) {
         await prisma.social.create({
           data: {
@@ -304,9 +304,10 @@ export class UserResolver {
     { email, password }: LoginInput,
     @Ctx() { res, prisma }: Context
   ): Promise<AuthResponse> {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: {
         email: email,
+        disabled: false,
       },
       include: {
         profile: true,
@@ -340,7 +341,7 @@ export class UserResolver {
   })
   @UseMiddleware(isAuth)
   async updateUsername(
-    @Arg("username") { username }: UpdateUsernameInput,
+    @Arg("username") username: string,
     @Ctx() { payload, prisma }: Context
   ) {
     username = username.toLowerCase().replace(/ /g, "");
@@ -483,6 +484,13 @@ export class UserResolver {
         errors.confirmPassword = "Passwords don't match";
       }
 
+      if (Object.keys(errors).length > 0) {
+        throw errors;
+      }
+
+      // Hash password and create an auth token
+      newPassword = await hash(newPassword, 12);
+
       await prisma.user.update({
         where: {
           id: payload!.userId,
@@ -507,13 +515,17 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean, {
-    description: "Delete Account",
+    description:
+      "Sets disabled state to true, which will make user not visible",
   })
   @UseMiddleware(isAuth)
   async deleteAccount(@Ctx() { res, payload, prisma }: Context) {
-    await prisma.user.delete({
+    await prisma.user.update({
       where: {
         id: payload!.userId,
+      },
+      data: {
+        disabled: true,
       },
     });
 

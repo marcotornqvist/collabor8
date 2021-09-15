@@ -1,4 +1,3 @@
-import { MaxLength } from "class-validator";
 import { Field, InputType } from "type-graphql";
 
 @InputType({ description: "Input Arguments for social links" })

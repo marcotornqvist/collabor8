@@ -7,7 +7,6 @@ import { ProfileResolver } from "./resolvers/ProfileResolver";
 import { ProjectResolver } from "./resolvers/ProjectResolver";
 import { SocialResolver } from "./resolvers/SocialResolver";
 import { ChatResolver } from "./resolvers/ChatResolver";
-import { MemberResolver } from "./resolvers/MemberResolver";
 import { BlockedUserResolver } from "./resolvers/BlockedResolver";
 import { ReportResolver } from "./resolvers/ReportResolver";
 import { NotificationResolver } from "./resolvers/NotificationResolver";
@@ -44,7 +43,6 @@ const PORT = process.env.PORT || 5000;
       ProfileResolver,
       SocialResolver,
       ProjectResolver,
-      MemberResolver,
       ContactResolver,
       ChatResolver,
       NotificationResolver,
@@ -77,7 +75,7 @@ const PORT = process.env.PORT || 5000;
           const currentUser = await findUser(connectionParams.Authorization);
           return { currentUser };
         }
-        
+
         throw new Error("Missing auth token!");
       },
     },

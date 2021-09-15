@@ -20,8 +20,9 @@ import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
 // TODO: Queries/mutations to be implemented:
 // countries:             Return all countries - Done
 // loggedInProfile:       Set a country - Done
-// updateImage:           Update Image - In Progress
 // updateProfile:         Update profile Settings - Done
+// updateImage:           Update Image - In Progress
+// deleteImage:           Delete Image - In Progress
 
 @Resolver(Profile)
 export class ProfileResolver {

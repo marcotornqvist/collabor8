@@ -38,12 +38,6 @@ export class LoginInput {
   password: string;
 }
 
-@InputType({ description: "Update Username Input" })
-export class UpdateUsernameInput {
-  @Field(() => String)
-  username: string;
-}
-
 @InputType({ description: "Update Email Input" })
 export class UpdateEmailInput {
   @IsEmail()

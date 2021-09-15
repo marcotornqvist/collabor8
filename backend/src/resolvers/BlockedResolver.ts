@@ -11,7 +11,6 @@ import { isAuth } from "../utils/isAuth";
 import { Context } from "../types/Interfaces";
 import { BlockedUser } from "../types/BlockedUser";
 import { UserInputError } from "apollo-server-express";
-// import { isBlocked } from "../utils/isBlocked";
 
 // TODO: Queries/mutations to be implemented:
 // blockedUsers // query
@@ -46,10 +45,17 @@ export class BlockedUserResolver {
     @Arg("id") id: string,
     @Ctx() { payload, prisma }: Context
   ) {
-    // Checks if user is already blocked
-    // const blocked = await isBlocked(payload!.userId, id);
+    // Checks if user is blocked
+    const isBlocked = await prisma.blockedUser.findUnique({
+      where: {
+        userId_blockedUserId: {
+          userId: payload!.userId,
+          blockedUserId: id,
+        },
+      },
+    });
 
-    // if (blocked) throw new Error("User is already blocked");
+    if (isBlocked) throw new Error("You have already blocked the user");
 
     // Checks if users exists
     const userExist = await prisma.user.findUnique({
@@ -82,9 +88,16 @@ export class BlockedUserResolver {
     @Ctx() { payload, prisma }: Context
   ) {
     // Checks if user is blocked
-    // const blocked = await isBlocked(payload!.userId, id);
+    const isBlocked = await prisma.blockedUser.findUnique({
+      where: {
+        userId_blockedUserId: {
+          userId: payload!.userId,
+          blockedUserId: id,
+        },
+      },
+    });
 
-    // if (!blocked) throw new Error("User is not blocked or doesn't exist");
+    if (isBlocked) throw new Error("User is not blocked or doesn't exist");
 
     // Removes a user from the blocked user table
     await prisma.blockedUser.delete({
