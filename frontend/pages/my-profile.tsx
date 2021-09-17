@@ -1,12 +1,15 @@
-import React from "react";
+import { FC } from "react";
 import Dropdown from "@components-modules/menu/country/Dropdown";
 // import Test from "@myapp-components/Test";
+import { UploadFile } from "@components-pages/myprofile/UploadFile";
 
-const MyProfile = () => {
+const MyProfile: FC = () => {
   return (
-    <div className="profile">
-      <Dropdown />
-      <div className="btn">lol</div>
+    <div className="my-profile-page">
+      {/* <Dropdown /> */}
+      <div className="container">
+        <UploadFile />
+      </div>
     </div>
   );
 };

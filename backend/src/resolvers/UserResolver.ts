@@ -6,6 +6,7 @@ import {
   Arg,
   Ctx,
   UseMiddleware,
+  ObjectType,
 } from "type-graphql";
 import { UserInputError } from "apollo-server-express";
 import { hash, compare } from "bcryptjs";
@@ -14,6 +15,8 @@ import { Context, LooseObject } from "../types/Interfaces";
 import {
   LoginInput,
   RegisterInput,
+  Test,
+  TestResponse,
   UpdateEmailInput,
   UpdatePasswordInput,
   UsersFilterArgs,
@@ -42,6 +45,34 @@ import countries from "../data/countries";
 // This resolver handles all the user actions such as register & login
 @Resolver(User)
 export class UserResolver {
+  @Mutation(() => TestResponse, {
+    description: "Test Resolver Delete Later",
+  })
+  async addTodo(@Arg("data") {text, body}: Test) {
+    console.log(text, body);
+    return { text, body };
+  }
+
+  @Query(() => User, {
+    nullable: true,
+    description: "Returns all users/profiles that are not disabled",
+  })
+  async users2(@Arg("id") id: string, @Ctx() { prisma }: Context) {
+    // Find all users
+    return prisma.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        profile: {
+          include: {
+            discipline: true,
+          },
+        },
+      },
+    });
+  }
+
   @Query(() => [User], {
     nullable: true,
     description: "Returns all users/profiles that are not disabled",
@@ -49,6 +80,7 @@ export class UserResolver {
   async users(
     @Arg("data")
     {
+      loggedInUserId,
       searchText,
       disciplines,
       country,
@@ -80,6 +112,7 @@ export class UserResolver {
       });
     }
 
+    // Checks if there are disciplines then add disciplines
     if (disciplines && disciplines.length > 0) {
       Object.assign(filters, {
         profile: {
@@ -90,6 +123,7 @@ export class UserResolver {
       });
     }
 
+    // Checks that country input exists in countries list
     const countryExists = countries.filter((item) => item.country === country);
 
     if (countryExists.length > 0) {
@@ -98,6 +132,16 @@ export class UserResolver {
       });
     }
 
+    // Checks if user is logged in then don't return logged in user
+    if (loggedInUserId) {
+      Object.assign(filters, {
+        NOT: {
+          id: loggedInUserId,
+        },
+      });
+    }
+
+    // Find all users
     return prisma.user.findMany({
       ...pagination({ after, before, first, last }),
       where: {
@@ -111,7 +155,7 @@ export class UserResolver {
           },
         },
       },
-      orderBy: { createdAt: sort ?? "desc" },
+      orderBy: { createdAt: sort || "desc" },
     });
   }
 
@@ -173,8 +217,8 @@ export class UserResolver {
       // Sets username string to lowercase and replaces all whitespace
       username = username.toLowerCase().replace(/ /g, "");
 
-      // Letters between A-z with length of 3-50
-      const regex = new RegExp(/[A-z]{3,50}/);
+      // Numbers and Letters between A-z with length of 3-50
+      const regex = new RegExp(/[A-z0-9]{3,50}/);
       const match = username.match(regex);
 
       // Checks that length is between 3 and 50 characters
@@ -320,6 +364,7 @@ export class UserResolver {
       );
     }
 
+    // Compares and validates the password input with the existing hashed password
     const valid = await compare(password, user.password);
 
     if (!valid) {
@@ -344,18 +389,22 @@ export class UserResolver {
     @Arg("username") username: string,
     @Ctx() { payload, prisma }: Context
   ) {
+    // Sets username to lowercase and removes all whitespace
     username = username.toLowerCase().replace(/ /g, "");
 
-    // Letters between A-z with length of 3-50
-    const regex = new RegExp(/[A-z]{3,50}/);
+    // Numbers and Letters between A-z with length of 3-50
+    const regex = new RegExp(/[A-z0-9]{3,50}/);
     const match = username.match(regex);
 
+    // Checks if username matches regex constraints
     if (!match?.includes(username)) {
+      console.log(username);
       throw new UserInputError(
-        "Username cannot be less than 3 characters or more than 50 characters and can only contain letters(A-z)"
+        "Username cannot be less than 3 characters or more than 50 characters and can only contain letters(A-z) and numbers"
       );
     }
 
+    // Checks if username already exists
     const usernameExists = await prisma.user.findUnique({
       where: {
         username,
@@ -366,6 +415,7 @@ export class UserResolver {
       throw new UserInputError("Username already exists");
     }
 
+    // Gets the old username for notification
     const oldUsername = await prisma.user.findUnique({
       where: {
         id: payload!.userId,
@@ -376,45 +426,47 @@ export class UserResolver {
     });
 
     // Updates username and returns contacts
-    const user = await prisma.user.update({
-      where: {
-        id: payload!.userId,
-      },
-      data: { username },
-      include: {
-        contactsSent: {
-          where: {
-            status: {
-              in: ["TRUE"],
+    const contactIds = await prisma.user
+      .update({
+        where: {
+          id: payload!.userId,
+        },
+        data: { username },
+        include: {
+          contactsSent: {
+            where: {
+              status: {
+                in: ["TRUE"],
+              },
+            },
+            select: {
+              contactId: true,
             },
           },
-          select: {
-            contactId: true,
-          },
-        },
-        contactsRcvd: {
-          where: {
-            status: {
-              in: ["TRUE"],
+          contactsRcvd: {
+            where: {
+              status: {
+                in: ["TRUE"],
+              },
+            },
+            select: {
+              userId: true,
             },
           },
-          select: {
-            userId: true,
-          },
         },
-      },
-    });
-
-    const contactsSent = user?.contactsSent.map((item) => item.contactId) || [];
-    const contactsRcvd = user?.contactsRcvd.map((item) => item.userId) || [];
-    const contactIds = contactsSent.concat(contactsRcvd);
+      })
+      .then((users) => {
+        const contactsRcvd = users.contactsRcvd.map((item) => item.userId);
+        const contactsSent = users.contactsSent.map((item) => item.contactId);
+        return contactsRcvd.concat(contactsSent);
+      });
 
     // Send a notification to all contacts, that logged in user has changed username
     if (contactIds.length > 0) {
       await prisma.notification.createMany({
         data: contactIds.map((item) => ({
           userId: item,
-          message: `${oldUsername?.username} has changed username to ${user.username}`,
+          message: `${oldUsername?.username} has changed username to ${username}`,
         })),
       });
     }
@@ -434,6 +486,7 @@ export class UserResolver {
       throw new UserInputError("Email cannot be empty");
     }
 
+    // Checks if email exists
     const emailExists = await prisma.user.findUnique({
       where: {
         email,
@@ -520,6 +573,7 @@ export class UserResolver {
   })
   @UseMiddleware(isAuth)
   async deleteAccount(@Ctx() { res, payload, prisma }: Context) {
+    // Makes the user disabled and therefore cannot be accessed
     await prisma.user.update({
       where: {
         id: payload!.userId,

@@ -1,7 +1,6 @@
 import "reflect-metadata";
-import { InputType, Field, ID } from "type-graphql";
+import { InputType, Field } from "type-graphql";
 import { MaxLength } from "class-validator";
-import { Sort } from "../../types/Enums";
 
 @InputType({ description: "Update Profile Input" })
 export class UpdateProfileInput {
@@ -22,4 +21,19 @@ export class UpdateProfileInput {
 
   @Field(() => Number, { nullable: true })
   disciplineId?: number | null;
+}
+
+@InputType({ description: "File Arguments" })
+export class FileArgs {
+  @Field(() => String)
+  filename: string;
+
+  @Field(() => String)
+  mimetype: string;
+
+  @Field(() => String)
+  encoding: string;
+
+  @Field(() => String)
+  stream?: any;
 }

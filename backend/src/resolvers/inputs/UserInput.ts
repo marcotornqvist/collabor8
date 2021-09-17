@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { InputType, Field } from "type-graphql";
+import { InputType, Field, ObjectType } from "type-graphql";
 import {
   IsEmail,
   IsLowercase,
@@ -8,6 +8,49 @@ import {
   MaxLength,
 } from "class-validator";
 import { Sort } from "../../types/Enums";
+import { PaginationArgs } from "./GlobalInputs";
+
+@InputType({
+  description: "Test Input Type Delete Later",
+})
+export class Test {
+  @Field(() => String)
+  body: string;
+
+  @Field(() => String)
+  text: string;
+}
+
+@ObjectType({
+  description: "Test Input Type Delete Later",
+})
+export class TestResponse {
+  @Field(() => String)
+  body: string;
+
+  @Field(() => String)
+  text: string;
+}
+
+@InputType({
+  description: "Filter Users",
+})
+export class UsersFilterArgs extends PaginationArgs {
+  @Field(() => String, { nullable: true })
+  loggedInUserId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  searchText?: string | null;
+
+  @Field(() => [Number], { nullable: true })
+  disciplines?: number[] | null;
+
+  @Field(() => String, { nullable: true })
+  country?: string | null;
+
+  @Field(() => Sort, { nullable: true })
+  sort?: Sort | null;
+}
 
 @InputType({ description: "Create a new user" })
 export class RegisterInput {
@@ -55,33 +98,4 @@ export class UpdatePasswordInput {
 
   @Field()
   confirmPassword: string;
-}
-
-@InputType({
-  description: "Filter Users",
-})
-export class UsersFilterArgs {
-  @Field(() => String, { nullable: true })
-  searchText?: string | null;
-
-  @Field(() => [Number], { nullable: true })
-  disciplines?: number[] | null;
-
-  @Field(() => String, { nullable: true })
-  country?: string | null;
-
-  @Field(() => String, { nullable: true })
-  after?: string | null;
-
-  @Field(() => String, { nullable: true })
-  before?: string | null;
-
-  @Field(() => Number, { nullable: true })
-  first?: number | null;
-
-  @Field(() => Number, { nullable: true })
-  last?: number | null;
-
-  @Field(() => Sort, { nullable: true })
-  sort?: Sort | null;
 }

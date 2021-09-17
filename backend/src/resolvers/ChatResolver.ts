@@ -558,7 +558,7 @@ export class ChatResolver {
     @PubSub("NEW_CHATROOM_MESSAGE") publish: Publisher<Message>
   ): Promise<Message> {
     // Validate length of body
-    if (body.length > 0 && body.length > 255) {
+    if (body.length < 1 || body.length > 255) {
       throw new UserInputError(
         "Message cannot be empty or longer than 255 characters"
       );
@@ -626,7 +626,7 @@ export class ChatResolver {
     @PubSub("NEW_CHATROOM_MESSAGE") publish: Publisher<Message>
   ): Promise<Message> {
     // Validate length of body
-    if (body.length > 0 && body.length > 255) {
+    if (!body || body.length > 255) {
       throw new UserInputError(
         "Message cannot be empty or longer than 255 characters"
       );
@@ -660,6 +660,7 @@ export class ChatResolver {
       throw new UserInputError("Not Authorized");
     }
 
+    // Create a new message based on the chatRoom id and logged in user id
     const newMessage = await prisma.message.create({
       data: {
         chatId: contact.chatRoom!.id,

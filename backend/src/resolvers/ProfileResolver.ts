@@ -8,14 +8,16 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { Profile } from "../types/Profile";
-import { Context, LooseObject } from "../types/Interfaces";
+import { Context, LooseObject, S3UploadStream } from "../types/Interfaces";
 import { CountryResponse } from "./responses/CountryResponse";
 import countries from "../data/countries";
 import { isAuth } from "../utils/isAuth";
-import { UpdateProfileInput } from "./inputs/ProfileInput";
+import { FileArgs, UpdateProfileInput } from "./inputs/ProfileInput";
 import { UserInputError } from "apollo-server-errors";
 import { capitalizeWords } from "../helpers/capitalizeWords";
 import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
+import { UploadedFileResponse } from "./responses/ProfileResponse";
+import { S3 } from "aws-sdk";
 
 // TODO: Queries/mutations to be implemented:
 // countries:             Return all countries - Done
@@ -80,7 +82,8 @@ export class ProfileResolver {
       // trim() removes whitespace from the beginning and end
       firstName = firstName ? capitalizeWords(firstName.trim()) : null;
       lastName = lastName ? capitalizeWords(lastName.trim()) : null;
-      let fullName = ((firstName ?? "") + " " + (lastName ?? "")).trim() || null
+      let fullName =
+        ((firstName ?? "") + " " + (lastName ?? "")).trim() || null;
       country = country || null;
       bio = bio ? capitalizeFirstLetter(bio.trim()) : null;
 
@@ -164,5 +167,46 @@ export class ProfileResolver {
       console.log(err);
       throw new UserInputError("Errors", { errors });
     }
+  }
+
+  @Mutation(() => UploadedFileResponse, {
+    description: "Update Profile Image",
+  })
+  // @UseMiddleware(isAuth)
+  async singleUpload(
+    @Arg("file") { stream, filename, mimetype, encoding }: FileArgs,
+    @Ctx() { payload, prisma }: Context
+  ): Promise<UploadedFileResponse> {
+    console.log(stream);
+    const s3 = new S3({
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+      region: process.env.AWS_REGION!,
+    });
+
+    const createUploadStream = (key: string): S3UploadStream => {
+      const pass = new stream.PassThrough();
+      return {
+        writeStream: pass,
+        promise: s3
+          .upload({
+            Bucket: process.env.AWS_BUCKET_NAME!,
+            Key: key,
+            Body: pass,
+          })
+          .promise(),
+      };
+    };
+
+    const uploadStream = createUploadStream(filename);
+
+    stream.pipe(uploadStream.writeStream);
+    const result = await uploadStream.promise;
+
+    // Get the link representing the uploaded file
+    const link = result.Location;
+    console.log(link);
+
+    return { filename, mimetype, encoding, url: link };
   }
 }

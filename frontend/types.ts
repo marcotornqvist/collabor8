@@ -1,9 +1,10 @@
+
 export interface Profile {
-  
+
 }
 
 export interface User {
-  : string;
+  username: string;
   email: string;
   createdAt: string;
   updatedAt: string;
@@ -25,7 +26,7 @@ export interface Sub {
   postCount?: number;
 }
 
-export interface Comment {
+export interface Post {
   identifier: string;
   body: string;
   username: string;

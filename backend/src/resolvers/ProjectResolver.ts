@@ -100,7 +100,7 @@ export class ProjectResolver {
       include: {
         disciplines: true,
       },
-      orderBy: { createdAt: sort ?? "desc" },
+      orderBy: { createdAt: sort || "desc" },
     });
   }
 
