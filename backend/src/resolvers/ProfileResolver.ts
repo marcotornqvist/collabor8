@@ -8,7 +8,12 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { Profile } from "../types/Profile";
-import { Context, LooseObject, S3UploadStream } from "../types/Interfaces";
+import {
+  Context,
+  LooseObject,
+  S3UploadStream,
+  Upload,
+} from "../types/Interfaces";
 import { CountryResponse } from "./responses/CountryResponse";
 import countries from "../data/countries";
 import { isAuth } from "../utils/isAuth";
@@ -18,6 +23,9 @@ import { capitalizeWords } from "../helpers/capitalizeWords";
 import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
 import { UploadedFileResponse } from "./responses/ProfileResponse";
 import { S3 } from "aws-sdk";
+import { GraphQLUpload } from "graphql-upload";
+import { createWriteStream } from "fs";
+import { uuidFilenameTransform } from "../helpers/uuidFileNameTransform";
 
 // TODO: Queries/mutations to be implemented:
 // countries:             Return all countries - Done
@@ -174,39 +182,124 @@ export class ProfileResolver {
   })
   // @UseMiddleware(isAuth)
   async singleUpload(
-    @Arg("file") { stream, filename, mimetype, encoding }: FileArgs,
-    @Ctx() { payload, prisma }: Context
+    // @Ctx() { payload, prisma }: Context,
+    @Arg("file", () => GraphQLUpload)
+    { filename, createReadStream, mimetype, encoding }: Upload
   ): Promise<UploadedFileResponse> {
-    console.log(stream);
+    if (
+      mimetype !== "image/jpeg" &&
+      mimetype !== "image/jpg" &&
+      mimetype !== "image/png"
+    ) {
+      throw new Error("Image has to be jpeg/jpg or png");
+    }
+
+    filename = uuidFilenameTransform(filename);
+
+    const s3DefaultParams = {
+      ACL: "public-read",
+      Bucket: process.env.AWS_BUCKET_NAME!,
+      Conditions: [
+        ["content-length-range", 0, 1024000], // 1 Mb
+        { acl: "public-read" },
+      ],
+      ContentType: "image/jpeg,image/png",
+    };
+
     const s3 = new S3({
       accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
       region: process.env.AWS_REGION!,
     });
 
-    const createUploadStream = (key: string): S3UploadStream => {
-      const pass = new stream.PassThrough();
-      return {
-        writeStream: pass,
-        promise: s3
-          .upload({
-            Bucket: process.env.AWS_BUCKET_NAME!,
-            Key: key,
-            Body: pass,
-          })
-          .promise(),
-      };
+    const { Location } = await s3
+      .upload({
+        ...s3DefaultParams,
+        Body: createReadStream(),
+        Key: filename,
+      })
+      .promise();
+
+    // Add later to this resolver updating
+    // await prisma.profile.update({
+    //   where: {
+    //     userId: payload!.userId,
+    //   },
+    //   data: {
+    //     profileImage: Location,
+    //   },
+    // });
+
+    return {
+      filename,
+      mimetype,
+      encoding,
+      url: Location,
     };
+  }
 
-    const uploadStream = createUploadStream(filename);
+  // @Mutation(() => Boolean, {
+  //   description: "Update Profile Image",
+  // })
+  // // @UseMiddleware(isAuth)
+  // async singleUpload(
+  //   // @Ctx() { payload, prisma }: Context,
+  //   @Arg("file", () => GraphQLUpload)
+  //   { createReadStream, filename }: Upload
+  // ): Promise<Boolean> {
+  //   // return true;
+  //   const s3 = new S3({
+  //     accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+  //     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  //     region: process.env.AWS_REGION!,
+  //   });
 
-    stream.pipe(uploadStream.writeStream);
-    const result = await uploadStream.promise;
+  //   const createUploadStream = (key: string): S3UploadStream => {
+  //     const pass = new stream.PassThrough();
+  //     return {
+  //       writeStream: pass,
+  //       promise: s3
+  //         .upload({
+  //           Bucket: process.env.AWS_BUCKET_NAME!,
+  //           Key: key,
+  //           Body: pass,
+  //         })
+  //         .promise(),
+  //     };
+  //   };
 
-    // Get the link representing the uploaded file
-    const link = result.Location;
-    console.log(link);
+  //   const uploadStream = createUploadStream(filename);
 
-    return { filename, mimetype, encoding, url: link };
+  //   stream.pipe(uploadStream.writeStream);
+  //   const result = await uploadStream.promise;
+
+  //   // Get the link representing the uploaded file
+  //   const link = result.Location;
+  //   console.log(link);
+
+  //   return true;
+  //   // return { filename, mimetype, encoding, url: link };
+  // }
+
+  @Mutation(() => Boolean, {
+    description: "Update File",
+  })
+  // @UseMiddleware(isAuth)
+  async uploadFile(
+    // @Ctx() { payload, prisma }: Context
+    @Arg("file", () => GraphQLUpload) { createReadStream, filename }: Upload
+  ): Promise<Boolean> {
+    console.log(filename);
+    return new Promise(async (resolve, reject) =>
+      createReadStream()
+        .pipe(createWriteStream(__dirname + `/../../images/${filename}`))
+        .on("finish", () => resolve(true))
+        .on("error", () => reject(false))
+    );
+    return true;
   }
 }
+
+// --header 'content-type: application/json' \
+// --url http://localhost:5000/ \
+// --data '{"query":"mutation($uploadFileFile: Upload!) {\n  uploadFile(file: $uploadFileFile)\n}","variables":"{\n  \"uploadFileFile\": null\n}"}'

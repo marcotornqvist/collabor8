@@ -45,10 +45,11 @@ import countries from "../data/countries";
 // This resolver handles all the user actions such as register & login
 @Resolver(User)
 export class UserResolver {
+  // Delete users2 and addTodo later + their types
   @Mutation(() => TestResponse, {
     description: "Test Resolver Delete Later",
   })
-  async addTodo(@Arg("data") {text, body}: Test) {
+  async addTodo(@Arg("data") { text, body }: Test) {
     console.log(text, body);
     return { text, body };
   }

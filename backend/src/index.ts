@@ -24,8 +24,10 @@ import { createServer } from "http";
 import { findUser } from "./utils/findUser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { graphqlUploadExpress } from "graphql-upload";
+import path from "path";
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 
 (async () => {
   const app = express();
@@ -49,7 +51,9 @@ const PORT = process.env.PORT || 5000;
       ReportResolver,
       BlockedUserResolver,
     ],
+
     scalarsMap: [{ type: GraphQLScalarType, scalar: DateTimeResolver }],
+    validate: false,
   });
 
   const apolloServer = new ApolloServer({
@@ -63,6 +67,9 @@ const PORT = process.env.PORT || 5000;
 
   await apolloServer.start();
 
+  // app.use("/images", express.static(path.join(__dirname, "../images")));
+
+  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 1 }));
   apolloServer.applyMiddleware({ app, cors: corsOptions, path: "/" });
 
   SubscriptionServer.create(

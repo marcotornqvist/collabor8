@@ -5,12 +5,17 @@ import {
 } from "@apollo/client";
 import { createUploadLink } from "apollo-upload-client";
 
+const uploadLink = createUploadLink({
+  uri: "http://localhost:4000", // Apollo Server is served from port 5000
+  headers: {
+    "keep-alive": "true",
+  },
+});
+
 const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   // uri: process.env.NEXT_PUBLIC_BASE_URL,
-  link: createUploadLink({
-    uri: "http://localhost:5000",
-  }),
   cache: new InMemoryCache(),
+  link: uploadLink,
 });
 
 export default client;

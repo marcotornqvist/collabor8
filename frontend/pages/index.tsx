@@ -1,8 +1,8 @@
 import { useMutation, gql } from "@apollo/client";
 
 const ADD_TODO = gql`
-  mutation AddTodo($data: Test!) {
-    addTodo(data: $data) {
+  mutation addTodo($datas: Test!) {
+    addTodo(data: $datas) {
       text
       body
     }
@@ -26,10 +26,7 @@ export default function Home() {
           e.preventDefault();
           addTodo({
             variables: {
-              data: {
-                body: "moi",
-                text: "hej",
-              },
+              datas,
             },
           });
         }}
