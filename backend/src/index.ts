@@ -27,7 +27,7 @@ import cors from "cors";
 import { graphqlUploadExpress } from "graphql-upload";
 import path from "path";
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 
 (async () => {
   const app = express();
@@ -69,7 +69,7 @@ const PORT = process.env.PORT || 4000;
 
   // app.use("/images", express.static(path.join(__dirname, "../images")));
 
-  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 1 }));
+  app.use(graphqlUploadExpress({ maxFileSize: 5242880, maxFiles: 1 })); // 5mb
   apolloServer.applyMiddleware({ app, cors: corsOptions, path: "/" });
 
   SubscriptionServer.create(

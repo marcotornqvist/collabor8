@@ -26,6 +26,8 @@ import { S3 } from "aws-sdk";
 import { GraphQLUpload } from "graphql-upload";
 import { createWriteStream } from "fs";
 import { uuidFilenameTransform } from "../helpers/uuidFileNameTransform";
+import Jimp from "jimp";
+const sharp = require("sharp");
 
 // TODO: Queries/mutations to be implemented:
 // countries:             Return all countries - Done
@@ -186,6 +188,7 @@ export class ProfileResolver {
     @Arg("file", () => GraphQLUpload)
     { filename, createReadStream, mimetype, encoding }: Upload
   ): Promise<UploadedFileResponse> {
+    // Checks that file type is either jpeg, jpg or png 
     if (
       mimetype !== "image/jpeg" &&
       mimetype !== "image/jpg" &&
@@ -197,25 +200,33 @@ export class ProfileResolver {
     filename = uuidFilenameTransform(filename);
 
     const s3DefaultParams = {
-      ACL: "public-read",
       Bucket: process.env.AWS_BUCKET_NAME!,
       Conditions: [
         ["content-length-range", 0, 1024000], // 1 Mb
-        { acl: "public-read" },
       ],
       ContentType: "image/jpeg,image/png",
     };
 
     const s3 = new S3({
+      region: process.env.AWS_REGION!,
       accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-      region: process.env.AWS_REGION!,
     });
+
+    // Resizes the image to a size of 250x250
+    const transformer = await sharp().resize({
+      width: 250,
+      height: 250,
+      fit: sharp.fit.cover,
+      position: sharp.strategy.entropy,
+    });
+
+    const stream = createReadStream().pipe(transformer);
 
     const { Location } = await s3
       .upload({
         ...s3DefaultParams,
-        Body: createReadStream(),
+        Body: stream,
         Key: filename,
       })
       .promise();
@@ -238,65 +249,30 @@ export class ProfileResolver {
     };
   }
 
-  // @Mutation(() => Boolean, {
-  //   description: "Update Profile Image",
-  // })
-  // // @UseMiddleware(isAuth)
-  // async singleUpload(
-  //   // @Ctx() { payload, prisma }: Context,
-  //   @Arg("file", () => GraphQLUpload)
-  //   { createReadStream, filename }: Upload
-  // ): Promise<Boolean> {
-  //   // return true;
-  //   const s3 = new S3({
-  //     accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-  //     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-  //     region: process.env.AWS_REGION!,
-  //   });
-
-  //   const createUploadStream = (key: string): S3UploadStream => {
-  //     const pass = new stream.PassThrough();
-  //     return {
-  //       writeStream: pass,
-  //       promise: s3
-  //         .upload({
-  //           Bucket: process.env.AWS_BUCKET_NAME!,
-  //           Key: key,
-  //           Body: pass,
-  //         })
-  //         .promise(),
-  //     };
-  //   };
-
-  //   const uploadStream = createUploadStream(filename);
-
-  //   stream.pipe(uploadStream.writeStream);
-  //   const result = await uploadStream.promise;
-
-  //   // Get the link representing the uploaded file
-  //   const link = result.Location;
-  //   console.log(link);
-
-  //   return true;
-  //   // return { filename, mimetype, encoding, url: link };
-  // }
-
+  // https://stackoverflow.com/questions/67736607/how-to-process-uploaded-image-with-graphql-apollo-with-sharpjs-in-nodejs
   @Mutation(() => Boolean, {
     description: "Update File",
   })
   // @UseMiddleware(isAuth)
   async uploadFile(
     // @Ctx() { payload, prisma }: Context
-    @Arg("file", () => GraphQLUpload) { createReadStream, filename }: Upload
+    @Arg("file", () => GraphQLUpload)
+    { createReadStream, filename }: Upload
   ): Promise<Boolean> {
-    console.log(filename);
+    const transformer = sharp().resize({
+      width: 250,
+      height: 250,
+      fit: sharp.fit.cover,
+      position: sharp.strategy.entropy,
+    });
+
     return new Promise(async (resolve, reject) =>
       createReadStream()
+        .pipe(transformer)
         .pipe(createWriteStream(__dirname + `/../../images/${filename}`))
         .on("finish", () => resolve(true))
         .on("error", () => reject(false))
     );
-    return true;
   }
 }
 

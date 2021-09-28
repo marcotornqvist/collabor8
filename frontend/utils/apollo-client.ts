@@ -6,7 +6,7 @@ import {
 import { createUploadLink } from "apollo-upload-client";
 
 const uploadLink = createUploadLink({
-  uri: "http://localhost:4000", // Apollo Server is served from port 5000
+  uri: "http://localhost:5000", // Apollo Server is served from port 5000
   headers: {
     "keep-alive": "true",
   },
