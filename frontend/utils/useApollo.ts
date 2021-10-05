@@ -9,7 +9,10 @@ import { createUploadLink } from "apollo-upload-client";
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
 const uploadLink = createUploadLink({
-  uri: "http://localhost:5000", // Apollo Server is served from port 5000
+  uri:
+    process.env.NODE_ENV === "production"
+      ? process.env.NEXT_PUBLIC_BASE_URL
+      : "http://localhost:5000",
   headers: {
     "keep-alive": "true",
   },

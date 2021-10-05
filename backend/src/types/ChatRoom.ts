@@ -22,7 +22,7 @@ export class ChatRoom {
   contactId?: string;
 
   @Field(() => [Message], { nullable: true })
-  messages?: [Message] | null;
+  messages?: Message[] | null;
 
   @Field(() => Date)
   createdAt: Date;

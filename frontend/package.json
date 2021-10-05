@@ -6,22 +6,31 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "codegen": "npx apollo client:codegen --target typescript --endpoint=http://localhost:5000 --outputFlat --includes \"pages/**\" --excludes \"generated\" generated",
+    "preinstall": "npx npm-force-resolutions"
   },
   "dependencies": {
     "@apollo/client": "^3.3.21",
     "apollo-upload-client": "^16.0.0",
     "dotenv": "^10.0.0",
+    "graphql": "14.7.0",
     "next": "11.0.1",
+    "npm-force-resolutions": "^0.0.10",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "sass": "^1.37.5"
   },
   "devDependencies": {
     "@types/apollo-upload-client": "^14.1.0",
+    "@types/graphql": "^14.5.0",
     "@types/react": "17.0.15",
+    "apollo": "^2.33.6",
     "eslint": "7.31.0",
     "eslint-config-next": "11.0.1",
     "typescript": "4.3.5"
+  },
+  "resolutions": {
+    "graphql": "14.7.0"
   }
 }

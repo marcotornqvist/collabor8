@@ -1,5 +1,6 @@
 import React, { useEffect, useState, Fragment } from "react";
 import { useMutation, gql } from "@apollo/client";
+import { FileResponse } from "ts/interfaces/responses/fileResponse";
 import Image from "next/image";
 
 const SINGLE_UPLOAD = gql`
@@ -13,15 +14,8 @@ const SINGLE_UPLOAD = gql`
   }
 `;
 
-interface IFileResponse {
-  file: string;
-  mimetype: string;
-  encoding: string;
-  url: string;
-}
-
 export const UploadFile = () => {
-  const [lastUploaded, setLastUploaded] = useState<IFileResponse>();
+  const [lastUploaded, setLastUploaded] = useState<FileResponse>();
   const [mutate, { loading, error, data }] = useMutation(SINGLE_UPLOAD);
   const onChange = ({
     target: {
@@ -36,8 +30,6 @@ export const UploadFile = () => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{JSON.stringify(error, null, 2)}</div>;
-
-  console.log(lastUploaded);
 
   return (
     <Fragment>
