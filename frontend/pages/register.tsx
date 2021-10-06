@@ -1,7 +1,6 @@
-import { useState, FC, useEffect } from "react";
+import React, { useState, FC, useEffect } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { register, registerVariables } from "generated/register";
-// import { useRegisterMutation } from "../generated/graphql";
 
 const REGISTER_USER = gql`
   mutation register($data: RegisterInput!) {
@@ -18,31 +17,39 @@ const REGISTER_USER = gql`
   }
 `;
 
-const Register = () => {
-  const [firstName, setFirstName] = useState("john");
-  const [lastName, setLastName] = useState("doe");
-  const [email, setEmail] = useState("johndoe2@gmail.com");
-  const [password, setPassword] = useState("123456");
-  const [confirmPassword, setConfirmPassword] = useState("123456");
-  const [errors, setErrors] = useState({});
+interface Errors {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+}
 
-  const [registerUser, { data, loading, error }] = useMutation<
-    register,
-    registerVariables
-  >(REGISTER_USER, {
-    variables: {
-      data: {
-        email,
-        firstName,
-        lastName,
-        password,
-        confirmPassword,
-      },
-    },
+const Register = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
+  const [errors, setErrors] = useState<Errors>({});
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
+  };
+
+  const [registerUser, { loading }] = useMutation<register, registerVariables>(
+    REGISTER_USER,
+    {
+      variables: {
+        data: formData,
+      },
+      onError: (error) => setErrors(error.graphQLErrors[0].extensions?.errors),
+    }
+  );
 
   if (loading) return "Submitting...";
-  if (error?.graphQLErrors) return `Submission error! ${error.message}`;
 
   return (
     <div className="register">
@@ -54,50 +61,50 @@ const Register = () => {
           }}
         >
           <div>
+            {errors.firstName && <label>{errors.firstName}</label>}
             <input
-              value={firstName}
+              value={formData.firstName}
+              name="firstName"
               placeholder="firstname"
-              onChange={(e) => {
-                setFirstName(e.target.value);
-              }}
+              onChange={onChange}
             />
           </div>
           <div>
+            {errors.lastName && <label>{errors.lastName}</label>}
             <input
-              value={lastName}
+              value={formData.lastName}
+              name="lastName"
               placeholder="lastname"
-              onChange={(e) => {
-                setLastName(e.target.value);
-              }}
+              onChange={onChange}
             />
           </div>
           <div>
+            {errors.email && <label>{errors.email}</label>}
             <input
-              value={email}
+              value={formData.email}
+              name="email"
               placeholder="email"
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
+              onChange={onChange}
             />
           </div>
           <div>
+            {errors.password && <label>{errors.password}</label>}
             <input
               type="password"
-              value={password}
+              name="password"
+              value={formData.password}
               placeholder="password"
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
+              onChange={onChange}
             />
           </div>
           <div>
+            {errors.confirmPassword && <label>{errors.confirmPassword}</label>}
             <input
               type="password"
-              value={confirmPassword}
+              name="confirmPassword"
+              value={formData.confirmPassword}
               placeholder="confirm password"
-              onChange={(e) => {
-                setConfirmPassword(e.target.value);
-              }}
+              onChange={onChange}
             />
           </div>
           <button type="submit">register</button>

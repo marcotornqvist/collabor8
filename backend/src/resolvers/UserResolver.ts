@@ -261,6 +261,7 @@ export class UserResolver {
         errors.lastName = "Last name cannot be more than 255 characters";
       }
 
+      // Checks that password length is more than 6 and that confirm password matches
       if (password.length < 6) {
         errors.password = "Password must be atleast 6 characters";
       } else if (password !== confirmPassword) {
