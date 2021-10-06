@@ -2,9 +2,11 @@ import {
   ApolloClient,
   InMemoryCache,
   NormalizedCacheObject,
+  operationName,
 } from "@apollo/client";
 import { useMemo } from "react";
 import { createUploadLink } from "apollo-upload-client";
+import { getAccessToken } from "./accessToken";
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
@@ -23,6 +25,7 @@ function createApolloClient() {
     ssrMode: typeof window === "undefined",
     link: uploadLink,
     cache: new InMemoryCache(),
+    credentials: "include",
   });
 }
 

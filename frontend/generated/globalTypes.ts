@@ -8,6 +8,14 @@
 //==============================================================
 
 /**
+ * Login a User
+ */
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+
+/**
  * Create a new user
  */
 export interface RegisterInput {

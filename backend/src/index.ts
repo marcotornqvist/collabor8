@@ -70,7 +70,7 @@ const PORT = process.env.PORT || 5000;
   // app.use("/images", express.static(path.join(__dirname, "../images")));
 
   app.use(graphqlUploadExpress({ maxFileSize: 5242880, maxFiles: 1 })); // 5mb
-  apolloServer.applyMiddleware({ app, cors: corsOptions, path: "/" });
+  apolloServer.applyMiddleware({ app, cors: false, path: "/" });
 
   SubscriptionServer.create(
     {

@@ -26,30 +26,31 @@ interface Errors {
 }
 
 const Register = () => {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const [firstName, setFirstName] = useState("john");
+  const [lastName, setLastName] = useState("doe");
+  const [email, setEmail] = useState("johndoe2@gmail.com");
+  const [password, setPassword] = useState("123456");
+  const [confirmPassword, setConfirmPassword] = useState("123456");
   const [errors, setErrors] = useState<Errors>({});
 
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
-  };
-
-  const [registerUser, { loading }] = useMutation<register, registerVariables>(
+  const [register, { loading }] = useMutation<register, registerVariables>(
     REGISTER_USER,
     {
       variables: {
-        data: formData,
+        data: {
+          firstName,
+          lastName,
+          email,
+          password,
+          confirmPassword,
+        },
       },
       onError: (error) => setErrors(error.graphQLErrors[0].extensions?.errors),
     }
   );
 
   if (loading) return "Submitting...";
+  console.log(errors);
 
   return (
     <div className="register">
@@ -57,54 +58,60 @@ const Register = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            registerUser();
+            setErrors({});
+            register();
           }}
         >
           <div>
             {errors.firstName && <label>{errors.firstName}</label>}
             <input
-              value={formData.firstName}
-              name="firstName"
+              value={firstName}
               placeholder="firstname"
-              onChange={onChange}
+              onChange={(e) => {
+                setFirstName(e.target.value);
+              }}
             />
           </div>
           <div>
             {errors.lastName && <label>{errors.lastName}</label>}
             <input
-              value={formData.lastName}
-              name="lastName"
+              value={lastName}
               placeholder="lastname"
-              onChange={onChange}
+              onChange={(e) => {
+                setLastName(e.target.value);
+              }}
             />
           </div>
           <div>
             {errors.email && <label>{errors.email}</label>}
             <input
-              value={formData.email}
-              name="email"
+              value={email}
               placeholder="email"
-              onChange={onChange}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
             />
           </div>
           <div>
             {errors.password && <label>{errors.password}</label>}
             <input
               type="password"
-              name="password"
-              value={formData.password}
+              value={password}
               placeholder="password"
-              onChange={onChange}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
             />
           </div>
           <div>
             {errors.confirmPassword && <label>{errors.confirmPassword}</label>}
             <input
               type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
+              value={confirmPassword}
               placeholder="confirm password"
-              onChange={onChange}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+              }}
             />
           </div>
           <button type="submit">register</button>

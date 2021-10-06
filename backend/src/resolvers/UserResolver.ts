@@ -29,6 +29,7 @@ import { createUsername } from "../helpers/createUsername";
 import { pagination } from "../utils/pagination";
 import { capitalizeWords } from "../helpers/capitalizeWords";
 import countries from "../data/countries";
+import { validateEmail } from "../helpers/validateEmail";
 
 // TODO: Queries/mutations to be implemented:
 // users:           Return all users - Done
@@ -268,9 +269,9 @@ export class UserResolver {
         errors.confirmPassword = "Passwords don't match";
       }
 
-      // Check that email length is not more than 255 characters
-      if (email.length > 255) {
-        errors.email = "Email cannot be more than 255 characters";
+      // Checks that email is valid
+      if (validateEmail(email)) {
+        errors.email = "Email is not valid";
       }
 
       // Check that email input is not empty
