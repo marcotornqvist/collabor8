@@ -16,7 +16,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     fetch(
       process.env.NODE_ENV === "production"
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}refresh_token`
+        ? `${process.env.NEXT_PUBLIC_BASE_URL}/refresh_token`
         : "http://localhost:5000/refresh_token",
       {
         method: "POST",

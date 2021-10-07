@@ -11,7 +11,7 @@ import { createUploadLink } from "apollo-upload-client";
 import { getAccessToken } from "./accessToken";
 import { setContext } from "@apollo/client/link/context";
 
-let apolloClient: ApolloClient<NormalizedCacheObject>;
+let apolloClient: ApolloClient<NormalizedCacheObject | null>;
 
 const uploadLink = createUploadLink({
   uri:

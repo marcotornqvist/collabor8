@@ -5,7 +5,7 @@ const origins = [
   // process.env.NODE_ENV === "production"
   //   ? "https://collabor8-frontend.vercel.app/"
   //   : "http://localhost:3000",
-  "https://collabor8-frontend.vercel.app/",
+  "https://collabor8-frontend.vercel.app",
   "http://localhost:3000",
   "https://localhost:3000",
   "https://studio.apollographql.com",
