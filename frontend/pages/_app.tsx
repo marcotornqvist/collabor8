@@ -14,10 +14,15 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/refresh_token", {
-      method: "POST",
-      credentials: "include",
-    }).then(async (x) => {
+    fetch(
+      process.env.NODE_ENV === "production"
+        ? `${process.env.NEXT_PUBLIC_BASE_URL}refresh_token`
+        : "http://localhost:5000/refresh_token",
+      {
+        method: "POST",
+        credentials: "include",
+      }
+    ).then(async (x) => {
       const { accessToken } = await x.json();
       setAccessToken(accessToken);
       setLoading(false);
