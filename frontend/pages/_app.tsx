@@ -4,11 +4,25 @@ import "../styles/app.scss";
 // import client from "../utils/apollo-client";
 import { useApollo } from "../utils/useApollo";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { setAccessToken } from "utils/accessToken";
 
 // <script src="https://kit.fontawesome.com/0f6f932cce.js" crossorigin="anonymous"></script>
 
 function MyApp({ Component, pageProps }: AppProps) {
   const client = useApollo(pageProps.initialApolloState);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/refresh_token", {
+      method: "POST",
+      credentials: "include",
+    }).then(async (x) => {
+      const { accessToken } = await x.json();
+      setAccessToken(accessToken);
+      setLoading(false);
+    });
+  }, []);
 
   return (
     <ApolloProvider client={client}>
@@ -38,4 +52,5 @@ function MyApp({ Component, pageProps }: AppProps) {
     </ApolloProvider>
   );
 }
+
 export default MyApp;

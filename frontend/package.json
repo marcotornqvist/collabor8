@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node server.js",
     "lint": "next lint",
     "codegen": "npx apollo client:codegen --target typescript --endpoint=http://localhost:5000 --outputFlat --includes \"pages/**\" --excludes \"generated\" generated",
     "preinstall": "npx npm-force-resolutions"

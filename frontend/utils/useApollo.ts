@@ -1,12 +1,15 @@
 import {
   ApolloClient,
+  ApolloLink,
   InMemoryCache,
   NormalizedCacheObject,
   operationName,
+  concat,
 } from "@apollo/client";
 import { useMemo } from "react";
 import { createUploadLink } from "apollo-upload-client";
 import { getAccessToken } from "./accessToken";
+import { setContext } from "@apollo/client/link/context";
 
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
@@ -20,10 +23,23 @@ const uploadLink = createUploadLink({
   },
 });
 
+const authMiddleware = new ApolloLink((operation, forward) => {
+  // add the authorization to the headers
+  const accessToken = getAccessToken();
+  operation.setContext(({ headers = {} }) => ({
+    headers: {
+      ...headers,
+      authorization: accessToken ? `bearer ${accessToken}` : "",
+    },
+  }));
+
+  return forward(operation);
+});
+
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: uploadLink,
+    link: concat(authMiddleware, uploadLink),
     cache: new InMemoryCache(),
     credentials: "include",
   });

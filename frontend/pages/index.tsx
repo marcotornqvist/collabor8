@@ -1,6 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { addTodo, addTodoVariables } from "generated/addTodo";
 import Users from "@components-pages/landing/Users";
+import LoggedInUser from "@components-pages/landing/LoggedInUser";
 
 const ADD_TODO = gql`
   mutation addTodo($datas: Test!) {
@@ -28,7 +29,8 @@ export default function Home() {
   return (
     <div className="landing-page">
       <div className="container">
-        <Users />
+        <LoggedInUser />
+        {/* <Users /> */}
         <form
           onSubmit={(e) => {
             e.preventDefault();

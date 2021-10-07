@@ -1,6 +1,7 @@
 import React, { useState, FC, useEffect } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { login, loginVariables } from "generated/login";
+import { setAccessToken } from "utils/accessToken";
 
 const LOGIN_USER = gql`
   mutation login($data: LoginInput!) {
@@ -16,8 +17,6 @@ const LOGIN_USER = gql`
     }
   }
 `;
-
-// Check the next js guide to solve cookies problem
 
 const Login = () => {
   const [email, setEmail] = useState("tarjahalonen@gmail.com");
@@ -37,8 +36,12 @@ const Login = () => {
     }
   );
 
+  // Cookies aren't meant to be visible in the networks tab,
+  // test by toggling between login and test,
+  // now all you need is to make that cookie persist somehow.
+
   if (loading) return "Submitting...";
-  console.log(data);
+  if (data) setAccessToken(data.login.accessToken);
 
   return (
     <div className="login">
