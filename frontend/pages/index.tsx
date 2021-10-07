@@ -30,7 +30,7 @@ export default function Home() {
     <div className="landing-page">
       <div className="container">
         <LoggedInUser />
-        {/* <Users /> */}
+        <Users />
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -38,6 +38,7 @@ export default function Home() {
           }}
         >
           <button type="submit">Add Todo</button>
+          {process.env.BASE_URL!}
         </form>
       </div>
     </div>

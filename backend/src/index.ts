@@ -25,7 +25,6 @@ import { findUser } from "./utils/findUser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { graphqlUploadExpress } from "graphql-upload";
-import path from "path";
 
 const PORT = process.env.PORT || 5000;
 

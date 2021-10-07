@@ -10,7 +10,9 @@ const GET_LOGGED_IN_USER = gql`
 `;
 
 const LoggedInUser = () => {
-  const { data, refetch } = useQuery(GET_LOGGED_IN_USER);
+  const { data, refetch } = useQuery(GET_LOGGED_IN_USER, {
+    fetchPolicy: "network-only",
+  });
 
   const refetchHandler = () => {
     refetch();
@@ -19,6 +21,7 @@ const LoggedInUser = () => {
   console.log(data);
   return (
     <div className="logged-in-user">
+      <h3>Logged in user: {data && data.loggedInUser?.email}</h3>
       <button onClick={() => refetchHandler()}>Refetch User</button>
     </div>
   );

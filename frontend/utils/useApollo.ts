@@ -13,11 +13,10 @@ import { setContext } from "@apollo/client/link/context";
 
 let apolloClient: ApolloClient<NormalizedCacheObject | null>;
 
+console.log(process.env.moi);
+
 const uploadLink = createUploadLink({
-  uri:
-    process.env.NODE_ENV === "production"
-      ? process.env.NEXT_PUBLIC_BASE_URL
-      : "http://localhost:5000",
+  uri: process.env.BASE_URL,
   headers: {
     "keep-alive": "true",
   },
