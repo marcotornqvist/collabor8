@@ -188,7 +188,7 @@ export class ProfileResolver {
     @Arg("file", () => GraphQLUpload)
     { filename, createReadStream, mimetype, encoding }: Upload
   ): Promise<UploadedFileResponse> {
-    // Checks that file type is either jpeg, jpg or png 
+    // Checks that file type is either jpeg, jpg or png
     if (
       mimetype !== "image/jpeg" &&
       mimetype !== "image/jpg" &&
@@ -277,5 +277,5 @@ export class ProfileResolver {
 }
 
 // --header 'content-type: application/json' \
-// --url http://localhost:5000/ \
+// --url http://localhost:4000/ \
 // --data '{"query":"mutation($uploadFileFile: Upload!) {\n  uploadFile(file: $uploadFileFile)\n}","variables":"{\n  \"uploadFileFile\": null\n}"}'

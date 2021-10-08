@@ -17,6 +17,7 @@ console.log(process.env.moi);
 
 const uploadLink = createUploadLink({
   uri: process.env.BASE_URL,
+  credentials: "include",
   headers: {
     "keep-alive": "true",
   },
@@ -40,7 +41,6 @@ function createApolloClient() {
     ssrMode: typeof window === "undefined",
     link: concat(authMiddleware, uploadLink),
     cache: new InMemoryCache(),
-    credentials: "include",
   });
 }
 

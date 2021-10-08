@@ -26,7 +26,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { graphqlUploadExpress } from "graphql-upload";
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 
 (async () => {
   const app = express();

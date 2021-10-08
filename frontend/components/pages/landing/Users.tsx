@@ -16,7 +16,7 @@ const Users = () => {
       usersData: {},
     },
   });
-  console.log(data);
+  // console.log(data);
   return (
     <div className="users">
       {data?.users.map((item: any) => (

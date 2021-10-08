@@ -46,35 +46,6 @@ import { validateEmail } from "../helpers/validateEmail";
 // This resolver handles all the user actions such as register & login
 @Resolver(User)
 export class UserResolver {
-  // Delete users2 and addTodo later + their types
-  @Mutation(() => TestResponse, {
-    description: "Test Resolver Delete Later",
-  })
-  async addTodo(@Arg("data") { text, body }: Test) {
-    console.log(text, body);
-    return { text, body };
-  }
-
-  @Query(() => User, {
-    nullable: true,
-    description: "Returns all users/profiles that are not disabled",
-  })
-  async users2(@Arg("id") id: string, @Ctx() { prisma }: Context) {
-    // Find all users
-    return prisma.user.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        profile: {
-          include: {
-            discipline: true,
-          },
-        },
-      },
-    });
-  }
-
   @Query(() => [User], {
     nullable: true,
     description: "Returns all users/profiles that are not disabled",
@@ -377,6 +348,8 @@ export class UserResolver {
     }
 
     sendRefreshToken(res, createRefreshToken(user));
+    // sendRefreshToken(res, "faosoksfkfs");
+    // createCookie(res);
 
     return {
       accessToken: createAccessToken(user),

@@ -36,10 +36,6 @@ const Login = () => {
     }
   );
 
-  // Cookies aren't meant to be visible in the networks tab,
-  // test by toggling between login and test,
-  // now all you need is to make that cookie persist somehow.
-
   if (loading) return "Submitting...";
   if (data) setAccessToken(data.login.accessToken);
 

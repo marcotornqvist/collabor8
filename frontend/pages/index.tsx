@@ -2,44 +2,16 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { addTodo, addTodoVariables } from "generated/addTodo";
 import Users from "@components-pages/landing/Users";
 import LoggedInUser from "@components-pages/landing/LoggedInUser";
-
-const ADD_TODO = gql`
-  mutation addTodo($datas: Test!) {
-    addTodo(data: $datas) {
-      text
-      body
-    }
-  }
-`;
+import CookieTest from "@components-pages/landing/CookieTest";
 
 export default function Home() {
-  const datas = {
-    body: "m",
-    text: "hej",
-  };
-  const [addTodo, { data, loading, error }] = useMutation<
-    addTodo,
-    addTodoVariables
-  >(ADD_TODO, {
-    variables: {
-      datas,
-    },
-  });
-
   return (
     <div className="landing-page">
       <div className="container">
         <LoggedInUser />
         <Users />
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            addTodo();
-          }}
-        >
-          <button type="submit">Add Todo</button>
-          {process.env.BASE_URL!}
-        </form>
+        <br />
+        <CookieTest />
       </div>
     </div>
   );

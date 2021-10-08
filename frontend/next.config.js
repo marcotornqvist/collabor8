@@ -5,7 +5,7 @@ const { PHASE_DEVELOPMENT_SERVER } = require("next/constants");
 module.exports = (phase) => {
   const isDev = phase === PHASE_DEVELOPMENT_SERVER;
   const BASE_URL = isDev
-    ? "http://localhost:5000"
+    ? "http://localhost:4000"
     : process.env.NEXT_PUBLIC_BASE_URL;
 
   return {
