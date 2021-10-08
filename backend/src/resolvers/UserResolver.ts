@@ -15,15 +15,13 @@ import { Context, LooseObject } from "../types/Interfaces";
 import {
   LoginInput,
   RegisterInput,
-  Test,
-  TestResponse,
   UpdateEmailInput,
   UpdatePasswordInput,
   UsersFilterArgs,
 } from "./inputs/UserInput";
 import { AuthResponse } from "./responses/UserResponse";
 import { createAccessToken, createRefreshToken } from "../utils/auth";
-import { sendRefreshToken } from "../utils/sendRefreshToken";
+import { deleteRefreshToken, sendRefreshToken } from '../utils/refreshToken'
 import { isAuth } from "../utils/isAuth";
 import { createUsername } from "../helpers/createUsername";
 import { pagination } from "../utils/pagination";
@@ -538,7 +536,7 @@ export class UserResolver {
     description: "Logout from the currently logged in account",
   })
   async logout(@Ctx() { res }: Context) {
-    sendRefreshToken(res, "");
+    deleteRefreshToken(res);
 
     return true;
   }
@@ -559,7 +557,7 @@ export class UserResolver {
       },
     });
 
-    sendRefreshToken(res, "");
+    deleteRefreshToken(res);
 
     return true;
   }

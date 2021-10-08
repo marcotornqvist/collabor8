@@ -1,6 +1,7 @@
 import React, { useState, FC, useEffect } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { register, registerVariables } from "generated/register";
+import { setAccessToken } from "utils/accessToken";
 
 const REGISTER_USER = gql`
   mutation register($data: RegisterInput!) {
@@ -33,27 +34,28 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("123456");
   const [errors, setErrors] = useState<Errors>({});
 
-  const [register, { loading }] = useMutation<register, registerVariables>(
-    REGISTER_USER,
-    {
-      variables: {
-        data: {
-          firstName,
-          lastName,
-          email,
-          password,
-          confirmPassword,
-        },
+  const [register, { data, loading }] = useMutation<
+    register,
+    registerVariables
+  >(REGISTER_USER, {
+    variables: {
+      data: {
+        firstName,
+        lastName,
+        email,
+        password,
+        confirmPassword,
       },
-      onError: (error) => setErrors(error.graphQLErrors[0].extensions?.errors),
-    }
-  );
+    },
+    onError: (error) => setErrors(error.graphQLErrors[0].extensions?.errors),
+  });
 
   if (loading) return "Submitting...";
+  if (data) setAccessToken(data.register.accessToken);
   console.log(errors);
 
   return (
-    <div className="register">
+    <div className="register-page">
       <div className="container">
         <form
           onSubmit={(e) => {

@@ -40,7 +40,7 @@ const Login = () => {
   if (data) setAccessToken(data.login.accessToken);
 
   return (
-    <div className="login">
+    <div className="login-page">
       <div className="container">
         <form
           onSubmit={(e) => {
