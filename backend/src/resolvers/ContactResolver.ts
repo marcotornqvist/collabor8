@@ -178,8 +178,6 @@ export class ContactResolver {
       },
     });
 
-    console.log(contact);
-
     if (!contact) {
       throw new Error("Contact doesn't exist");
     }
@@ -212,7 +210,7 @@ export class ContactResolver {
       },
     });
 
-    if (!contact || (contact.status === "TRUE")) {
+    if (!contact || contact.status === "TRUE") {
       throw new Error("Contact request doesn't exist");
     }
 

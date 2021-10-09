@@ -1,6 +1,6 @@
-let accessToken = "";
+export let accessToken = "";
 
-export const setAccessToken = (s: string) => {
+export const setAccessToken = async (s: string) => {
   accessToken = s;
 };
 

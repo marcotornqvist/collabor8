@@ -2,7 +2,6 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { addTodo, addTodoVariables } from "generated/addTodo";
 import Users from "@components-pages/landing/Users";
 import LoggedInUser from "@components-pages/landing/LoggedInUser";
-import CookieTest from "@components-pages/landing/CookieTest";
 
 export default function Home() {
   // Follow this guide to properly use the useMutation hook with proper caching
@@ -12,9 +11,9 @@ export default function Home() {
     <div className="landing-page">
       <div className="container">
         <LoggedInUser />
+        <hr />
         <Users />
         <br />
-        <CookieTest />
       </div>
     </div>
   );

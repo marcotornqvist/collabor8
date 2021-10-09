@@ -4,8 +4,8 @@ import "../styles/app.scss";
 // import client from "../utils/apollo-client";
 import { useApollo } from "../utils/useApollo";
 import { useState, useEffect } from "react";
-import { setAccessToken } from "utils/accessToken";
 import Navbar from "@components-layout/Navbar";
+import { state } from "store";
 
 // <script src="https://kit.fontawesome.com/0f6f932cce.js" crossorigin="anonymous"></script>
 
@@ -13,15 +13,23 @@ function MyApp({ Component, pageProps }: AppProps) {
   const client = useApollo(pageProps.initialApolloState);
   const [loading, setLoading] = useState(true);
 
+  // https://www.youtube.com/watch?v=rWanEGMkXwc&t=14s
+  // Follow to add typescript to valtio
+
   useEffect(() => {
-    fetch(`${process.env.BASE_URL!}/refresh_token`, {
-      method: "POST",
-      credentials: "include",
-    }).then(async (x) => {
-      const { accessToken } = await x.json();
-      setAccessToken(accessToken);
-      setLoading(false);
-    });
+    // Fetches the access token and sets it in valtio state management
+    const fetchData = async () => {
+      await fetch(`${process.env.BASE_URL!}/refresh_token`, {
+        method: "POST",
+        credentials: "include",
+      }).then(async (x) => {
+        const { accessToken } = await x.json();
+        state.accessToken = accessToken;
+        setLoading(false);
+      });
+    };
+
+    fetchData();
   }, []);
 
   return (

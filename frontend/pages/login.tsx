@@ -1,7 +1,8 @@
 import React, { useState, FC, useEffect } from "react";
+import { useRouter } from "next/router";
 import { gql, useMutation } from "@apollo/client";
 import { login, loginVariables } from "generated/login";
-import { setAccessToken } from "utils/accessToken";
+import { state } from "store";
 
 const LOGIN_USER = gql`
   mutation login($data: LoginInput!) {
@@ -22,6 +23,7 @@ const Login = () => {
   const [email, setEmail] = useState("tarjahalonen@gmail.com");
   const [password, setPassword] = useState("tarjahalonen@gmail.com");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const [login, { data, loading }] = useMutation<login, loginVariables>(
     LOGIN_USER,
@@ -37,7 +39,10 @@ const Login = () => {
   );
 
   if (loading) return "Submitting...";
-  if (data) setAccessToken(data.login.accessToken);
+  if (data) {
+    state.accessToken = data.login.accessToken;
+    router.push("/");
+  }
 
   return (
     <div className="login-page">

@@ -1,7 +1,7 @@
 import React, { useState, FC, useEffect } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { register, registerVariables } from "generated/register";
-import { setAccessToken } from "utils/accessToken";
+import { state } from "store";
 
 const REGISTER_USER = gql`
   mutation register($data: RegisterInput!) {
@@ -51,8 +51,8 @@ const Register = () => {
   });
 
   if (loading) return "Submitting...";
-  if (data) setAccessToken(data.register.accessToken);
-  console.log(errors);
+  if (data) state.accessToken = data.register.accessToken;
+  // console.log(errors);
 
   return (
     <div className="register-page">

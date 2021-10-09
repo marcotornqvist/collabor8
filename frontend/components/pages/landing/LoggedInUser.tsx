@@ -1,4 +1,8 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useEffect } from "react";
+// import { accessToken } from "utils/accessToken";
+import { useSnapshot } from "valtio";
+import { state } from "store";
 
 const GET_LOGGED_IN_USER = gql`
   query loggedInUser {
@@ -10,19 +14,22 @@ const GET_LOGGED_IN_USER = gql`
 `;
 
 const LoggedInUser = () => {
-  const { data, refetch } = useQuery(GET_LOGGED_IN_USER, {
-    fetchPolicy: "network-only",
-  });
+  const { accessToken } = useSnapshot(state);
+  const [loggedInUser, { data, loading, error }] =
+    useLazyQuery(GET_LOGGED_IN_USER);
 
-  const refetchHandler = () => {
-    refetch();
-    console.log(data);
-  };
-  console.log(data);
+  useEffect(() => {
+    if (accessToken !== "") {
+      loggedInUser();
+    }
+  }, [accessToken]);
+
+  if (loading) return <div>Loading</div>;
+
   return (
-    <div className="logged-in-user">
+    <div className="user">
       <h3>Logged in user: {data && data.loggedInUser?.email}</h3>
-      <button onClick={() => refetchHandler()}>Refetch User</button>
+      {/* <button onClick={() => refetchHandler()}>Refetch User</button> */}
     </div>
   );
 };

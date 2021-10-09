@@ -3,15 +3,15 @@ import {
   ApolloLink,
   InMemoryCache,
   NormalizedCacheObject,
-  operationName,
-  concat,
   Observable,
 } from "@apollo/client";
 import { useMemo } from "react";
 import { createUploadLink } from "apollo-upload-client";
-import { getAccessToken, setAccessToken } from "./accessToken";
+import { accessToken, getAccessToken, setAccessToken } from "./accessToken";
 import { TokenRefreshLink } from "apollo-link-token-refresh";
 import jwtDecode from "jwt-decode";
+import { snapshot, subscribe } from "valtio/vanilla";
+import { state } from "store";
 
 let apolloClient: ApolloClient<NormalizedCacheObject | null>;
 
@@ -57,7 +57,8 @@ const authMiddleware = new ApolloLink(
       let handle: any;
       Promise.resolve(operation)
         .then((operation) => {
-          const accessToken = getAccessToken();
+          const { accessToken } = snapshot(state);
+
           operation.setContext(({ headers = {} }) => ({
             headers: {
               ...headers,
@@ -91,7 +92,7 @@ const uploadLink = createUploadLink({
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: ApolloLink.from([refreshLink, authMiddleware, uploadLink]),
+    link: ApolloLink.from([authMiddleware, refreshLink, uploadLink]),
     cache: new InMemoryCache(),
   });
 }
@@ -113,3 +114,17 @@ export function useApollo(initialState: any) {
   const store = useMemo(() => initializeApollo(initialState), [initialState]);
   return store;
 }
+
+// const authMiddleware = new ApolloLink((operation, forward) => {
+//   // add the authorization to the headers
+//   const accessToken = getAccessToken();
+//   if (accessToken) {
+//     operation.setContext(({ headers = {} }) => ({
+//       headers: {
+//         ...headers,
+//         authorization: accessToken ? `bearer ${accessToken}` : "",
+//       },
+//     }));
+//   }
+//   return forward(operation);
+// });
