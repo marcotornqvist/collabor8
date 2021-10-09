@@ -182,9 +182,9 @@ export class ProfileResolver {
   @Mutation(() => UploadedFileResponse, {
     description: "Update Profile Image",
   })
-  // @UseMiddleware(isAuth)
+  @UseMiddleware(isAuth)
   async singleUpload(
-    // @Ctx() { payload, prisma }: Context,
+    @Ctx() { payload, prisma }: Context,
     @Arg("file", () => GraphQLUpload)
     { filename, createReadStream, mimetype, encoding }: Upload
   ): Promise<UploadedFileResponse> {
@@ -232,14 +232,14 @@ export class ProfileResolver {
       .promise();
 
     // Add later to this resolver updating
-    // await prisma.profile.update({
-    //   where: {
-    //     userId: payload!.userId,
-    //   },
-    //   data: {
-    //     profileImage: Location,
-    //   },
-    // });
+    await prisma.profile.update({
+      where: {
+        userId: payload!.userId,
+      },
+      data: {
+        profileImage: Location,
+      },
+    });
 
     return {
       filename,

@@ -43,6 +43,9 @@ const refreshLink = new TokenRefreshLink({
   },
   handleFetch: (accessToken) => {
     state.accessToken = accessToken;
+    if (accessToken !== "") {
+      state.isAuth = true;
+    }
   },
   handleError: (err) => {
     console.warn("Your refresh token is invalid. Try to relogin");

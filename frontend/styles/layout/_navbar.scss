@@ -1,0 +1,41 @@
+.navbar {
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 5rem;
+    width: 100%;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .links {
+    display: flex;
+    align-items: center;
+
+    li {
+      margin: 0 1.5rem;
+    }
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .notifications-icon {
+      margin-right: 1.5rem;
+    }
+
+    .inbox-icon {
+      margin-right: 1.5rem;
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-md) {
+  // .navbar {
+  // }
+}

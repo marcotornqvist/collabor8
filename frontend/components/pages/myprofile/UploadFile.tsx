@@ -28,7 +28,6 @@ export const UploadFile = () => {
   return (
     <Fragment>
       <input type="file" required onChange={onChange} />
-      <br />
       {/* {Object.keys(lastUploaded).length !== 0 && (
         <div>
           {" "}
@@ -38,14 +37,6 @@ export const UploadFile = () => {
       {lastUploaded && !loading && (
         <Image src={lastUploaded.url} width={64} height={64} />
       )}
-      {/* <Image
-        src={
-          "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/d251e475-f956-4ad8-9173-101872da28c3.jpg"
-        }
-        width={48}
-        height={48}
-        quality={100}
-      /> */}
     </Fragment>
   );
 };

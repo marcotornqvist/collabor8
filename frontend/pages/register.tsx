@@ -6,6 +6,7 @@ const Register = () => {
   return (
     <div className="register-page">
       <div className="container">
+        <aside>Find other creative people to collaborate with.</aside>
         <Form />
       </div>
     </div>

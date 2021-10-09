@@ -27,6 +27,7 @@ const Login = () => {
   if (loading) return "Submitting...";
   if (data) {
     state.accessToken = data.login.accessToken;
+    state.isAuth = true;
     router.push("/");
   }
 

@@ -7,40 +7,14 @@ export default function Home() {
   // https://www.youtube.com/watch?v=4smsVPgZDOo
   return (
     <div className="landing-page">
-      <div className="container">
-        <LoggedInUser />
-        <hr />
-        <Users />
-        <br />
-      </div>
+      <section className="showcase">
+        <div className="container">
+          {/* <LoggedInUser />
+          <hr />
+          <Users />
+          <br /> */}
+        </div>
+      </section>
     </div>
   );
 }
-
-// import { useMutation, gql } from "@apollo/client";
-// import { useEffect } from "react";
-
-// const ADD_TODO = gql`
-//   mutation AddTodo($text: String!, $body: String!) {
-//     addTodo(text: $text, body: $body)
-//   }
-// `;
-
-// export default function Home() {
-//   const [addTodo, { data, loading, error }] = useMutation(ADD_TODO);
-
-//   console.log(data);
-
-//   return (
-//     <div>
-//       <form
-//         onSubmit={(e) => {
-//           e.preventDefault();
-//           addTodo({ variables: { text: "moisf", body: "moisf" } });
-//         }}
-//       >
-//         <button type="submit">Add Todo</button>
-//       </form>
-//     </div>
-//   );
-// }

@@ -3,6 +3,7 @@ import { useMutation } from "@apollo/client";
 import { register, registerVariables } from "generated/register";
 import { state } from "store";
 import { REGISTER_USER } from "@operations-mutations/register";
+import { useRouter } from "next/router";
 
 interface Errors {
   firstName?: string;
@@ -13,6 +14,7 @@ interface Errors {
 }
 
 const Form = () => {
+  const router = useRouter();
   const [firstName, setFirstName] = useState("john");
   const [lastName, setLastName] = useState("doe");
   const [email, setEmail] = useState("johndoe2@gmail.com");
@@ -37,7 +39,12 @@ const Form = () => {
   });
 
   if (loading) return <div>Submitting...</div>;
-  if (data) state.accessToken = data.register.accessToken;
+  if (data) {
+    state.accessToken = data.register.accessToken;
+    state.isAuth = true;
+    router.push("/");
+  }
+
   return (
     <form
       onSubmit={(e) => {
