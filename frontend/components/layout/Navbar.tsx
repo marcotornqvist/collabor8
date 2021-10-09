@@ -1,14 +1,8 @@
-import { gql, useMutation } from "@apollo/client";
 import Link from "next/link";
-import { setAccessToken } from "utils/accessToken";
+import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import { state } from "store";
-
-const LOGOUT_USER = gql`
-  mutation logout {
-    logout
-  }
-`;
+import { LOGOUT_USER } from "@operations-mutations/logout";
 
 const Navbar = () => {
   const router = useRouter();
@@ -37,6 +31,11 @@ const Navbar = () => {
           <li style={{ marginRight: "16px" }}>
             <Link href="/register">
               <a>Register</a>
+            </Link>
+          </li>
+          <li style={{ marginRight: "16px" }}>
+            <Link href="/my-profile">
+              <a>My Profile</a>
             </Link>
           </li>
           <li style={{ marginRight: "16px" }}>

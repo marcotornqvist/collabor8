@@ -1,17 +1,9 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
-
-const GET_USERS = gql`
-  query users($usersData: UsersFilterArgs!) {
-    users(data: $usersData) {
-      id
-      username
-      email
-    }
-  }
-`;
+import { useQuery } from "@apollo/client";
+import { users, usersVariables } from "generated/users";
+import { GET_USERS } from "@operations-queries/getAllUsers";
 
 const Users = () => {
-  const { data } = useQuery(GET_USERS, {
+  const { data } = useQuery<users, usersVariables>(GET_USERS, {
     variables: {
       usersData: {},
     },
@@ -19,7 +11,7 @@ const Users = () => {
   // console.log(data);
   return (
     <div className="users">
-      {data?.users.map((item: any) => (
+      {data?.users?.map((item: any) => (
         <h3 key={item.id}>{item.email}</h3>
       ))}
     </div>

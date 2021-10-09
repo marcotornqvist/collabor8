@@ -7,7 +7,6 @@ import Image from "next/image";
 const MyProfile: FC = () => {
   return (
     <div className="my-profile-page">
-      {/* <Dropdown /> */}
       <div className="container">
         <UploadFile />
         {/* <Image

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "codegen": "npx apollo client:codegen --target typescript --endpoint=http://localhost:4000 --outputFlat --includes \"pages/**\" --excludes \"generated\" generated",
+    "codegen": "npx apollo client:codegen --target typescript --endpoint=http://localhost:4000 --outputFlat --includes \"operations/*/*.tsx\" --excludes \"generated\" generated",
     "preinstall": "npx npm-force-resolutions"
   },
   "dependencies": {

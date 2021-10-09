@@ -1,23 +1,9 @@
 import React, { useState, FC, useEffect } from "react";
 import { useRouter } from "next/router";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { login, loginVariables } from "generated/login";
 import { state } from "store";
-
-const LOGIN_USER = gql`
-  mutation login($data: LoginInput!) {
-    login(data: $data) {
-      accessToken
-      user {
-        username
-        profile {
-          firstName
-          lastName
-        }
-      }
-    }
-  }
-`;
+import { LOGIN_USER } from "@operations-mutations/login";
 
 const Login = () => {
   const [email, setEmail] = useState("tarjahalonen@gmail.com");

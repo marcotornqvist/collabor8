@@ -78,8 +78,3 @@ export class User {
   @Field(() => Date, { nullable: true })
   updatedAt?: Date | null;
 }
-
-// registerEnumType(StatusCode, {
-//   name: "StatusCode",
-//   description: "Status Code enum",
-// });

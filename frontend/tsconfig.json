@@ -19,7 +19,9 @@
       "@styles-modules/*": ["styles/modules/*"],
       "@components-layout/*": ["components/layout/*"],
       "@components-modules/*": ["components/modules/*"],
-      "@components-pages/*": ["components/pages/*"]
+      "@components-pages/*": ["components/pages/*"],
+      "@operations-mutations/*": ["operations/mutations/*"],
+      "@operations-queries/*": ["operations/queries/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

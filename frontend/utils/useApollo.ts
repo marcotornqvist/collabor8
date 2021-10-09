@@ -7,10 +7,9 @@ import {
 } from "@apollo/client";
 import { useMemo } from "react";
 import { createUploadLink } from "apollo-upload-client";
-import { accessToken, getAccessToken, setAccessToken } from "./accessToken";
 import { TokenRefreshLink } from "apollo-link-token-refresh";
 import jwtDecode from "jwt-decode";
-import { snapshot, subscribe } from "valtio/vanilla";
+import { snapshot } from "valtio/vanilla";
 import { state } from "store";
 
 let apolloClient: ApolloClient<NormalizedCacheObject | null>;
@@ -19,14 +18,14 @@ let apolloClient: ApolloClient<NormalizedCacheObject | null>;
 const refreshLink = new TokenRefreshLink({
   accessTokenField: "accessToken",
   isTokenValidOrUndefined: () => {
-    const token = getAccessToken();
+    const { accessToken } = snapshot(state);
 
-    if (!token) {
+    if (!accessToken) {
       return true;
     }
 
     try {
-      const { exp }: any = jwtDecode(token);
+      const { exp }: any = jwtDecode(accessToken);
       if (Date.now() >= exp * 1000) {
         return false;
       } else {
@@ -43,7 +42,7 @@ const refreshLink = new TokenRefreshLink({
     });
   },
   handleFetch: (accessToken) => {
-    setAccessToken(accessToken);
+    state.accessToken = accessToken;
   },
   handleError: (err) => {
     console.warn("Your refresh token is invalid. Try to relogin");

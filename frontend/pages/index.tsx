@@ -1,5 +1,3 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { addTodo, addTodoVariables } from "generated/addTodo";
 import Users from "@components-pages/landing/Users";
 import LoggedInUser from "@components-pages/landing/LoggedInUser";
 

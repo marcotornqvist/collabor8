@@ -8,6 +8,14 @@
 //==============================================================
 
 /**
+ * Sort by most recent or oldest
+ */
+export enum Sort {
+  asc = "asc",
+  desc = "desc",
+}
+
+/**
  * Login a User
  */
 export interface LoginInput {
@@ -27,11 +35,18 @@ export interface RegisterInput {
 }
 
 /**
- * Test Input Type Delete Later
+ * Filter Users
  */
-export interface Test {
-  body: string;
-  text: string;
+export interface UsersFilterArgs {
+  after?: string | null;
+  before?: string | null;
+  first?: number | null;
+  last?: number | null;
+  loggedInUserId?: string | null;
+  searchText?: string | null;
+  disciplines?: number[] | null;
+  country?: string | null;
+  sort?: Sort | null;
 }
 
 //==============================================================

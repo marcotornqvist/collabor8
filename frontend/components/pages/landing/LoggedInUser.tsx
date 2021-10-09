@@ -1,17 +1,8 @@
-import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useEffect } from "react";
-// import { accessToken } from "utils/accessToken";
 import { useSnapshot } from "valtio";
 import { state } from "store";
-
-const GET_LOGGED_IN_USER = gql`
-  query loggedInUser {
-    loggedInUser {
-      id
-      email
-    }
-  }
-`;
+import { GET_LOGGED_IN_USER } from "@operations-queries/getLoggedInUser";
 
 const LoggedInUser = () => {
   const { accessToken } = useSnapshot(state);

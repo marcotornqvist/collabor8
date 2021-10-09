@@ -1,28 +1,22 @@
 import React, { useEffect, useState, Fragment } from "react";
-import { useMutation, gql } from "@apollo/client";
-import { FileResponse } from "ts/interfaces/responses/fileResponse";
+import { useMutation } from "@apollo/client";
+import { FileResponse } from "types";
 import Image from "next/image";
-
-const SINGLE_UPLOAD = gql`
-  mutation ($file: Upload!) {
-    singleUpload(file: $file) {
-      filename
-      mimetype
-      encoding
-      url
-    }
-  }
-`;
+import { SINGLE_UPLOAD } from "@operations-mutations/uploadFile";
+import { singleUpload, singleUploadVariables } from "generated/singleUpload";
 
 export const UploadFile = () => {
-  const [lastUploaded, setLastUploaded] = useState<FileResponse>();
-  const [mutate, { loading, error, data }] = useMutation(SINGLE_UPLOAD);
+  const [lastUploaded, setLastUploaded] = useState<any>();
+  const [singleUpload, { data, loading, error }] = useMutation<
+    singleUpload,
+    singleUploadVariables
+  >(SINGLE_UPLOAD);
   const onChange = ({
     target: {
       validity,
       files: [file],
     },
-  }: any) => validity.valid && mutate({ variables: { file } });
+  }: any) => validity.valid && singleUpload({ variables: { file } });
 
   useEffect(() => {
     if (data) setLastUploaded(data.singleUpload);
@@ -44,14 +38,14 @@ export const UploadFile = () => {
       {lastUploaded && !loading && (
         <Image src={lastUploaded.url} width={64} height={64} />
       )}
-      <Image
+      {/* <Image
         src={
           "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/d251e475-f956-4ad8-9173-101872da28c3.jpg"
         }
         width={48}
         height={48}
         quality={100}
-      />
+      /> */}
     </Fragment>
   );
 };
