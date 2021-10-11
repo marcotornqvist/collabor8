@@ -13,48 +13,32 @@ const Navbar = () => {
 
   const desktop = (
     <>
-      <div className="flex-item">
-        <ul className="links">
-          <li>
-            <Link href="/people">
-              <a>Browse People</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/projects">
-              <a>Browse Projects</a>
-            </Link>
-          </li>
-        </ul>
-      </div>
-      <div className="flex-item">
-        {!loading && (
-          <>
-            {isAuth ? (
-              <div className="icons">
-                <InboxIcon />
-                <NotificationsIcon />
-                <AccountDropdown />
-              </div>
-            ) : (
-              <ul className="auth-links">
-                <li>
-                  <Link href="/register">
-                    <a>Create Account</a>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/login">
-                    <a>
-                      <button>Sign In</button>
-                    </a>
-                  </Link>
-                </li>
-              </ul>
-            )}
-          </>
-        )}
-      </div>
+      {!loading && (
+        <>
+          {isAuth ? (
+            <div className="icons">
+              <InboxIcon />
+              <NotificationsIcon />
+              <AccountDropdown />
+            </div>
+          ) : (
+            <ul className="auth-links">
+              <li>
+                <Link href="/register">
+                  <a>Create Account</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/login">
+                  <a>
+                    <button>Sign In</button>
+                  </a>
+                </Link>
+              </li>
+            </ul>
+          )}
+        </>
+      )}
     </>
   );
 
@@ -72,14 +56,26 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="container">
-        <div className="flex-item">
+        <div className="links">
           <Link href="/">
             <a className="title">
               <h4>Collabor8</h4>
             </a>
           </Link>
+          <ul>
+            <li>
+              <Link href="/people">
+                <a>Browse People</a>
+              </Link>
+            </li>
+            <li>
+              <Link href="/projects">
+                <a>Browse Projects</a>
+              </Link>
+            </li>
+          </ul>
         </div>
-        {width !== 0 && <>{width < 768 ? mobile : desktop}</>}
+        {width !== 0 && <>{width < 920 ? mobile : desktop}</>}
       </div>
     </nav>
   );

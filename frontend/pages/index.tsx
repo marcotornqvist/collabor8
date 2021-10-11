@@ -5,6 +5,7 @@ export default function Home() {
   // Follow this guide to properly use the useMutation hook with proper caching
   // https://www.apollographql.com/docs/react/data/mutations/
   // https://www.youtube.com/watch?v=4smsVPgZDOo
+
   return (
     <div className="landing-page">
       <section className="showcase">

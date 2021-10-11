@@ -18,6 +18,7 @@ const SignoutLink = () => {
       console.log(error);
     }
   };
+
   return (
     <li onClick={() => clickHandler()}>
       <a>Sign Out</a>

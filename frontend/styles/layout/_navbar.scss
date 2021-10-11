@@ -2,7 +2,9 @@
 @use "../abstracts/breakpoints" as *;
 
 .navbar {
-  border-bottom: 1px solid $light-grey;
+  position: fixed;
+  width: 100%;
+  border-bottom: 1px solid $border-color1;
 
   .container {
     display: flex;
@@ -12,53 +14,56 @@
     width: 100%;
   }
 
-  .burger-button {
-    div {
-      width: 25px;
-      height: 3px;
-      margin: 4px 0;
-      border-radius: 3px;
-      background: $black;
-    }
+  .links ul {
+    display: none;
   }
 
-  .account-dropdown {
-    .profile-image {
-      display: flex;
-      align-items: center;
-      border-radius: 50px;
-      border: 3px solid $green;
-      width: 48px;
-      height: 48px;
-
-      img {
-        display: inline;
-        border-radius: 50px;
-      }
-    }
+  .burger-button div {
+    width: 25px;
+    height: 3px;
+    margin: 4px 0;
+    border-radius: 3px;
+    background: $black;
   }
 }
 
-@media only screen and (min-width: $breakpoint-md) {
+@media only screen and (min-width: $breakpoint-lg) {
   .navbar {
-    .flex-item {
-      flex: 1;
-    }
+    position: relative;
 
     .links {
       display: flex;
       align-items: center;
       justify-content: center;
 
-      li {
-        margin: 0 0.75rem;
+      .title {
+        margin-right: 1.5rem;
       }
+
+      ul {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        li {
+          margin-right: 1.5rem;
+
+          &:last-child {
+            margin: 0;
+          }
+        }
+      }
+    }
+
+    a {
+      font-size: 18px;
     }
 
     .icons {
       display: flex;
       justify-content: flex-end;
       align-items: center;
+      position: relative;
 
       .notifications-icon {
         margin-right: 1.5rem;
@@ -66,6 +71,44 @@
 
       .inbox-icon {
         margin-right: 1.5rem;
+      }
+
+      .account-dropdown {
+        .dropdown-menu {
+          position: absolute;
+          right: -0.5rem;
+          top: 3.5rem;
+          width: 250px;
+          background: $white;
+          border-radius: 3px;
+          box-shadow: $box-shadow1;
+          padding: 3rem 2rem;
+
+          ul li {
+            margin-bottom: 2rem;
+
+            &:last-child {
+              border-top: 1px solid $border-color1;
+              padding-top: 2rem;
+              margin: 0;
+
+              a:hover {
+                transition: all 0.1s ease-in-out;
+                color: $red;
+              }
+            }
+          }
+        }
+
+        .fade-in {
+          opacity: 1;
+          transition: opacity 0.2s;
+        }
+
+        .fade-out {
+          opacity: 0;
+          transition: opacity 0.2s;
+        }
       }
     }
 
