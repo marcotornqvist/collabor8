@@ -1,11 +1,11 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { useEffect } from "react";
 import { useSnapshot } from "valtio";
-import { state } from "store";
+import { authState } from "store";
 import { GET_LOGGED_IN_USER } from "@operations-queries/getLoggedInUser";
 
 const LoggedInUser = () => {
-  const { accessToken } = useSnapshot(state);
+  const { accessToken } = useSnapshot(authState);
   const [loggedInUser, { data, loading, error }] =
     useLazyQuery(GET_LOGGED_IN_USER);
 

@@ -260,8 +260,8 @@ export class ProfileResolver {
     { createReadStream, filename }: Upload
   ): Promise<Boolean> {
     const transformer = sharp().resize({
-      width: 250,
-      height: 250,
+      width: 350,
+      height: 350,
       fit: sharp.fit.cover,
       position: sharp.strategy.entropy,
     });

@@ -5,7 +5,7 @@ import "../styles/app.scss";
 import { useApollo } from "../utils/useApollo";
 import { useState, useEffect } from "react";
 import Navbar from "@components-layout/Navbar/Navbar";
-import { state } from "store";
+import { authState } from "store";
 
 // <script src="https://kit.fontawesome.com/0f6f932cce.js" crossorigin="anonymous"></script>
 
@@ -23,11 +23,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         credentials: "include",
       }).then(async (x) => {
         const { accessToken } = await x.json();
-        state.accessToken = accessToken;
+        authState.accessToken = accessToken;
         if (accessToken !== "") {
-          state.isAuth = true;
+          authState.isAuth = true;
         }
-        state.loading = false;
+        authState.loading = false;
       });
     };
 

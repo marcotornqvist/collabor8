@@ -3,22 +3,20 @@ import InboxIcon from "./InboxIcon";
 import NotificationsIcon from "./NotificationsIcon";
 import AccountDropdown from "./AccountDropdown";
 import { useSnapshot } from "valtio";
-import { state } from "store";
+import { authState, navigationState } from "store";
+import useWindowSize from "@hooks/useWindowSize";
 
 const Navbar = () => {
-  const { isAuth, loading } = useSnapshot(state);
+  const { width } = useWindowSize();
+  const { isAuth, loading } = useSnapshot(authState);
+  const { menuOpen } = useSnapshot(navigationState);
 
-  return (
-    <nav className="navbar">
-      <div className="container">
-        <Link href="/">
-          <a className="title">
-            <h3>Collabor8</h3>
-          </a>
-        </Link>
+  const desktop = (
+    <>
+      <div className="flex-item">
         <ul className="links">
           <li>
-            <Link href="/profiles">
+            <Link href="/people">
               <a>Browse People</a>
             </Link>
           </li>
@@ -28,11 +26,12 @@ const Navbar = () => {
             </Link>
           </li>
         </ul>
-        {/* Check loading to not make navigation flicker */}
+      </div>
+      <div className="flex-item">
         {!loading && (
           <>
-            {!isAuth ? (
-              <div className="buttons">
+            {isAuth ? (
+              <div className="icons">
                 <InboxIcon />
                 <NotificationsIcon />
                 <AccountDropdown />
@@ -40,7 +39,7 @@ const Navbar = () => {
             ) : (
               <ul className="auth-links">
                 <li>
-                  <Link href="/login">
+                  <Link href="/register">
                     <a>Create Account</a>
                   </Link>
                 </li>
@@ -55,8 +54,32 @@ const Navbar = () => {
             )}
           </>
         )}
+      </div>
+    </>
+  );
 
-        {/*  */}
+  const mobile = (
+    <div
+      className="burger-button"
+      onClick={() => (navigationState.menuOpen = !menuOpen)}
+    >
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  );
+
+  return (
+    <nav className="navbar">
+      <div className="container">
+        <div className="flex-item">
+          <Link href="/">
+            <a className="title">
+              <h4>Collabor8</h4>
+            </a>
+          </Link>
+        </div>
+        {width !== 0 && <>{width < 768 ? mobile : desktop}</>}
       </div>
     </nav>
   );

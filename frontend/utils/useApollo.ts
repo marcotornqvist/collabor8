@@ -10,7 +10,7 @@ import { createUploadLink } from "apollo-upload-client";
 import { TokenRefreshLink } from "apollo-link-token-refresh";
 import jwtDecode from "jwt-decode";
 import { snapshot } from "valtio/vanilla";
-import { state } from "store";
+import { authState } from "store";
 
 let apolloClient: ApolloClient<NormalizedCacheObject | null>;
 
@@ -18,7 +18,7 @@ let apolloClient: ApolloClient<NormalizedCacheObject | null>;
 const refreshLink = new TokenRefreshLink({
   accessTokenField: "accessToken",
   isTokenValidOrUndefined: () => {
-    const { accessToken } = snapshot(state);
+    const { accessToken } = snapshot(authState);
 
     if (!accessToken) {
       return true;
@@ -42,9 +42,9 @@ const refreshLink = new TokenRefreshLink({
     });
   },
   handleFetch: (accessToken) => {
-    state.accessToken = accessToken;
+    authState.accessToken = accessToken;
     if (accessToken !== "") {
-      state.isAuth = true;
+      authState.isAuth = true;
     }
   },
   handleError: (err) => {
@@ -59,7 +59,7 @@ const authMiddleware = new ApolloLink(
       let handle: any;
       Promise.resolve(operation)
         .then((operation) => {
-          const { accessToken } = snapshot(state);
+          const { accessToken } = snapshot(authState);
 
           operation.setContext(({ headers = {} }) => ({
             headers: {

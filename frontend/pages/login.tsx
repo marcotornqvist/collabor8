@@ -2,12 +2,13 @@ import React, { useState, FC, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useMutation } from "@apollo/client";
 import { login, loginVariables } from "generated/login";
-import { state } from "store";
+import { authState } from "store";
 import { LOGIN_USER } from "@operations-mutations/login";
+import styles from "@styles-modules/Input.module.scss";
 
 const Login = () => {
-  const [email, setEmail] = useState("tarjahalonen@gmail.com");
-  const [password, setPassword] = useState("tarjahalonen@gmail.com");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -26,8 +27,8 @@ const Login = () => {
 
   if (loading) return "Submitting...";
   if (data) {
-    state.accessToken = data.login.accessToken;
-    state.isAuth = true;
+    authState.accessToken = data.login.accessToken;
+    authState.isAuth = true;
     router.push("/");
   }
 
@@ -41,8 +42,10 @@ const Login = () => {
             login();
           }}
         >
-          <div>
+          <div className="input-group">
+            <label htmlFor="email">Email</label>
             <input
+              className={styles.input}
               value={email}
               placeholder="email"
               onChange={(e) => {
@@ -50,8 +53,10 @@ const Login = () => {
               }}
             />
           </div>
-          <div>
+          <div className="input-group">
+            <label htmlFor="password">Password</label>
             <input
+              className={styles.input}
               type="password"
               value={password}
               placeholder="password"

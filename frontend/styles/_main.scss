@@ -1,70 +1,9 @@
-// @font-face {
-//   font-family: "Inter";
-//   src: url("/fonts/Inter-Regular.woff") format("woff");
-//   font-weight: 400;
-//   font-style: normal;
-//   font-display: swap;
-// }
-
-// @font-face {
-//   font-family: "Inter";
-//   src: url("/fonts/Inter-Medium.woff") format("woff");
-//   font-weight: 500;
-//   font-style: normal;
-//   font-display: swap;
-// }
-
-// @font-face {
-//   font-family: "Inter";
-//   font-style: normal;
-//   font-weight: 600;
-//   font-display: swap;
-//   src: url("/fonts/Inter-SemiBold.woff") format("woff");
-// }
-
-// @font-face {
-//   font-family: "Roboto Slab";
-//   src: url("/fonts/RobotoSlab-ExtraBold.woff") format("woff");
-//   font-weight: 800;
-//   font-style: normal;
-//   font-display: swap;
-// }
-
-// @font-face {
-//   font-family: "Roboto Slab";
-//   src: url("/fonts/RobotoSlab-ExtraBold.woff") format("woff");
-//   font-weight: 800;
-//   font-style: normal;
-//   font-display: swap;
-// }
-
-// @font-face {
-//   font-family: "Roboto Slab";
-//   src: url("/fonts/RobotoSlab-Black.woff") format("woff");
-//   font-weight: 900;
-//   font-style: normal;
-//   font-display: swap;
-// }
-
-// Colors
-$blue: #2e56c5;
-$red: #ec2f3c;
-$black: #222222;
-$black-lighter: #222222fa;
-$light-grey: #fafafa;
-$background-light-grey: #eeeeee;
-$hover-light-grey: #f0f0f0;
-$grey: #8a8a8a;
-$white: #ffffff;
-
-// Hover Colors
-$hover-blue: #213e8f;
-$hover-red: #ca2833;
+@use "./abstracts/colors" as *;
+@use "./abstracts/breakpoints" as *;
 
 // Shadows
-$box-shadow1: 1px 1px 3px rgba(0, 0, 0, 0.09), 0 4px 8px rgba(0, 0, 0, 0.06);
-$box-shadow2: 0 0 3px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.05);
-$box-shadow3: 0 0 1px rgba(0, 0, 0, 0.03), 0 6px 12px rgba(0, 0, 0, 0.02);
+// $box-shadow1: 0px 3px 6px rgba(0, 0, 0, 0.01), 0 4px 8px rgba(0, 0, 0, 0.06);
+$box-shadow1: 0px 3px 6px rgba(0, 0, 0, 0.01);
 $text-shadow1: 1px 1px 3px rgba(0, 0, 0, 0.15);
 $text-shadow2: 0 2px 6px rgba(0, 0, 0, 0.09);
 
@@ -74,13 +13,6 @@ $border-color2: #f1f1f1;
 
 // Backdrops
 $backdrop1: rgba(0, 0, 0, 0.5);
-
-// Breakpoints
-$breakpoint-xs: 320px;
-$breakpoint-sm: 480px;
-$breakpoint-md: 768px;
-$breakpoint-lg: 1024px;
-$breakpoint-xl: 1440px;
 
 // Border radius
 $small-radius: 1px;
@@ -111,31 +43,47 @@ html,
 
 h1,
 h2,
-h3 {
-  letter-spacing: 1.5px;
-  font-weight: 800;
-  font-family: "Roboto Slab", serif;
+h3,
+h4,
+button,
+a {
+  font-family: "Cabin", sans-serif;
+}
+
+h1,
+h3,
+h2,
+h4 {
+  font-weight: 700; // bold
+}
+
+button,
+a {
+  font-weight: 600; // semibold
 }
 
 h1 {
-  font-size: 3rem;
+  font-size: 6rem;
 }
 
 h2 {
-  font-size: 2.5rem;
+  font-size: 4rem;
 }
 
 h3 {
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 
 h4 {
-  font-size: 1rem;
+  font-size: 1.5rem;
 }
 
 p,
-span {
+span,
+input,
+label {
   font-size: 14px;
+  font-family: "Open Sans", sans-serif;
 }
 
 button {
@@ -148,7 +96,6 @@ li {
 }
 
 a {
-  color: $blue;
   text-decoration: none;
 }
 

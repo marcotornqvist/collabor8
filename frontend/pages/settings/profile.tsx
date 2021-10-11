@@ -58,7 +58,7 @@ const Profile = () => {
       <div className="container">
         <Sidebar />
         <main className="profile">
-          <UploadFile />
+          {/* <UploadFile /> */}
           <form
             onSubmit={(e) => {
               e.preventDefault();

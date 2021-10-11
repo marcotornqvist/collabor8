@@ -21,7 +21,8 @@
       "@components-modules/*": ["components/modules/*"],
       "@components-pages/*": ["components/pages/*"],
       "@operations-mutations/*": ["operations/mutations/*"],
-      "@operations-queries/*": ["operations/queries/*"]
+      "@operations-queries/*": ["operations/queries/*"],
+      "@hooks/*": ["hooks/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

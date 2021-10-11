@@ -1,9 +1,10 @@
 import React, { useState, FC, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import { register, registerVariables } from "generated/register";
-import { state } from "store";
+import { authState } from "store";
 import { REGISTER_USER } from "@operations-mutations/register";
 import { useRouter } from "next/router";
+import styles from "@styles-modules/Input.module.scss";
 
 interface Errors {
   firstName?: string;
@@ -15,11 +16,11 @@ interface Errors {
 
 const Form = () => {
   const router = useRouter();
-  const [firstName, setFirstName] = useState("john");
-  const [lastName, setLastName] = useState("doe");
-  const [email, setEmail] = useState("johndoe2@gmail.com");
-  const [password, setPassword] = useState("123456");
-  const [confirmPassword, setConfirmPassword] = useState("123456");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<Errors>({});
 
   const [register, { data, loading }] = useMutation<
@@ -40,8 +41,8 @@ const Form = () => {
 
   if (loading) return <div>Submitting...</div>;
   if (data) {
-    state.accessToken = data.register.accessToken;
-    state.isAuth = true;
+    authState.accessToken = data.register.accessToken;
+    authState.isAuth = true;
     router.push("/");
   }
 
@@ -53,9 +54,13 @@ const Form = () => {
         register();
       }}
     >
-      <div>
-        {errors.firstName && <label>{errors.firstName}</label>}
+      <div className="input-group">
+        <label htmlFor="firstName">First Name</label>
+        {errors.firstName && (
+          <span className="error-message">{errors.firstName}</span>
+        )}
         <input
+          className={styles.input}
           value={firstName}
           placeholder="firstname"
           onChange={(e) => {
@@ -63,9 +68,11 @@ const Form = () => {
           }}
         />
       </div>
-      <div>
-        {errors.lastName && <label>{errors.lastName}</label>}
+      <div className="input-group">
+        <label htmlFor="lastName">Last Name</label>
+        {errors.lastName && <span>{errors.lastName}</span>}
         <input
+          className={styles.input}
           value={lastName}
           placeholder="lastname"
           onChange={(e) => {
@@ -73,9 +80,11 @@ const Form = () => {
           }}
         />
       </div>
-      <div>
-        {errors.email && <label>{errors.email}</label>}
+      <div className="input-group">
+        <label htmlFor="email">Email</label>
+        {errors.email && <span className="error-message">{errors.email}</span>}
         <input
+          className={styles.input}
           value={email}
           placeholder="email"
           onChange={(e) => {
@@ -83,9 +92,13 @@ const Form = () => {
           }}
         />
       </div>
-      <div>
-        {errors.password && <label>{errors.password}</label>}
+      <div className="input-group">
+        <label htmlFor="password">Password</label>
+        {errors.password && (
+          <span className="error-message">{errors.password}</span>
+        )}
         <input
+          className={styles.input}
           type="password"
           value={password}
           placeholder="password"
@@ -94,9 +107,13 @@ const Form = () => {
           }}
         />
       </div>
-      <div>
-        {errors.confirmPassword && <label>{errors.confirmPassword}</label>}
+      <div className="input-group">
+        <label htmlFor="confirmPassword">Confirm Password</label>
+        {errors.confirmPassword && (
+          <span className="error-message">{errors.confirmPassword}</span>
+        )}
         <input
+          className={styles.input}
           type="password"
           value={confirmPassword}
           placeholder="confirm password"

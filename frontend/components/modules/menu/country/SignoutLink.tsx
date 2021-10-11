@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { state } from "store";
+import { authState } from "store";
 import { LOGOUT_USER } from "@operations-mutations/logout";
 import { useRouter } from "next/router";
 
@@ -10,8 +10,8 @@ const SignoutLink = () => {
   const clickHandler = async () => {
     try {
       await logout();
-      state.accessToken = "";
-      state.isAuth = false;
+      authState.accessToken = "";
+      authState.isAuth = false;
       await client!.resetStore();
       router.push("/");
     } catch (error: any) {
