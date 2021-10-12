@@ -3,15 +3,18 @@ import { ApolloProvider } from "@apollo/client";
 import "../styles/app.scss";
 // import client from "../utils/apollo-client";
 import { useApollo } from "../utils/useApollo";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Navbar from "@components-layout/navbar/Navbar";
 import Footer from "@components-layout/footer/Footer";
-import { authState } from "store";
+import { authState, navigationState } from "store";
+import Menu from "@components-layout/menu/Menu";
+import { useSnapshot } from "valtio";
 
 // <script src="https://kit.fontawesome.com/0f6f932cce.js" crossorigin="anonymous"></script>
 
 function MyApp({ Component, pageProps }: AppProps) {
   const client = useApollo(pageProps.initialApolloState);
+  const { menuOpen } = useSnapshot(navigationState);
 
   // https://www.youtube.com/watch?v=rWanEGMkXwc&t=14s
   // Follow to add typescript to valtio
@@ -39,6 +42,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ApolloProvider client={client}>
       <title>Collabor8</title>
       <Navbar />
+      {menuOpen && <Menu />}
       <div className="main">
         <Component {...pageProps} />
       </div>

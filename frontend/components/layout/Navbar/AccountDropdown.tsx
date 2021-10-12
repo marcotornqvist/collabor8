@@ -5,7 +5,7 @@ import { authState } from "store";
 import { GET_PROFILE_IMAGE } from "@operations-queries/getLoggedInUser";
 import Link from "next/link";
 import SignoutLink from "@components-modules/global/SignoutLink";
-import { loggedInUser } from "generated/loggedInUser";
+import { loggedInProfile } from "generated/loggedInProfile";
 import useOnClickOutside from "@hooks/useOnClickOutside";
 import ProfileImage from "@components-modules/global/ProfileImage";
 
@@ -13,7 +13,7 @@ const AccountDropdown: FC = () => {
   const { isAuth } = useSnapshot(authState);
   const [show, setShow] = useState(false);
   const [loggedInUser, { data, loading, error }] =
-    useLazyQuery(GET_PROFILE_IMAGE);
+    useLazyQuery<loggedInProfile>(GET_PROFILE_IMAGE);
   const ref = useRef(null);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const AccountDropdown: FC = () => {
         quality={100}
         show={show}
         setShow={(show) => setShow(show)}
-        profileImage={data?.loggedInProfile.profileImage}
+        profileImage={data?.loggedInProfile?.profileImage}
       />
       <div className={`dropdown-menu ${show ? "fade-in" : "fade-out"}`}>
         <ul>

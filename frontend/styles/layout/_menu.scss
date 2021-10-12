@@ -1,0 +1,39 @@
+@use "../abstracts/zindex" as *;
+@use "../abstracts/colors" as *;
+@use "../abstracts/breakpoints" as *;
+
+.mobile-menu {
+  position: absolute;
+  top: 80px;
+  width: 100%;
+  height: calc(100vh - 80px);
+  overflow: scroll;
+  z-index: $z-index2;
+  background: $white;
+
+  ul {
+    overflow-y: scroll;
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid $light-grey;
+      padding: 1.5rem 1rem;
+
+      a {
+        font-size: 1.125rem;
+      }
+
+      &:last-child {
+        border: none;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-sm) {
+  .mobile-menu ul li {
+    padding: 1.5rem;
+  }
+}

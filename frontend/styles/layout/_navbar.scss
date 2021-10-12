@@ -5,15 +5,20 @@
 
 .navbar {
   position: fixed;
-  z-index: $z-index2;
+  z-index: $z-index3;
   width: 100%;
   background: $white;
+  border-bottom: 1px solid $light-grey;
+
+  &.no-border-navbar {
+    border-bottom: 1px solid $white;
+  }
 
   .container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 5rem;
+    height: 79px;
     width: 100%;
   }
 
@@ -59,7 +64,7 @@
     }
 
     a {
-      font-size: 18px;
+      font-size: 1.125rem;
     }
 
     .icons {
@@ -88,6 +93,9 @@
           padding: 3rem 2rem;
 
           ul li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 2rem;
 
             &:last-child {

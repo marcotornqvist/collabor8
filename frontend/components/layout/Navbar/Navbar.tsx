@@ -2,11 +2,13 @@ import Link from "next/link";
 import InboxIcon from "./InboxIcon";
 import NotificationsIcon from "./NotificationsIcon";
 import AccountDropdown from "./AccountDropdown";
+import useWindowSize from "@hooks/useWindowSize";
 import { useSnapshot } from "valtio";
 import { authState, navigationState } from "store";
-import useWindowSize from "@hooks/useWindowSize";
+import { useRouter } from "next/router";
 
 const Navbar = () => {
+  const router = useRouter();
   const { width } = useWindowSize();
   const { isAuth, loading } = useSnapshot(authState);
   const { menuOpen } = useSnapshot(navigationState);
@@ -42,11 +44,16 @@ const Navbar = () => {
     </>
   );
 
+  const burgerBtnClick = (menuOpen: boolean) => {
+    // Prevents body from scrolling in the background whilst menu is open
+    menuOpen
+      ? document.body.classList.remove("body-prevent-scroll")
+      : document.body.classList.add("body-prevent-scroll");
+    navigationState.menuOpen = !menuOpen;
+  };
+
   const mobile = (
-    <div
-      className="burger-button"
-      onClick={() => (navigationState.menuOpen = !menuOpen)}
-    >
+    <div className="burger-button" onClick={() => burgerBtnClick(menuOpen)}>
       <div></div>
       <div></div>
       <div></div>
@@ -54,7 +61,11 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="navbar">
+    <nav
+      className={`navbar${
+        router.asPath === "/" && !menuOpen ? " no-border-navbar" : ""
+      }`}
+    >
       <div className="container">
         <div className="links">
           <Link href="/">
