@@ -1,6 +1,7 @@
 @use "./abstracts/colors" as *;
 @use "./abstracts/shadows" as *;
 @use "./abstracts/breakpoints" as *;
+@use "./abstracts/zindex" as *;
 
 // Border radius
 $small-radius: 1px;
@@ -14,6 +15,16 @@ $medium-radius: 3px;
   letter-spacing: 0.5px;
   font-family: "Inter", sans-serif;
 }
+
+// .dropdown-backdrop {
+//   position: fixed;
+//   top: 0;
+//   right: 0;
+//   bottom: 0;
+//   left: 0;
+//   background-color: $backdrop1;
+//   z-index: $z-index4;
+// }
 
 body,
 html,
@@ -133,9 +144,12 @@ input {
     overflow: initial;
   }
 
-  a:hover {
-    transition: all 0.1s ease-in;
-    color: $green;
+  a {
+    transition: color 0.1s ease-in-out;
+
+    &:hover {
+      color: $green;
+    }
   }
 
   h1 {

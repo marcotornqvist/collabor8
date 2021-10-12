@@ -10,7 +10,7 @@
   overflow: scroll;
   z-index: $z-index2;
   background: $white;
-  padding-bottom: 5rem;
+  padding-bottom: 8rem;
 
   ul {
     overflow-y: scroll;
@@ -21,6 +21,7 @@
       align-items: center;
       border-bottom: 1px solid $light-grey;
       padding: 1.5rem 1rem;
+      cursor: pointer;
 
       a {
         font-size: 1.125rem;

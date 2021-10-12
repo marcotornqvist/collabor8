@@ -26,12 +26,16 @@
     display: none;
   }
 
-  .burger-button div {
-    width: 25px;
-    height: 3px;
-    margin: 4px 0;
-    border-radius: 3px;
-    background: $black;
+  .burger-button {
+    cursor: pointer;
+
+    div {
+      width: 25px;
+      height: 3px;
+      margin: 4px 0;
+      border-radius: 3px;
+      background: $black;
+    }
   }
 }
 
@@ -73,15 +77,17 @@
       align-items: center;
       position: relative;
 
-      .notifications-icon {
-        margin-right: 1.5rem;
-      }
-
+      .notifications-icon,
       .inbox-icon {
         margin-right: 1.5rem;
+        cursor: pointer;
       }
 
       .account-dropdown {
+        img {
+          cursor: pointer;
+        }
+
         .dropdown-menu {
           position: absolute;
           right: -0.5rem;
@@ -91,6 +97,11 @@
           border-radius: 3px;
           box-shadow: $box-shadow1;
           padding: 3rem 2rem;
+
+          // To prevent cursor from working
+          img {
+            cursor: initial;
+          }
 
           ul li {
             display: flex;
@@ -103,22 +114,15 @@
               padding-top: 2rem;
               margin: 0;
 
-              a:hover {
+              a {
                 transition: all 0.1s ease-in-out;
-                color: $red;
+
+                &:hover {
+                  color: $red;
+                }
               }
             }
           }
-        }
-
-        .fade-in {
-          opacity: 1;
-          transition: opacity 0.2s;
-        }
-
-        .fade-out {
-          opacity: 0;
-          transition: opacity 0.2s;
         }
       }
     }

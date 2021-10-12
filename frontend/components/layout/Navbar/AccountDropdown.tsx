@@ -8,6 +8,18 @@ import SignoutLink from "@components-modules/global/SignoutLink";
 import { loggedInProfile } from "generated/loggedInProfile";
 import useOnClickOutside from "@hooks/useOnClickOutside";
 import ProfileImage from "@components-modules/global/ProfileImage";
+import { motion, AnimatePresence } from "framer-motion";
+
+const variants = {
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.2 },
+  },
+  hidden: {
+    opacity: 0,
+    transition: { duration: 0.2 },
+  },
+};
 
 const AccountDropdown: FC = () => {
   const { isAuth } = useSnapshot(authState);
@@ -40,27 +52,36 @@ const AccountDropdown: FC = () => {
         setShow={(show) => setShow(show)}
         profileImage={data?.loggedInProfile?.profileImage}
       />
-      <div className={`dropdown-menu ${show ? "fade-in" : "fade-out"}`}>
-        <ul>
-          <li>
-            <Link href="/settings/profile">
-              <a>Profile Settings</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/settings/account">
-              <a>Account Settings</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/settings/socials">
-              <a>Social Accounts</a>
-            </Link>
-          </li>
-          <SignoutLink />
-        </ul>
-      </div>
-      {/* )} */}
+      <AnimatePresence exitBeforeEnter>
+        {show && (
+          <motion.div
+            className="dropdown-menu"
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            variants={variants}
+          >
+            <ul>
+              <li>
+                <Link href="/settings/profile">
+                  <a>Profile Settings</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/settings/account">
+                  <a>Account Settings</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/settings/socials">
+                  <a>Social Accounts</a>
+                </Link>
+              </li>
+              <SignoutLink />
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -42,7 +42,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ApolloProvider client={client}>
       <title>Collabor8</title>
       <Navbar />
-      {menuOpen && <Menu />}
+      <Menu />
       <div className="main">
         <Component {...pageProps} />
       </div>
