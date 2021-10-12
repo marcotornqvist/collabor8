@@ -57,7 +57,7 @@ const Profile = () => {
     <div className="settings-page">
       <div className="container">
         <Sidebar />
-        <main className="profile">
+        <div className="profile">
           {/* <UploadFile /> */}
           <form
             onSubmit={(e) => {
@@ -98,7 +98,7 @@ const Profile = () => {
             </div>
             <button type="submit">Save Settings</button>
           </form>
-        </main>
+        </div>
       </div>
     </div>
   );

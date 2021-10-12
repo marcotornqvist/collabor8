@@ -6,7 +6,7 @@ const Socials = () => {
     <div className="settings-page socials">
       <div className="container">
         <Sidebar />
-        <main className="socials">socials</main>
+        <div className="socials">socials</div>
       </div>
     </div>
   );

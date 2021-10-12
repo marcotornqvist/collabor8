@@ -4,7 +4,8 @@ import "../styles/app.scss";
 // import client from "../utils/apollo-client";
 import { useApollo } from "../utils/useApollo";
 import { useState, useEffect } from "react";
-import Navbar from "@components-layout/Navbar/Navbar";
+import Navbar from "@components-layout/navbar/Navbar";
+import Footer from "@components-layout/footer/Footer";
 import { authState } from "store";
 
 // <script src="https://kit.fontawesome.com/0f6f932cce.js" crossorigin="anonymous"></script>
@@ -38,7 +39,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ApolloProvider client={client}>
       <title>Collabor8</title>
       <Navbar />
-      <Component {...pageProps} />
+      <div className="main">
+        <Component {...pageProps} />
+      </div>
+      <Footer />
     </ApolloProvider>
   );
 }

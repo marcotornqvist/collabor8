@@ -5,12 +5,21 @@ import { login, loginVariables } from "generated/login";
 import { authState } from "store";
 import { LOGIN_USER } from "@operations-mutations/login";
 import styles from "@styles-modules/Input.module.scss";
+import { useSnapshot } from "valtio";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const { isAuth } = useSnapshot(authState);
+
+  useEffect(() => {
+    // If authenticated redirect to projects
+    if (isAuth) {
+      router.push("/projects");
+    }
+  }, [isAuth]);
 
   const [login, { data, loading }] = useMutation<login, loginVariables>(
     LOGIN_USER,
@@ -29,7 +38,7 @@ const Login = () => {
   if (data) {
     authState.accessToken = data.login.accessToken;
     authState.isAuth = true;
-    router.push("/");
+    router.push("/projects");
   }
 
   return (

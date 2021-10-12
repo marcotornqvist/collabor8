@@ -5,9 +5,9 @@ const Account = () => {
     <div className="settings-page account">
       <div className="container">
         <Sidebar />
-        <main className="account">
+        <div className="account">
           account
-        </main>
+        </div>
       </div>
     </div>
   );

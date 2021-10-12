@@ -1,21 +1,25 @@
-import Users from "@components-pages/landing/Users";
-import LoggedInUser from "@components-pages/landing/LoggedInUser";
+import Link from "next/link";
+import styles from "@styles-modules/Button.module.scss";
+import Image from "next/image";
+import { authState } from "store";
+import { useSnapshot } from "valtio";
+import Showcase from "@components-pages/landing/Showcase";
 
-export default function Home() {
+const Home = () => {
   // Follow this guide to properly use the useMutation hook with proper caching
   // https://www.apollographql.com/docs/react/data/mutations/
   // https://www.youtube.com/watch?v=4smsVPgZDOo
 
   return (
     <div className="landing-page">
-      <section className="showcase">
+      <Showcase />
+      <section className="disciplines">
         <div className="container">
-          {/* <LoggedInUser />
-          <hr />
-          <Users />
-          <br /> */}
+          <h2>Popular Disciplines</h2>
         </div>
       </section>
     </div>
   );
-}
+};
+
+export default Home;

@@ -1,0 +1,5 @@
+@use "../abstracts/colors" as *;
+@use "../abstracts/breakpoints" as *;
+
+@media only screen and (min-width: $breakpoint-lg) {
+}

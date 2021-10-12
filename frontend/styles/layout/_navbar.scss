@@ -1,16 +1,19 @@
 @use "../abstracts/colors" as *;
 @use "../abstracts/breakpoints" as *;
+@use "../abstracts/shadows" as *;
+@use "../abstracts/zindex" as *;
 
 .navbar {
   position: fixed;
+  z-index: $z-index2;
   width: 100%;
-  border-bottom: 1px solid $border-color1;
+  background: $white;
 
   .container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 5rem;
+    height: 5rem;
     width: 100%;
   }
 

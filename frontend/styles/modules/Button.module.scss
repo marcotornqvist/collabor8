@@ -1,14 +1,12 @@
-.btn {  
-  width: 200px; 
-  height: 50px;
-  font-size: 20px;
-  border-radius: 5px;
-  margin-top: 20px;
-  background: rgb(199, 23, 23);
-  color: white;
-  border: none;
+@use "../abstracts/colors" as *;
+@use "../abstracts/shadows" as *;
 
-  &:hover {
-    background: rgb(228, 49, 49);
-  }
+.defaultButton {
+  width: 250px;
+  height: 50px;
+  border: none;
+  background: $white;
+  color: $black;
+  box-shadow: $box-shadow1;
+  border-radius: 3px;
 }

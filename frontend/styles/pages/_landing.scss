@@ -1,0 +1,83 @@
+@use "../abstracts/colors" as *;
+@use "../abstracts/breakpoints" as *;
+@use "../abstracts/zindex" as *;
+
+.landing-page {
+  display: flex;
+  flex-direction: column;
+  min-width: 100%;
+}
+
+.landing-page .showcase {
+  position: relative;
+  min-width: 100%;
+  height: 600px;
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: $breakpoint-lg;
+    z-index: $z-index1;
+
+    h1.title {
+      text-align: center;
+      margin-bottom: 0.5rem;
+      color: $white;
+    }
+
+    p.sub-title {
+      text-align: center;
+      margin-bottom: 4rem;
+      line-height: 28px;
+      font-size: 16px;
+      color: $white;
+      font-weight: 400;
+
+      span {
+        font-style: italic;
+        font-size: inherit;
+        color: inherit;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+.landing-page .disciplines {
+  padding-top: 6rem;
+}
+
+@media only screen and (min-width: $breakpoint-sm) {
+  .landing-page .showcase .hero-text {
+    h1.title {
+      margin-bottom: 1rem;
+    }
+
+    p.sub-title {
+      font-size: 20px;
+      line-height: 32px;
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-lg) {
+  .landing-page .showcase {
+    .hero-text {
+      h1.title {
+        margin-bottom: 0.5rem;
+      }
+
+      p.sub-title {
+        font-size: 24px;
+        line-height: 40px;
+      }
+    }
+  }
+}

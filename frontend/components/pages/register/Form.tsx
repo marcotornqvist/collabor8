@@ -43,7 +43,7 @@ const Form = () => {
   if (data) {
     authState.accessToken = data.register.accessToken;
     authState.isAuth = true;
-    router.push("/");
+    router.push("/my-profile");
   }
 
   return (

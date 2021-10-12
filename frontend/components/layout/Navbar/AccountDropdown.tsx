@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, FC } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { useSnapshot } from "valtio";
 import { authState } from "store";
-import { GET_LOGGED_IN_USER } from "@operations-queries/getLoggedInUser";
+import { GET_PROFILE_IMAGE } from "@operations-queries/getLoggedInUser";
 import Link from "next/link";
 import SignoutLink from "@components-modules/global/SignoutLink";
 import { loggedInUser } from "generated/loggedInUser";
@@ -13,7 +13,7 @@ const AccountDropdown: FC = () => {
   const { isAuth } = useSnapshot(authState);
   const [show, setShow] = useState(false);
   const [loggedInUser, { data, loading, error }] =
-    useLazyQuery<loggedInUser>(GET_LOGGED_IN_USER);
+    useLazyQuery(GET_PROFILE_IMAGE);
   const ref = useRef(null);
 
   useEffect(() => {
@@ -38,9 +38,8 @@ const AccountDropdown: FC = () => {
         quality={100}
         show={show}
         setShow={(show) => setShow(show)}
-        profileImage={data?.loggedInUser.profile?.profileImage}
+        profileImage={data?.loggedInProfile.profileImage}
       />
-      {/* {show && ( */}
       <div className={`dropdown-menu ${show ? "fade-in" : "fade-out"}`}>
         <ul>
           <li>
