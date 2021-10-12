@@ -4,12 +4,13 @@
 
 .mobile-menu {
   position: absolute;
-  top: 80px;
+  top: 5rem;
   width: 100%;
   height: calc(100vh - 80px);
   overflow: scroll;
   z-index: $z-index2;
   background: $white;
+  padding-bottom: 5rem;
 
   ul {
     overflow-y: scroll;
