@@ -43,9 +43,7 @@ export const sendRefreshToken = async (res: Response, token: string) => {
     httpOnly: true,
     path: "/refresh_token",
     domain:
-      process.env.NODE_ENV === "production"
-        ? "https://collabor8-frontend.vercel.app"
-        : "localhost",
+      process.env.NODE_ENV === "production" ? process.env.DOMAIN : "localhost",
     maxAge: 1000 * 3600 * 24 * 30 * 1, // 1 month
     sameSite: "none",
     secure: true,
@@ -56,8 +54,6 @@ export const deleteRefreshToken = async (res: Response) => {
   res.clearCookie("jid", {
     path: "/refresh_token",
     domain:
-      process.env.NODE_ENV === "production"
-        ? "https://collabor8-frontend.vercel.app"
-        : "localhost",
+      process.env.NODE_ENV === "production" ? process.env.DOMAIN : "localhost",
   });
 };
