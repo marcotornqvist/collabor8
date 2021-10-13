@@ -21,7 +21,7 @@ import {
 } from "./inputs/UserInput";
 import { AuthResponse } from "./responses/UserResponse";
 import { createAccessToken, createRefreshToken } from "../utils/auth";
-import { deleteRefreshToken, sendRefreshToken } from '../utils/refreshToken'
+import { deleteRefreshToken, sendRefreshToken } from "../utils/refreshToken";
 import { isAuth } from "../utils/isAuth";
 import { createUsername } from "../helpers/createUsername";
 import { pagination } from "../utils/pagination";
@@ -536,7 +536,7 @@ export class UserResolver {
     description: "Logout from the currently logged in account",
   })
   async logout(@Ctx() { res }: Context) {
-    deleteRefreshToken(res);
+    deleteRefreshToken(res, "");
 
     return true;
   }
@@ -557,7 +557,7 @@ export class UserResolver {
       },
     });
 
-    deleteRefreshToken(res);
+    deleteRefreshToken(res, "");
 
     return true;
   }

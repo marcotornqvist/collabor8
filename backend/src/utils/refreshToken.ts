@@ -42,18 +42,22 @@ export const sendRefreshToken = async (res: Response, token: string) => {
   res.status(202).cookie("jid", token, {
     httpOnly: true,
     path: "/refresh_token",
-    domain:
-      process.env.NODE_ENV === "production" ? process.env.DOMAIN : "localhost",
     maxAge: 1000 * 3600 * 24 * 30 * 1, // 1 month
     sameSite: "none",
     secure: true,
   });
 };
 
-export const deleteRefreshToken = async (res: Response) => {
-  res.clearCookie("jid", {
+export const deleteRefreshToken = async (res: Response, token: string) => {
+  res.status(202).cookie("jid", token, {
+    httpOnly: true,
     path: "/refresh_token",
-    domain:
-      process.env.NODE_ENV === "production" ? process.env.DOMAIN : "localhost",
   });
+
+  // Not working for some reason, come back later.
+  // res.clearCookie("jid", {
+  //   path: "/refresh_token",
+  //   domain:
+  //     process.env.NODE_ENV === "production" ? process.env.DOMAIN : "localhost",
+  // });
 };
