@@ -536,7 +536,7 @@ export class UserResolver {
     description: "Logout from the currently logged in account",
   })
   async logout(@Ctx() { res }: Context) {
-    deleteRefreshToken(res, "");
+    deleteRefreshToken(res);
 
     return true;
   }
@@ -557,7 +557,7 @@ export class UserResolver {
       },
     });
 
-    deleteRefreshToken(res, "");
+    deleteRefreshToken(res);
 
     return true;
   }
