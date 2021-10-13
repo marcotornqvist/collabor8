@@ -152,8 +152,8 @@ const Menu = () => {
               </>
             ) : (
               <>
-                <li onClick={() => closeMenu()}>
-                  <Link href="/register">
+                <Link href="/register">
+                  <li onClick={() => closeMenu()}>
                     <a>Create Account</a>
                     <Image
                       src="/icons/chevron-right-solid.svg"
@@ -161,10 +161,10 @@ const Menu = () => {
                       width={16}
                       height={16}
                     />
-                  </Link>
-                </li>
-                <li onClick={() => closeMenu()}>
-                  <Link href="/login">
+                  </li>
+                </Link>
+                <Link href="/login">
+                  <li onClick={() => closeMenu()}>
                     <a>Sign In</a>
                     <Image
                       src="/icons/chevron-right-solid.svg"
@@ -172,8 +172,8 @@ const Menu = () => {
                       width={16}
                       height={16}
                     />
-                  </Link>
-                </li>
+                  </li>
+                </Link>
               </>
             )}
           </ul>
