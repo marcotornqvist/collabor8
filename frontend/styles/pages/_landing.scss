@@ -1,5 +1,6 @@
 @use "../abstracts/colors" as *;
 @use "../abstracts/breakpoints" as *;
+@use "../abstracts/shadows" as *;
 @use "../abstracts/zindex" as *;
 
 .landing-page {
@@ -12,6 +13,7 @@
   position: relative;
   min-width: 100%;
   height: 600px;
+  padding: 0;
 
   .container {
     display: flex;
@@ -51,7 +53,64 @@
 }
 
 .landing-page .disciplines {
-  padding-top: 6rem;
+  h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-auto-rows: minmax(100px, 300px);
+    gap: 1rem;
+
+    .grid-item {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      h3 {
+        z-index: $z-index1;
+        color: $white;
+        text-shadow: $text-shadow1;
+        font-weight: 600;
+      }
+
+      img {
+        transition: transform 0.5s;
+        transform: scale(1.01);
+      }
+
+      &:hover {
+        img {
+          transform: scale(1.07);
+        }
+      }
+    }
+  }
+}
+
+.landing-page .profiles {
+  background: $light-green;
+
+  h2 {
+    margin-bottom: 1.5rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-auto-rows: minmax(100px, 300px);
+    gap: 1rem;
+
+    .grid-item {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
 }
 
 @media only screen and (min-width: $breakpoint-sm) {
@@ -63,6 +122,23 @@
     p.sub-title {
       font-size: 20px;
       line-height: 32px;
+    }
+  }
+
+  .landing-page .disciplines .grid {
+    grid-auto-rows: minmax(100px, 350px);
+    gap: 1rem;
+  }
+}
+
+@media only screen and (min-width: $breakpoint-md) {
+  .landing-page .disciplines {
+    h2 {
+      text-align: left;
+    }
+    .grid {
+      grid-auto-rows: minmax(100px, 300px);
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 }
@@ -79,5 +155,16 @@
         line-height: 40px;
       }
     }
+  }
+
+  .landing-page .disciplines .grid {
+    grid-auto-rows: minmax(100px, 400px);
+  }
+}
+
+@media only screen and (min-width: $breakpoint-xl) {
+  .landing-page .disciplines .grid {
+    grid-auto-rows: minmax(100px, 300px);
+    grid-template-columns: repeat(3, 1fr);
   }
 }

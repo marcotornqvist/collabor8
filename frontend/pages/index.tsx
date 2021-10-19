@@ -1,9 +1,7 @@
-import Link from "next/link";
-import styles from "@styles-modules/Button.module.scss";
-import Image from "next/image";
-import { authState } from "store";
-import { useSnapshot } from "valtio";
 import Showcase from "@components-pages/landing/Showcase";
+import Disciplines from "@components-pages/landing/Disciplines";
+import Profiles from "@components-pages/landing/Profiles";
+import About from "@components-pages/landing/About";
 
 const Home = () => {
   // Follow this guide to properly use the useMutation hook with proper caching
@@ -13,11 +11,9 @@ const Home = () => {
   return (
     <div className="landing-page">
       <Showcase />
-      <section className="disciplines">
-        <div className="container">
-          <h2>Popular Disciplines</h2>
-        </div>
-      </section>
+      <Disciplines />
+      <Profiles />
+      <About />
     </div>
   );
 };

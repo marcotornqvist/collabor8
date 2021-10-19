@@ -56,14 +56,4 @@ export const deleteRefreshToken = async (res: Response) => {
     sameSite: "none",
     secure: true,
   });
-
-  // Not working atm
-  // res.clearCookie("jid", {
-  //   httpOnly: true,
-  //   path: "/refresh_token",
-  //   domain:
-  //     process.env.NODE_ENV === "production" ? process.env.DOMAIN : "localhost",
-  //   sameSite: "none",
-  //   secure: true,
-  // });
 };

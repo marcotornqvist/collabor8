@@ -38,8 +38,6 @@ const AccountDropdown: FC = () => {
     setShow(false);
   };
 
-  console.log(data);
-
   useOnClickOutside(ref, handleClickOutside);
 
   return (

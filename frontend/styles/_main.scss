@@ -71,11 +71,11 @@ h1 {
 }
 
 h2 {
-  font-size: 32px;
+  font-size: 2rem;
 }
 
 h3 {
-  font-size: 32px;
+  font-size: 1.5rem;
 }
 
 h4 {
@@ -117,20 +117,35 @@ input {
   margin: 0 auto;
 }
 
+section {
+  padding: 3rem 0;
+}
+
 @media only screen and (min-width: $breakpoint-sm) {
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h3 {
+    font-size: 2rem;
+  }
+}
+
+@media only screen and (min-width: $breakpoint-md) {
   .container {
     padding: 0 1.5rem;
   }
 
   h1 {
-    font-size: 44px;
-    // line-height: 112px;
+    font-size: 3rem;
   }
-}
 
-@media only screen and (min-width: $breakpoint-md) {
-  h1 {
+  h2 {
     font-size: 2.5rem;
+  }
+
+  section {
+    padding: 6rem 0;
   }
 }
 
@@ -176,8 +191,8 @@ input {
   // }
 }
 
-@media only screen and (min-width: $breakpoint-xl) {
+@media only screen and (min-width: $breakpoint-max) {
   .container {
-    max-width: $breakpoint-xl;
+    max-width: $breakpoint-max;
   }
 }
