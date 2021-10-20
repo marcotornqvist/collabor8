@@ -79,13 +79,20 @@ h3 {
 }
 
 h4 {
-  font-size: 24px;
+  font-size: 1.25rem;
 }
 
 p,
 span,
 input,
 label {
+  font-family: "Open Sans", sans-serif;
+}
+
+p,
+input,
+label {
+  line-height: 1.5rem;
   font-size: 14px;
   font-family: "Open Sans", sans-serif;
 }
@@ -128,6 +135,11 @@ section {
 
   h3 {
     font-size: 2rem;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 28px;
   }
 }
 
@@ -183,13 +195,14 @@ section {
   //   font-size: 28px;
   // }
 
-  // p,
-  // span,
-  // input,
-  // label {
-  //   font-size: 16px;
-  // }
+  p {
+    font-size: 20px;
+    line-height: 2rem;
+  }
 }
+
+// @media only screen and (min-width: $breakpoint-xl) {
+// }
 
 @media only screen and (min-width: $breakpoint-max) {
   .container {

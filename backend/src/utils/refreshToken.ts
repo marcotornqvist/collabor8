@@ -52,7 +52,7 @@ export const deleteRefreshToken = async (res: Response) => {
   res.status(202).cookie("jid", "", {
     httpOnly: true,
     path: "/refresh_token",
-    maxAge: 1000, // 1 month
+    maxAge: 1000, // 1 second
     sameSite: "none",
     secure: true,
   });

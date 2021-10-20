@@ -11,11 +11,11 @@ const Showcase = () => {
       <div className="container">
         <div className="hero-text">
           <h1 className="title">Find other people to collaborate with.</h1>
-          <p className="sub-title">
-            <span>Collabor8</span> is a social-media like platform created
-            primarily for creators/artists that are looking to collaborate on
-            different versatile projects.
-          </p>
+          <span className="sub-title">
+            <span className="italic">Collabor8</span> is a social-media like
+            platform created primarily for creators/artists that are looking to
+            collaborate on different versatile projects.
+          </span>
           <Link href={isAuth ? "/projects" : "/register"}>
             <a>
               <button className={styles.defaultButton}>Get Started</button>

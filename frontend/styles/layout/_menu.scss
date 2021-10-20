@@ -3,7 +3,7 @@
 @use "../abstracts/breakpoints" as *;
 
 .mobile-menu {
-  position: absolute;
+  position: fixed;
   top: 5rem;
   width: 100%;
   height: calc(100vh - 80px);
