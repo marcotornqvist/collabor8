@@ -42,14 +42,14 @@ const AccountDropdown: FC = () => {
 
   return (
     <div className="account-dropdown" ref={ref}>
-      <ProfileImage
-        loading={loading}
-        size={44}
-        quality={100}
-        show={show}
-        setShow={(show) => setShow(show)}
-        profileImage={data?.loggedInProfile?.profileImage}
-      />
+      <div onClick={() => setShow(!show)}>
+        <ProfileImage
+          loading={loading}
+          size={44}
+          quality={100}
+          profileImage={data?.loggedInProfile?.profileImage}
+        />
+      </div>
       <AnimatePresence exitBeforeEnter>
         {show && (
           <motion.div

@@ -1,15 +1,18 @@
 @use "../abstracts/colors" as *;
 
 .profileImage {
+  position: relative;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   border-radius: 50px;
   border: 3px solid $green;
-  background: $light-green;
+  margin-bottom: 0.25rem;
 
   img {
     border-radius: 50px;
-    display: inline;
+  }
+
+  .user-icon {
   }
 }

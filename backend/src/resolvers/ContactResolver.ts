@@ -106,7 +106,7 @@ export class ContactResolver {
   ) {
     // Checks that user isn't adding himself
     if (id === payload!.userId) {
-      throw new Error("You cannot add yourself");
+      throw new Error("You cannot add yourself.");
     }
 
     // Checks that contact doesn't already exist
@@ -139,8 +139,7 @@ export class ContactResolver {
       },
     });
 
-    if (isBlocked)
-      throw new Error("You cannot add user since you've blocked the user");
+    if (isBlocked) throw new Error("You cannot add a user you've blocked.");
 
     // Create a new contact between logged in user and another user id
     await prisma.contact.create({

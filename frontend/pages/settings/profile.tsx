@@ -22,8 +22,8 @@ interface Errors {
 }
 
 const Profile = () => {
-  const [firstName, setFirstName] = useState("john");
-  const [lastName, setLastName] = useState("doe");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [bio, setBio] = useState("");
   const [country, setCountry] = useState("");
   const [disciplineId, setDisciplineId] = useState<number>();
@@ -58,7 +58,7 @@ const Profile = () => {
       <div className="container">
         <Sidebar />
         <div className="profile">
-          {/* <UploadFile /> */}
+          <UploadFile />
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -86,8 +86,8 @@ const Profile = () => {
                 }}
               />
             </div>
-            <div>
-              {/* {errors.firstName && <label>{errors.firstName}</label>} */}
+            {/* <div>
+              {errors.firstName && <label>{errors.firstName}</label>}
               <input
                 value={firstName}
                 placeholder="firstname"
@@ -95,7 +95,7 @@ const Profile = () => {
                   setFirstName(e.target.value);
                 }}
               />
-            </div>
+            </div> */}
             <button type="submit">Save Settings</button>
           </form>
         </div>

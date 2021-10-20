@@ -5,7 +5,15 @@ export const GET_USERS = gql`
     users(data: $usersData) {
       id
       username
-      email
+      profile {
+        firstName
+        lastName
+        profileImage
+        country
+        discipline {
+          title
+        }
+      }
     }
   }
 `;
