@@ -89,12 +89,15 @@ label {
   font-family: "Open Sans", sans-serif;
 }
 
-p,
 input,
 label {
   line-height: 1.5rem;
   font-size: 14px;
-  font-family: "Open Sans", sans-serif;
+}
+
+p {
+  font-size: 16px;
+  line-height: 28px;
 }
 
 a {
@@ -135,11 +138,6 @@ section {
 
   h3 {
     font-size: 2rem;
-  }
-
-  p {
-    font-size: 16px;
-    line-height: 28px;
   }
 }
 
