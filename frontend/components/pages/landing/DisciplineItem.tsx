@@ -12,7 +12,6 @@ interface IProps {
 const DisciplineItem = ({ title, src, link, alt }: IProps) => {
   const [loaded, setLoaded] = useState(false);
 
-  if (loaded) console.log(loaded);
   return (
     <Link href={"/profiles/" + link}>
       <a className="grid-item">

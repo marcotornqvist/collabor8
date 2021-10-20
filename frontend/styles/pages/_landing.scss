@@ -79,17 +79,6 @@
         text-shadow: $text-shadow1;
         font-weight: 600;
       }
-
-      img {
-        transition: transform 0.5s;
-        transform: scale(1.01);
-      }
-
-      &:hover {
-        img {
-          transform: scale(1.07);
-        }
-      }
     }
   }
 }
@@ -131,7 +120,9 @@
 
     .content {
       display: flex;
+      align-items: center;
       flex-direction: column;
+      text-align: center;
       width: 100%;
 
       h1,
@@ -182,11 +173,6 @@
     padding: 3rem 1.5rem;
 
     .grid-item {
-      .content {
-        align-items: center;
-        text-align: center;
-      }
-
       .image-container {
         height: 350px;
       }
@@ -203,6 +189,19 @@
     .grid {
       grid-auto-rows: minmax(100px, 300px);
       grid-template-columns: repeat(2, 1fr);
+
+      .grid-item {
+        img {
+          transition: transform 0.5s;
+          transform: scale(1.01);
+        }
+
+        &:hover {
+          img {
+            transform: scale(1.07);
+          }
+        }
+      }
     }
   }
 
