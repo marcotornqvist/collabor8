@@ -4,10 +4,6 @@ import Image from "next/image";
 import DisciplineItem from "./DisciplineItem";
 
 const Disciplines = () => {
-  // Compress image
-  // Upload them to S3 Bucket
-  // Fix animation on the images
-
   return (
     <section className="disciplines">
       <div className="container">
