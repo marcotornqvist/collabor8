@@ -1,0 +1,12 @@
+.spinner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin-top: -80px;
+
+  h1 {
+    position: absolute;
+  }
+}

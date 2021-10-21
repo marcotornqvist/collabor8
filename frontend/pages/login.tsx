@@ -1,4 +1,4 @@
-import React, { useState, FC, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useMutation } from "@apollo/client";
 import { login, loginVariables } from "generated/login";
@@ -21,7 +21,7 @@ const Login = () => {
     }
   }, [isAuth]);
 
-  const [login, { data, loading }] = useMutation<login, loginVariables>(
+  const [login, { data, loading, client }] = useMutation<login, loginVariables>(
     LOGIN_USER,
     {
       variables: {
@@ -38,6 +38,7 @@ const Login = () => {
   if (data) {
     authState.accessToken = data.login.accessToken;
     authState.isAuth = true;
+    client!.resetStore();
     router.push("/projects");
   }
 
@@ -60,6 +61,7 @@ const Login = () => {
               onChange={(e) => {
                 setEmail(e.target.value);
               }}
+              autoComplete="on"
             />
           </div>
           <div className="input-group">
@@ -72,6 +74,7 @@ const Login = () => {
               onChange={(e) => {
                 setPassword(e.target.value);
               }}
+              autoComplete="on"
             />
           </div>
           {error && <div className="error-message">{error}</div>}

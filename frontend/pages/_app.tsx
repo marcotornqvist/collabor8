@@ -1,23 +1,18 @@
+import { useEffect } from "react";
 import type { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
-import "../styles/app.scss";
-// import client from "../utils/apollo-client";
 import { useApollo } from "../utils/useApollo";
-import { useEffect } from "react";
+import { authState } from "store";
+import PrivateRoute from "../utils/privateRoute";
 import Navbar from "@components-layout/navbar/Navbar";
 import Footer from "@components-layout/footer/Footer";
-import { authState, navigationState } from "store";
 import Menu from "@components-layout/menu/Menu";
-import { useSnapshot } from "valtio";
+import "../styles/app.scss";
 
 // <script src="https://kit.fontawesome.com/0f6f932cce.js" crossorigin="anonymous"></script>
 
 function MyApp({ Component, pageProps }: AppProps) {
   const client = useApollo(pageProps.initialApolloState);
-  const { menuOpen } = useSnapshot(navigationState);
-
-  // https://www.youtube.com/watch?v=rWanEGMkXwc&t=14s
-  // Follow to add typescript to valtio
 
   useEffect(() => {
     // Fetches the access token and sets it in valtio state management
@@ -38,13 +33,18 @@ function MyApp({ Component, pageProps }: AppProps) {
     fetchData();
   }, []);
 
+  // These routes are only accessible when authenticated
+  const protectedRoutes = ["/my-profile", "/chat", "/settings"];
+
   return (
     <ApolloProvider client={client}>
       <title>Collabor8</title>
       <Navbar />
       <Menu />
       <div className="main">
-        <Component {...pageProps} />
+        <PrivateRoute protectedRoutes={protectedRoutes}>
+          <Component {...pageProps} />
+        </PrivateRoute>
       </div>
       <Footer />
     </ApolloProvider>

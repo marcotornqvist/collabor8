@@ -1,19 +1,30 @@
-import React from "react";
+import { useEffect } from "react";
 import ProfileItem from "./ProfileItem";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_USERS } from "@operations-queries/getAllUsers";
 import { users, usersVariables } from "generated/users";
+import { authState } from "store";
+import { useSnapshot } from "valtio";
 
 // Check that user is not a friend
+// Check that user is not you when returning
 
 const Profiles = () => {
-  const { data } = useQuery<users, usersVariables>(GET_USERS, {
+  const { loading } = useSnapshot(authState);
+  const [users, { data }] = useLazyQuery<users, usersVariables>(GET_USERS, {
+    // fetchPolicy: "no-cache",
     variables: {
       usersData: {
-        first: 3,
+        // first: 3,
       },
     },
   });
+
+  useEffect(() => {
+    if (!loading) {
+      users();
+    }
+  }, [loading]);
 
   return (
     <section className="profiles">

@@ -11,7 +11,6 @@ interface IProps {
 
 const AddUserButton = ({ id }: IProps) => {
   const [error, setError] = useState("");
-  console.log(error);
   const [sendContactRequest, { data, loading }] =
     useMutation<sendContactRequestVariables>(SEND_CONTACT_REQUEST, {
       variables: {

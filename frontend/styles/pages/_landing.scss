@@ -93,7 +93,7 @@
   .grid {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
-    grid-auto-rows: minmax(100px, 300px);
+    grid-auto-rows: minmax(100px, 350px);
     gap: 1rem;
 
     .profile-item {
@@ -144,28 +144,13 @@
           }
         }
 
-        .buttons {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 1rem;
-
-          button {
-            height: 3rem;
-            width: 100%;
-            border-radius: 3px;
-          }
-
-          .add-btn {
-            border: 1px solid $green;
-            background: $green;
-            color: $white;
-          }
-
-          .check-profile-btn {
-            background: $white;
-            border: 1px solid $green;
-            color: $green;
-          }
+        button {
+          height: 3rem;
+          width: 100%;
+          border-radius: 3px;
+          background: $white;
+          border: 1px solid $green;
+          color: $green;
         }
       }
     }
@@ -236,12 +221,8 @@
     gap: 1rem;
   }
 
-  .landing-page .profiles .grid {
-    grid-auto-rows: minmax(100px, 350px);
-
-    .profile-item .box {
-      padding: 1.5rem;
-    }
+  .landing-page .profiles .grid .profile-item .box {
+    padding: 1.5rem;
   }
 
   .landing-page .about .grid {
@@ -298,16 +279,12 @@
         .box {
           padding: 1rem;
 
-          .buttons {
-            gap: 1rem;
+          .check-profile-btn {
+            transition: all 0.1s ease-in-out;
 
-            .check-profile-btn {
-              transition: all 0.1s ease-in-out;
-
-              &:hover {
-                background: $green;
-                color: $white;
-              }
+            &:hover {
+              background: $green;
+              color: $white;
             }
           }
         }

@@ -10,7 +10,6 @@ interface IProps {
 }
 
 const ProfileItem = ({ item }: IProps) => {
-  console.log(item);
   const { id, username, profile } = item;
 
   return (
@@ -34,14 +33,12 @@ const ProfileItem = ({ item }: IProps) => {
             {profile?.discipline?.title} | {profile?.country}
           </span>
         </div>
-        <div className="buttons">
-          <AddUserButton id={id} />
-          <Link href={`/profile/${username}`}>
-            <a>
-              <button className="check-profile-btn">See Profile</button>
-            </a>
-          </Link>
-        </div>
+        {/* <AddUserButton id={id} /> */}
+        <Link href={`/profile/${username}`}>
+          <a>
+            <button className="check-profile-btn">See Profile</button>
+          </a>
+        </Link>
       </div>
     </div>
   );

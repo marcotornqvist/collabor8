@@ -49,8 +49,6 @@ export class ProfileResolver {
       return item.country.match(regex);
     });
 
-    console.log(filtered);
-
     // On the frontend input check if array is empty
     // and if it is don't allow typing of more words since it won't return anything else
     // if this operation is slow move the filter to the frontend and just return countries

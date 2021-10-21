@@ -1,4 +1,4 @@
-import React, { useState, FC, useEffect } from "react";
+import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { register, registerVariables } from "generated/register";
 import { authState } from "store";
@@ -23,7 +23,7 @@ const Form = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<Errors>({});
 
-  const [register, { data, loading }] = useMutation<
+  const [register, { data, loading, client }] = useMutation<
     register,
     registerVariables
   >(REGISTER_USER, {
@@ -43,6 +43,7 @@ const Form = () => {
   if (data) {
     authState.accessToken = data.register.accessToken;
     authState.isAuth = true;
+    client!.resetStore();
     router.push("/my-profile");
   }
 
@@ -66,6 +67,7 @@ const Form = () => {
           onChange={(e) => {
             setFirstName(e.target.value);
           }}
+          autoComplete="on"
         />
       </div>
       <div className="input-group">
@@ -78,6 +80,7 @@ const Form = () => {
           onChange={(e) => {
             setLastName(e.target.value);
           }}
+          autoComplete="on"
         />
       </div>
       <div className="input-group">
@@ -90,6 +93,7 @@ const Form = () => {
           onChange={(e) => {
             setEmail(e.target.value);
           }}
+          autoComplete="on"
         />
       </div>
       <div className="input-group">
@@ -105,6 +109,7 @@ const Form = () => {
           onChange={(e) => {
             setPassword(e.target.value);
           }}
+          autoComplete="on"
         />
       </div>
       <div className="input-group">

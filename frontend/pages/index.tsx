@@ -8,14 +8,16 @@ const Home = () => {
   // https://www.apollographql.com/docs/react/data/mutations/
   // https://www.youtube.com/watch?v=4smsVPgZDOo
 
+  // https://blog.logrocket.com/implementing-animated-toasts-in-react/
+
   return (
     <div className="landing-page">
       <Showcase />
-      <Disciplines />
+      {/* <Disciplines /> */}
       <Profiles />
       <About />
     </div>
   );
 };
- 
+
 export default Home;

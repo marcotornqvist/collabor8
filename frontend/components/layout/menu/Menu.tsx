@@ -78,7 +78,7 @@ const Menu = () => {
                 </Link>
               </>
             )}
-            <Link href="/people">
+            <Link href="/profiles">
               <li onClick={() => closeMenu()}>
                 <a>Browse People</a>
                 <Image

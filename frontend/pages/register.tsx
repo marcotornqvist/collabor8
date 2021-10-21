@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { gql } from "@apollo/client";
 import Form from "@components-pages/register/Form";
 import { useRouter } from "next/router";
 import { useSnapshot } from "valtio";

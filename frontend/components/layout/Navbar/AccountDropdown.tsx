@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, FC } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { useSnapshot } from "valtio";
 import { authState } from "store";
@@ -21,7 +21,7 @@ const variants = {
   },
 };
 
-const AccountDropdown: FC = () => {
+const AccountDropdown = () => {
   const { isAuth } = useSnapshot(authState);
   const [show, setShow] = useState(false);
   const [loggedInUser, { data, loading, error }] =

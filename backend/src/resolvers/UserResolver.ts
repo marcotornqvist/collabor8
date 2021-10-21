@@ -22,7 +22,7 @@ import {
 import { AuthResponse } from "./responses/UserResponse";
 import { createAccessToken, createRefreshToken } from "../utils/auth";
 import { deleteRefreshToken, sendRefreshToken } from "../utils/refreshToken";
-import { isAuth } from "../utils/isAuth";
+import { isAuth, isAuthOrNot } from "../utils/isAuth";
 import { createUsername } from "../helpers/createUsername";
 import { pagination } from "../utils/pagination";
 import { capitalizeWords } from "../helpers/capitalizeWords";
@@ -46,8 +46,10 @@ import { validateEmail } from "../helpers/validateEmail";
 export class UserResolver {
   @Query(() => [User], {
     nullable: true,
-    description: "Returns all users/profiles that are not disabled",
+    description:
+      "Returns all users/profiles except logged in user (if authenticated)",
   })
+  @UseMiddleware(isAuthOrNot)
   async users(
     @Arg("data")
     {
@@ -61,9 +63,18 @@ export class UserResolver {
       last,
       sort,
     }: UsersFilterArgs,
-    @Ctx() { prisma }: Context
+    @Ctx() { prisma, payload }: Context
   ) {
     const filters = {};
+
+    // Don't return logged in user
+    if (payload && payload!.userId) {
+      Object.assign(filters, {
+        NOT: {
+          id: payload!.userId,
+        },
+      });
+    }
 
     if (searchText) {
       Object.assign(filters, {
@@ -104,13 +115,13 @@ export class UserResolver {
     }
 
     // Checks if user is logged in then don't return logged in user
-    if (loggedInUserId) {
-      Object.assign(filters, {
-        NOT: {
-          id: loggedInUserId,
-        },
-      });
-    }
+    // if (loggedInUserId) {
+    //   Object.assign(filters, {
+    //     NOT: {
+    //       id: loggedInUserId,
+    //     },
+    //   });
+    // }
 
     // Find all users
     return prisma.user.findMany({
@@ -372,7 +383,6 @@ export class UserResolver {
 
     // Checks if username matches regex constraints
     if (!match?.includes(username)) {
-      console.log(username);
       throw new UserInputError(
         "Username cannot be less than 3 characters or more than 50 characters and can only contain letters(A-z) and numbers"
       );

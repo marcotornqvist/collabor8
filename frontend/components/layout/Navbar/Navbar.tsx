@@ -75,8 +75,18 @@ const Navbar = () => {
           </Link>
           <ul>
             <li>
-              <Link href="/people">
+              <Link href="/profiles">
                 <a>Browse People</a>
+              </Link>
+            </li>
+            <li>
+              <Link href="/my-profile">
+                <a>my</a>
+              </Link>
+            </li>
+            <li>
+              <Link href="/chat/32032">
+                <a>chatroom</a>
               </Link>
             </li>
             <li>
