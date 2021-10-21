@@ -11,6 +11,9 @@ export class Discipline {
   @Field(() => String)
   title: string;
 
+  @Field(() => String)
+  slug: string;
+
   @Field(() => [Profile], { nullable: true })
   profiles?: Profile[] | null;
 
