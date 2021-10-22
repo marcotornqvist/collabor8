@@ -9,7 +9,7 @@ interface IProps {
 
 // Check if user is already in contacts list
 
-const AddUserButton = ({ id }: IProps) => {
+const BlockButton = ({ id }: IProps) => {
   const [error, setError] = useState("");
   const [sendContactRequest, { data, loading }] =
     useMutation<sendContactRequestVariables>(SEND_CONTACT_REQUEST, {
@@ -19,17 +19,18 @@ const AddUserButton = ({ id }: IProps) => {
       onError: (error) => setError(error.message),
     });
   return (
-    <li className="add-btn danger">
+    <li>
       <span
+        className="add-btn"
         onClick={() => {
           setError("");
           sendContactRequest();
         }}
       >
-        Add Person
+        Block User
       </span>
     </li>
   );
 };
 
-export default AddUserButton;
+export default BlockButton;

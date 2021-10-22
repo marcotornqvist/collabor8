@@ -220,21 +220,12 @@
                     align-items: center;
                     justify-content: center;
                     width: 100%;
-                    margin-bottom: 0.5rem;
+                    height: 3rem;
                     padding: 1rem;
+                    margin-bottom: 0.5rem;
                     border-radius: 3px;
                     background: $grey-bg;
                     cursor: pointer;
-
-                    &.success {
-                      border: 1px solid $green;
-                      background: $light-green;
-                    }
-
-                    &.danger {
-                      border: 1px solid $red;
-                      background: $light-green;
-                    }
 
                     span {
                       font-size: 14px;
@@ -245,19 +236,48 @@
                     &:hover {
                       background: $dark-grey-bg;
                     }
+
+                    &.success {
+                      border: 1px solid $green;
+                      background: $light-green;
+
+                      &:hover {
+                        background: $light-green;
+                      }
+                    }
+
+                    &.danger {
+                      border: 1px solid $red;
+                      background: $light-red;
+
+                      &:hover {
+                        background: $light-green;
+                      }
+                    }
+                  }
+
+                  li.success-default:hover {
+                    border: 1px solid $green;
+                    background: $light-green;
+
+                    &:hover {
+                      background: $light-green;
+                    }
+                  }
+
+                  li.danger-default:hover {
+                    border: 1px solid $red;
+                    background: $light-red;
+
+                    &:hover {
+                      background: $light-red;
+                    }
                   }
 
                   a:last-child li {
                     margin: 0;
                   }
                 }
-                // .dropdown {
-                //   position: absolute;
-                //   background: $white;
-                //   border-radius: 3px;
-                //   padding: 0.5rem;
-                //   z-index: $z-index3;
-                // }
               }
             }
 
@@ -411,15 +431,18 @@
       grid-auto-rows: minmax(100px, 300px);
       gap: 1rem;
 
-      .profile-item
-        .carousel
-        .alice-carousel
-        .alice-carousel__wrapper
-        .alice-carousel__stage {
-        height: 300px;
+      .profile-item .carousel .alice-carousel {
+        .alice-carousel__wrapper .alice-carousel__stage {
+          height: 300px;
 
-        li .carousel-item {
-          padding: 1rem;
+          li .carousel-item {
+            padding: 1rem;
+          }
+        }
+
+        .alice-carousel__prev-btn {
+          top: 1rem;
+          left: 1rem;
         }
       }
     }
@@ -479,25 +502,28 @@
   .landing-page .profiles .grid {
     grid-auto-rows: minmax(100px, 350px);
 
-    .profile-item
-      .carousel
-      .alice-carousel
-      .alice-carousel__wrapper
-      .alice-carousel__stage {
-      height: 350px;
+    .profile-item .carousel .alice-carousel {
+      .alice-carousel__wrapper .alice-carousel__stage {
+        height: 350px;
 
-      li .carousel-item {
-        height: 100%;
-        padding: 1.5rem;
+        li .carousel-item {
+          height: 100%;
+          padding: 1.5rem;
 
-        .box .check-profile-btn {
-          transition: all 0.1s ease-in-out;
+          .box .check-profile-btn {
+            transition: all 0.1s ease-in-out;
 
-          &:hover {
-            background: $green;
-            color: $white;
+            &:hover {
+              background: $green;
+              color: $white;
+            }
           }
         }
+      }
+
+      .alice-carousel__prev-btn {
+        top: 1.5rem;
+        left: 1.5rem;
       }
     }
   }

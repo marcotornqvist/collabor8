@@ -8,11 +8,30 @@
 //==============================================================
 
 /**
+ * Contact status enum
+ */
+export enum CONTACT_STATUS {
+  ACTIVE_CONTACT = "ACTIVE_CONTACT",
+  NO_CONTACT = "NO_CONTACT",
+  REQUEST_RECEIVED = "REQUEST_RECEIVED",
+  REQUEST_SENT = "REQUEST_SENT",
+}
+
+/**
  * Sort by most recent or oldest
  */
 export enum Sort {
   asc = "asc",
   desc = "desc",
+}
+
+/**
+ * Status Code enum
+ */
+export enum StatusCode {
+  FALSE = "FALSE",
+  PENDING = "PENDING",
+  TRUE = "TRUE",
 }
 
 /**

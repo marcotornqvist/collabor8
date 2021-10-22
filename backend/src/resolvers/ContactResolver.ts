@@ -13,9 +13,12 @@ import { BlockedUser } from "../types/BlockedUser";
 import { UserInputError } from "apollo-server-express";
 import { Contact } from "../types/Contact";
 import { User } from "../types/User";
+import { CONTACT_STATUS } from "../types/Enums";
+import { ContactStatusResponse } from "./responses/ContactResponse";
 
 // TODO: Queries/mutations to be implemented:
 // contacts             Return all contacts for logged in user - Done
+// contactStatus        Check what the status is or if a contact request even exist
 // sendContactRequest   Add a new user to your contacts - Done
 // deleteContact        Delete contact request - Done
 // acceptContact        Accept a pending contact request - Done
@@ -96,7 +99,54 @@ export class ContactResolver {
     return contacts;
   }
 
-  @Mutation(() => Boolean, {
+  @Query(() => CONTACT_STATUS, {
+    description:
+      "Return the status for a contact request between loggedInUser and userId",
+  })
+  @UseMiddleware(isAuth)
+  async contactStatus(
+    @Arg("id") id: string,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    const contact = await prisma.contact.findFirst({
+      where: {
+        OR: [
+          {
+            userId: payload!.userId,
+            contactId: id,
+          },
+          {
+            contactId: payload!.userId,
+            userId: id,
+          },
+        ],
+      },
+    });
+
+    // No contact exist
+    if (!contact) {
+      return CONTACT_STATUS.NO_CONTACT;
+    }
+
+    // Contact is sent but not accepted (PENDING)
+    if (contact.status !== "TRUE" && contact.userId === payload!.userId) {
+      return CONTACT_STATUS.REQUEST_SENT;
+    }
+
+    // Contact is received but not accepted (PENDING)
+    if (contact.status !== "TRUE" && contact.contactId === payload!.userId) {
+      return CONTACT_STATUS.REQUEST_RECEIVED;
+    }
+
+    // Contact is active and accepted (TRUE)
+    if (contact.status === "TRUE") {
+      return CONTACT_STATUS.ACTIVE_CONTACT;
+    }
+
+    return CONTACT_STATUS.NO_CONTACT;
+  }
+
+  @Mutation(() => Contact, {
     description: "Add a user to contact list",
   })
   @UseMiddleware(isAuth)
@@ -142,14 +192,14 @@ export class ContactResolver {
     if (isBlocked) throw new Error("You cannot add a user you've blocked.");
 
     // Create a new contact between logged in user and another user id
-    await prisma.contact.create({
+    const contact = await prisma.contact.create({
       data: {
         userId: payload!.userId,
         contactId: id,
       },
     });
 
-    return true;
+    return contact;
   }
 
   @Mutation(() => Boolean, {

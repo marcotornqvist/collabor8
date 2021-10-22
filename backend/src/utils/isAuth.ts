@@ -25,10 +25,15 @@ export const isAuth: MiddlewareFn<Context> = ({ context }, next) => {
 export const isAuthOrNot: MiddlewareFn<Context> = ({ context }, next) => {
   const authorization = context.req.headers["authorization"];
 
-  if (authorization) {
-    const token = authorization.split(" ")[1];
-    const payload = verify(token, process.env.ACCESS_TOKEN_SECRET!);
-    context.payload = payload as any;
+  try {
+    if (authorization) {
+      const token = authorization.split(" ")[1];
+      const payload = verify(token, process.env.ACCESS_TOKEN_SECRET!);
+      context.payload = payload as any;
+    }
+  } catch (error) {
+    console.log(error);
+    return next();
   }
 
   return next();

@@ -1,11 +1,9 @@
-import React, { useState } from "react";
 import Image from "next/image";
 import { users_users } from "generated/users";
 import AliceCarousel from "react-alice-carousel";
 import ProfileImage from "@components-modules/global/ProfileImage";
 import Link from "next/link";
-import AddUserButton from "./AddUserButton";
-import BlockUserButton from "./BlockUserButton";
+import Settings from "./Settings";
 
 interface IProps {
   item: users_users;
@@ -17,17 +15,7 @@ const ProfileItem = ({ item }: IProps) => {
   const items = [
     <div className="carousel-item settings-item" data-value="2">
       <div className="wrapper">
-        <ul className="settings">
-          <AddUserButton id={id} />
-          <Link href={`/report/user/${id}`}>
-            <a>
-              <li>
-                <span>Report User</span>
-              </li>
-            </a>
-          </Link>
-          <BlockUserButton id={id} />
-        </ul>
+        <Settings id={id} />
       </div>
     </div>,
     <div className="carousel-item content-item" data-value="1">
