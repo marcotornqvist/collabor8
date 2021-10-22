@@ -37,9 +37,6 @@ export class TestResponse {
 })
 export class UsersFilterArgs extends PaginationArgs {
   @Field(() => String, { nullable: true })
-  loggedInUserId?: string | null;
-
-  @Field(() => String, { nullable: true })
   searchText?: string | null;
 
   @Field(() => [Number], { nullable: true })

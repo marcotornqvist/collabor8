@@ -53,7 +53,6 @@ export class UserResolver {
   async users(
     @Arg("data")
     {
-      loggedInUserId,
       searchText,
       disciplines,
       country,
@@ -113,15 +112,6 @@ export class UserResolver {
         country,
       });
     }
-
-    // Checks if user is logged in then don't return logged in user
-    // if (loggedInUserId) {
-    //   Object.assign(filters, {
-    //     NOT: {
-    //       id: loggedInUserId,
-    //     },
-    //   });
-    // }
 
     // Find all users
     return prisma.user.findMany({

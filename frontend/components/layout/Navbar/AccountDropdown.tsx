@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLazyQuery } from "@apollo/client";
 import { useSnapshot } from "valtio";
 import { authState } from "store";
 import { GET_PROFILE_IMAGE } from "@operations-queries/getLoggedInUser";
-import Link from "next/link";
 import SignoutLink from "@components-modules/global/SignoutLink";
-import { loggedInProfile } from "generated/loggedInProfile";
 import useOnClickOutside from "@hooks/useOnClickOutside";
 import ProfileImage from "@components-modules/global/ProfileImage";
-import { motion, AnimatePresence } from "framer-motion";
+import { loggedInProfile } from "generated/loggedInProfile";
+import styles from "@styles-modules/Dropdown.module.scss";
 
 const variants = {
   visible: {
@@ -53,28 +54,34 @@ const AccountDropdown = () => {
       <AnimatePresence exitBeforeEnter>
         {show && (
           <motion.div
-            className="dropdown-menu"
+            className={styles.dropdown}
             initial="hidden"
             animate="visible"
             exit="hidden"
             variants={variants}
           >
             <ul>
-              <li>
-                <Link href="/settings/profile">
-                  <a>Profile Settings</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/settings/account">
-                  <a>Account Settings</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/settings/socials">
-                  <a>Social Accounts</a>
-                </Link>
-              </li>
+              <Link href="/settings/profile">
+                <a>
+                  <li onClick={() => setShow(false)}>
+                    <span>Profile Settings</span>
+                  </li>
+                </a>
+              </Link>
+              <Link href="/settings/account">
+                <a>
+                  <li onClick={() => setShow(false)}>
+                    <span>Account Settings</span>
+                  </li>
+                </a>
+              </Link>
+              <Link href="/settings/socials">
+                <a>
+                  <li onClick={() => setShow(false)}>
+                    <span>Social Accounts</span>
+                  </li>
+                </a>
+              </Link>
               <SignoutLink />
             </ul>
           </motion.div>

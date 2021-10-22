@@ -7,7 +7,7 @@ interface IProps {
   id: string;
 }
 
-// Send request status to global state and toastify it
+// Check if user is already in contacts list
 
 const AddUserButton = ({ id }: IProps) => {
   const [error, setError] = useState("");
@@ -19,15 +19,16 @@ const AddUserButton = ({ id }: IProps) => {
       onError: (error) => setError(error.message),
     });
   return (
-    <button
-      className="add-btn"
-      onClick={() => {
-        setError("");
-        sendContactRequest();
-      }}
-    >
-      Add Person
-    </button>
+    <li className="add-btn danger">
+      <span
+        onClick={() => {
+          setError("");
+          sendContactRequest();
+        }}
+      >
+        Add Person
+      </span>
+    </li>
   );
 };
 

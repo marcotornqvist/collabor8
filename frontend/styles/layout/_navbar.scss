@@ -88,41 +88,11 @@
           cursor: pointer;
         }
 
-        .dropdown-menu {
-          position: absolute;
+        .Dropdown_dropdown__3BKdt {
+          width: 250px;
           right: -0.5rem;
           top: 3.5rem;
-          width: 250px;
-          background: $white;
-          border-radius: 3px;
           box-shadow: $box-shadow1;
-          padding: 3rem 2rem;
-
-          // To prevent cursor from working
-          img {
-            cursor: initial;
-          }
-
-          ul li {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-
-            &:last-child {
-              border-top: 1px solid $border-color1;
-              padding-top: 2rem;
-              margin: 0;
-
-              a {
-                transition: all 0.1s ease-in-out;
-
-                &:hover {
-                  color: $red;
-                }
-              }
-            }
-          }
         }
       }
     }

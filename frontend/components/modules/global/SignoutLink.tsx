@@ -21,15 +21,17 @@ const SignoutLink = () => {
   };
 
   return (
-    <li onClick={() => clickHandler()}>
-      <a>Sign Out</a>
-      <Image
-        src="/icons/sign-out-alt-solid.svg"
-        alt="sign out"
-        width={18}
-        height={18}
-      />
-    </li>
+    <a>
+      <li onClick={() => clickHandler()}>
+        <span>Sign Out</span>
+        <Image
+          src="/icons/sign-out-alt-solid.svg"
+          alt="sign out"
+          width={18}
+          height={18}
+        />
+      </li>
+    </a>
   );
 };
 

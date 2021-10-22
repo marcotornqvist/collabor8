@@ -5,17 +5,26 @@ import { GET_USERS } from "@operations-queries/getAllUsers";
 import { users, usersVariables } from "generated/users";
 import { authState } from "store";
 import { useSnapshot } from "valtio";
+import { UsersFilterArgs } from "generated/globalTypes";
 
 // Check that user is not a friend
 // Check that user is not you when returning
 
-const Profiles = () => {
+const Profiles = ({
+  after,
+  before,
+  first,
+  last,
+  searchText,
+  disciplines,
+  country,
+  sort,
+}: UsersFilterArgs) => {
   const { loading } = useSnapshot(authState);
   const [users, { data }] = useLazyQuery<users, usersVariables>(GET_USERS, {
-    // fetchPolicy: "no-cache",
     variables: {
       usersData: {
-        // first: 3,
+        first,
       },
     },
   });

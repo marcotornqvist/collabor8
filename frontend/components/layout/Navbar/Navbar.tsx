@@ -80,16 +80,6 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link href="/my-profile">
-                <a>my</a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/chat/32032">
-                <a>chatroom</a>
-              </Link>
-            </li>
-            <li>
               <Link href="/projects">
                 <a>Browse Projects</a>
               </Link>

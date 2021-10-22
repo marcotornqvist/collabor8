@@ -32,7 +32,7 @@ export interface users_users {
 
 export interface users {
   /**
-   * Returns all users/profiles that are not disabled
+   * Returns all users/profiles except logged in user (if authenticated)
    */
   users: users_users[] | null;
 }

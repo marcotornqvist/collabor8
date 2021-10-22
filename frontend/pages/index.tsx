@@ -1,6 +1,6 @@
 import Showcase from "@components-pages/landing/Showcase";
 import Disciplines from "@components-pages/landing/Disciplines";
-import Profiles from "@components-pages/landing/Profiles";
+import Profiles from "@components-modules/profiles/Profiles";
 import About from "@components-pages/landing/About";
 
 const Home = () => {
@@ -14,7 +14,7 @@ const Home = () => {
     <div className="landing-page">
       <Showcase />
       <Disciplines />
-      <Profiles />
+      <Profiles first={3} />
       <About />
     </div>
   );

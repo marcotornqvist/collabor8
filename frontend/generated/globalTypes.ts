@@ -42,7 +42,6 @@ export interface UsersFilterArgs {
   before?: string | null;
   first?: number | null;
   last?: number | null;
-  loggedInUserId?: string | null;
   searchText?: string | null;
   disciplines?: number[] | null;
   country?: string | null;
