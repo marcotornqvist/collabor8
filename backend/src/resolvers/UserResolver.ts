@@ -28,6 +28,7 @@ import { pagination } from "../utils/pagination";
 import { capitalizeWords } from "../helpers/capitalizeWords";
 import countries from "../data/countries";
 import { validateEmail } from "../helpers/validateEmail";
+import { NotificationCode } from ".prisma/client";
 
 // TODO: Queries/mutations to be implemented:
 // users:           Return all users - Done
@@ -390,14 +391,14 @@ export class UserResolver {
     }
 
     // Gets the old username for notification
-    const oldUsername = await prisma.user.findUnique({
-      where: {
-        id: payload!.userId,
-      },
-      select: {
-        username: true,
-      },
-    });
+    // const oldUsername = await prisma.user.findUnique({
+    //   where: {
+    //     id: payload!.userId,
+    //   },
+    //   select: {
+    //     username: true,
+    //   },
+    // });
 
     // Updates username and returns contacts
     const contactIds = await prisma.user
@@ -436,14 +437,15 @@ export class UserResolver {
       });
 
     // Send a notification to all contacts, that logged in user has changed username
-    if (contactIds.length > 0) {
-      await prisma.notification.createMany({
-        data: contactIds.map((item) => ({
-          userId: item,
-          message: `${oldUsername?.username} has changed username to ${username}`,
-        })),
-      });
-    }
+    // if (contactIds.length > 0) {
+    //   await prisma.notification.createMany({
+    //     data: contactIds.map((id) => ({
+    //       senderId: payload!.userId,
+    //       receiverId: id,
+    //       notificationCode: NotificationCode.CONTACT_USERNAME_UPDATED,
+    //     })),
+    //   });
+    // }
 
     return username;
   }

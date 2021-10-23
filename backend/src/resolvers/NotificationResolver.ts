@@ -74,7 +74,7 @@ export class NotificationResolver {
     ) {
       await prisma.notification.updateMany({
         where: {
-          userId: payload!.userId,
+          receiverId: payload!.userId,
           read: false,
         },
         data: {

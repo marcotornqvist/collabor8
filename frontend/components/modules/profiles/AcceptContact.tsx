@@ -13,7 +13,7 @@ interface IProps {
   setStatus: (status: string) => void;
 }
 
-const AddContact = ({ id, status, setStatus }: IProps) => {
+const AcceptContact = ({ id, status, setStatus }: IProps) => {
   const [sendContactRequest, { data, error }] = useMutation<
     sendContactRequest,
     sendContactRequestVariables
@@ -22,12 +22,8 @@ const AddContact = ({ id, status, setStatus }: IProps) => {
       sendContactRequestId: id,
     },
     refetchQueries: [
-      {
-        query: CONTACT_STATUS, // DocumentNode object parsed with gql
-        variables: {
-          contactStatusId: id,
-        },
-      },
+      CONTACT_STATUS, // DocumentNode object parsed with gql
+      "getContactStatus", // Query name
     ],
   });
 
@@ -45,9 +41,9 @@ const AddContact = ({ id, status, setStatus }: IProps) => {
       onClick={() => sendContactRequest()}
       className={`danger-hover${status ? " " + status : ""}`}
     >
-      <span>Add Person</span>
+      <span>Decline Contact</span>
     </li>
   );
 };
 
-export default AddContact;
+export default AcceptContact;

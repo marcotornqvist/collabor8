@@ -23,6 +23,7 @@ import { isAuth } from "../utils/isAuth";
 import countries from "../data/countries";
 import { pagination } from "../utils/pagination";
 import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
+import { NotificationCode } from "@prisma/client";
 
 // Queries/mutations to be implemented:
 // projects:                  Return all projects - Done
@@ -290,8 +291,9 @@ export class ProjectResolver {
       if (otherMembers.length > 0 && projectDeleted) {
         await prisma.notification.createMany({
           data: otherMembers.map((item) => ({
-            userId: item.userId,
-            message: `${project.title} has been deleted`,
+            projectId: id,
+            receiverId: item.userId,
+            notificationCode: NotificationCode.PROJECT_DELETED,
           })),
         });
       }
@@ -374,11 +376,13 @@ export class ProjectResolver {
             },
           });
 
-          // Send a notification to the new Admin
+          // Send a notification to the new Admin that he is the new admin
           await prisma.notification.create({
             data: {
-              userId: updateMember.userId,
-              message: `You have been assigned as admin of ${project.title}`,
+              senderId: payload!.userId,
+              projectId: id,
+              receiverId: updateMember.userId,
+              notificationCode: NotificationCode.ADMIN_ASSIGNED,
             },
           });
         }

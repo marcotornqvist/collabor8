@@ -33,9 +33,9 @@ const PendingContact = ({ id, status, setStatus }: IProps) => {
     <li
       onClick={() => sendContactRequest()}
       ref={hoverRef}
-      className={`danger-default${status ? " " + status : ""}`}
+      className={`danger-hover${status ? " " + status : ""}`}
     >
-      <span>{isHovered ? "Delete Request" : "Pending Request"}</span>
+      <span>{isHovered ? "Delete Contact Request" : "Pending Contact"}</span>
     </li>
   );
 };

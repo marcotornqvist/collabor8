@@ -14,7 +14,7 @@ import { UserInputError } from "apollo-server-express";
 import { Contact } from "../types/Contact";
 import { User } from "../types/User";
 import { CONTACT_STATUS } from "../types/Enums";
-import { ContactStatusResponse } from "./responses/ContactResponse";
+import { NotificationCode } from "@prisma/client";
 
 // TODO: Queries/mutations to be implemented:
 // contacts             Return all contacts for logged in user - Done
@@ -199,6 +199,17 @@ export class ContactResolver {
       },
     });
 
+    // Send a notification that logged in user has sent a contact request
+    if (contact) {
+      await prisma.notification.create({
+        data: {
+          senderId: payload!.userId,
+          receiverId: id,
+          notificationCode: NotificationCode.CONTACT_REQUEST,
+        },
+      });
+    }
+
     return contact;
   }
 
@@ -223,7 +234,6 @@ export class ContactResolver {
             contactId: payload!.userId,
           },
         ],
-        status: "TRUE",
       },
     });
 
@@ -232,16 +242,45 @@ export class ContactResolver {
     }
 
     // Delete contact from contacts list
-    await prisma.contact.delete({
+    const deleted = await prisma.contact.delete({
       where: {
         id: contact.id,
       },
     });
 
+    if (deleted) {
+      // Find "CONTACT_REQUEST" notification before deleting it
+      const notification = await prisma.notification.findFirst({
+        where: {
+          OR: [
+            {
+              senderId: payload!.userId,
+              receiverId: id,
+              notificationCode: NotificationCode.CONTACT_REQUEST,
+            },
+            {
+              senderId: id,
+              receiverId: payload!.userId,
+              notificationCode: NotificationCode.CONTACT_REQUEST,
+            },
+          ],
+        },
+      });
+
+      // Delete the old notification
+      if (notification) {
+        await prisma.notification.delete({
+          where: {
+            id: notification.id,
+          },
+        });
+      }
+    }
+
     return true;
   }
 
-  @Mutation(() => Boolean, {
+  @Mutation(() => Contact, {
     description: "Accept contact request",
   })
   @UseMiddleware(isAuth)
@@ -264,7 +303,7 @@ export class ContactResolver {
     }
 
     // Accept contact request
-    await prisma.contact.update({
+    const newContact = await prisma.contact.update({
       where: {
         userId_contactId: {
           userId: id,
@@ -276,7 +315,39 @@ export class ContactResolver {
       },
     });
 
-    return true;
+    if (newContact) {
+      // Find "CONTACT_REQUEST" notification before deleting it
+      const notification = await prisma.notification.findFirst({
+        where: {
+          senderId: payload!.userId,
+          receiverId: id,
+          notificationCode: NotificationCode.CONTACT_REQUEST,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      // Delete the old notification
+      if (notification) {
+        await prisma.notification.delete({
+          where: {
+            id: notification.id,
+          },
+        });
+      }
+
+      // Send a notification that user has accepted contact request
+      await prisma.notification.create({
+        data: {
+          senderId: payload!.userId,
+          receiverId: id,
+          notificationCode: NotificationCode.CONTACT_ACCEPTED,
+        },
+      });
+    }
+
+    return newContact;
   }
 
   @Mutation(() => Boolean, {
@@ -303,7 +374,7 @@ export class ContactResolver {
     }
 
     // Reject contact request
-    await prisma.contact.update({
+    const rejected = await prisma.contact.update({
       where: {
         userId_contactId: {
           userId: id,
@@ -314,6 +385,29 @@ export class ContactResolver {
         status: "FALSE",
       },
     });
+
+    if (rejected) {
+      // Find "CONTACT_REQUEST" notification before deleting it
+      const notification = await prisma.notification.findFirst({
+        where: {
+          senderId: id,
+          receiverId: payload!.userId,
+          notificationCode: NotificationCode.CONTACT_REQUEST,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      // Delete the old notification
+      if (notification) {
+        await prisma.notification.delete({
+          where: {
+            id: notification.id,
+          },
+        });
+      }
+    }
 
     return true;
   }

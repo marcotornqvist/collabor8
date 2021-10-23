@@ -17,10 +17,10 @@ interface IProps {
 // Remember to run update after running mutation
 
 // Check if user is already in contact list
-// - If you have sent friend request: Request Pending (you can also delete the request now) success colors
-// - If you have received friend request: Modal - Accept Contact
-// - If you have received friend request: Modal - Decline Contact
-// - If you friend request is accepted: Delete Contact
+// - If you have sent contact request: Request Pending (you can also delete the request now) success colors
+// - If you have received contact request: Modal - Accept Contact
+// - If you have received contact request: Modal - Decline Contact
+// - If you contact request is accepted: Delete Contact
 // - If no contact is returned: Add Person
 
 // Modal tutorial - https://www.youtube.com/watch?v=SuqU904ZHA4&t=58s
@@ -28,7 +28,6 @@ interface IProps {
 const ContactButtons = ({ id, isVisible }: IProps) => {
   const { isAuth } = useSnapshot(authState);
   const [status, setStatus] = useState<string>();
-  const test = "";
 
   const [getContactStatus, { data, loading, error }] = useLazyQuery<
     contactStatus,
@@ -71,7 +70,13 @@ const ContactButtons = ({ id, isVisible }: IProps) => {
     // case STATUS_ENUM.ACTIVE_CONTACT:
     //   return <DeleteContact id={id} />;
     // case STATUS_ENUM.REQUEST_RECEIVED:
-    //   return <ReceivedContact id={id} setStatus={(status) => setStatus(status)} />
+    //   return (
+    //     <PendingContact
+    //       id={id}
+    //       status={status}
+    //       setStatus={(status) => setStatus(status)}
+    //     />
+    //   );
     case STATUS_ENUM.NO_CONTACT:
       return (
         <AddContact
@@ -82,10 +87,10 @@ const ContactButtons = ({ id, isVisible }: IProps) => {
       );
     default:
       return (
-        <div>
+        <li>
           {loading && <span>Loading...</span>}
           {error && <span>Error...</span>}
-        </div>
+        </li>
       );
   }
 
