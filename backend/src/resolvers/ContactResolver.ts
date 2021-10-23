@@ -19,7 +19,7 @@ import { NotificationCode } from "@prisma/client";
 // TODO: Queries/mutations to be implemented:
 // contacts             Return all contacts for logged in user - Done
 // contactStatus        Check what the status is or if a contact request even exist
-// sendContactRequest   Add a new user to your contacts - Done
+// addContact           Add a new user to your contacts - Done
 // deleteContact        Delete contact request - Done
 // acceptContact        Accept a pending contact request - Done
 // rejectContact        Reject contact request (for users that have received a contact where status is pending) - Done
@@ -150,10 +150,7 @@ export class ContactResolver {
     description: "Add a user to contact list",
   })
   @UseMiddleware(isAuth)
-  async sendContactRequest(
-    @Arg("id") id: string,
-    @Ctx() { payload, prisma }: Context
-  ) {
+  async addContact(@Arg("id") id: string, @Ctx() { payload, prisma }: Context) {
     // Checks that user isn't adding himself
     if (id === payload!.userId) {
       throw new Error("You cannot add yourself.");

@@ -7,7 +7,7 @@ import { CONTACT_STATUS } from "@operations-queries/contactStatus";
 import { contactStatus, contactStatusVariables } from "generated/contactStatus";
 import { CONTACT_STATUS as STATUS_ENUM } from "generated/globalTypes";
 import AddContact from "./AddContact";
-import PendingContact from "./PendingContact";
+import DeleteContact from "./DeleteContact";
 
 interface IProps {
   id: string;
@@ -27,7 +27,6 @@ interface IProps {
 
 const ContactButtons = ({ id, isVisible }: IProps) => {
   const { isAuth } = useSnapshot(authState);
-  const [status, setStatus] = useState<string>();
 
   const [getContactStatus, { data, loading, error }] = useLazyQuery<
     contactStatus,
@@ -60,31 +59,13 @@ const ContactButtons = ({ id, isVisible }: IProps) => {
 
   switch (data?.contactStatus) {
     case STATUS_ENUM.REQUEST_SENT:
-      return (
-        <PendingContact
-          id={id}
-          status={status}
-          setStatus={(status) => setStatus(status)}
-        />
-      );
-    // case STATUS_ENUM.ACTIVE_CONTACT:
-    //   return <DeleteContact id={id} />;
+      return <DeleteContact id={id} pendingState={true} />;
+    case STATUS_ENUM.ACTIVE_CONTACT:
+      return <DeleteContact id={id} pendingState={false} />;
     // case STATUS_ENUM.REQUEST_RECEIVED:
-    //   return (
-    //     <PendingContact
-    //       id={id}
-    //       status={status}
-    //       setStatus={(status) => setStatus(status)}
-    //     />
-    //   );
+    //   return <PendingContact id={id} />;
     case STATUS_ENUM.NO_CONTACT:
-      return (
-        <AddContact
-          id={id}
-          status={status}
-          setStatus={(status) => setStatus(status)}
-        />
-      );
+      return <AddContact id={id} />;
     default:
       return (
         <li>
@@ -93,14 +74,6 @@ const ContactButtons = ({ id, isVisible }: IProps) => {
         </li>
       );
   }
-
-  // if (status === "success") {
-  //   return <li className="success">{component}</li>;
-  // } else if (status === "danger") {
-  //   return <li className="danger">{component}</li>;
-  // } else {
-  //   return <li>{component}</li>;
-  // }
 };
 
 export default ContactButtons;

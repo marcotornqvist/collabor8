@@ -236,42 +236,6 @@
                     &:hover {
                       background: $dark-grey-bg;
                     }
-
-                    &.success {
-                      border: 1px solid $green;
-                      background: $light-green;
-
-                      &:hover {
-                        background: $light-green;
-                      }
-                    }
-
-                    &.danger {
-                      border: 1px solid $red;
-                      background: $light-red;
-
-                      &:hover {
-                        background: $light-green;
-                      }
-                    }
-                  }
-
-                  li.success-hover:hover {
-                    border: 1px solid $green;
-                    background: $light-green;
-
-                    &:hover {
-                      background: $light-green;
-                    }
-                  }
-
-                  li.danger-hover:hover {
-                    border: 1px solid $red;
-                    background: $light-red;
-
-                    &:hover {
-                      background: $light-red;
-                    }
                   }
 
                   a:last-child li {
@@ -437,6 +401,26 @@
 
           li .carousel-item {
             padding: 1rem;
+
+            .wrapper .settings {
+              li.success-hover:hover {
+                border: 1px solid $green;
+                background: $light-green;
+
+                &:hover {
+                  background: $light-green;
+                }
+              }
+
+              li.danger-hover:hover {
+                border: 1px solid $red;
+                background: $light-red;
+
+                &:hover {
+                  background: $light-red;
+                }
+              }
+            }
           }
         }
 

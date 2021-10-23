@@ -26,15 +26,6 @@ export enum Sort {
 }
 
 /**
- * Status Code enum
- */
-export enum StatusCode {
-  FALSE = "FALSE",
-  PENDING = "PENDING",
-  TRUE = "TRUE",
-}
-
-/**
  * Login a User
  */
 export interface LoginInput {

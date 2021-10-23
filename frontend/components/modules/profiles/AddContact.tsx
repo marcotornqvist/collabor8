@@ -1,25 +1,20 @@
 import { useEffect } from "react";
 import { useMutation } from "@apollo/client";
-import { SEND_CONTACT_REQUEST } from "@operations-mutations/sendContactRequest";
-import {
-  sendContactRequest,
-  sendContactRequestVariables,
-} from "generated/sendContactRequest";
+import { ADD_CONTACT } from "@operations-mutations/addContact";
+import { addContact, addContactVariables } from "generated/addContact";
 import { CONTACT_STATUS } from "@operations-queries/contactStatus";
 
 interface IProps {
   id: string;
-  status?: string;
-  setStatus: (status: string) => void;
 }
 
-const AddContact = ({ id, status, setStatus }: IProps) => {
-  const [sendContactRequest, { data, error }] = useMutation<
-    sendContactRequest,
-    sendContactRequestVariables
-  >(SEND_CONTACT_REQUEST, {
+const AddContact = ({ id }: IProps) => {
+  const [addContact, { data, error }] = useMutation<
+    addContact,
+    addContactVariables
+  >(ADD_CONTACT, {
     variables: {
-      sendContactRequestId: id,
+      addContactId: id,
     },
     refetchQueries: [
       {
@@ -31,20 +26,8 @@ const AddContact = ({ id, status, setStatus }: IProps) => {
     ],
   });
 
-  useEffect(() => {
-    if (data) {
-      setStatus("success");
-    }
-    if (error) {
-      setStatus("danger");
-    }
-  }, [data, error]);
-
   return (
-    <li
-      onClick={() => sendContactRequest()}
-      className={`danger-hover${status ? " " + status : ""}`}
-    >
+    <li onClick={() => addContact()} className="success-hover">
       <span>Add Person</span>
     </li>
   );
