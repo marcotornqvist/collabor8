@@ -490,15 +490,15 @@
       .alice-carousel__wrapper .alice-carousel__stage {
         height: 350px;
 
-        li .carousel-item {
+        li .content-item {
           height: 100%;
           padding: 1.5rem;
 
-          .box .check-profile-btn {
+          .wrapper .check-profile-btn {
             transition: all 0.1s ease-in-out;
 
             &:hover {
-              background: $green;
+              background: $green !important;
               color: $white;
             }
           }

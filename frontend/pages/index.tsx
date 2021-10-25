@@ -13,8 +13,8 @@ const Home = () => {
   return (
     <div className="landing-page">
       <Showcase />
-      {/* <Disciplines /> */}
-      <Profiles first={3} />
+      <Disciplines />
+      <Profiles first={1} />
       <About />
     </div>
   );

@@ -8,6 +8,7 @@ import { contactStatus, contactStatusVariables } from "generated/contactStatus";
 import { CONTACT_STATUS as STATUS_ENUM } from "generated/globalTypes";
 import AddContact from "./AddContact";
 import DeleteContact from "./DeleteContact";
+import PendingContact from "./PendingContact";
 
 interface IProps {
   id: string;
@@ -62,8 +63,8 @@ const ContactButtons = ({ id, isVisible }: IProps) => {
       return <DeleteContact id={id} pendingState={true} />;
     case STATUS_ENUM.ACTIVE_CONTACT:
       return <DeleteContact id={id} pendingState={false} />;
-    // case STATUS_ENUM.REQUEST_RECEIVED:
-    //   return <PendingContact id={id} />;
+    case STATUS_ENUM.REQUEST_RECEIVED:
+      return <PendingContact id={id} />;
     case STATUS_ENUM.NO_CONTACT:
       return <AddContact id={id} />;
     default:

@@ -16,7 +16,6 @@ import { Message } from "./Message";
 import { Notification } from "./Notification";
 import { BlockedUser } from "./BlockedUser";
 import { ReportUser } from "./Report";
-// import { StatusCode } from "./Enums";
 
 @ObjectType()
 export class User {
