@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import Link from "next/link";
 import ContactButton from "./ContactButtons";
-import BlockButton from "./BlockButton";
+import BlockUser from "./BlockUser";
 import useOnScreen from "@hooks/useOnScreen";
 
 interface IProps {
@@ -24,7 +24,7 @@ const Settings = ({ id }: IProps) => {
           </li>
         </a>
       </Link>
-      <BlockButton id={id} />
+      <BlockUser id={id} isVisible={isVisible} />
     </ul>
   );
 };

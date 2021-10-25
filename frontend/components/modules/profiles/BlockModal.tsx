@@ -1,0 +1,138 @@
+import React, { useEffect, useState, useRef } from "react";
+import ReactDOM from "react-dom";
+import { useMutation } from "@apollo/client";
+import { blockUser, blockUserVariables } from "generated/blockUser";
+import { unblockUser, unblockUserVariables } from "generated/unblockUser";
+import { motion } from "framer-motion";
+import useOnClickOutside from "@hooks/useOnClickOutside";
+import { IS_USER_BLOCKED } from "@operations-queries/isUserBlocked";
+import { BLOCK_USER } from "@operations-mutations/blockUser";
+import { UNBLOCK_USER } from "@operations-mutations/unBlockUser";
+
+const dropIn = {
+  hidden: {
+    y: "-100px",
+    opacity: 0,
+  },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.1,
+      type: "spring",
+      damping: 25,
+    },
+  },
+  exit: {
+    opacity: 0,
+  },
+};
+
+interface IProps {
+  id: string;
+  show: boolean;
+  onClose: () => void;
+  isBlocked: boolean;
+}
+
+const PendingModal = ({ id, show, onClose, isBlocked }: IProps) => {
+  const [isBrowser, setIsBrowser] = useState(false);
+  const [error, setError] = useState("");
+
+  const [blockUser] = useMutation<blockUser, blockUserVariables>(BLOCK_USER, {
+    variables: {
+      blockUserId: id,
+    },
+    refetchQueries: [
+      {
+        query: IS_USER_BLOCKED,
+        variables: {
+          isUserBlockedId: id,
+        },
+      },
+    ],
+    onError: (error) => setError(error.message),
+  });
+
+  const [unblockUser] = useMutation<unblockUser, unblockUserVariables>(
+    UNBLOCK_USER,
+    {
+      variables: {
+        unblockUserId: id,
+      },
+      refetchQueries: [
+        {
+          query: IS_USER_BLOCKED,
+          variables: {
+            isUserBlockedId: id,
+          },
+        },
+      ],
+      onError: (error) => setError(error.message),
+    }
+  );
+
+  useEffect(() => {
+    setIsBrowser(true);
+  }, []);
+
+  const handleCloseClick = (e: any) => {
+    e.preventDefault();
+    onClose();
+  };
+
+  const blockToggler = () => {
+    if (isBlocked) {
+      unblockUser();
+    } else {
+      blockUser();
+    }
+
+    onClose();
+  };
+
+  const ref = useRef(null);
+  useOnClickOutside(ref, handleCloseClick);
+
+  const modalContent = show ? (
+    <div className="modal-backdrop">
+      <motion.div
+        className="modal pending-modal"
+        onClick={(e) => e.stopPropagation()}
+        variants={dropIn}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        ref={ref}
+      >
+        <div className="modal-header">
+          <div className="close-button" onClick={handleCloseClick}>
+            <span>&times;</span>
+          </div>
+        </div>
+        <h4>
+          {isBlocked
+            ? "Are you sure you want to Unblock User?"
+            : "Are you sure you want to Block User?"}
+        </h4>
+        <button
+          className={isBlocked ? "success-color" : "danger-color"}
+          onClick={() => blockToggler()}
+        >
+          {isBlocked ? "Unblock User" : "Block User"}
+        </button>
+      </motion.div>
+    </div>
+  ) : null;
+
+  if (isBrowser) {
+    return ReactDOM.createPortal(
+      modalContent,
+      document.getElementById("modal-root")!
+    );
+  } else {
+    return null;
+  }
+};
+
+export default PendingModal;

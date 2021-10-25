@@ -44,19 +44,21 @@ const ContactButtons = ({ id, isVisible }: IProps) => {
     }
   }, [isVisible]);
 
-  console.log(data);
+  // console.log(data);
 
   if (!isAuth) {
     return (
       <Link href={`/login`}>
         <a>
           <li>
-            <span>Add Person Login</span>
+            <span>Add Person</span>
           </li>
         </a>
       </Link>
     );
   }
+
+  return <AddContact id={id} />;
 
   switch (data?.contactStatus) {
     case STATUS_ENUM.REQUEST_SENT:

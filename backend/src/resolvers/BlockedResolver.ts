@@ -37,15 +37,42 @@ export class BlockedUserResolver {
     return users;
   }
 
-  @Mutation(() => Boolean, {
-    description: "Block a user by id",
+  @Query(() => Boolean, {
+    description: "Checks if user is blocked",
   })
   @UseMiddleware(isAuth)
-  async blockUserById(
+  async isUserBlocked(
     @Arg("id") id: string,
     @Ctx() { payload, prisma }: Context
   ) {
     // Checks if user is blocked
+    const isBlocked = await prisma.blockedUser.findUnique({
+      where: {
+        userId_blockedUserId: {
+          userId: payload!.userId,
+          blockedUserId: id,
+        },
+      },
+    });
+
+    if (isBlocked) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @Mutation(() => Boolean, {
+    description: "Block a user by id",
+  })
+  @UseMiddleware(isAuth)
+  async blockUser(@Arg("id") id: string, @Ctx() { payload, prisma }: Context) {
+    // Checks that logged in user isn't blocking himself
+    if (id === payload!.userId) {
+      throw new Error("You cannot block yourself");
+    }
+
+    // Checks if user is already blocked
     const isBlocked = await prisma.blockedUser.findUnique({
       where: {
         userId_blockedUserId: {
@@ -83,10 +110,11 @@ export class BlockedUserResolver {
     description: "Unblock a blocked user by id",
   })
   @UseMiddleware(isAuth)
-  async unblockUserById(
+  async unblockUser(
     @Arg("id") id: string,
     @Ctx() { payload, prisma }: Context
   ) {
+    console.log(id);
     // Checks if user is blocked
     const isBlocked = await prisma.blockedUser.findUnique({
       where: {
@@ -97,7 +125,7 @@ export class BlockedUserResolver {
       },
     });
 
-    if (isBlocked) throw new Error("User is not blocked or doesn't exist");
+    if (!isBlocked) throw new Error("User is not blocked or doesn't exist");
 
     // Removes a user from the blocked user table
     await prisma.blockedUser.delete({
