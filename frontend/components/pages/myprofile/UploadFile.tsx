@@ -1,6 +1,5 @@
 import React, { useEffect, useState, Fragment } from "react";
 import { useMutation } from "@apollo/client";
-import { FileResponse } from "types";
 import Image from "next/image";
 import { SINGLE_UPLOAD } from "@operations-mutations/uploadFile";
 import { singleUpload, singleUploadVariables } from "generated/singleUpload";

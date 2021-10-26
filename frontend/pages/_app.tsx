@@ -8,6 +8,7 @@ import Navbar from "@components-layout/navbar/Navbar";
 import Footer from "@components-layout/footer/Footer";
 import Menu from "@components-layout/menu/Menu";
 import "../styles/app.scss";
+import Toasts from "@components-modules/global/toasts/Toasts";
 
 // <script src="https://kit.fontawesome.com/0f6f932cce.js" crossorigin="anonymous"></script>
 
@@ -46,6 +47,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </PrivateRoute>
       </div>
+      <Toasts />
       <Footer />
     </ApolloProvider>
   );

@@ -4,7 +4,7 @@ import { useMutation } from "@apollo/client";
 import { DELETE_CONTACT } from "@operations-mutations/deleteContact";
 import { deleteContact, deleteContactVariables } from "generated/deleteContact";
 import { CONTACT_STATUS } from "@operations-queries/contactStatus";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import useOnClickOutside from "@hooks/useOnClickOutside";
 
 const dropIn = {

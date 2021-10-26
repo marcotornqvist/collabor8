@@ -33,6 +33,7 @@ class MyDocument extends Document {
           <Main />
           <NextScript />
           <div id="modal-root"></div>
+          <div id="toasts-portal"></div>
         </body>
       </Html>
     );

@@ -3,11 +3,11 @@ import ReactDOM from "react-dom";
 import { useMutation } from "@apollo/client";
 import { blockUser, blockUserVariables } from "generated/blockUser";
 import { unblockUser, unblockUserVariables } from "generated/unblockUser";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import useOnClickOutside from "@hooks/useOnClickOutside";
 import { IS_USER_BLOCKED } from "@operations-queries/isUserBlocked";
 import { BLOCK_USER } from "@operations-mutations/blockUser";
-import { UNBLOCK_USER } from "@operations-mutations/unBlockUser";
+import { UNBLOCK_USER } from "@operations-mutations/unblockUser";
 
 const dropIn = {
   hidden: {
