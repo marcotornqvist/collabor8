@@ -1,9 +1,4 @@
-export interface FileResponse {
-  file: string;
-  mimetype: string;
-  encoding: string;
-  url: string;
-}
+import { ErrorStatus } from "@types-enums/enums";
 
 export interface IAuthState {
   accessToken: string;
@@ -18,11 +13,12 @@ export interface INavigationState {
 export interface IToast {
   id: string;
   message: string;
-  duration: number;
+  status: ErrorStatus;
+  duration?: number;
 }
 
 export interface IToastState {
   toasts: IToast[];
-  addToast: (message: string, duration?: number) => void;
+  addToast: (message: string, status: ErrorStatus, duration?: number) => void;
   deleteToast: (id: string, duration: number) => void;
 }

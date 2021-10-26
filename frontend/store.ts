@@ -1,6 +1,12 @@
-import { IAuthState, INavigationState, IToastState, IToast } from "types";
+import {
+  IAuthState,
+  INavigationState,
+  IToastState,
+  IToast,
+} from "@types-interfaces/store";
 import { proxy } from "valtio";
 import { v4 as uuidv4 } from "uuid";
+import { ErrorStatus } from "@types-enums/enums";
 
 export const authState = proxy<IAuthState>({
   accessToken: "",
@@ -14,30 +20,23 @@ export const navigationState = proxy<INavigationState>({
 
 export const toastState = proxy<IToastState>({
   toasts: [
-    {
-      id: "9120391802938102830",
-      message: "My name is Giorgio Giovanni",
-      duration: 3500,
-    },
-    {
-      id: "021o319230192309",
-      message: "My name is Giorgio Giovanni 2",
-      duration: 3500,
-    },
-    {
-      id: "021o31923019230fsfs9",
-      message: "My name is Giorgio Giovanni 2",
-      duration: 3500,
-    },
+    // {
+    //   id: "9120391802938102830",
+    //   message: "My name is Giorgio Giovanni",
+    //   duration: 3500,
+    //   status: ErrorStatus.danger,
+    // },
   ],
-  addToast(message, duration = 3500) {
+  addToast(message, status, duration = 3500) {
     toastState.toasts.push({
       id: uuidv4(),
       message,
       duration,
+      status,
     });
   },
   deleteToast(id, duration) {
+    // Removes the toast from the toast state
     const timeoutId = setTimeout(() => {
       const findIndex = toastState.toasts.findIndex(
         (item: IToast) => item.id === id

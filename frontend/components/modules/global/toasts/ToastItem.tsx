@@ -1,16 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { toastState } from "store";
-import { useSnapshot } from "valtio";
+import { IToast } from "@types-interfaces/store";
 
-interface IProps {
-  id: string;
-  message: string;
-  duration?: number;
-}
-
-const ToastItem = ({ id, message, duration = 3500 }: IProps) => {
+const ToastItem = ({ id, message, status, duration = 3500 }: IToast) => {
   const [isBrowser, setIsBrowser] = useState(false);
   const [show, setShow] = useState(true);
 
@@ -44,9 +38,9 @@ const ToastItem = ({ id, message, duration = 3500 }: IProps) => {
             initial={{ opacity: 0, y: 50, scale: 0.3 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.5 }}
-            className="toast"
+            className={`toast ${status !== "default" && status}`}
           >
-            {message}
+            <span>{message}</span>
           </motion.div>
         )}
       </AnimatePresence>,

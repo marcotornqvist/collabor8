@@ -4,8 +4,10 @@ import { useMutation } from "@apollo/client";
 import { DELETE_CONTACT } from "@operations-mutations/deleteContact";
 import { deleteContact, deleteContactVariables } from "generated/deleteContact";
 import { CONTACT_STATUS } from "@operations-queries/contactStatus";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import useOnClickOutside from "@hooks/useOnClickOutside";
+import { toastState } from "store";
+import { ErrorStatus } from "@types-enums/enums";
 
 const dropIn = {
   hidden: {
@@ -34,6 +36,7 @@ interface IProps {
 }
 
 const DeleteModal = ({ id, show, title, onClose }: IProps) => {
+  const [error, setError] = useState("");
   const [isBrowser, setIsBrowser] = useState(false);
 
   const [deleteContact, { data }] = useMutation<
@@ -51,6 +54,7 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
         },
       },
     ],
+    onError: (error) => setError(error.message),
   });
 
   useEffect(() => {
@@ -63,6 +67,7 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
   };
 
   const onClickHandler = () => {
+    setError("");
     deleteContact();
     if (data) {
       onClose();
@@ -71,6 +76,15 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
 
   const ref = useRef(null);
   useOnClickOutside(ref, handleCloseClick);
+
+  useEffect(() => {
+    if (data) {
+      toastState.addToast("Contact deleted", ErrorStatus.danger);
+    }
+    if (error) {
+      toastState.addToast(error, ErrorStatus.danger);
+    }
+  }, [data, error]);
 
   const modalContent = show ? (
     <div className="modal-backdrop">

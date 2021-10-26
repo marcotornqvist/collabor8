@@ -52,8 +52,6 @@ const ContactButtons = ({ id, isVisible }: IProps) => {
     );
   }
 
-  return <AddContact id={id} />;
-
   switch (data?.contactStatus) {
     case STATUS_ENUM.REQUEST_SENT:
       return <DeleteContact id={id} pendingState={true} />;

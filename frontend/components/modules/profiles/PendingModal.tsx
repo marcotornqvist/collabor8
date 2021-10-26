@@ -8,6 +8,8 @@ import { acceptContact, acceptContactVariables } from "generated/acceptContact";
 import { CONTACT_STATUS } from "@operations-queries/contactStatus";
 import { motion } from "framer-motion";
 import useOnClickOutside from "@hooks/useOnClickOutside";
+import { toastState } from "store";
+import { ErrorStatus } from "@types-enums/enums";
 
 const dropIn = {
   hidden: {
@@ -36,6 +38,7 @@ interface IProps {
 }
 
 const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
+  const [error, setError] = useState("");
   const [isBrowser, setIsBrowser] = useState(false);
 
   const [acceptContact] = useMutation<acceptContact, acceptContactVariables>(
@@ -52,6 +55,7 @@ const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
           },
         },
       ],
+      onError: (error) => setError(error.message),
     }
   );
 
@@ -69,6 +73,7 @@ const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
           },
         },
       ],
+      onError: (error) => setError(error.message),
     }
   );
 
@@ -82,17 +87,25 @@ const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
   };
 
   const acceptHandler = () => {
+    setError("");
     acceptContact();
     onClose();
   };
 
   const rejectHandler = () => {
+    setError("");
     rejectContact();
     onClose();
   };
 
   const ref = useRef(null);
   useOnClickOutside(ref, handleCloseClick);
+
+  useEffect(() => {
+    if (error) {
+      toastState.addToast(error, ErrorStatus.danger);
+    }
+  }, [error]);
 
   const modalContent = show ? (
     <div className="modal-backdrop">

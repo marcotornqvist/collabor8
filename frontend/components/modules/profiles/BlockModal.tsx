@@ -8,6 +8,8 @@ import useOnClickOutside from "@hooks/useOnClickOutside";
 import { IS_USER_BLOCKED } from "@operations-queries/isUserBlocked";
 import { BLOCK_USER } from "@operations-mutations/blockUser";
 import { UNBLOCK_USER } from "@operations-mutations/unblockUser";
+import { toastState } from "store";
+import { ErrorStatus } from "@types-enums/enums";
 
 const dropIn = {
   hidden: {
@@ -82,6 +84,7 @@ const PendingModal = ({ id, show, onClose, isBlocked }: IProps) => {
   };
 
   const blockToggler = () => {
+    setError("");
     if (isBlocked) {
       unblockUser();
     } else {
@@ -90,6 +93,12 @@ const PendingModal = ({ id, show, onClose, isBlocked }: IProps) => {
 
     onClose();
   };
+
+  useEffect(() => {
+    if (error) {
+      toastState.addToast(error, ErrorStatus.danger);
+    }
+  }, [error]);
 
   const ref = useRef(null);
   useOnClickOutside(ref, handleCloseClick);

@@ -22,6 +22,8 @@
       "@components-pages/*": ["components/pages/*"],
       "@operations-mutations/*": ["operations/mutations/*"],
       "@operations-queries/*": ["operations/queries/*"],
+      "@types-interfaces/*": ["types/interfaces/*"],
+      "@types-enums/*": ["types/enums/*"],
       "@hooks/*": ["hooks/*"]
     }
   },

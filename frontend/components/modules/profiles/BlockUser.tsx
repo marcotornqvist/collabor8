@@ -3,8 +3,9 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { isUserBlocked, isUserBlockedVariables } from "generated/isUserBlocked";
 import BlockModal from "./BlockModal";
 import { IS_USER_BLOCKED } from "@operations-queries/isUserBlocked";
-import { authState } from "../../../store";
+import { authState, toastState } from "../../../store";
 import { useSnapshot } from "valtio";
+import { ErrorStatus } from "@types-enums/enums";
 
 interface IProps {
   id: string;
@@ -13,7 +14,6 @@ interface IProps {
 
 const BlockUser = ({ id, isVisible }: IProps) => {
   const [showModal, setShowModal] = useState(false);
-  const [error, setError] = useState("");
   const { isAuth } = useSnapshot(authState);
 
   const [isUserBlocked, { data }] = useLazyQuery<
@@ -23,7 +23,6 @@ const BlockUser = ({ id, isVisible }: IProps) => {
     variables: {
       isUserBlockedId: id,
     },
-    onError: (error) => setError(error.message),
   });
 
   useEffect(() => {
@@ -32,7 +31,7 @@ const BlockUser = ({ id, isVisible }: IProps) => {
     }
   }, [isVisible]);
 
-  return (
+  return isAuth ? (
     <>
       <li
         onClick={() => setShowModal(true)}
@@ -47,7 +46,7 @@ const BlockUser = ({ id, isVisible }: IProps) => {
         isBlocked={data?.isUserBlocked ? true : false}
       />
     </>
-  );
+  ) : null;
 };
 
 export default BlockUser;
