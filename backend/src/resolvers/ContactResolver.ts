@@ -129,13 +129,18 @@ export class ContactResolver {
     }
 
     // Contact is sent but not accepted (PENDING)
-    if (contact.status !== "TRUE" && contact.userId === payload!.userId) {
+    if (contact.status === "PENDING" && contact.userId === payload!.userId) {
       return CONTACT_STATUS.REQUEST_SENT;
     }
 
-    // Contact is received but not accepted (PENDING)
-    if (contact.status !== "TRUE" && contact.contactId === payload!.userId) {
+    // Contact is received but pending (PENDING)
+    if (contact.status === "PENDING" && contact.contactId === payload!.userId) {
       return CONTACT_STATUS.REQUEST_RECEIVED;
+    }
+
+    // Contact is received but false (FALSE)
+    if (contact.status === "FALSE" && contact.contactId === payload!.userId) {
+      return CONTACT_STATUS.REQUEST_RECEIVED_FALSE;
     }
 
     // Contact is active and accepted (TRUE)

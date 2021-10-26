@@ -114,7 +114,6 @@ export class BlockedUserResolver {
     @Arg("id") id: string,
     @Ctx() { payload, prisma }: Context
   ) {
-    console.log(id);
     // Checks if user is blocked
     const isBlocked = await prisma.blockedUser.findUnique({
       where: {

@@ -8,11 +8,12 @@ import PendingModal from "@components-modules/profiles/PendingModal";
 
 interface IProps {
   id: string;
+  hideDelete?: boolean;
 }
 
 // This component works for both when a user has sent a contact request
 // but is still in a pending state. And also when the contact state is active(true).
-const PendingContact = ({ id }: IProps) => {
+const PendingContact = ({ id, hideDelete }: IProps) => {
   const [hoverRef, isHovered] = useHover<HTMLLIElement>();
   const [showModal, setShowModal] = useState(false);
 
@@ -23,14 +24,13 @@ const PendingContact = ({ id }: IProps) => {
         ref={hoverRef}
         className="success-hover"
       >
-        <span>
-          {isHovered ? "Respond to request" : "Contact Request Received"}
-        </span>
+        <span>{isHovered ? "Respond" : "Contact Received"}</span>
       </li>
       <PendingModal
         id={id}
         show={showModal}
         onClose={() => setShowModal(false)}
+        hideDelete={hideDelete}
       />
     </>
   );

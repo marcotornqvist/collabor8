@@ -15,16 +15,12 @@ interface IProps {
   isVisible: boolean;
 }
 
-// Remember to run update after running mutation
-
 // Check if user is already in contact list
 // - If you have sent contact request: Request Pending (you can also delete the request now) success colors
 // - If you have received contact request: Modal - Accept Contact
 // - If you have received contact request: Modal - Decline Contact
 // - If you contact request is accepted: Delete Contact
 // - If no contact is returned: Add Person
-
-// Modal tutorial - https://www.youtube.com/watch?v=SuqU904ZHA4&t=58s
 
 const ContactButtons = ({ id, isVisible }: IProps) => {
   const { isAuth } = useSnapshot(authState);
@@ -43,8 +39,6 @@ const ContactButtons = ({ id, isVisible }: IProps) => {
       getContactStatus();
     }
   }, [isVisible]);
-
-  // console.log(data);
 
   if (!isAuth) {
     return (
@@ -67,6 +61,8 @@ const ContactButtons = ({ id, isVisible }: IProps) => {
       return <DeleteContact id={id} pendingState={false} />;
     case STATUS_ENUM.REQUEST_RECEIVED:
       return <PendingContact id={id} />;
+    case STATUS_ENUM.REQUEST_RECEIVED_FALSE:
+      return <PendingContact id={id} hideDelete={true} />;
     case STATUS_ENUM.NO_CONTACT:
       return <AddContact id={id} />;
     default:

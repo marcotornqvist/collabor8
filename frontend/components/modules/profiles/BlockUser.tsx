@@ -3,6 +3,8 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { isUserBlocked, isUserBlockedVariables } from "generated/isUserBlocked";
 import BlockModal from "./BlockModal";
 import { IS_USER_BLOCKED } from "@operations-queries/isUserBlocked";
+import { authState } from "../../../store";
+import { useSnapshot } from "valtio";
 
 interface IProps {
   id: string;
@@ -12,6 +14,7 @@ interface IProps {
 const BlockUser = ({ id, isVisible }: IProps) => {
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
+  const { isAuth } = useSnapshot(authState);
 
   const [isUserBlocked, { data }] = useLazyQuery<
     isUserBlocked,

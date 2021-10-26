@@ -28,6 +28,10 @@ const AddContact = ({ id }: IProps) => {
     }
   );
 
+  useEffect(() => {
+    console.log(error)
+  }, [error])
+
   return (
     <li onClick={() => addContact()} className="success-hover">
       <span>Add Person</span>

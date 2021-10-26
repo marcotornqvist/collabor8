@@ -36,22 +36,22 @@ interface IProps {
 const DeleteModal = ({ id, show, title, onClose }: IProps) => {
   const [isBrowser, setIsBrowser] = useState(false);
 
-  const [deleteContact] = useMutation<deleteContact, deleteContactVariables>(
-    DELETE_CONTACT,
-    {
-      variables: {
-        deleteContactId: id,
-      },
-      refetchQueries: [
-        {
-          query: CONTACT_STATUS, // DocumentNode object parsed with gql
-          variables: {
-            contactStatusId: id,
-          },
+  const [deleteContact, { data }] = useMutation<
+    deleteContact,
+    deleteContactVariables
+  >(DELETE_CONTACT, {
+    variables: {
+      deleteContactId: id,
+    },
+    refetchQueries: [
+      {
+        query: CONTACT_STATUS, // DocumentNode object parsed with gql
+        variables: {
+          contactStatusId: id,
         },
-      ],
-    }
-  );
+      },
+    ],
+  });
 
   useEffect(() => {
     setIsBrowser(true);
@@ -64,7 +64,9 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
 
   const onClickHandler = () => {
     deleteContact();
-    onClose();
+    if (data) {
+      onClose();
+    }
   };
 
   const ref = useRef(null);

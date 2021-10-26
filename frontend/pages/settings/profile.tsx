@@ -49,8 +49,6 @@ const Profile = () => {
     }
   );
 
-  console.log(error?.message);
-
   if (loading) return <div>Submitting...</div>;
 
   return (

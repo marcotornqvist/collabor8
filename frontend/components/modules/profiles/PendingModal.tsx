@@ -32,9 +32,10 @@ interface IProps {
   id: string;
   show: boolean;
   onClose: () => void;
+  hideDelete?: boolean;
 }
 
-const PendingModal = ({ id, show, onClose }: IProps) => {
+const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
   const [isBrowser, setIsBrowser] = useState(false);
 
   const [acceptContact] = useMutation<acceptContact, acceptContactVariables>(
@@ -80,13 +81,13 @@ const PendingModal = ({ id, show, onClose }: IProps) => {
     onClose();
   };
 
-  const rejectHandler = () => {
-    rejectContact();
+  const acceptHandler = () => {
+    acceptContact();
     onClose();
   };
 
-  const acceptHandler = () => {
-    acceptContact();
+  const rejectHandler = () => {
+    rejectContact();
     onClose();
   };
 
@@ -114,9 +115,11 @@ const PendingModal = ({ id, show, onClose }: IProps) => {
           <button className="success-color" onClick={() => acceptHandler()}>
             Accept
           </button>
-          <button className="danger-color" onClick={() => rejectHandler()}>
-            Delete
-          </button>
+          {!hideDelete && (
+            <button className="danger-color" onClick={() => rejectHandler()}>
+              Delete
+            </button>
+          )}
         </div>
       </motion.div>
     </div>

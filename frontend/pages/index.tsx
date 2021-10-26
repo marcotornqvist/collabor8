@@ -14,7 +14,7 @@ const Home = () => {
     <div className="landing-page">
       <Showcase />
       <Disciplines />
-      <Profiles first={1} />
+      <Profiles first={3} />
       <About />
     </div>
   );
