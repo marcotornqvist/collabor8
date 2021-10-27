@@ -9,6 +9,7 @@ module.exports = (phase) => {
     : process.env.NEXT_PUBLIC_BASE_URL;
 
   return {
+    swcMinify: true,
     images: {
       domains: ["collabor8-image-bucket.s3.eu-west-1.amazonaws.com"],
     },

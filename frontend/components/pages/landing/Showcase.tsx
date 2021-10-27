@@ -29,6 +29,7 @@ const Showcase = () => {
         layout="fill"
         objectFit="cover"
         objectPosition="center"
+        priority
       />
     </section>
   );
