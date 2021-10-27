@@ -13,8 +13,8 @@ interface IProps {
 const ProfileItem = ({ item }: IProps) => {
   const { id, username, profile } = item;
 
-  const items = [
-    <div className="carousel-item content-item" data-value="1">
+  const content = (
+    <div className="carousel-item content-item" data-value="1" key={1}>
       <div className="wrapper">
         <div className="content">
           <ProfileImage size={80} profileImage={profile?.profileImage} />
@@ -29,13 +29,18 @@ const ProfileItem = ({ item }: IProps) => {
           </a>
         </Link>
       </div>
-    </div>,
-    <div className="carousel-item settings-item" data-value="2">
+    </div>
+  );
+
+  const settings = (
+    <div className="carousel-item settings-item" data-value="2" key={2}>
       <div className="wrapper">
         <Settings id={id} />
       </div>
-    </div>,
-  ];
+    </div>
+  );
+
+  const items = [content, settings];
 
   const menuButton = () => {
     return (
