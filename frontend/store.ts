@@ -19,14 +19,7 @@ export const navigationState = proxy<INavigationState>({
 });
 
 export const toastState = proxy<IToastState>({
-  toasts: [
-    // {
-    //   id: "9120391802938102830",
-    //   message: "My name is Giorgio Giovanni",
-    //   duration: 3500,
-    //   status: ErrorStatus.danger,
-    // },
-  ],
+  toasts: [],
   addToast(message, status, duration = 3500) {
     toastState.toasts.push({
       id: uuidv4(),

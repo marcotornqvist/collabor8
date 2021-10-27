@@ -3,21 +3,81 @@
 
 footer {
   background: $light-green;
-  padding-top: 1.5rem;
 
   .footer-main-content {
+    padding: 3rem 0;
     display: grid;
+    gap: 1.5rem;
+    max-width: 1280px;
+    margin: 0 auto;
 
     .title-content {
-      margin-bottom: 1.5rem;
-
       h1 {
         color: $green;
       }
     }
+
+    .links {
+      .page-links {
+        margin-bottom: 1.5rem;
+      }
+
+      .page-links,
+      .contact-links {
+        h4 {
+          margin-bottom: 1rem;
+          font-size: 1.5rem;
+          color: $green;
+        }
+
+        ul li {
+          margin-bottom: 1rem;
+
+          a {
+            font-size: 1rem;
+          }
+        }
+      }
+    }
+  }
+
+  .footer-bottom-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 4rem;
+    background: $light-green-darker;
+
+    span {
+      color: $grey;
+      font-size: 14px;
+    }
   }
 }
 
-// @media only screen and (min-width: $breakpoint-lg) {
+@media only screen and (min-width: $breakpoint-md) {
+  footer .footer-main-content {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 6rem 0;
+    gap: 3rem;
 
-// }
+    .title-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 4rem;
+    }
+
+    .links {
+      display: flex;
+      gap: 4rem;
+
+      .page-links,
+      .contact-links {
+        h4 {
+          margin-bottom: 1rem;
+        }
+      }
+    }
+  }
+}

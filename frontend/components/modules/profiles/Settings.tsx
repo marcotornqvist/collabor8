@@ -13,7 +13,6 @@ interface IProps {
 const Settings = ({ id }: IProps) => {
   const ref: any = useRef<HTMLDivElement>();
   const isVisible = useOnScreen(ref);
-  const { isAuth } = useSnapshot(authState);
 
   return (
     <ul className="settings" ref={ref}>
@@ -27,7 +26,7 @@ const Settings = ({ id }: IProps) => {
           </li>
         </a>
       </Link>
-      {isAuth && <BlockUser id={id} isVisible={isVisible} />}
+      <BlockUser id={id} isVisible={isVisible} />
     </ul>
   );
 };
