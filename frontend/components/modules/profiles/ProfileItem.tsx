@@ -4,66 +4,83 @@ import AliceCarousel from "react-alice-carousel";
 import ProfileImage from "@components-modules/global/ProfileImage";
 import Link from "next/link";
 import Settings from "./Settings";
+import { useState } from "react";
 
 interface IProps {
   item: users_users;
   key: string;
 }
 
-const ProfileItem = ({ item }: IProps) => {
+const createItems = (length: any, [handleClick]: any, item: users_users) => {
+  let deltaX = 0;
+  let difference = 0;
+  const swipeDelta = 20;
+
   const { id, username, profile } = item;
 
-  const items = [
+  return Array.from({ length }).map((item, i) => (
     <div
-      className="carousel-item settings-item"
-      data-value="1"
-      key={"settings"}
+      data-value={i + 1}
+      className="item"
+      onMouseDown={(e) => (deltaX = e.pageX)}
+      onMouseUp={(e) => (difference = Math.abs(e.pageX - deltaX))}
+      onClick={() => difference < swipeDelta && handleClick(i)}
+      key={i}
     >
-      <div className="wrapper">
-        <Settings id={id} />
-      </div>
-    </div>,
-    <div className="carousel-item content-item" data-value="2" key={"content"}>
-      <div className="wrapper">
-        <div className="content">
-          <ProfileImage size={80} profileImage={profile?.profileImage} />
-          <h4>
-            {profile?.firstName} {profile?.lastName}
-          </h4>
-          <span>{profile?.discipline?.title}</span>
+      {i === 0 ? (
+        <div className="carousel-item content-item">
+          <div className="wrapper">
+            <div className="content">
+              <ProfileImage size={80} profileImage={profile?.profileImage} />
+              <h4>
+                {profile?.firstName} {profile?.lastName}
+              </h4>
+              <span>{profile?.discipline?.title}</span>
+            </div>
+            <Link href={`/profile/${username}`}>
+              <a>
+                <button className="check-profile-btn">See Profile</button>
+              </a>
+            </Link>
+          </div>
         </div>
-        <Link href={`/profile/${username}`}>
-          <a>
-            <button className="check-profile-btn">See Profile</button>
-          </a>
-        </Link>
-      </div>
-    </div>,
-  ];
+      ) : (
+        <div className="carousel-item settings-item">
+          <div className="wrapper">
+            <Settings id={id} />
+          </div>
+        </div>
+      )}
+    </div>
+  ));
+};
 
-  const menuButton = () => {
-    return (
-      <div className="menu-button">
-        <Image
-          src="/icons/cog-solid-fa-green.svg"
-          alt="Cog wheel"
-          width={24}
-          height={24}
-        />
-      </div>
-    );
+const ProfileItem = ({ item }: IProps) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [items] = useState(createItems(2, [setActiveIndex], item));
+
+  const toggleSlide = () => {
+    activeIndex === 0 ? setActiveIndex(1) : setActiveIndex(0);
   };
 
   return (
     <div className="profile-item">
       <div className="carousel">
         <AliceCarousel
+          mouseTracking
+          disableDotsControls
+          disableButtonsControls
           items={items}
-          infinite={true}
-          disableSlideInfo={true}
-          disableDotsControls={true}
-          renderPrevButton={menuButton}
+          activeIndex={activeIndex}
         />
+        <div className="carousel-button" onClick={toggleSlide}>
+          <Image
+            src="/icons/cog-solid-fa-green.svg"
+            alt="Cog wheel"
+            width={24}
+            height={24}
+          />
+        </div>
       </div>
     </div>
   );

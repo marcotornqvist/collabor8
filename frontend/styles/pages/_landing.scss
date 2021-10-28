@@ -139,6 +139,10 @@
             -webkit-backface-visibility: hidden;
 
             li {
+              .item {
+                height: 100%;
+              }
+
               .carousel-item {
                 display: flex;
                 align-items: center;
@@ -269,7 +273,7 @@
           }
         }
 
-        .alice-carousel .alice-carousel__prev-btn {
+        .carousel-button {
           position: absolute;
           top: 1.5rem;
           left: 1.5rem;
@@ -309,7 +313,6 @@
       }
 
       h3 {
-        // line-height: 2rem;
         margin-bottom: 0.2rem;
         color: $white;
       }
@@ -491,26 +494,28 @@
   .landing-page .profiles .grid {
     grid-auto-rows: minmax(100px, 350px);
 
-    .profile-item .carousel .alice-carousel {
-      .alice-carousel__wrapper .alice-carousel__stage {
-        height: 350px;
+    .profile-item .carousel {
+      .alice-carousel {
+        .alice-carousel__wrapper .alice-carousel__stage {
+          height: 350px;
 
-        li .content-item {
-          height: 100%;
-          padding: 1.5rem;
+          li .content-item {
+            height: 100%;
+            padding: 1.5rem;
 
-          .wrapper .check-profile-btn {
-            transition: all 0.1s ease-in-out;
+            .wrapper .check-profile-btn {
+              transition: all 0.1s ease-in-out;
 
-            &:hover {
-              background: $green !important;
-              color: $white;
+              &:hover {
+                background: $green !important;
+                color: $white;
+              }
             }
           }
         }
       }
 
-      .alice-carousel__prev-btn {
+      .carousel-button {
         top: 1.5rem;
         left: 1.5rem;
       }
