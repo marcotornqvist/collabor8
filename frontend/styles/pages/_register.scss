@@ -1,0 +1,72 @@
+@use "../abstracts/colors" as *;
+// @use "../abstracts/breakpoints" as *;
+// @use "../abstracts/shadows" as *;
+// @use "../abstracts/zindex" as *;
+
+.register-page {
+  min-height: 100%;
+  padding: 1.5rem 0;
+
+  .container {
+    height: 100%;
+  }
+
+  .content {
+    max-width: 500px;
+
+    .text-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: row-reverse;
+      margin-bottom: 1.5rem;
+    }
+
+    hr {
+      border: none;
+      border: 1px solid $border-color2;
+      margin-bottom: 1.5rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 2.5rem;
+
+      .input-group {
+        margin-bottom: 1rem;
+
+        .input-text {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding-bottom: 0.25rem;
+
+          label {
+            font-weight: 400;
+          }
+
+          span {
+            font-size: 12px;
+            color: $red;
+          }
+        }
+      }
+    }
+
+    button {
+      width: 100%;
+      margin: 2rem 0 1rem;
+      background: $green;
+      color: $white;
+    }
+
+    span {
+      text-align: center;
+
+      a {
+        color: $green;
+      }
+    }
+  }
+}

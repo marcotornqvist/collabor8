@@ -9,6 +9,7 @@ import Footer from "@components-layout/footer/Footer";
 import Menu from "@components-layout/menu/Menu";
 import "../styles/app.scss";
 import Toasts from "@components-modules/global/toasts/Toasts";
+import { useRouter } from "next/router";
 
 // <script src="https://kit.fontawesome.com/0f6f932cce.js" crossorigin="anonymous"></script>
 
@@ -35,20 +36,27 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   // These routes are only accessible when authenticated
-  const protectedRoutes = ["/my-profile", "/chat", "/settings"];
+  const protectedRoutes = ["/my-profile", "/chat", "/settings", "/report"];
+
+  // Check if navbar and footer should be loaded
+  const router = useRouter();
+  const pathname = router.pathname;
+
+  const paths = ["/register", "/login"];
+  const isPage = paths.includes(pathname);
 
   return (
     <ApolloProvider client={client}>
       <title>Collabor8</title>
-      <Navbar />
+      {!paths.includes(pathname) && <Navbar />}
       <Menu />
-      <div className="main">
+      <div className={`main${!isPage ? "" : " main-remove"}`}>
         <PrivateRoute protectedRoutes={protectedRoutes}>
           <Component {...pageProps} />
         </PrivateRoute>
       </div>
       <Toasts />
-      <Footer />
+      {!isPage && <Footer />}
     </ApolloProvider>
   );
 }

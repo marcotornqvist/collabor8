@@ -6,6 +6,9 @@ import { authState } from "store";
 import { LOGIN_USER } from "@operations-mutations/login";
 import styles from "@styles-modules/Input.module.scss";
 import { useSnapshot } from "valtio";
+import { toastState } from "store";
+import { ErrorStatus } from "@types-enums/enums";
+import buttonStyles from "@styles-modules/Button.module.scss";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -33,6 +36,12 @@ const Login = () => {
       onError: (error) => setError(error.message),
     }
   );
+
+  useEffect(() => {
+    if (error) {
+      toastState.addToast(error, ErrorStatus.danger);
+    }
+  }, [error]);
 
   if (loading) return "Submitting...";
   if (data) {
@@ -77,7 +86,9 @@ const Login = () => {
               autoComplete="on"
             />
           </div>
-          {error && <div className="error-message">{error}</div>}
+          {/* <button type="submit" className={buttonStyles.defaultButton}>
+            login
+          </button> */}
           <button type="submit">login</button>
         </form>
       </div>

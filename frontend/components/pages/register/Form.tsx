@@ -4,7 +4,9 @@ import { register, registerVariables } from "generated/register";
 import { authState } from "store";
 import { REGISTER_USER } from "@operations-mutations/register";
 import { useRouter } from "next/router";
-import styles from "@styles-modules/Input.module.scss";
+import inputStyles from "@styles-modules/Input.module.scss";
+import buttonStyles from "@styles-modules/Button.module.scss";
+import Link from "next/link";
 
 interface Errors {
   firstName?: string;
@@ -36,7 +38,10 @@ const Form = () => {
         confirmPassword,
       },
     },
-    onError: (error) => setErrors(error.graphQLErrors[0].extensions?.errors),
+    onError: (error) => {
+      setErrors(error.graphQLErrors[0].extensions?.errors);
+      console.log(error);
+    },
   });
 
   if (loading) return <div>Submitting...</div>;
@@ -56,14 +61,16 @@ const Form = () => {
       }}
     >
       <div className="input-group">
-        <label htmlFor="firstName">First Name</label>
-        {errors.firstName && (
-          <span className="error-message">{errors.firstName}</span>
-        )}
+        <div className="input-text">
+          <label htmlFor="firstName">First Name</label>
+          {errors.firstName && (
+            <span className="error-message">{errors.firstName}</span>
+          )}
+        </div>
         <input
-          className={styles.input}
+          className={inputStyles.input}
           value={firstName}
-          placeholder="firstname"
+          placeholder="Your first name"
           onChange={(e) => {
             setFirstName(e.target.value);
           }}
@@ -71,12 +78,14 @@ const Form = () => {
         />
       </div>
       <div className="input-group">
-        <label htmlFor="lastName">Last Name</label>
-        {errors.lastName && <span>{errors.lastName}</span>}
+        <div className="input-text">
+          <label htmlFor="lastName">Last Name</label>
+          {errors.lastName && <span>{errors.lastName}</span>}
+        </div>
         <input
-          className={styles.input}
+          className={inputStyles.input}
           value={lastName}
-          placeholder="lastname"
+          placeholder="Your last name"
           onChange={(e) => {
             setLastName(e.target.value);
           }}
@@ -84,12 +93,16 @@ const Form = () => {
         />
       </div>
       <div className="input-group">
-        <label htmlFor="email">Email</label>
-        {errors.email && <span className="error-message">{errors.email}</span>}
+        <div className="input-text">
+          <label htmlFor="email">Email</label>
+          {errors.email && (
+            <span className="error-message">{errors.email}</span>
+          )}
+        </div>
         <input
-          className={styles.input}
+          className={inputStyles.input}
           value={email}
-          placeholder="email"
+          placeholder="Please enter your email address"
           onChange={(e) => {
             setEmail(e.target.value);
           }}
@@ -97,15 +110,17 @@ const Form = () => {
         />
       </div>
       <div className="input-group">
-        <label htmlFor="password">Password</label>
-        {errors.password && (
-          <span className="error-message">{errors.password}</span>
-        )}
+        <div className="input-text">
+          <label htmlFor="password">Password</label>
+          {errors.password && (
+            <span className="error-message">{errors.password}</span>
+          )}
+        </div>
         <input
-          className={styles.input}
+          className={inputStyles.input}
           type="password"
           value={password}
-          placeholder="password"
+          placeholder="Enter a new password"
           onChange={(e) => {
             setPassword(e.target.value);
           }}
@@ -113,21 +128,32 @@ const Form = () => {
         />
       </div>
       <div className="input-group">
-        <label htmlFor="confirmPassword">Confirm Password</label>
-        {errors.confirmPassword && (
-          <span className="error-message">{errors.confirmPassword}</span>
-        )}
+        <div className="input-text">
+          <label htmlFor="confirmPassword">Confirm Password</label>
+          {errors.confirmPassword && (
+            <span className="error-message">{errors.confirmPassword}</span>
+          )}
+        </div>
         <input
-          className={styles.input}
+          className={inputStyles.input}
           type="password"
           value={confirmPassword}
-          placeholder="confirm password"
+          placeholder="Confirm your new password"
           onChange={(e) => {
             setConfirmPassword(e.target.value);
           }}
+          autoComplete="on"
         />
       </div>
-      <button type="submit">register</button>
+      <button type="submit" className={buttonStyles.defaultButton}>
+        Create Account
+      </button>
+      <span>
+        Already have an account?{" "}
+        <Link href="/login">
+          <a>Sign In</a>
+        </Link>
+      </span>
     </form>
   );
 };

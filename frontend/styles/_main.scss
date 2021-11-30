@@ -28,6 +28,10 @@ html,
 .main {
   min-height: 100%;
   padding-top: 80px;
+
+  &.main-remove {
+    padding: 0 !important;
+  }
 }
 
 // Prevent scroll hook under 920px
@@ -98,6 +102,7 @@ a {
 button {
   cursor: pointer;
   font-size: 16px;
+  outline: none;
 }
 
 ul,
@@ -109,6 +114,22 @@ input {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+}
+
+/* Change Autocomplete styles in Chrome*/
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  // border: 1px solid $green;
+  -webkit-text-fill-color: $black;
+  -webkit-box-shadow: 0 0 0px 1000px $grey-bg inset;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .container {
@@ -153,6 +174,10 @@ section {
   .main {
     padding: 0;
     min-height: calc(100% - 80px);
+
+    &.main-remove {
+      min-height: 100% !important;
+    }
   }
 
   .body-prevent-scroll {

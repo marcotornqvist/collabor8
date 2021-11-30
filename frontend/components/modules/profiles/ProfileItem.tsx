@@ -67,11 +67,13 @@ const ProfileItem = ({ item }: IProps) => {
     <div className="profile-item">
       <div className="carousel">
         <AliceCarousel
-          mouseTracking
+          // mouseTracking
           disableDotsControls
           disableButtonsControls
           items={items}
           activeIndex={activeIndex}
+          animationDuration={380}
+          touchTracking={false}
         />
         <div className="carousel-button" onClick={toggleSlide}>
           <Image
