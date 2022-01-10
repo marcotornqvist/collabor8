@@ -4,13 +4,11 @@ import { useRouter } from "next/router";
 import { useSnapshot } from "valtio";
 import { authState } from "store";
 import Image from "next/image";
-import useWindowSize from "@hooks/useWindowSize";
 import Link from "next/link";
 
 const Register = () => {
   const router = useRouter();
   const { isAuth } = useSnapshot(authState);
-  const { width } = useWindowSize();
 
   useEffect(() => {
     // If authenticated redirect to projects
@@ -21,32 +19,38 @@ const Register = () => {
 
   return (
     <div className="register-page">
-      <div className="container">
-        {width >= 920 && (
-          <aside>
-            <h1>Find other creative people to collaborate with.</h1>
-            {/* <Image
-            src="https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/more.jpg"
-            alt="more"
-            layout="fill"
-            objectFit="cover"
-            objectPosition="center"
-            priority
-          /> */}
-          </aside>
-        )}
-        <div className="content">
+      <aside>
+        <div className="container">
+          <h1 className="hero-title">
+            Find other creative people to collaborate with.
+          </h1>
+        </div>
+        <Image
+          src="https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/more.jpg"
+          alt="more"
+          layout="fill"
+          objectFit="cover"
+          objectPosition="center"
+          priority
+          quality={100}
+        />
+      </aside>
+      <div className="content">
+        <div className="container">
           <div className="text-info">
             <Link href="/">
-              <a className="title">
+              <a className="brand">
                 <h3>Collabor8</h3>
               </a>
             </Link>
-            <h2>Register</h2>
+            <h3 className="title">Register</h3>
           </div>
           <hr />
           <Form />
         </div>
+      </div>
+      <div className="footer-bottom-content">
+        <span>Collabor8 © {new Date().getFullYear()}</span>
       </div>
     </div>
   );

@@ -60,37 +60,39 @@ const Form = () => {
         register();
       }}
     >
-      <div className="input-group">
-        <div className="input-text">
-          <label htmlFor="firstName">First Name</label>
-          {errors.firstName && (
-            <span className="error-message">{errors.firstName}</span>
-          )}
+      <div className="wrapper">
+        <div className="input-group">
+          <div className="input-text">
+            <label htmlFor="firstName">First Name</label>
+            {errors.firstName && (
+              <span className="error-message">{errors.firstName}</span>
+            )}
+          </div>
+          <input
+            className={inputStyles.input}
+            value={firstName}
+            placeholder="Your first name"
+            onChange={(e) => {
+              setFirstName(e.target.value);
+            }}
+            autoComplete="on"
+          />
         </div>
-        <input
-          className={inputStyles.input}
-          value={firstName}
-          placeholder="Your first name"
-          onChange={(e) => {
-            setFirstName(e.target.value);
-          }}
-          autoComplete="on"
-        />
-      </div>
-      <div className="input-group">
-        <div className="input-text">
-          <label htmlFor="lastName">Last Name</label>
-          {errors.lastName && <span>{errors.lastName}</span>}
+        <div className="input-group">
+          <div className="input-text">
+            <label htmlFor="lastName">Last Name</label>
+            {errors.lastName && <span>{errors.lastName}</span>}
+          </div>
+          <input
+            className={inputStyles.input}
+            value={lastName}
+            placeholder="Your last name"
+            onChange={(e) => {
+              setLastName(e.target.value);
+            }}
+            autoComplete="on"
+          />
         </div>
-        <input
-          className={inputStyles.input}
-          value={lastName}
-          placeholder="Your last name"
-          onChange={(e) => {
-            setLastName(e.target.value);
-          }}
-          autoComplete="on"
-        />
       </div>
       <div className="input-group">
         <div className="input-text">
@@ -148,7 +150,7 @@ const Form = () => {
       <button type="submit" className={buttonStyles.defaultButton}>
         Create Account
       </button>
-      <span>
+      <span className="account-exists">
         Already have an account?{" "}
         <Link href="/login">
           <a>Sign In</a>

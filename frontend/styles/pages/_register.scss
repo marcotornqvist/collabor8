@@ -1,24 +1,29 @@
 @use "../abstracts/colors" as *;
-// @use "../abstracts/breakpoints" as *;
-// @use "../abstracts/shadows" as *;
-// @use "../abstracts/zindex" as *;
+@use "../abstracts/breakpoints" as *;
+@use "../abstracts/shadows" as *;
+@use "../abstracts/zindex" as *;
 
 .register-page {
-  min-height: 100%;
-  padding: 1.5rem 0;
+  position: relative;
+  min-height: 100vh;
 
-  .container {
-    height: 100%;
+  aside {
+    position: relative;
+    display: none;
   }
 
   .content {
-    max-width: 500px;
+    padding: 1.5rem 0;
+
+    .container {
+      width: 100%;
+      min-height: 100%;
+    }
 
     .text-info {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-direction: row-reverse;
       margin-bottom: 1.5rem;
     }
 
@@ -61,11 +66,134 @@
       color: $white;
     }
 
-    span {
+    span.account-exists {
       text-align: center;
+      font-size: 14px;
 
       a {
         color: $green;
+      }
+    }
+  }
+
+  .footer-bottom-content {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 4rem;
+    padding-bottom: 1rem;
+
+    span {
+      color: $grey;
+      font-size: 14px;
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-lg) {
+  .register-page {
+    display: flex;
+
+    aside {
+      display: initial;
+      padding: 0;
+      flex: 1;
+
+      .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 1000px;
+      }
+
+      h1.hero-title {
+        font-size: 4rem;
+        text-align: center;
+        z-index: $z-index1;
+        text-shadow: $text-shadow3;
+        color: $white;
+      }
+    }
+
+    .content {
+      padding: 6rem 0;
+      min-width: 450px;
+
+      .text-info {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        margin-bottom: 1.5rem;
+
+        a.brand {
+          margin-bottom: 4rem;
+
+          h3 {
+            font-size: 1.5rem;
+          }
+        }
+
+        h3.title {
+          font-size: 3rem;
+        }
+      }
+
+      form {
+        button {
+          width: 250px;
+        }
+
+        span.account-exists {
+          text-align: start;
+        }
+      }
+    }
+
+    .footer-bottom-content {
+      display: none;
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-xl) {
+  .register-page {
+    .content {
+      min-width: 550px;
+
+      .container {
+        padding: 0 3rem;
+      }
+
+      .wrapper {
+        display: flex;
+        grid-gap: 1.5rem;
+
+        .input-group {
+          flex: 1;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-max) {
+  .register-page {
+    display: flex;
+
+    aside {
+      h1.hero-title {
+        font-size: 5rem;
+      }
+    }
+
+    .content {
+      min-width: 768px;
+
+      .container {
+        padding: 0 6rem;
       }
     }
   }
