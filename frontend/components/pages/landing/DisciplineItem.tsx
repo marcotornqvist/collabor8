@@ -1,6 +1,19 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { motion } from "framer-motion";
+
+const variants = {
+  hidden: {
+    opacity: 0,
+  },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
 
 interface IProps {
   title: string;
@@ -15,17 +28,23 @@ const DisciplineItem = ({ title, src, link, alt }: IProps) => {
   return (
     <Link href={"/profiles/" + link}>
       <a className="grid-item">
-        {loaded && <h3>{title}</h3>}
-        <Image
-          onLoadingComplete={(e) => {
-            setLoaded(true);
-          }}
-          src={src}
-          alt={alt}
-          layout="fill"
-          objectFit="cover"
-          objectPosition="center"
-        />
+        <motion.div
+          className="image-container"
+          animate={loaded ? "visible" : "hidden"}
+          variants={variants}
+        >
+          {loaded && <h3>{title}</h3>}
+          <Image
+            onLoadingComplete={(e) => {
+              setLoaded(true);
+            }}
+            src={src}
+            alt={alt}
+            layout="fill"
+            objectFit="cover"
+            objectPosition="center"
+          />
+        </motion.div>
       </a>
     </Link>
   );

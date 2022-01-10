@@ -11,8 +11,11 @@
 
 .landing-page .showcase {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   min-width: 100%;
-  height: 600px;
+  min-height: calc(100vh - 79px);
   padding: 0;
 
   .container {
@@ -25,7 +28,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: $breakpoint-lg;
+    max-width: 900px;
     z-index: $z-index1;
 
     h1.title {
@@ -68,16 +71,34 @@
     gap: 1rem;
 
     .grid-item {
-      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
+      border-radius: $medium-radius;
 
-      h3 {
-        z-index: 10;
-        color: $white;
-        text-shadow: $text-shadow1;
-        font-weight: 600;
+      .image-container {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        background: $light-grey-bg;
+
+        img {
+          // position: absolute;
+          border-radius: inherit;
+        }
+
+        h3 {
+          position: absolute;
+          z-index: $z-index2;
+          text-shadow: $text-shadow1;
+          font-weight: 600;
+          color: $white;
+        }
       }
     }
   }
@@ -378,13 +399,15 @@
       grid-template-columns: repeat(2, 1fr);
 
       .grid-item {
-        img {
-          transition: transform 0.5s;
-          transform: scale(1.01);
+        .image-container {
+          img {
+            transition: transform 0.5s;
+            transform: scale(1.01);
+          }
         }
 
         &:hover {
-          img {
+          .image-container img {
             transform: scale(1.07);
           }
         }

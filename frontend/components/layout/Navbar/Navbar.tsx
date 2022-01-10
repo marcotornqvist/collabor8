@@ -6,6 +6,7 @@ import useWindowSize from "@hooks/useWindowSize";
 import { useSnapshot } from "valtio";
 import { authState, navigationState } from "store";
 import { useRouter } from "next/router";
+import { motion } from "framer-motion";
 
 const Navbar = () => {
   const router = useRouter();
@@ -13,18 +14,38 @@ const Navbar = () => {
   const { isAuth, loading } = useSnapshot(authState);
   const { menuOpen } = useSnapshot(navigationState);
 
+  const variants = {
+    hidden: {
+      opacity: 0,
+    },
+    visible: {
+      opacity: 1,
+      transition: { duration: 0.3 },
+    },
+  };
+
   const desktop = (
     <>
       {!loading && (
         <>
           {isAuth ? (
-            <div className="icons">
+            <motion.div
+              className="icons"
+              initial="hidden"
+              animate="visible"
+              variants={variants}
+            >
               <InboxIcon />
               <NotificationsIcon />
               <AccountDropdown />
-            </div>
+            </motion.div>
           ) : (
-            <ul className="auth-links">
+            <motion.ul
+              className="auth-links"
+              initial="hidden"
+              animate="visible"
+              variants={variants}
+            >
               <li>
                 <Link href="/register">
                   <a>Create Account</a>
@@ -37,7 +58,7 @@ const Navbar = () => {
                   </a>
                 </Link>
               </li>
-            </ul>
+            </motion.ul>
           )}
         </>
       )}

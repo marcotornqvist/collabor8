@@ -6,6 +6,7 @@ import { users, usersVariables } from "generated/users";
 import { authState } from "store";
 import { useSnapshot } from "valtio";
 import { UsersFilterArgs } from "generated/globalTypes";
+import { motion } from "framer-motion";
 
 // Check that user is not a friend
 // Check that user is not you when returning
