@@ -7,9 +7,8 @@ import { authState } from "store";
 import { GET_PROFILE_IMAGE } from "@operations-queries/getLoggedInUser";
 import SignoutLink from "@components-modules/global/SignoutLink";
 import useOnClickOutside from "@hooks/useOnClickOutside";
-import ProfileImage from "@components-modules/global/ProfileImage";
+import ProfileImage from "@components-modules/profiles/ProfileImage";
 import { loggedInProfile } from "generated/loggedInProfile";
-import styles from "@styles-modules/Dropdown.module.scss";
 
 const variants = {
   visible: {
@@ -45,16 +44,14 @@ const AccountDropdown = () => {
     <div className="account-dropdown" ref={ref}>
       <div onClick={() => setShow(!show)}>
         <ProfileImage
-          loading={loading}
-          size={44}
-          quality={100}
+          size={24}
           profileImage={data?.loggedInProfile?.profileImage}
         />
       </div>
       <AnimatePresence exitBeforeEnter>
         {show && (
           <motion.div
-            className={styles.dropdown}
+            className="dropdown"
             initial="hidden"
             animate="visible"
             exit="hidden"

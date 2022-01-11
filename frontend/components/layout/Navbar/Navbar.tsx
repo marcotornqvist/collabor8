@@ -8,21 +8,25 @@ import { authState, navigationState } from "store";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 
-const Navbar = () => {
+const variants = {
+  hidden: {
+    opacity: 0,
+  },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.3 },
+  },
+};
+
+interface Props {
+  hide: boolean;
+}
+
+const Navbar = ({ hide = false }: Props) => {
   const router = useRouter();
   const { width } = useWindowSize();
   const { isAuth, loading } = useSnapshot(authState);
   const { menuOpen } = useSnapshot(navigationState);
-
-  const variants = {
-    hidden: {
-      opacity: 0,
-    },
-    visible: {
-      opacity: 1,
-      transition: { duration: 0.3 },
-    },
-  };
 
   const desktop = (
     <>
@@ -82,34 +86,38 @@ const Navbar = () => {
   );
 
   return (
-    <nav
-      className={`navbar${
-        router.asPath === "/" && !menuOpen ? " no-border-navbar" : ""
-      }`}
-    >
-      <div className="container">
-        <div className="links">
-          <Link href="/">
-            <a className="title">
-              <h4>Collabor8</h4>
-            </a>
-          </Link>
-          <ul>
-            <li>
-              <Link href="/profiles">
-                <a>Browse People</a>
+    <>
+      {(width < 920 || !hide) && (
+        <nav
+          className={`navbar${
+            router.asPath === "/" && !menuOpen ? " no-border-navbar" : ""
+          }`}
+        >
+          <div className="container">
+            <div className="links">
+              <Link href="/">
+                <a className="title">
+                  <h4>Collabor8</h4>
+                </a>
               </Link>
-            </li>
-            <li>
-              <Link href="/projects">
-                <a>Browse Projects</a>
-              </Link>
-            </li>
-          </ul>
-        </div>
-        {width !== 0 && <>{width < 920 ? mobile : desktop}</>}
-      </div>
-    </nav>
+              <ul>
+                <li>
+                  <Link href="/profiles">
+                    <a>Browse People</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/projects">
+                    <a>Browse Projects</a>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            {width !== 0 && <>{width < 920 ? mobile : desktop}</>}
+          </div>
+        </nav>
+      )}
+    </>
   );
 };
 

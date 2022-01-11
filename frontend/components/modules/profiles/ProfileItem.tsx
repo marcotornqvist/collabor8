@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { users_users } from "generated/users";
 import AliceCarousel from "react-alice-carousel";
-import ProfileImage from "@components-modules/global/ProfileImage";
+import ProfileImage from "@components-modules/profiles/ProfileImage";
 import Link from "next/link";
 import Settings from "./Settings";
 import { useState } from "react";
@@ -31,7 +31,7 @@ const createItems = (length: any, [handleClick]: any, item: users_users) => {
         <div className="carousel-item content-item">
           <div className="wrapper">
             <div className="content">
-              <ProfileImage size={80} profileImage={profile?.profileImage} />
+              <ProfileImage size={40} profileImage={profile?.profileImage} />
               <h4>
                 {profile?.firstName} {profile?.lastName}
               </h4>

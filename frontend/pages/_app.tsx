@@ -48,9 +48,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={client}>
       <title>Collabor8</title>
-      {!paths.includes(pathname) && <Navbar />}
+      <Navbar hide={isPage} />
       <Menu />
-      <div className={`main${!isPage ? "" : " main-remove"}`}>
+      <div className={`main${isPage ? " main-remove" : ""}`}>
         <PrivateRoute protectedRoutes={protectedRoutes}>
           <Component {...pageProps} />
         </PrivateRoute>

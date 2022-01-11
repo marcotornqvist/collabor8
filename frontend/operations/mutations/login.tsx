@@ -9,6 +9,7 @@ export const LOGIN_USER = gql`
         profile {
           firstName
           lastName
+          profileImage
         }
       }
     }

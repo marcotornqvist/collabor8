@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 
 const Showcase = () => {
   const { isAuth } = useSnapshot(authState);
+
   return (
     <section className="showcase">
       <div className="container">
