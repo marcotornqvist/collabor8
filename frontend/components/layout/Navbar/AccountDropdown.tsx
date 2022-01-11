@@ -5,10 +5,10 @@ import { useLazyQuery } from "@apollo/client";
 import { useSnapshot } from "valtio";
 import { authState } from "store";
 import { GET_PROFILE_IMAGE } from "@operations-queries/getLoggedInUser";
+import { loggedInProfile } from "generated/loggedInProfile";
 import SignoutLink from "@components-modules/global/SignoutLink";
 import useOnClickOutside from "@hooks/useOnClickOutside";
-import ProfileImage from "@components-modules/profiles/ProfileImage";
-import { loggedInProfile } from "generated/loggedInProfile";
+import ProfileImage from "@components-modules/global/ProfileImage";
 
 const variants = {
   visible: {

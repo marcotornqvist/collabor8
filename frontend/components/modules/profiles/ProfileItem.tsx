@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { users_users } from "generated/users";
 import AliceCarousel from "react-alice-carousel";
-import ProfileImage from "@components-modules/profiles/ProfileImage";
+import ProfileImage from "@components-modules/global/ProfileImage";
 import Link from "next/link";
 import Settings from "./Settings";
 import { useState } from "react";

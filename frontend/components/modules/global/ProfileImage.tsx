@@ -23,11 +23,13 @@ const ProfileImage = ({ size, profileImage }: Props) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [error, setError] = useState(false);
 
+  console.log(profileImage);
+
   return (
     <div className="profile-image">
       <motion.div
         className="image-container"
-        animate={imageLoaded ? "visible" : "hidden"}
+        animate={!profileImage || imageLoaded ? "visible" : "hidden"}
         variants={variants}
       >
         {profileImage && (
@@ -45,7 +47,7 @@ const ProfileImage = ({ size, profileImage }: Props) => {
             className={`profile${error ? " hide" : ""}`}
           />
         )}
-        {/* Render image if profileImage doesn't exist or if image doesn't work */}
+        {/* Render image if profileImage doesn't exist or if profileImage doesn't work */}
         {(!profileImage || error) && (
           <Image
             src="/icons/user-solid-green.svg"

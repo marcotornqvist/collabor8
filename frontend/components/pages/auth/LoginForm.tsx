@@ -4,18 +4,11 @@ import { login, loginVariables } from "generated/login";
 import { authState } from "store";
 import { LOGIN_USER } from "@operations-mutations/login";
 import { useRouter } from "next/router";
-import inputStyles from "@styles-modules/Input.module.scss";
+import { toastState } from "store";
+import { ErrorStatus } from "@types-enums/enums";
 import buttonStyles from "@styles-modules/Button.module.scss";
 import Link from "next/link";
 import styles from "@styles-modules/Input.module.scss";
-import { useSnapshot } from "valtio";
-import { toastState } from "store";
-import { ErrorStatus } from "@types-enums/enums";
-
-interface Errors {
-  email?: string;
-  password?: string;
-}
 
 const LoginForm = () => {
   const router = useRouter();
@@ -40,9 +33,11 @@ const LoginForm = () => {
     if (error) {
       toastState.addToast(error, ErrorStatus.danger);
     }
+
+    return;
   }, [error]);
 
-  if (loading) return <div>"Submitting..."</div>;
+  if (loading) return <div>Submitting...</div>;
   if (data) {
     authState.accessToken = data.login.accessToken;
     authState.isAuth = true;
@@ -86,9 +81,8 @@ const LoginForm = () => {
       <button type="submit" className={buttonStyles.defaultButton}>
         Sign In
       </button>
-      {/* <button type="submit">login</button> */}
       <span className="account-exists">
-        Don't have an account?{" "}
+        Don&quot;t have an account?{" "}
         <Link href="/register">
           <a>Register here</a>
         </Link>
