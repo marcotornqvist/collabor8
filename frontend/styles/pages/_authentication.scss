@@ -3,8 +3,7 @@
 @use "../abstracts/shadows" as *;
 @use "../abstracts/zindex" as *;
 
-.register-page,
-.login-page {
+.auth-page {
   position: relative;
 
   aside {
@@ -21,7 +20,7 @@
     flex-direction: column;
     justify-content: space-between;
     min-height: calc(100vh - 80px);
-    padding: 2rem 0;
+    padding: 1rem 0;
 
     .container {
       width: 100%;
@@ -87,8 +86,7 @@
 }
 
 @media only screen and (min-width: $breakpoint-lg) {
-  .register-page,
-  .login-page {
+  .auth-page {
     display: flex;
 
     aside {
@@ -129,6 +127,7 @@
     .content {
       padding: 3rem 0 0;
       min-width: 450px;
+      min-height: 100vh;
 
       .text-info {
         display: flex;
@@ -137,7 +136,7 @@
         margin-bottom: 1.5rem;
 
         a.brand {
-          margin-bottom: 3rem;
+          margin-bottom: 2rem;
 
           h3 {
             font-size: 1.5rem;
@@ -175,8 +174,7 @@
 }
 
 @media only screen and (min-width: $breakpoint-xl) {
-  .register-page,
-  .login-page {
+  .auth-page {
     min-height: 100vh;
 
     .content {
@@ -207,8 +205,7 @@
 }
 
 @media only screen and (min-width: $breakpoint-max) {
-  .register-page,
-  .login-page {
+  .auth-page {
     display: flex;
 
     .content {

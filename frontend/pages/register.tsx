@@ -1,42 +1,167 @@
-import { useEffect } from "react";
-import { useRouter } from "next/router";
-import { useSnapshot } from "valtio";
-import { authState } from "store";
-import RegisterForm from "@components-pages/auth/RegisterForm";
+import { useState, ReactElement } from "react";
 import Link from "next/link";
-import Branding from "@components-pages/auth/Branding";
+import AuthLayout from "@components-pages/auth/AuthLayout";
+import { useMutation } from "@apollo/client";
+import { register, registerVariables } from "generated/register";
+import { authState } from "store";
+import { REGISTER_USER } from "@operations-mutations/register";
+import { useRouter } from "next/router";
+import inputStyles from "@styles-modules/Input.module.scss";
+import buttonStyles from "@styles-modules/Button.module.scss";
+
+interface Errors {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+}
 
 const Register = () => {
   const router = useRouter();
-  const { isAuth } = useSnapshot(authState);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState<Errors>({});
 
-  useEffect(() => {
-    // If authenticated redirect to projects
-    if (isAuth) {
-      router.push("/projects");
-    }
-  }, [isAuth]);
+  const [register, { data, loading, client }] = useMutation<
+    register,
+    registerVariables
+  >(REGISTER_USER, {
+    variables: {
+      data: {
+        firstName,
+        lastName,
+        email,
+        password,
+        confirmPassword,
+      },
+    },
+    onError: (error) => {
+      setErrors(error.graphQLErrors[0].extensions?.errors);
+      console.log(error);
+    },
+  });
 
+  if (loading) return <div>Submitting...</div>;
+  if (data) {
+    authState.accessToken = data.register.accessToken;
+    authState.isAuth = true;
+    client!.resetStore();
+    router.push("/my-profile");
+  }
   return (
-    <div className="register-page">
-      <Branding />
-      <div className="content">
-        <div className="container">
-          <div className="text-info">
-            <Link href="/">
-              <a className="brand">
-                <h3>Collabor8</h3>
-              </a>
-            </Link>
-            <h3 className="title">Register</h3>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        setErrors({});
+        register();
+      }}
+    >
+      <div className="wrapper">
+        <div className="input-group">
+          <div className="input-text">
+            <label htmlFor="firstName">First Name</label>
+            {errors.firstName && (
+              <span className="error-message">{errors.firstName}</span>
+            )}
           </div>
-          <hr />
-          <RegisterForm />
+          <input
+            className={inputStyles.input}
+            value={firstName}
+            placeholder="Your first name"
+            onChange={(e) => {
+              setFirstName(e.target.value);
+            }}
+            autoComplete="on"
+          />
         </div>
-        <span className="credits">Collabor8 © {new Date().getFullYear()}</span>
+        <div className="input-group">
+          <div className="input-text">
+            <label htmlFor="lastName">Last Name</label>
+            {errors.lastName && <span>{errors.lastName}</span>}
+          </div>
+          <input
+            className={inputStyles.input}
+            value={lastName}
+            placeholder="Your last name"
+            onChange={(e) => {
+              setLastName(e.target.value);
+            }}
+            autoComplete="on"
+          />
+        </div>
       </div>
-    </div>
+      <div className="input-group">
+        <div className="input-text">
+          <label htmlFor="email">Email</label>
+          {errors.email && (
+            <span className="error-message">{errors.email}</span>
+          )}
+        </div>
+        <input
+          className={inputStyles.input}
+          value={email}
+          placeholder="Please enter your email address"
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
+          autoComplete="on"
+        />
+      </div>
+      <div className="input-group">
+        <div className="input-text">
+          <label htmlFor="password">Password</label>
+          {errors.password && (
+            <span className="error-message">{errors.password}</span>
+          )}
+        </div>
+        <input
+          className={inputStyles.input}
+          type="password"
+          value={password}
+          placeholder="Enter a new password"
+          onChange={(e) => {
+            setPassword(e.target.value);
+          }}
+          autoComplete="on"
+        />
+      </div>
+      <div className="input-group">
+        <div className="input-text">
+          <label htmlFor="confirmPassword">Confirm Password</label>
+          {errors.confirmPassword && (
+            <span className="error-message">{errors.confirmPassword}</span>
+          )}
+        </div>
+        <input
+          className={inputStyles.input}
+          type="password"
+          value={confirmPassword}
+          placeholder="Confirm your new password"
+          onChange={(e) => {
+            setConfirmPassword(e.target.value);
+          }}
+          autoComplete="on"
+        />
+      </div>
+      <button type="submit" className={buttonStyles.defaultButton}>
+        Create Account
+      </button>
+      <span className="account-exists">
+        Already have an account?{" "}
+        <Link href="/login">
+          <a>Sign In</a>
+        </Link>
+      </span>
+    </form>
   );
+};
+
+Register.getLayout = function getLayout(page: ReactElement) {
+  return <AuthLayout title={"Register"}>{page}</AuthLayout>;
 };
 
 export default Register;

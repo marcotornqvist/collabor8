@@ -1,42 +1,98 @@
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useState, useEffect, ReactElement } from "react";
+import AuthLayout from "@components-pages/auth/AuthLayout";
+import { useMutation } from "@apollo/client";
+import { login, loginVariables } from "generated/login";
 import { authState } from "store";
-import { useSnapshot } from "valtio";
+import { LOGIN_USER } from "@operations-mutations/login";
+import { useRouter } from "next/router";
+import { toastState } from "store";
+import { ErrorStatus } from "@types-enums/enums";
+import buttonStyles from "@styles-modules/Button.module.scss";
 import Link from "next/link";
-import LoginForm from "@components-pages/auth/LoginForm";
-import Branding from "@components-pages/auth/Branding";
+import styles from "@styles-modules/Input.module.scss";
 
 const Login = () => {
   const router = useRouter();
-  const { isAuth } = useSnapshot(authState);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const [login, { data, loading, client }] = useMutation<login, loginVariables>(
+    LOGIN_USER,
+    {
+      variables: {
+        data: {
+          email,
+          password,
+        },
+      },
+      onError: (error) => setError(error.message),
+    }
+  );
 
   useEffect(() => {
-    // If authenticated redirect to projects
-    if (isAuth) {
-      router.push("/projects");
+    if (error) {
+      toastState.addToast(error, ErrorStatus.danger);
     }
-  }, [isAuth]);
 
+    return;
+  }, [error]);
+
+  if (loading) return <div>Submitting...</div>;
+  if (data) {
+    authState.accessToken = data.login.accessToken;
+    authState.isAuth = true;
+    client!.resetStore();
+    router.push("/projects");
+  }
   return (
-    <div className="login-page">
-      <Branding />
-      <div className="content">
-        <div className="container">
-          <div className="text-info">
-            <Link href="/">
-              <a className="brand">
-                <h3>Collabor8</h3>
-              </a>
-            </Link>
-            <h3 className="title">Sign In</h3>
-          </div>
-          <hr />
-          <LoginForm />
-        </div>
-        <span className="credits">Collabor8 © {new Date().getFullYear()}</span>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        setError("");
+        login();
+      }}
+    >
+      <div className="input-group">
+        <label htmlFor="email">Email</label>
+        <input
+          className={styles.input}
+          value={email}
+          placeholder="Please enter your email address"
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
+          autoComplete="on"
+        />
       </div>
-    </div>
+      <div className="input-group">
+        <label htmlFor="password">Password</label>
+        <input
+          className={styles.input}
+          type="password"
+          value={password}
+          placeholder="Please enter your password"
+          onChange={(e) => {
+            setPassword(e.target.value);
+          }}
+          autoComplete="on"
+        />
+      </div>
+      <button type="submit" className={buttonStyles.defaultButton}>
+        Sign In
+      </button>
+      <span className="account-exists">
+        Don&#8217;t have an account?{" "}
+        <Link href="/register">
+          <a>Register here</a>
+        </Link>
+      </span>
+    </form>
   );
+};
+
+Login.getLayout = function getLayout(page: ReactElement) {
+  return <AuthLayout title={"Sign In"}>{page}</AuthLayout>;
 };
 
 export default Login;

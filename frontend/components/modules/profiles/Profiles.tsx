@@ -7,6 +7,7 @@ import { authState } from "store";
 import { useSnapshot } from "valtio";
 import { UsersFilterArgs } from "generated/globalTypes";
 import { motion } from "framer-motion";
+import ProfileSkeleton from "./ProfileSkeleton";
 
 // Check that user is not a friend
 // Check that user is not you when returning
@@ -44,6 +45,7 @@ const Profiles = ({
           {data?.users?.map((item) => (
             <ProfileItem key={item.id} item={item} />
           ))}
+          {!data?.users && [1, 2, 3].map((n) => <ProfileSkeleton key={n} />)}
         </div>
       </div>
     </section>

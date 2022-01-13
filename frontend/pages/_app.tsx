@@ -1,5 +1,6 @@
-import { useEffect } from "react";
-import type { AppProps } from "next/app";
+import { useEffect, ReactNode } from "react";
+import { AppContext, AppInitialProps, AppLayoutProps } from "next/app";
+import type { NextComponentType } from "next";
 import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "../utils/useApollo";
 import { authState } from "store";
@@ -13,7 +14,10 @@ import { useRouter } from "next/router";
 
 // <script src="https://kit.fontawesome.com/0f6f932cce.js" crossorigin="anonymous"></script>
 
-function MyApp({ Component, pageProps }: AppProps) {
+const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
+  Component,
+  pageProps,
+}: AppLayoutProps) => {
   const client = useApollo(pageProps.initialApolloState);
 
   useEffect(() => {
@@ -35,6 +39,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     fetchData();
   }, []);
 
+  // For per-page layouts
+  const getLayout = Component.getLayout || ((page: ReactNode) => page);
+
   // These routes are only accessible when authenticated
   const protectedRoutes = ["/my-profile", "/chat", "/settings", "/report"];
 
@@ -42,6 +49,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const pathname = router.pathname;
 
+  // Checks if pathname matches with one of the items in the array below.
   const paths = ["/register", "/login"];
   const isPage = paths.includes(pathname);
 
@@ -52,13 +60,13 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Menu />
       <div className={`main${isPage ? " main-remove" : ""}`}>
         <PrivateRoute protectedRoutes={protectedRoutes}>
-          <Component {...pageProps} />
+          {getLayout(<Component {...pageProps} />)}
         </PrivateRoute>
       </div>
       <Toasts />
       {!isPage && <Footer />}
     </ApolloProvider>
   );
-}
+};
 
 export default MyApp;
