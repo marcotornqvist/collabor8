@@ -27,6 +27,7 @@ import { GraphQLUpload } from "graphql-upload";
 import { createWriteStream } from "fs";
 import { uuidFilenameTransform } from "../helpers/uuidFileNameTransform";
 import Jimp from "jimp";
+import { Discipline } from "../types/Discipline";
 const sharp = require("sharp");
 
 // TODO: Queries/mutations to be implemented:
@@ -54,6 +55,16 @@ export class ProfileResolver {
     // if this operation is slow move the filter to the frontend and just return countries
     // which it will likely be
     return filtered;
+  }
+
+  @Query(() => [Discipline], {
+    nullable: true,
+    description: "Returns disciplines",
+  })
+  async disciplines(@Ctx() { prisma }: Context) {
+    const disciplines = await prisma.discipline.findMany();
+
+    return disciplines;
   }
 
   @Query(() => Profile, {
@@ -186,17 +197,38 @@ export class ProfileResolver {
     @Arg("file", () => GraphQLUpload)
     { filename, createReadStream, mimetype, encoding }: Upload
   ): Promise<UploadedFileResponse> {
-    // Checks that file type is either jpeg, jpg or png
+    // Get current image key before it's been updated.
+    const previousImageKey = await prisma.profile
+      .findUnique({
+        where: {
+          userId: payload!.userId,
+        },
+        select: {
+          profileImage: true,
+        },
+      })
+      .then((item) => {
+        if (item?.profileImage) {
+          const splitted = item.profileImage.split("/");
+          return splitted[splitted.length - 1];
+        } else {
+          return null;
+        }
+      });
+
+    // Check that image is of type jpeg, jpg, or png
     if (
       mimetype !== "image/jpeg" &&
       mimetype !== "image/jpg" &&
       mimetype !== "image/png"
     ) {
+      // Checks that file type is either jpeg, jpg or png
       throw new Error("Image has to be jpeg/jpg or png");
     }
 
     filename = uuidFilenameTransform(filename);
 
+    // Params for image location, type & size
     const s3DefaultParams = {
       Bucket: process.env.AWS_BUCKET_NAME!,
       Conditions: [
@@ -205,6 +237,7 @@ export class ProfileResolver {
       ContentType: "image/jpeg,image/png",
     };
 
+    // Aws credentials
     const s3 = new S3({
       region: process.env.AWS_REGION!,
       accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
@@ -219,8 +252,10 @@ export class ProfileResolver {
       position: sharp.strategy.entropy,
     });
 
+    // Stream for uploading image file from client to server
     const stream = createReadStream().pipe(transformer);
 
+    // Upload image to S3 bucket
     const { Location } = await s3
       .upload({
         ...s3DefaultParams,
@@ -239,6 +274,18 @@ export class ProfileResolver {
       },
     });
 
+    // Delete previous image from bucket
+    if (previousImageKey && Location) {
+      // Image bucket location and key
+      const params = {
+        Bucket: process.env.AWS_BUCKET_NAME!,
+        Key: previousImageKey,
+      };
+
+      // Delete image object from S3 Bucket
+      s3.deleteObject(params, function (err, data) {});
+    }
+
     return {
       filename,
       mimetype,
@@ -247,31 +294,87 @@ export class ProfileResolver {
     };
   }
 
-  // https://stackoverflow.com/questions/67736607/how-to-process-uploaded-image-with-graphql-apollo-with-sharpjs-in-nodejs
-  @Mutation(() => Boolean, {
-    description: "Update File",
+  @Mutation(() => Profile, {
+    description: "Delete Profile Image",
   })
-  // @UseMiddleware(isAuth)
-  async uploadFile(
-    // @Ctx() { payload, prisma }: Context
-    @Arg("file", () => GraphQLUpload)
-    { createReadStream, filename }: Upload
-  ): Promise<Boolean> {
-    const transformer = sharp().resize({
-      width: 350,
-      height: 350,
-      fit: sharp.fit.cover,
-      position: sharp.strategy.entropy,
+  @UseMiddleware(isAuth)
+  async deleteImage(@Ctx() { payload, prisma }: Context) {
+    // Get current image key
+    const imageKey = await prisma.profile
+      .findUnique({
+        where: {
+          userId: payload!.userId,
+        },
+        select: {
+          profileImage: true,
+        },
+      })
+      .then((item) => {
+        if (item?.profileImage) {
+          const splitted = item.profileImage.split("/");
+          return splitted[splitted.length - 1];
+        } else {
+          return null;
+        }
+      });
+
+    // Aws credentials
+    const s3 = new S3({
+      region: process.env.AWS_REGION!,
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
     });
 
-    return new Promise(async (resolve, reject) =>
-      createReadStream()
-        .pipe(transformer)
-        .pipe(createWriteStream(__dirname + `/../../images/${filename}`))
-        .on("finish", () => resolve(true))
-        .on("error", () => reject(false))
-    );
+    // Delete image if there is a key
+    if (imageKey) {
+      // Image bucket location and key
+      const params = {
+        Bucket: process.env.AWS_BUCKET_NAME!,
+        Key: imageKey,
+      };
+
+      // Delete image object from S3 Bucket
+      s3.deleteObject(params, function (err, data) {});
+    }
+
+    // Update Profile
+    const profile = await prisma.profile.update({
+      where: {
+        userId: payload!.userId,
+      },
+      data: {
+        profileImage: null,
+      },
+    });
+
+    return profile;
   }
+
+  // https://stackoverflow.com/questions/67736607/how-to-process-uploaded-image-with-graphql-apollo-with-sharpjs-in-nodejs
+  // @Mutation(() => Boolean, {
+  //   description: "Update File",
+  // })
+  // // @UseMiddleware(isAuth)
+  // async uploadFile(
+  //   // @Ctx() { payload, prisma }: Context
+  //   @Arg("file", () => GraphQLUpload)
+  //   { createReadStream, filename }: Upload
+  // ): Promise<Boolean> {
+  //   const transformer = sharp().resize({
+  //     width: 350,
+  //     height: 350,
+  //     fit: sharp.fit.cover,
+  //     position: sharp.strategy.entropy,
+  //   });
+
+  //   return new Promise(async (resolve, reject) =>
+  //     createReadStream()
+  //       .pipe(transformer)
+  //       .pipe(createWriteStream(__dirname + `/../../images/${filename}`))
+  //       .on("finish", () => resolve(true))
+  //       .on("error", () => reject(false))
+  //   );
+  // }
 }
 
 // --header 'content-type: application/json' \

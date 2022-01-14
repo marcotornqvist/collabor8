@@ -80,7 +80,7 @@ const Menu = () => {
             )}
             <Link href="/profiles">
               <li onClick={() => closeMenu()}>
-                <a>Browse People</a>
+                <a>Browse Profiles</a>
                 <Image
                   src="/icons/chevron-right-solid.svg"
                   alt="chevron right"

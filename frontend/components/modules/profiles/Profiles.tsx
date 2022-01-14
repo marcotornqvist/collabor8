@@ -1,12 +1,11 @@
 import { useEffect } from "react";
 import ProfileItem from "./ProfileItem";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import { GET_USERS } from "@operations-queries/getAllUsers";
 import { users, usersVariables } from "generated/users";
 import { authState } from "store";
 import { useSnapshot } from "valtio";
 import { UsersFilterArgs } from "generated/globalTypes";
-import { motion } from "framer-motion";
 import ProfileSkeleton from "./ProfileSkeleton";
 
 // Check that user is not a friend
@@ -42,10 +41,11 @@ const Profiles = ({
       <div className="container">
         <h2>Recent Profiles</h2>
         <div className="grid">
-          {data?.users?.map((item) => (
-            <ProfileItem key={item.id} item={item} />
-          ))}
-          {!data?.users && [1, 2, 3].map((n) => <ProfileSkeleton key={n} />)}
+          {data?.users
+            ? data.users.map((item) => (
+                <ProfileItem key={item.id} item={item} />
+              ))
+            : [1, 2, 3].map((n) => <ProfileSkeleton key={n} />)}
         </div>
       </div>
     </section>

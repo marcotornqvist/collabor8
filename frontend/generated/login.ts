@@ -13,6 +13,7 @@ export interface login_login_user_profile {
   __typename: "Profile";
   firstName: string | null;
   lastName: string | null;
+  profileImage: string | null;
 }
 
 export interface login_login_user {

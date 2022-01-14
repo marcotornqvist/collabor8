@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLazyQuery } from "@apollo/client";
 import { useSnapshot } from "valtio";
 import { authState } from "store";
-import { GET_PROFILE_IMAGE } from "@operations-queries/getLoggedInUser";
-import { loggedInProfile } from "generated/loggedInProfile";
+import { GET_PROFILE_IMAGE } from "@operations-queries/getLoggedInProfile";
+import { loggedInProfileImage } from "generated/loggedInProfileImage";
 import SignoutLink from "@components-modules/global/SignoutLink";
 import useOnClickOutside from "@hooks/useOnClickOutside";
 import ProfileImage from "@components-modules/global/ProfileImage";
@@ -24,13 +24,13 @@ const variants = {
 const AccountDropdown = () => {
   const { isAuth } = useSnapshot(authState);
   const [show, setShow] = useState(false);
-  const [loggedInUser, { data, loading, error }] =
-    useLazyQuery<loggedInProfile>(GET_PROFILE_IMAGE);
+  const [loggedInProfileImage, { data, loading, error }] =
+    useLazyQuery<loggedInProfileImage>(GET_PROFILE_IMAGE);
   const ref = useRef(null);
 
   useEffect(() => {
     if (isAuth) {
-      loggedInUser();
+      loggedInProfileImage();
     }
   }, [isAuth]);
 

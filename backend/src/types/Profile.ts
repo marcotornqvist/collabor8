@@ -33,7 +33,7 @@ export class Profile {
   @Field(() => Discipline, { nullable: true })
   discipline?: Discipline | null;
 
-  @Field(() => ID, { nullable: true })
+  @Field(() => Number, { nullable: true })
   disciplineId?: number | null;
 
   @Field(() => String, { nullable: true })

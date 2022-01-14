@@ -53,7 +53,7 @@ const Showcase = () => {
                 },
               }}
             >
-              <button className={styles.defaultButton}>Get Started</button>
+              <button className={styles.default}>Get Started</button>
             </motion.a>
           </Link>
         </div>

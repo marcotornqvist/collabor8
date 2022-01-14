@@ -95,7 +95,17 @@ function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: ApolloLink.from([authMiddleware, refreshLink, uploadLink]),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            loggedInProfile: {
+              merge: true,
+            },
+          },
+        },
+      },
+    }),
   });
 }
 

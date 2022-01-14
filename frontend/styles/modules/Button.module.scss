@@ -1,11 +1,28 @@
 @use "../abstracts/colors" as *;
 @use "../abstracts/shadows" as *;
 
-.defaultButton {
+.default {
   width: 250px;
-  height: 50px;
+  height: 3rem;
   border: none;
   background: $white;
   color: $black;
-  border-radius: 3px;
+  border-radius: 4px;
+}
+
+.green {
+  background: $green;
+  color: $white;
+}
+
+.lightRed {
+  background: $light-red;
+  color: $red;
+  border: 1px solid $red;
+}
+
+.lightGreen {
+  background: $light-green;
+  color: $green;
+  border: 1px solid $green;
 }

@@ -1,8 +1,9 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import Image from "next/image";
 import { SINGLE_UPLOAD } from "@operations-mutations/uploadFile";
 import { singleUpload, singleUploadVariables } from "generated/singleUpload";
+import styles from "@styles-modules/Button.module.scss";
 
 export const UploadFile = () => {
   const [lastUploaded, setLastUploaded] = useState<any>();
@@ -25,17 +26,27 @@ export const UploadFile = () => {
   if (error) return <div>{JSON.stringify(error, null, 2)}</div>;
 
   return (
-    <Fragment>
+    <button className="image-update-btn">
       <input type="file" required onChange={onChange} />
-      {/* {Object.keys(lastUploaded).length !== 0 && (
-        <div>
-          {" "}
-          Last uploaded details {JSON.stringify(lastUploaded, null, 2)}{" "}
-        </div>
-      )} */}
-      {lastUploaded && !loading && (
-        <Image src={lastUploaded.url} width={64} height={64} />
-      )}
-    </Fragment>
+      Update Picture
+    </button>
   );
 };
+
+// return (
+//   <Fragment>
+//     <button className={`${styles.default} ${styles.lightGreen}`}>
+//       <input type="file" required onChange={onChange} />
+//       Update Picture
+//     </button>
+//     {/* {Object.keys(lastUploaded).length !== 0 && (
+//         <div>
+//           {" "}
+//           Last uploaded details {JSON.stringify(lastUploaded, null, 2)}{" "}
+//         </div>
+//       )} */}
+//     {lastUploaded && !loading && (
+//       <Image src={lastUploaded.url} width={64} height={64} />
+//     )}
+//   </Fragment>
+// );

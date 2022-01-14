@@ -147,7 +147,7 @@ const Register = () => {
           autoComplete="on"
         />
       </div>
-      <button type="submit" className={buttonStyles.defaultButton}>
+      <button type="submit" className={buttonStyles.default}>
         Create Account
       </button>
       <span className="account-exists">

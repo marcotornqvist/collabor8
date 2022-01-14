@@ -103,7 +103,7 @@ const Navbar = ({ hide = false }: Props) => {
               <ul>
                 <li>
                   <Link href="/profiles">
-                    <a>Browse People</a>
+                    <a>Browse Profiles</a>
                   </Link>
                 </li>
                 <li>

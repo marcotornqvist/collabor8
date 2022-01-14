@@ -46,6 +46,17 @@ export interface RegisterInput {
 }
 
 /**
+ * Update Profile Input
+ */
+export interface UpdateProfileInput {
+  firstName?: string | null;
+  lastName?: string | null;
+  country?: string | null;
+  bio?: string | null;
+  disciplineId?: number | null;
+}
+
+/**
  * Filter Users
  */
 export interface UsersFilterArgs {

@@ -34,7 +34,7 @@ const About = () => {
               </p>
               <Link href={isAuth ? "/projects" : "/register"}>
                 <a>
-                  <button className={styles.defaultButton}>
+                  <button className={styles.default}>
                     {isAuth ? "Browse Projects" : "Create Account"}
                   </button>
                 </a>

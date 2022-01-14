@@ -1,19 +1,12 @@
-import { useState } from "react";
-import { UploadFile } from "@components-pages/myprofile/UploadFile";
-import { gql, useMutation } from "@apollo/client";
-import Sidebar from "@components-pages/settings/Sidebar";
-
-export const UPDATE_PROFILE = gql`
-  mutation updateProfile($data: updateProfileInput!) {
-    updateProfile(data: $data) {
-      firstName
-      lastName
-      country
-      bio
-      disciplineId
-    }
-  }
-`;
+import { ReactElement } from "react";
+import { UploadFile } from "@components-pages/settings/profile/UploadFile";
+import { GET_PROFILE_IMAGE } from "@operations-queries/getLoggedInProfile";
+import { loggedInProfileImage } from "generated/loggedInProfileImage";
+import { useQuery } from "@apollo/client";
+import SettingsLayout from "@components-pages/settings/SettingsLayout";
+import DeleteImage from "@components-pages/settings/profile/DeleteImage";
+import ProfileImage from "@components-modules/global/ProfileImage";
+import Form from "@components-pages/settings/profile/Form";
 
 interface Errors {
   firstName?: string;
@@ -22,84 +15,32 @@ interface Errors {
 }
 
 const Profile = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [bio, setBio] = useState("");
-  const [country, setCountry] = useState("");
-  const [disciplineId, setDisciplineId] = useState<number>();
-  const [errors, setErrors] = useState<Errors>({});
+  const { data, loading, error } =
+    useQuery<loggedInProfileImage>(GET_PROFILE_IMAGE);
 
-  // Mutations:
-  // Get all disciplines
-  // Get all countries
+  // if (loading) return <div>Submitting...</div>;
 
-  const [updateProfile, { data, loading, error }] = useMutation(
-    UPDATE_PROFILE,
-    {
-      variables: {
-        data: {
-          firstName,
-          lastName,
-          bio,
-          country,
-          disciplineId,
-        },
-      },
-      onError: (error) => setErrors(error.graphQLErrors[0].extensions?.errors),
-    }
-  );
-
-  if (loading) return <div>Submitting...</div>;
+  // console.log(data);
 
   return (
-    <div className="settings-page">
-      <div className="container">
-        <Sidebar />
-        <div className="profile">
-          <UploadFile />
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setErrors({});
-              updateProfile();
-            }}
-          >
-            <div>
-              {errors.firstName && <label>{errors.firstName}</label>}
-              <input
-                value={firstName}
-                placeholder="firstname"
-                onChange={(e) => {
-                  setFirstName(e.target.value);
-                }}
-              />
-            </div>
-            <div>
-              {errors.lastName && <label>{errors.lastName}</label>}
-              <input
-                value={lastName}
-                placeholder="lastName"
-                onChange={(e) => {
-                  setLastName(e.target.value);
-                }}
-              />
-            </div>
-            {/* <div>
-              {errors.firstName && <label>{errors.firstName}</label>}
-              <input
-                value={firstName}
-                placeholder="firstname"
-                onChange={(e) => {
-                  setFirstName(e.target.value);
-                }}
-              />
-            </div> */}
-            <button type="submit">Save Settings</button>
-          </form>
+    <div className="settings-profile">
+      <div className="thumbnail-panel">
+        <div className="image-container">
+          <ProfileImage
+            size={40}
+            profileImage={data?.loggedInProfile?.profileImage}
+          />
         </div>
+        <UploadFile />
+        <DeleteImage />
       </div>
+      <Form />
     </div>
   );
+};
+
+Profile.getLayout = function getLayout(page: ReactElement) {
+  return <SettingsLayout title={"Register"}>{page}</SettingsLayout>;
 };
 
 export default Profile;

@@ -4,22 +4,18 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: loggedInProfile
+// GraphQL query operation: loggedInProfileImage
 // ====================================================
 
-export interface loggedInProfile_loggedInProfile {
+export interface loggedInProfileImage_loggedInProfile {
   __typename: "Profile";
   userId: string;
-  firstName: string | null;
-  lastName: string | null;
-  country: string | null;
-  bio: string | null;
-  disciplineId: number | null;
+  profileImage: string | null;
 }
 
-export interface loggedInProfile {
+export interface loggedInProfileImage {
   /**
    * Returns logged in user profile
    */
-  loggedInProfile: loggedInProfile_loggedInProfile | null;
+  loggedInProfile: loggedInProfileImage_loggedInProfile | null;
 }

@@ -3,23 +3,28 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { UpdateProfileInput } from "./globalTypes";
+
 // ====================================================
-// GraphQL query operation: loggedInProfile
+// GraphQL mutation operation: updateProfile
 // ====================================================
 
-export interface loggedInProfile_loggedInProfile {
+export interface updateProfile_updateProfile {
   __typename: "Profile";
-  userId: string;
   firstName: string | null;
   lastName: string | null;
   country: string | null;
-  bio: string | null;
   disciplineId: number | null;
+  bio: string | null;
 }
 
-export interface loggedInProfile {
+export interface updateProfile {
   /**
-   * Returns logged in user profile
+   * Update Profile
    */
-  loggedInProfile: loggedInProfile_loggedInProfile | null;
+  updateProfile: updateProfile_updateProfile;
+}
+
+export interface updateProfileVariables {
+  data: UpdateProfileInput;
 }
