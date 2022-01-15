@@ -1,5 +1,5 @@
 import Link from "next/link";
-import styles from "@styles-modules/Button.module.scss";
+import button from "@styles-modules/Button.module.scss";
 import Image from "next/image";
 import { authState } from "store";
 import { useSnapshot } from "valtio";
@@ -53,7 +53,7 @@ const Showcase = () => {
                 },
               }}
             >
-              <button className={styles.default}>Get Started</button>
+              <button className={button.white}>Get Started</button>
             </motion.a>
           </Link>
         </div>

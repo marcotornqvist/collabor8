@@ -7,9 +7,10 @@ import { ACCEPT_CONTACT } from "@operations-mutations/acceptContact";
 import { acceptContact, acceptContactVariables } from "generated/acceptContact";
 import { CONTACT_STATUS } from "@operations-queries/contactStatus";
 import { motion } from "framer-motion";
-import useOnClickOutside from "@hooks/useOnClickOutside";
 import { toastState } from "store";
 import { ErrorStatus } from "@types-enums/enums";
+import button from "@styles-modules/Button.module.scss";
+import useOnClickOutside from "@hooks/useOnClickOutside";
 
 const dropIn = {
   hidden: {
@@ -125,11 +126,11 @@ const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
         </div>
         <h4>Delete or accept contact request</h4>
         <div className="buttons">
-          <button className="success-color" onClick={() => acceptHandler()}>
+          <button className={button.lightGreen} onClick={() => acceptHandler()}>
             Accept
           </button>
           {!hideDelete && (
-            <button className="danger-color" onClick={() => rejectHandler()}>
+            <button className={button.lightRed} onClick={() => rejectHandler()}>
               Delete
             </button>
           )}

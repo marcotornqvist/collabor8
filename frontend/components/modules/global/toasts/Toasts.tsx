@@ -16,7 +16,6 @@ const Toasts = () => {
           duration={item.duration}
         />
       ))}
-      {/* <button onClick={() => toastState.addToast("moi")}>Add Toast</button> */}
     </div>
   );
 };

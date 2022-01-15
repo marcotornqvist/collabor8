@@ -1,9 +1,8 @@
-import React from "react";
-import Image from "next/image";
-import Link from "next/link";
-import styles from "@styles-modules/Button.module.scss";
 import { authState } from "store";
 import { useSnapshot } from "valtio";
+import Image from "next/image";
+import Link from "next/link";
+import button from "@styles-modules/Button.module.scss";
 
 const About = () => {
   const { isAuth } = useSnapshot(authState);
@@ -34,7 +33,7 @@ const About = () => {
               </p>
               <Link href={isAuth ? "/projects" : "/register"}>
                 <a>
-                  <button className={styles.default}>
+                  <button className={button.white}>
                     {isAuth ? "Browse Projects" : "Create Account"}
                   </button>
                 </a>

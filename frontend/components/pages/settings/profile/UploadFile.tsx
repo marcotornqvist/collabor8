@@ -1,16 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
-import Image from "next/image";
 import { SINGLE_UPLOAD } from "@operations-mutations/uploadFile";
 import { singleUpload, singleUploadVariables } from "generated/singleUpload";
-import styles from "@styles-modules/Button.module.scss";
+import { GET_PROFILE_IMAGE } from "@operations-queries/getLoggedInProfile";
+import { loggedInProfileImage } from "generated/loggedInProfileImage";
+import { toastState } from "store";
+import { ErrorStatus } from "@types-enums/enums";
+import button from "@styles-modules/Button.module.scss";
 
 export const UploadFile = () => {
-  const [lastUploaded, setLastUploaded] = useState<any>();
-  const [singleUpload, { data, loading, error }] = useMutation<
+  const [error, setError] = useState("");
+  const [singleUpload, { data }] = useMutation<
     singleUpload,
     singleUploadVariables
-  >(SINGLE_UPLOAD);
+  >(SINGLE_UPLOAD, {
+    update(cache, { data }) {
+      cache.writeQuery<loggedInProfileImage>({
+        query: GET_PROFILE_IMAGE,
+        data: {
+          loggedInProfile: {
+            __typename: "Profile",
+            profileImage: data?.singleUpload.url || null,
+          },
+        },
+      });
+    },
+    onError: (error) => setError(error.message),
+  });
+
   const onChange = ({
     target: {
       validity,
@@ -19,16 +36,18 @@ export const UploadFile = () => {
   }: any) => validity.valid && singleUpload({ variables: { file } });
 
   useEffect(() => {
-    if (data) setLastUploaded(data.singleUpload);
-  }, [data]);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{JSON.stringify(error, null, 2)}</div>;
+    if (data) {
+      toastState.addToast("Image uploaded successfully", ErrorStatus.success);
+    }
+    if (error) {
+      toastState.addToast(error, ErrorStatus.danger);
+    }
+  }, [data, error]);
 
   return (
-    <button className="image-update-btn">
-      <input type="file" required onChange={onChange} />
-      Update Picture
+    <button className={`${button.lightGreen} update-image-btn`}>
+      <input className="hide" type="file" required onChange={onChange} />
+      Upload Image
     </button>
   );
 };

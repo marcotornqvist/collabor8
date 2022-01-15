@@ -20,8 +20,6 @@ const Profile = () => {
 
   // if (loading) return <div>Submitting...</div>;
 
-  // console.log(data);
-
   return (
     <div className="settings-profile">
       <div className="thumbnail-panel">
@@ -29,10 +27,13 @@ const Profile = () => {
           <ProfileImage
             size={40}
             profileImage={data?.loggedInProfile?.profileImage}
+            priority={true}
           />
         </div>
         <UploadFile />
-        <DeleteImage />
+        <DeleteImage
+          current={data?.loggedInProfile?.profileImage ? true : false}
+        />
       </div>
       <Form />
     </div>

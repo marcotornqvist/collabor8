@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useMutation, useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import { useSnapshot } from "valtio";
 import { authState } from "store";
 import { CONTACT_STATUS } from "@operations-queries/contactStatus";

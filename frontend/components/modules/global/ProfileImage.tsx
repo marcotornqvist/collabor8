@@ -17,13 +17,12 @@ const variants = {
 interface Props {
   profileImage?: string | null;
   size: number;
+  priority?: boolean;
 }
 
-const ProfileImage = ({ size, profileImage }: Props) => {
+const ProfileImage = ({ size, profileImage, priority = false }: Props) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [error, setError] = useState(false);
-
-  console.log(profileImage);
 
   return (
     <div className="profile-image">
@@ -45,6 +44,7 @@ const ProfileImage = ({ size, profileImage }: Props) => {
             layout="fill"
             objectFit="cover"
             className={`profile${error ? " hide" : ""}`}
+            priority={priority ? true : false}
           />
         )}
         {/* Render image if profileImage doesn't exist or if profileImage doesn't work */}

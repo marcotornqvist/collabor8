@@ -1,10 +1,11 @@
-import Image from "next/image";
+import { useState } from "react";
 import { users_users } from "generated/users";
+import Image from "next/image";
 import AliceCarousel from "react-alice-carousel";
 import ProfileImage from "@components-modules/global/ProfileImage";
 import Link from "next/link";
 import Settings from "./Settings";
-import { useState } from "react";
+import button from "@styles-modules/Button.module.scss";
 
 interface IProps {
   item: users_users;
@@ -39,7 +40,9 @@ const createItems = (length: any, [handleClick]: any, item: users_users) => {
             </div>
             <Link href={`/profile/${username}`}>
               <a>
-                <button className="check-profile-btn">See Profile</button>
+                <button className={`${button.lightGreen} check-profile-btn`}>
+                  See Profile
+                </button>
               </a>
             </Link>
           </div>

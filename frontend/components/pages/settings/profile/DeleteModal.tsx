@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
-import { useMutation } from "@apollo/client";
-import { DELETE_CONTACT } from "@operations-mutations/deleteContact";
-import { deleteContact, deleteContactVariables } from "generated/deleteContact";
-import { CONTACT_STATUS } from "@operations-queries/contactStatus";
+import { useMutation, useQuery } from "@apollo/client";
+import { DELETE_IMAGE } from "@operations-mutations/deleteImage";
+import { GET_PROFILE_IMAGE } from "@operations-queries/getLoggedInProfile";
+import { deleteImage } from "generated/deleteImage";
+import { loggedInProfileImage } from "generated/loggedInProfileImage";
 import { motion } from "framer-motion";
 import { toastState } from "store";
 import { ErrorStatus } from "@types-enums/enums";
@@ -30,31 +31,26 @@ const dropIn = {
 };
 
 interface IProps {
-  id: string;
   show: boolean;
-  title: string;
   onClose: () => void;
 }
 
-const DeleteModal = ({ id, show, title, onClose }: IProps) => {
+const DeleteModal = ({ show, onClose }: IProps) => {
   const [error, setError] = useState("");
   const [isBrowser, setIsBrowser] = useState(false);
 
-  const [deleteContact, { data }] = useMutation<
-    deleteContact,
-    deleteContactVariables
-  >(DELETE_CONTACT, {
-    variables: {
-      deleteContactId: id,
-    },
-    refetchQueries: [
-      {
-        query: CONTACT_STATUS, // DocumentNode object parsed with gql
-        variables: {
-          contactStatusId: id,
+  const [deleteImage, { data }] = useMutation<deleteImage>(DELETE_IMAGE, {
+    update(cache, { data }) {
+      cache.writeQuery<loggedInProfileImage>({
+        query: GET_PROFILE_IMAGE,
+        data: {
+          loggedInProfile: {
+            __typename: "Profile",
+            profileImage: data?.deleteImage.profileImage ?? null,
+          },
         },
-      },
-    ],
+      });
+    },
     onError: (error) => setError(error.message),
   });
 
@@ -67,12 +63,10 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
     onClose();
   };
 
-  const onClickHandler = () => {
+  const deleteHandler = () => {
     setError("");
-    deleteContact();
-    if (data) {
-      onClose();
-    }
+    deleteImage();
+    onClose();
   };
 
   const ref = useRef(null);
@@ -80,7 +74,7 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
 
   useEffect(() => {
     if (data) {
-      toastState.addToast("Contact deleted", ErrorStatus.success);
+      toastState.addToast("Image deleted successfully", ErrorStatus.success);
     }
     if (error) {
       toastState.addToast(error, ErrorStatus.danger);
@@ -103,8 +97,8 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
             <span>&times;</span>
           </div>
         </div>
-        <h4>{title}</h4>
-        <button className={button.lightRed} onClick={() => onClickHandler()}>
+        <h4>Are you sure you want to delete the image?</h4>
+        <button className={button.lightRed} onClick={() => deleteHandler()}>
           Delete
         </button>
       </motion.div>

@@ -9,7 +9,6 @@
 
 export interface loggedInProfile_loggedInProfile {
   __typename: "Profile";
-  userId: string;
   firstName: string | null;
   lastName: string | null;
   country: string | null;

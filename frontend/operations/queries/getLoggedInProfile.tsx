@@ -4,7 +4,6 @@ import { gql } from "@apollo/client";
 export const GET_LOGGED_IN_PROFILE = gql`
   query loggedInProfile {
     loggedInProfile {
-      userId
       firstName
       lastName
       country
@@ -18,7 +17,6 @@ export const GET_LOGGED_IN_PROFILE = gql`
 export const GET_PROFILE_IMAGE = gql`
   query loggedInProfileImage {
     loggedInProfile {
-      userId
       profileImage
     }
   }

@@ -7,7 +7,7 @@ import { authState } from "store";
 import { REGISTER_USER } from "@operations-mutations/register";
 import { useRouter } from "next/router";
 import inputStyles from "@styles-modules/Input.module.scss";
-import buttonStyles from "@styles-modules/Button.module.scss";
+import button from "@styles-modules/Button.module.scss";
 
 interface Errors {
   firstName?: string;
@@ -147,7 +147,7 @@ const Register = () => {
           autoComplete="on"
         />
       </div>
-      <button type="submit" className={buttonStyles.default}>
+      <button type="submit" className={button.white}>
         Create Account
       </button>
       <span className="account-exists">

@@ -3,8 +3,6 @@ import Link from "next/link";
 import ContactButton from "./ContactButtons";
 import BlockUser from "./BlockUser";
 import useOnScreen from "@hooks/useOnScreen";
-import { authState } from "../../../store";
-import { useSnapshot } from "valtio";
 
 interface IProps {
   id: string;

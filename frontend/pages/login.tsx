@@ -7,7 +7,7 @@ import { LOGIN_USER } from "@operations-mutations/login";
 import { useRouter } from "next/router";
 import { toastState } from "store";
 import { ErrorStatus } from "@types-enums/enums";
-import buttonStyles from "@styles-modules/Button.module.scss";
+import button from "@styles-modules/Button.module.scss";
 import Link from "next/link";
 import styles from "@styles-modules/Input.module.scss";
 
@@ -78,7 +78,7 @@ const Login = () => {
           autoComplete="on"
         />
       </div>
-      <button type="submit" className={buttonStyles.default}>
+      <button type="submit" className={button.white}>
         Sign In
       </button>
       <span className="account-exists">

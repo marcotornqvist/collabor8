@@ -1,27 +1,6 @@
 import React from "react";
 import DisciplineItem from "./DisciplineItem";
 
-const Disciplines = () => {
-  return (
-    <section className="disciplines">
-      <div className="container">
-        <h2>Popular Disciplines</h2>
-        <div className="grid">
-          {items.map((item, index) => (
-            <DisciplineItem
-              key={index}
-              src={item.src}
-              link={item.link}
-              title={item.title}
-              alt={item.alt}
-            />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
 const items = [
   {
     title: "Guitarist",
@@ -60,5 +39,26 @@ const items = [
     alt: "Person standing",
   },
 ];
+
+const Disciplines = () => {
+  return (
+    <section className="disciplines">
+      <div className="container">
+        <h2>Popular Disciplines</h2>
+        <div className="grid">
+          {items.map((item, index) => (
+            <DisciplineItem
+              key={index}
+              src={item.src}
+              link={item.link}
+              title={item.title}
+              alt={item.alt}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
 
 export default Disciplines;

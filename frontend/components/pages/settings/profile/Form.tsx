@@ -5,21 +5,12 @@ import { loggedInProfile } from "generated/loggedInProfile";
 import { UPDATE_PROFILE } from "@operations-mutations/updateProfile";
 import { updateProfile, updateProfileVariables } from "generated/updateProfile";
 import inputStyles from "@styles-modules/Input.module.scss";
-import buttonStyles from "@styles-modules/Button.module.scss";
-import { UpdateProfileInput } from "../../../../generated/globalTypes";
+import button from "@styles-modules/Button.module.scss";
 
 interface Errors {
   firstName?: string;
   lastName?: string;
   bio?: string;
-}
-
-interface IProps {
-  firstName: string | null;
-  lastName: string | null;
-  country: string | null;
-  bio: string | null;
-  disciplineId: number | null;
 }
 
 interface IForm {
@@ -116,7 +107,7 @@ const Form = () => {
       </div>
       <button
         type="submit"
-        className={`${buttonStyles.default} ${buttonStyles.green}`}
+        className={button.green}
       >
         Save Settings
       </button>

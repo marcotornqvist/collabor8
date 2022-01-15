@@ -21,7 +21,7 @@
       position: relative;
       background: $white;
       box-shadow: $box-shadow3;
-      border-radius: 3px;
+      border-radius: $medium-radius;
 
       .carousel {
         position: absolute;
@@ -144,12 +144,13 @@
                   position: absolute;
                   bottom: 0;
                   left: 0;
-                  height: 3rem;
                   width: 100%;
-                  border-radius: 3px;
                   background: $white;
-                  border: 1px solid $green;
-                  color: $green;
+
+                  &:hover {
+                    background: $green;
+                    color: $white;
+                  }
                 }
               }
 
@@ -173,7 +174,7 @@
                     height: 3rem;
                     padding: 1rem;
                     margin-bottom: 0.5rem;
-                    border-radius: 3px;
+                    border-radius: $medium-radius;
                     background: $grey-bg;
                     cursor: pointer;
 
@@ -253,7 +254,7 @@
         .skeleton.cog-wheel {
           width: 1.5rem;
           height: 1.5rem;
-          border-radius: 50px;
+          border-radius: $big-radius;
         }
 
         .wrapper {
@@ -266,7 +267,7 @@
           .skeleton.thumbnail {
             width: 4.5rem;
             height: 4.5rem;
-            border-radius: 50px;
+            border-radius: $big-radius;
             margin-bottom: 0.5rem;
           }
 
@@ -397,14 +398,9 @@
             height: 100%;
             padding: 1.5rem;
 
-            .wrapper .check-profile-btn {
-              transition: all 0.1s ease-in-out;
-
-              &:hover {
-                background: $green !important;
-                color: $white;
-              }
-            }
+            // .wrapper button.check-profile-btn {
+            //   background: $white;
+            // }
           }
         }
       }
@@ -418,5 +414,11 @@
     .skeleton-item {
       padding: 1.5rem;
     }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-xl) {
+  .landing-page .profiles .grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }

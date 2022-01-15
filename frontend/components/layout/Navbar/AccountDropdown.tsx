@@ -46,6 +46,7 @@ const AccountDropdown = () => {
         <ProfileImage
           size={24}
           profileImage={data?.loggedInProfile?.profileImage}
+          priority={true}
         />
       </div>
       <AnimatePresence exitBeforeEnter>

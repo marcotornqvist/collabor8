@@ -4,17 +4,17 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: loggedInProfileImage
+// GraphQL mutation operation: deleteImage
 // ====================================================
 
-export interface loggedInProfileImage_loggedInProfile {
+export interface deleteImage_deleteImage {
   __typename: "Profile";
   profileImage: string | null;
 }
 
-export interface loggedInProfileImage {
+export interface deleteImage {
   /**
-   * Returns logged in user profile
+   * Delete Profile Image
    */
-  loggedInProfile: loggedInProfileImage_loggedInProfile | null;
+  deleteImage: deleteImage_deleteImage;
 }
