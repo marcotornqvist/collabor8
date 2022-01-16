@@ -2,6 +2,7 @@
 @use "./abstracts/shadows" as *;
 @use "./abstracts/breakpoints" as *;
 @use "./abstracts/zindex" as *;
+@use "./abstracts/fonts" as *;
 
 // Border radius
 $small-radius: 1px;
@@ -14,7 +15,7 @@ $big-radius: 50px;
   box-sizing: border-box;
   color: $black;
   letter-spacing: 0.5px;
-  font-family: "Open Sans", sans-serif;
+  font-family: $font-body;
 }
 
 body,
@@ -42,7 +43,7 @@ h3,
 h4,
 button,
 a {
-  font-family: "Cabin", sans-serif;
+  font-family: $font-title;
 }
 
 h1,
@@ -72,13 +73,6 @@ h3 {
 h4 {
   font-size: 1.25rem;
 }
-
-// p,
-// span,
-// input,
-// label {
-//   font-family: "Open Sans", sans-serif;
-// }
 
 input,
 label {
@@ -194,20 +188,9 @@ section {
     font-size: 4rem;
   }
 
-  // h2 {
-  //   font-size: 64px;
-  // }
-
-  // h3 {
-  //   font-size: 40px;
-  // }
-
-  // h4 {
-  //   font-size: 28px;
-  // }
-
   p {
     font-size: 18px;
+    line-height: 2rem;
   }
 }
 

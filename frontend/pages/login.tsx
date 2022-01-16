@@ -78,7 +78,7 @@ const Login = () => {
           autoComplete="on"
         />
       </div>
-      <button type="submit" className={button.white}>
+      <button type="submit" className={button.green}>
         Sign In
       </button>
       <span className="account-exists">

@@ -18,14 +18,12 @@ const About = () => {
                 layout="fill"
                 objectFit="contain"
                 objectPosition="center"
-                priority
               />
             </div>
           </div>
           <div className="grid-item item-2">
             <div className="content">
               <h1>Collabor8</h1>
-              <h3>Find other creatives.</h3>
               <p>
                 Whether you are looking to hop in on a project or perhaps you
                 have a project of your own. Collabor8 will help you find

@@ -2,6 +2,7 @@
 @use "../abstracts/breakpoints" as *;
 @use "../abstracts/shadows" as *;
 @use "../abstracts/zindex" as *;
+@use "../abstracts/fonts" as *;
 
 .navbar {
   position: fixed;
@@ -116,37 +117,45 @@
 
         .dropdown {
           position: absolute;
+          top: 3.5rem;
           right: -8px;
           width: 250px;
-          background: $white;
           border-radius: $medium-radius;
-          padding: 0.5rem;
           z-index: $z-index3;
-          box-shadow: $box-shadow2;
+          box-shadow: $box-shadow4;
+          background: $white;
 
           ul {
-            li {
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              padding: 1rem;
-              margin-bottom: 0.5rem;
-              border-radius: $medium-radius;
-              background: $grey-bg;
-              cursor: pointer;
+            padding: 1.5rem;
 
-              span {
-                font-size: 14px;
-                font-weight: 600;
+            a {
+              outline: none;
+
+              li {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1rem 0;
+                border-radius: $medium-radius;
+                cursor: pointer;
+
+                span {
+                  font-size: 14px;
+                  font-weight: 600;
+                  font-family: $font-body;
+                }
               }
 
-              &:hover {
-                background: $dark-grey-bg;
+              &:hover span {
+                color: $green;
               }
             }
 
-            a:last-child li {
-              margin: 0;
+            hr {
+              border: none;
+              border: 1px solid $border-color2;
+              border-radius: 3px;
+              margin: 0.5rem 0;
             }
           }
         }

@@ -80,7 +80,8 @@ const AccountDropdown = () => {
                   </li>
                 </a>
               </Link>
-              <SignoutLink />
+              <hr />
+              <SignoutLink size={16} />
             </ul>
           </motion.div>
         )}

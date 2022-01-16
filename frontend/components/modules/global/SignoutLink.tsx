@@ -4,7 +4,11 @@ import { LOGOUT_USER } from "@operations-mutations/logout";
 import { useRouter } from "next/router";
 import Image from "next/image";
 
-const SignoutLink = () => {
+interface IProps {
+  size: number;
+}
+
+const SignoutLink = ({ size }: IProps) => {
   const router = useRouter();
   const [logout, { client }] = useMutation(LOGOUT_USER);
 
@@ -27,8 +31,8 @@ const SignoutLink = () => {
         <Image
           src="/icons/sign-out-alt-solid.svg"
           alt="sign out"
-          width={18}
-          height={18}
+          width={size}
+          height={size}
         />
       </li>
     </a>

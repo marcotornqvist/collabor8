@@ -147,7 +147,7 @@ const Menu = () => {
                   </li>
                 </Link>
                 <div onClick={() => closeMenu()}>
-                  <SignoutLink />
+                  <SignoutLink size={18} />
                 </div>
               </>
             ) : (
