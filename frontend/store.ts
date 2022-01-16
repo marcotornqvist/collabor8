@@ -6,7 +6,6 @@ import {
 } from "@types-interfaces/store";
 import { proxy } from "valtio";
 import { v4 as uuidv4 } from "uuid";
-import { ErrorStatus } from "@types-enums/enums";
 
 export const authState = proxy<IAuthState>({
   accessToken: "",

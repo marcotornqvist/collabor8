@@ -1,5 +1,4 @@
 import { useState, ReactElement } from "react";
-import Link from "next/link";
 import AuthLayout from "@components-pages/auth/AuthLayout";
 import { useMutation } from "@apollo/client";
 import { register, registerVariables } from "generated/register";
@@ -45,13 +44,29 @@ const Register = () => {
     },
   });
 
+  const redirect = router.query.redirect;
+
   if (loading) return <div>Submitting...</div>;
   if (data) {
     authState.accessToken = data.register.accessToken;
     authState.isAuth = true;
     client!.resetStore();
-    router.push("/my-profile");
+    // If there is a single redirect query string, use it as the pathname
+    router.push(typeof redirect === "string" ? redirect : "/my-profile");
   }
+
+  // Pass the route query to register route
+  const handleRouteChange = () => {
+    if (typeof redirect === "string") {
+      router.push({
+        pathname: "/login",
+        query: { redirect: redirect },
+      });
+    } else {
+      router.push("/login");
+    }
+  };
+
   return (
     <form
       onSubmit={(e) => {
@@ -152,9 +167,7 @@ const Register = () => {
       </button>
       <span className="account-exists">
         Already have an account?{" "}
-        <Link href="/login">
-          <a>Sign In</a>
-        </Link>
+        <a onClick={() => handleRouteChange()}>Sign In</a>
       </span>
     </form>
   );

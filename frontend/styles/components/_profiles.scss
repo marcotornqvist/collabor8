@@ -344,25 +344,25 @@
             li .carousel-item {
               padding: 1rem;
 
-              .wrapper .settings {
-                li.success-hover:hover {
-                  border: 1px solid $green;
+              li.success-hover:hover {
+                border: 1px solid $green;
+                background: $light-green;
+
+                &:hover {
                   background: $light-green;
-
-                  &:hover {
-                    background: $light-green;
-                  }
-                }
-
-                li.danger-hover:hover {
-                  border: 1px solid $red;
-                  background: $light-red;
-
-                  &:hover {
-                    background: $light-red;
-                  }
                 }
               }
+
+              li.danger-hover:hover {
+                border: 1px solid $red;
+                background: $light-red;
+
+                &:hover {
+                  background: $light-red;
+                }
+              }
+              // .wrapper .settings {
+              // }
             }
           }
 

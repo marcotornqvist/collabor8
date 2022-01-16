@@ -140,7 +140,7 @@ section {
   }
 
   h3 {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 }
 
@@ -155,6 +155,10 @@ section {
 
   h2 {
     font-size: 2.5rem;
+  }
+
+  h3 {
+    font-size: 2rem;
   }
 
   section {
@@ -193,9 +197,6 @@ section {
     line-height: 2rem;
   }
 }
-
-// @media only screen and (min-width: $breakpoint-xl) {
-// }
 
 @media only screen and (min-width: $breakpoint-max) {
   .container {

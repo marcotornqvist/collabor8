@@ -50,7 +50,7 @@ const createItems = (length: any, [handleClick]: any, item: users_users) => {
       ) : (
         <div className="carousel-item settings-item">
           <div className="wrapper">
-            <Settings id={id} />
+            <Settings id={id} username={username} />
           </div>
         </div>
       )}
