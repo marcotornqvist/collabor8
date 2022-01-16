@@ -34,7 +34,7 @@ const items = [
   },
   {
     title: "More",
-    src: "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/more.jpg",
+    src: "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/more-small.jpg",
     link: "more",
     alt: "Person standing",
   },

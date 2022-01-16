@@ -56,7 +56,7 @@ const Branding = () => {
           onLoadingComplete={(e) => {
             setLoaded(true);
           }}
-          src="https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/more.jpg"
+          src="https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/more-big.jpg"
           alt="more"
           layout="fill"
           objectFit="cover"

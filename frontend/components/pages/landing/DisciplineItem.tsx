@@ -39,10 +39,11 @@ const DisciplineItem = ({ title, src, link, alt }: IProps) => {
               setLoaded(true);
             }}
             src={src}
-            alt={alt}
+            alt={alt} 
             layout="fill"
             objectFit="cover"
             objectPosition="center"
+            quality={100}
           />
         </motion.div>
       </a>
