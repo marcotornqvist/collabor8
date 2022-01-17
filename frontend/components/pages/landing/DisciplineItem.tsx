@@ -35,7 +35,7 @@ const DisciplineItem = ({ title, src, link, alt }: IProps) => {
         >
           {loaded && <h3>{title}</h3>}
           <Image
-            onLoadingComplete={(e) => {
+            onLoad={(e) => {
               setLoaded(true);
             }}
             src={src}

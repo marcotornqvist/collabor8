@@ -7,18 +7,16 @@ import { LOGIN_USER } from "@operations-mutations/login";
 import { useRouter } from "next/router";
 import { toastState } from "store";
 import { ErrorStatus } from "@types-enums/enums";
-import { useSnapshot } from "valtio";
 import button from "@styles-modules/Button.module.scss";
 import styles from "@styles-modules/Input.module.scss";
 
 const Login = () => {
   const router = useRouter();
-  const { isAuth } = useSnapshot(authState);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const [login, { data, loading, client }] = useMutation<login, loginVariables>(
+  const [login, { loading, client }] = useMutation<login, loginVariables>(
     LOGIN_USER,
     {
       variables: {
@@ -38,16 +36,27 @@ const Login = () => {
     return;
   }, [error]);
 
+  if (loading) return <div>Submitting...</div>;
   const redirect = router.query.redirect;
 
-  if (loading) return <div>Submitting...</div>;
-  if (data) {
-    authState.accessToken = data.login.accessToken;
-    authState.isAuth = true;
-    client!.resetStore();
-    // If there is a single redirect query single, use it as the pathname
-    router.push(typeof redirect === "string" ? redirect : "/projects");
-  }
+  const handleLogin = async () => {
+    const { data } = await login();
+
+    if (data) {
+      // Set loading to true to prevent redirect in AuthLayout.tsx component
+      authState.loading = true;
+      authState.accessToken = data.login.accessToken;
+      authState.isAuth = true;
+      client!.resetStore();
+      // If there is a single redirect query string, use it as the pathname
+      router.push(typeof redirect === "string" ? redirect : "/projects");
+      // Set loading to false when route has changed, to enable redirect in AuthLayout.tsx component
+      router.events.on(
+        "routeChangeComplete",
+        () => (authState.loading = false)
+      );
+    }
+  };
 
   // Pass the route query to register route
   const handleRouteChange = () => {
@@ -66,7 +75,7 @@ const Login = () => {
       onSubmit={(e) => {
         e.preventDefault();
         setError("");
-        login();
+        handleLogin();
       }}
     >
       <div className="input-group">

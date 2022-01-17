@@ -1,4 +1,4 @@
-import { useState, ReactElement } from "react";
+import { useState, ReactElement, useEffect } from "react";
 import AuthLayout from "@components-pages/auth/AuthLayout";
 import { useMutation } from "@apollo/client";
 import { register, registerVariables } from "generated/register";
@@ -25,7 +25,7 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<Errors>({});
 
-  const [register, { data, loading, client }] = useMutation<
+  const [register, { loading, client }] = useMutation<
     register,
     registerVariables
   >(REGISTER_USER, {
@@ -44,16 +44,27 @@ const Register = () => {
     },
   });
 
+  
+  if (loading) return <div>Submitting...</div>;
+  
   const redirect = router.query.redirect;
 
-  if (loading) return <div>Submitting...</div>;
-  if (data) {
-    authState.accessToken = data.register.accessToken;
-    authState.isAuth = true;
-    client!.resetStore();
-    // If there is a single redirect query string, use it as the pathname
-    router.push(typeof redirect === "string" ? redirect : "/my-profile");
-  }
+  const handleRegister = async () => {
+    const { data } = await register();
+
+    if (data) {
+      authState.loading = true;
+      authState.accessToken = data.register.accessToken;
+      authState.isAuth = true;
+      client!.resetStore();
+      // If there is a single redirect query string, use it as the pathname
+      router.push(typeof redirect === "string" ? redirect : "/my-profile");
+      router.events.on(
+        "routeChangeComplete",
+        () => (authState.loading = false)
+      );
+    }
+  };
 
   // Pass the route query to register route
   const handleRouteChange = () => {
@@ -72,7 +83,7 @@ const Register = () => {
       onSubmit={(e) => {
         e.preventDefault();
         setErrors({});
-        register();
+        handleRegister();
       }}
     >
       <div className="wrapper">

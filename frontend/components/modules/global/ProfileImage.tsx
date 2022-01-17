@@ -33,7 +33,7 @@ const ProfileImage = ({ size, profileImage, priority = false }: Props) => {
       >
         {profileImage && (
           <Image
-            onLoadingComplete={(e) => {
+            onLoad={(e) => {
               setImageLoaded(true);
             }}
             onError={(e) => {

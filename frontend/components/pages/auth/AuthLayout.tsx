@@ -13,17 +13,13 @@ interface Props {
 
 const AuthLayout = ({ children, title }: Props) => {
   const router = useRouter();
-  const { isAuth } = useSnapshot(authState);
-
-  const redirect = router.query.redirect;
+  const { isAuth, loading } = useSnapshot(authState);
 
   useEffect(() => {
-    // If there is no redirect query string and user is authenticated, redirect to projects.
-    if (typeof redirect !== "string" && isAuth) {
+    if (!loading && isAuth) {
       router.push("/projects");
     }
-    return;
-  }, [isAuth]);
+  }, [isAuth, loading]);
 
   return (
     <div className="auth-page">

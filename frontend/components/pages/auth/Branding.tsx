@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -33,6 +33,7 @@ const imageVariants = {
 
 const Branding = () => {
   const [loaded, setLoaded] = useState(false);
+
   return (
     <aside>
       <motion.div
@@ -53,7 +54,7 @@ const Branding = () => {
           </div>
         )}
         <Image
-          onLoadingComplete={(e) => {
+          onLoad={(e) => {
             setLoaded(true);
           }}
           src="https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/more-big.jpg"
