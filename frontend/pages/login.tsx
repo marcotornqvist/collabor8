@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { toastState } from "store";
 import { ErrorStatus } from "@types-enums/enums";
 import button from "@styles-modules/Button.module.scss";
-import styles from "@styles-modules/Input.module.scss";
+import input from "@styles-modules/Input.module.scss";
 
 const Login = () => {
   const router = useRouter();
@@ -81,7 +81,7 @@ const Login = () => {
       <div className="input-group">
         <label htmlFor="email">Email</label>
         <input
-          className={styles.input}
+          className={input.default}
           value={email}
           placeholder="Please enter your email address"
           onChange={(e) => {
@@ -93,7 +93,7 @@ const Login = () => {
       <div className="input-group">
         <label htmlFor="password">Password</label>
         <input
-          className={styles.input}
+          className={input.default}
           type="password"
           value={password}
           placeholder="Please enter your password"

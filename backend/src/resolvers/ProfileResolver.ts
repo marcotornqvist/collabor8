@@ -8,25 +8,18 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { Profile } from "../types/Profile";
-import {
-  Context,
-  LooseObject,
-  S3UploadStream,
-  Upload,
-} from "../types/Interfaces";
+import { Context, LooseObject, Upload } from "../types/Interfaces";
 import { CountryResponse } from "./responses/CountryResponse";
 import countries from "../data/countries";
 import { isAuth } from "../utils/isAuth";
-import { FileArgs, UpdateProfileInput } from "./inputs/ProfileInput";
+import { UpdateProfileInput } from "./inputs/ProfileInput";
 import { UserInputError } from "apollo-server-errors";
 import { capitalizeWords } from "../helpers/capitalizeWords";
 import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
 import { UploadedFileResponse } from "./responses/ProfileResponse";
 import { S3 } from "aws-sdk";
 import { GraphQLUpload } from "graphql-upload";
-import { createWriteStream } from "fs";
 import { uuidFilenameTransform } from "../helpers/uuidFileNameTransform";
-import Jimp from "jimp";
 import { Discipline } from "../types/Discipline";
 const sharp = require("sharp");
 
@@ -41,20 +34,20 @@ const sharp = require("sharp");
 export class ProfileResolver {
   @Query(() => [CountryResponse], {
     nullable: true,
-    description: "Returns countries based on search argument",
+    description: "Returns countries",
   })
-  async countries(@Arg("search") search: string) {
-    const regex = new RegExp(`${search}`, "gi");
+  async countries() {
+    // const regex = new RegExp(`${search}`, "gi");
 
-    const filtered = countries.filter((item: CountryResponse) => {
-      return item.country.match(regex);
-    });
+    // const filtered = countries.filter((item: CountryResponse) => {
+    //   return item.country.match(regex);
+    // });
 
     // On the frontend input check if array is empty
     // and if it is don't allow typing of more words since it won't return anything else
     // if this operation is slow move the filter to the frontend and just return countries
     // which it will likely be
-    return filtered;
+    return countries;
   }
 
   @Query(() => [Discipline], {

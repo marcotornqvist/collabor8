@@ -5,7 +5,7 @@ import { register, registerVariables } from "generated/register";
 import { authState } from "store";
 import { REGISTER_USER } from "@operations-mutations/register";
 import { useRouter } from "next/router";
-import inputStyles from "@styles-modules/Input.module.scss";
+import input from "@styles-modules/Input.module.scss";
 import button from "@styles-modules/Button.module.scss";
 
 interface Errors {
@@ -44,9 +44,8 @@ const Register = () => {
     },
   });
 
-  
   if (loading) return <div>Submitting...</div>;
-  
+
   const redirect = router.query.redirect;
 
   const handleRegister = async () => {
@@ -95,7 +94,7 @@ const Register = () => {
             )}
           </div>
           <input
-            className={inputStyles.input}
+            className={input.default}
             value={firstName}
             placeholder="Your first name"
             onChange={(e) => {
@@ -110,7 +109,7 @@ const Register = () => {
             {errors.lastName && <span>{errors.lastName}</span>}
           </div>
           <input
-            className={inputStyles.input}
+            className={input.default}
             value={lastName}
             placeholder="Your last name"
             onChange={(e) => {
@@ -128,7 +127,7 @@ const Register = () => {
           )}
         </div>
         <input
-          className={inputStyles.input}
+          className={input.default}
           value={email}
           placeholder="Please enter your email address"
           onChange={(e) => {
@@ -145,7 +144,7 @@ const Register = () => {
           )}
         </div>
         <input
-          className={inputStyles.input}
+          className={input.default}
           type="password"
           value={password}
           placeholder="Enter a new password"
@@ -163,7 +162,7 @@ const Register = () => {
           )}
         </div>
         <input
-          className={inputStyles.input}
+          className={input.default}
           type="password"
           value={confirmPassword}
           placeholder="Confirm your new password"

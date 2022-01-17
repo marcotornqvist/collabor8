@@ -15,8 +15,7 @@ interface Errors {
 }
 
 const Profile = () => {
-  const { data, loading, error } =
-    useQuery<loggedInProfileImage>(GET_PROFILE_IMAGE);
+  const { data } = useQuery<loggedInProfileImage>(GET_PROFILE_IMAGE);
 
   // if (loading) return <div>Submitting...</div>;
 

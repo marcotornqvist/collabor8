@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, memo, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_LOGGED_IN_PROFILE } from "@operations-queries/getLoggedInProfile";
 import { loggedInProfile } from "generated/loggedInProfile";
 import { UPDATE_PROFILE } from "@operations-mutations/updateProfile";
 import { updateProfile, updateProfileVariables } from "generated/updateProfile";
-import inputStyles from "@styles-modules/Input.module.scss";
+import input from "@styles-modules/Input.module.scss";
 import button from "@styles-modules/Button.module.scss";
+import CountriesDropdown from "./CountriesDropdown";
 
 interface Errors {
   firstName?: string;
@@ -13,22 +14,12 @@ interface Errors {
   bio?: string;
 }
 
-interface IForm {
-  firstName: string;
-  lastName: string;
-  country: string;
-  bio: string;
-  disciplineId: number | null;
-}
-
-const Form = () => {
-  const [formData, setFormData] = useState<IForm>({
-    firstName: "",
-    lastName: "",
-    bio: "",
-    country: "",
-    disciplineId: null,
-  });
+const Form = memo(() => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [country, setCountry] = useState("");
+  const [disciplineId, setDisciplineId] = useState<number | null>();
+  const [bio, setBio] = useState("");
   const [errors, setErrors] = useState<Errors>({});
 
   const { data } = useQuery<loggedInProfile>(GET_LOGGED_IN_PROFILE);
@@ -38,30 +29,30 @@ const Form = () => {
       const { firstName, lastName, country, bio, disciplineId } =
         data.loggedInProfile;
 
-      setFormData({
-        firstName: firstName ?? "",
-        lastName: lastName ?? "",
-        country: country ?? "",
-        bio: bio ?? "",
-        disciplineId: disciplineId ?? null,
-      });
+      setFirstName(firstName || "");
+      setLastName(lastName || "");
+      setCountry(country || "");
+      setDisciplineId(disciplineId || null);
+      setBio(bio || "");
     }
   }, [data]);
 
-  // Query disciplines
-  // Query countries
-
+  // Remember to update cache
   const [updateProfile] = useMutation<updateProfile, updateProfileVariables>(
     UPDATE_PROFILE,
     {
       variables: {
-        data: formData,
+        data: {
+          firstName,
+          lastName,
+          country,
+          disciplineId,
+          bio,
+        },
       },
       onError: (error) => setErrors(error.graphQLErrors[0].extensions?.errors),
     }
   );
-
-  const { firstName, lastName, bio, country, disciplineId } = formData;
 
   return (
     <form
@@ -80,12 +71,10 @@ const Form = () => {
             )}
           </div>
           <input
-            className={inputStyles.input}
+            className={input.default}
             value={firstName}
             placeholder="Your first name"
-            onChange={(e) => {
-              setFormData({ ...formData, firstName: e.target.value });
-            }}
+            onChange={(e) => setFirstName(e.target.value)}
             autoComplete="on"
           />
         </div>
@@ -95,24 +84,36 @@ const Form = () => {
             {errors.lastName && <span>{errors.lastName}</span>}
           </div>
           <input
-            className={inputStyles.input}
+            className={input.default}
             value={lastName}
             placeholder="Your last name"
-            onChange={(e) => {
-              setFormData({ ...formData, lastName: e.target.value });
-            }}
+            onChange={(e) => setLastName(e.target.value)}
+            autoComplete="on"
+          />
+        </div>
+        <CountriesDropdown
+          selected={country}
+          setCountry={(country) => setCountry(country)}
+        />
+        <div className="input-group">
+          <div className="input-text">
+            <label htmlFor="bio">Bio</label>
+            {errors.bio && <span>{errors.bio}</span>}
+          </div>
+          <textarea
+            className={input.textarea}
+            value={bio}
+            placeholder="Write a bio"
+            onChange={(e) => setBio(e.target.value)}
             autoComplete="on"
           />
         </div>
       </div>
-      <button
-        type="submit"
-        className={button.green}
-      >
+      <button type="submit" className={`${button.green} submit-btn`}>
         Save Settings
       </button>
     </form>
   );
-};
+});
 
 export default Form;

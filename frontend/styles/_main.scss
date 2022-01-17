@@ -75,7 +75,8 @@ h4 {
 }
 
 input,
-label {
+label,
+textarea {
   line-height: 1.5rem;
   font-size: 14px;
 }
@@ -101,7 +102,8 @@ li {
   list-style-type: none;
 }
 
-input {
+input,
+textarea {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;

@@ -23,7 +23,8 @@
       padding: 1.5rem 1rem;
       cursor: pointer;
 
-      a {
+      a,
+      span {
         font-size: 1.125rem;
       }
 
@@ -34,7 +35,7 @@
   }
 }
 
-@media only screen and (min-width: $breakpoint-sm) {
+@media only screen and (min-width: $breakpoint-md) {
   .mobile-menu ul li {
     padding: 1.5rem;
   }
