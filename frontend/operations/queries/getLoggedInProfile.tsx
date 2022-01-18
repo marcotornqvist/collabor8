@@ -8,7 +8,10 @@ export const GET_LOGGED_IN_PROFILE = gql`
       lastName
       country
       bio
-      disciplineId
+      discipline {
+        title
+        id
+      }
     }
   }
 `;

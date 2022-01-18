@@ -1,5 +1,6 @@
 @use "../abstracts/colors" as *;
 @use "../abstracts/breakpoints" as *;
+@use "../abstracts/border-radius" as *;
 
 footer {
   background: $light-green;

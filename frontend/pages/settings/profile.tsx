@@ -7,34 +7,31 @@ import SettingsLayout from "@components-pages/settings/SettingsLayout";
 import DeleteImage from "@components-pages/settings/profile/DeleteImage";
 import ProfileImage from "@components-modules/global/ProfileImage";
 import Form from "@components-pages/settings/profile/Form";
-
-interface Errors {
-  firstName?: string;
-  lastName?: string;
-  bio?: string;
-}
+import useWindowSize from "@hooks/useWindowSize";
 
 const Profile = () => {
   const { data } = useQuery<loggedInProfileImage>(GET_PROFILE_IMAGE);
 
-  // if (loading) return <div>Submitting...</div>;
+  const { width } = useWindowSize();
 
   return (
     <div className="settings-profile">
-      <div className="thumbnail-panel">
-        <div className="image-container">
+      <div className="container">
+        <h2 className="title">Profile Settings</h2>
+        <div className="thumbnail-panel">
           <ProfileImage
-            size={40}
             profileImage={data?.loggedInProfile?.profileImage}
             priority={true}
           />
+          <div className="buttons">
+            <UploadFile />
+            <DeleteImage
+              current={data?.loggedInProfile?.profileImage ? true : false}
+            />
+          </div>
         </div>
-        <UploadFile />
-        <DeleteImage
-          current={data?.loggedInProfile?.profileImage ? true : false}
-        />
+        <Form />
       </div>
-      <Form />
     </div>
   );
 };

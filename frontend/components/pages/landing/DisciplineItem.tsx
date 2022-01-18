@@ -35,11 +35,11 @@ const DisciplineItem = ({ title, src, link, alt }: IProps) => {
         >
           {loaded && <h3>{title}</h3>}
           <Image
-            onLoad={(e) => {
+            onLoadingComplete={(e) => {
               setLoaded(true);
             }}
             src={src}
-            alt={alt} 
+            alt={alt}
             layout="fill"
             objectFit="cover"
             objectPosition="center"

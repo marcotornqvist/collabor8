@@ -4,18 +4,18 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: countries
+// GraphQL query operation: disciplines
 // ====================================================
 
-export interface countries_countries {
-  __typename: "CountryResponse";
-  key: string;
-  country: string;
+export interface disciplines_disciplines {
+  __typename: "Discipline";
+  id: number;
+  title: string;
 }
 
-export interface countries {
+export interface disciplines {
   /**
-   * Returns countries
+   * Returns disciplines
    */
-  countries: countries_countries[] | null;
+  disciplines: disciplines_disciplines[] | null;
 }

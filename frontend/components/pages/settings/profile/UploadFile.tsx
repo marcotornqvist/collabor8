@@ -51,21 +51,3 @@ export const UploadFile = () => {
     </button>
   );
 };
-
-// return (
-//   <Fragment>
-//     <button className={`${styles.default} ${styles.lightGreen}`}>
-//       <input type="file" required onChange={onChange} />
-//       Update Picture
-//     </button>
-//     {/* {Object.keys(lastUploaded).length !== 0 && (
-//         <div>
-//           {" "}
-//           Last uploaded details {JSON.stringify(lastUploaded, null, 2)}{" "}
-//         </div>
-//       )} */}
-//     {lastUploaded && !loading && (
-//       <Image src={lastUploaded.url} width={64} height={64} />
-//     )}
-//   </Fragment>
-// );

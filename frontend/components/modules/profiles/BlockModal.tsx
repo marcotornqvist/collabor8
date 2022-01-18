@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, MouseEventHandler } from "react";
 import ReactDOM from "react-dom";
 import { useMutation } from "@apollo/client";
 import { blockUser, blockUserVariables } from "generated/blockUser";

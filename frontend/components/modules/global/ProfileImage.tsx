@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import image from "@styles-modules/Image.module.scss";
 
 const variants = {
   hidden: {
@@ -16,49 +17,64 @@ const variants = {
 
 interface Props {
   profileImage?: string | null;
-  size: number;
+  size?: number;
   priority?: boolean;
 }
 
-const ProfileImage = ({ size, profileImage, priority = false }: Props) => {
+const ProfileImage = ({ size = 40, profileImage, priority = false }: Props) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [error, setError] = useState(false);
 
+  useEffect(() => {
+    setImageLoaded(false);
+    setError(false);
+  }, [profileImage]);
+
   return (
-    <div className="profile-image">
-      <motion.div
-        className="image-container"
-        animate={!profileImage || imageLoaded ? "visible" : "hidden"}
-        variants={variants}
-      >
-        {profileImage && (
-          <Image
-            onLoad={(e) => {
-              setImageLoaded(true);
-            }}
-            onError={(e) => {
-              setError(true);
-            }}
-            src={profileImage}
-            alt="profile image"
-            layout="fill"
-            objectFit="cover"
-            className={`profile${error ? " hide" : ""}`}
-            priority={priority ? true : false}
-          />
+    <div className={`profile-image ${image.profile}`}>
+      <AnimatePresence>
+        {!error && profileImage && (
+          <motion.div
+            className="image-container"
+            animate={imageLoaded ? "visible" : "hidden"}
+            variants={variants}
+          >
+            <Image
+              onLoadingComplete={(e) => {
+                setImageLoaded(true);
+              }}
+              onError={(e) => {
+                setError(true);
+              }}
+              src={profileImage}
+              alt="profile image"
+              layout="fill"
+              objectFit="cover"
+              className="profile"
+              priority={priority ? true : false}
+            />
+          </motion.div>
         )}
-        {/* Render image if profileImage doesn't exist or if profileImage doesn't work */}
-        {(!profileImage || error) && (
-          <Image
-            src="/icons/user-solid-green.svg"
-            alt="profile image"
-            width={size || 40}
-            height={size || 40}
-            layout="fixed"
-            className="user-icon"
-          />
+      </AnimatePresence>
+      <AnimatePresence>
+        {(profileImage === null || error) && (
+          <motion.div
+            className="image-container"
+            initial="hidden"
+            animate="visible"
+            variants={variants}
+          >
+            <Image
+              src="/icons/user-solid-green.svg"
+              alt="profile image"
+              width={size}
+              height={size}
+              layout="fixed"
+              className="user-icon"
+            />
+          </motion.div>
         )}
-      </motion.div>
+      </AnimatePresence>
     </div>
   );
 };

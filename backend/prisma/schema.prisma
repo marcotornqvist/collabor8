@@ -40,7 +40,7 @@ model Profile {
   country      String?
   bio          String?
   profileImage String?
-  discipline   Discipline? @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+  discipline   Discipline? @relation(fields: [disciplineId], references: [id])
   disciplineId Int?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime?   @default(now()) @updatedAt
@@ -181,7 +181,7 @@ model ReportProject {
 model BlockedUser {
   user          User     @relation("Blocked", fields: [userId], references: [id], onDelete: Cascade)
   userId        String
-  blockedUser   User     @relation(fields: [blockedUserId], references: [id])
+  blockedUser   User     @relation(fields: [blockedUserId], references: [id], onDelete: Cascade)
   blockedUserId String
   createdAt     DateTime @default(now())
 

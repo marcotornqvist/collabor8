@@ -1,6 +1,7 @@
 @use "../abstracts/zindex" as *;
 @use "../abstracts/colors" as *;
 @use "../abstracts/breakpoints" as *;
+@use "../abstracts/border-radius" as *;
 
 .mobile-menu {
   position: fixed;

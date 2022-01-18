@@ -2,6 +2,7 @@
 @use "../abstracts/shadows" as *;
 @use "../abstracts/zindex" as *;
 @use "../abstracts/breakpoints" as *;
+@use "../abstracts/border-radius" as *;
 
 #toasts-portal {
   position: fixed;

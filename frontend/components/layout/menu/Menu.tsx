@@ -29,17 +29,17 @@ const Menu = () => {
   const { isAuth } = useSnapshot(authState);
   const { width } = useWindowSize();
 
-  // Closes menu if screen size width goes beyond 920px
-  useEffect(() => {
-    if (width >= 920) {
-      navigationState.menuOpen = false;
-    }
-  }, [width]);
-
   const closeMenu = () => {
     document.body.classList.remove("body-prevent-scroll");
     navigationState.menuOpen = false;
   };
+
+  // Closes menu if screen size width goes beyond 920px
+  useEffect(() => {
+    if (width >= 920) {
+      closeMenu();
+    }
+  }, [width]);
 
   return (
     <AnimatePresence>

@@ -1,30 +1,51 @@
 @use "../abstracts/colors" as *;
 @use "../abstracts/shadows" as *;
 @use "../abstracts/breakpoints" as *;
+@use "../abstracts/border-radius" as *;
 
 .white {
   height: 3rem;
   width: 250px;
   border: none;
-  border-radius: 3px;
+  border-radius: $medium-radius;
   background: $white;
   color: $black;
+}
+
+.black {
+  height: 3rem;
+  width: 250px;
+  border: none;
+  border-radius: $medium-radius;
+  background: $black;
+  color: $white;
 }
 
 .green {
   height: 3rem;
   width: 250px;
   border: none;
-  border-radius: 3px;
+  border-radius: $medium-radius;
   background: $green;
   color: $white;
+}
+
+.disabled {
+  height: 3rem;
+  width: 250px;
+  border: none;
+  border-radius: $medium-radius;
+  border: 1px solid $border-color1;
+  background: $light-grey-bg;
+  color: $light-grey;
+  cursor: initial;
 }
 
 .red {
   height: 3rem;
   width: 250px;
   border: none;
-  border-radius: 3px;
+  border-radius: $medium-radius;
   background: $red;
   color: $white;
 }
@@ -33,7 +54,7 @@
   height: 3rem;
   width: 250px;
   border: none;
-  border-radius: 3px;
+  border-radius: $medium-radius;
   background: $light-green;
   color: $green;
   border: 1px solid $green;
@@ -42,20 +63,18 @@
 .lightRed {
   height: 3rem;
   width: 250px;
-  border-radius: 3px;
+  border-radius: $medium-radius;
   border: 1px solid $red;
   background: $light-red;
   color: $red;
 }
 
-@media only screen and (min-width: $breakpoint-md) {
-  .lightGreen:hover {
-    color: $white;
-    background: $green;
-  }
+.lightGreen:hover {
+  color: $white;
+  background: $green;
+}
 
-  .lightRed:hover {
-    color: $white;
-    background: $red;
-  }
+.lightRed:hover {
+  color: $white;
+  background: $red;
 }

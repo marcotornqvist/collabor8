@@ -3,11 +3,7 @@
 @use "./abstracts/breakpoints" as *;
 @use "./abstracts/zindex" as *;
 @use "./abstracts/fonts" as *;
-
-// Border radius
-$small-radius: 1px;
-$medium-radius: 3px;
-$big-radius: 50px;
+@use "./abstracts/border-radius" as *;
 
 * {
   margin: 0;

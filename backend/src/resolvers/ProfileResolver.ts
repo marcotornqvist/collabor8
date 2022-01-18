@@ -55,7 +55,13 @@ export class ProfileResolver {
     description: "Returns disciplines",
   })
   async disciplines(@Ctx() { prisma }: Context) {
-    const disciplines = await prisma.discipline.findMany();
+    const disciplines = await prisma.discipline.findMany({
+      orderBy: [
+        {
+          title: "asc",
+        },
+      ],
+    });
 
     return disciplines;
   }

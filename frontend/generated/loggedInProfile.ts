@@ -7,13 +7,19 @@
 // GraphQL query operation: loggedInProfile
 // ====================================================
 
+export interface loggedInProfile_loggedInProfile_discipline {
+  __typename: "Discipline";
+  title: string;
+  id: number;
+}
+
 export interface loggedInProfile_loggedInProfile {
   __typename: "Profile";
   firstName: string | null;
   lastName: string | null;
   country: string | null;
   bio: string | null;
-  disciplineId: number | null;
+  discipline: loggedInProfile_loggedInProfile_discipline | null;
 }
 
 export interface loggedInProfile {

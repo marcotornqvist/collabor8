@@ -1,22 +1,64 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import NavList from "./NavList";
-
-// Settings Navigation, this component shall have a dropdown with all the links
+import React, { useEffect, useRef } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 const Navigation = () => {
-  const [show, setShow] = useState(false);
+  const router = useRouter();
+  const pathname = router.pathname.split("/");
+  const currentPath = pathname[pathname.length - 1];
+
+  const activeRef: any = useRef<HTMLLIElement>(null);
+  const listRef: any = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    if (activeRef.current) {
+      const x = activeRef.current.offsetLeft;
+      listRef.current.scrollLeft = x - 16;
+    }
+  }, [pathname]);
+
   return (
-    <>
-      <div className="settings-navigation">
-        <button onClick={() => setShow(!show)}>Show Menu</button>
-        {show && (
-          <motion.nav className="dropdown">
-            <NavList />
-          </motion.nav>
-        )}
-      </div>
-    </>
+    <div className="settings-navigation">
+      <ul ref={listRef}>
+        <Link href="/settings/profile">
+          <a>
+            <li
+              ref={currentPath === "profile" ? activeRef : null}
+              className={`list-item${
+                currentPath === "profile" ? " active" : ""
+              }`}
+            >
+              <span>Profile Settings</span>
+            </li>
+          </a>
+        </Link>
+        <Link href="/settings/account">
+          <a>
+            <li
+              ref={currentPath === "account" ? activeRef : null}
+              className={`list-item${
+                currentPath === "account" ? " active" : ""
+              }`}
+            >
+              <span>Account Settings</span>
+            </li>
+          </a>
+        </Link>
+        <Link href="/settings/socials">
+          <a>
+            <li
+              ref={currentPath === "socials" ? activeRef : null}
+              className={`list-item${
+                currentPath === "socials" ? " active" : ""
+              }`}
+            >
+              <span>Social Accounts</span>
+            </li>
+          </a>
+        </Link>
+      </ul>
+      <hr />
+    </div>
   );
 };
 

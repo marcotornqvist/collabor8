@@ -3,6 +3,7 @@
 @use "../abstracts/shadows" as *;
 @use "../abstracts/zindex" as *;
 @use "../abstracts/fonts" as *;
+@use "../abstracts/border-radius" as *;
 
 .navbar {
   position: fixed;
@@ -86,33 +87,9 @@
 
       .account-dropdown {
         .profile-image {
-          position: relative;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          border-radius: $big-radius;
-          border: 3px solid $green;
-          width: 3rem;
+          min-width: 3rem;
           height: 3rem;
-          overflow: hidden;
           cursor: pointer;
-
-          .image-container {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-
-            img {
-              border-radius: inherit;
-            }
-
-            .hide {
-              display: none !important;
-            }
-          }
         }
 
         .dropdown {
@@ -140,7 +117,7 @@
                 cursor: pointer;
 
                 span {
-                  font-size: 14px;
+                  font-size: 16px;
                   font-weight: 600;
                   font-family: $font-body;
                 }
@@ -154,7 +131,7 @@
             hr {
               border: none;
               border: 1px solid $border-color2;
-              border-radius: 3px;
+              border-radius: $medium-radius;
               margin: 0.5rem 0;
             }
           }

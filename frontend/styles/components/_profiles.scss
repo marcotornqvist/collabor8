@@ -2,6 +2,7 @@
 @use "../abstracts/breakpoints" as *;
 @use "../abstracts/shadows" as *;
 @use "../abstracts/zindex" as *;
+@use "../abstracts/border-radius" as *;
 
 .profiles {
   background: $light-green;
@@ -89,33 +90,8 @@
                   padding-bottom: 1.5rem;
 
                   .profile-image {
-                    position: relative;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    border-radius: $big-radius;
-                    border: 3px solid $green;
-                    margin-bottom: 0.3rem;
-                    width: 4.5rem;
+                    min-width: 4.5rem;
                     height: 4.5rem;
-                    overflow: hidden;
-
-                    .image-container {
-                      position: relative;
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
-                      width: 100%;
-                      height: 100%;
-
-                      img {
-                        border-radius: inherit;
-                      }
-
-                      .hide {
-                        display: none !important;
-                      }
-                    }
                   }
 
                   h4 {
@@ -253,7 +229,7 @@
         .skeleton.cog-wheel {
           width: 1.5rem;
           height: 1.5rem;
-          border-radius: $big-radius;
+          border-radius: $large-radius;
         }
 
         .wrapper {
@@ -266,7 +242,7 @@
           .skeleton.thumbnail {
             width: 4.5rem;
             height: 4.5rem;
-            border-radius: $big-radius;
+            border-radius: $large-radius;
             margin-bottom: 0.5rem;
           }
 

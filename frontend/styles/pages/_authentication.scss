@@ -2,6 +2,7 @@
 @use "../abstracts/breakpoints" as *;
 @use "../abstracts/shadows" as *;
 @use "../abstracts/zindex" as *;
+@use "../abstracts/border-radius" as *;
 
 .auth-page {
   position: relative;
@@ -51,11 +52,14 @@
 
           label {
             font-weight: 400;
+            white-space: nowrap;
           }
 
           span {
+            padding-left: 1rem;
             font-size: 12px;
             color: $red;
+            text-align: right;
           }
         }
       }

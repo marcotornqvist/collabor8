@@ -7,7 +7,7 @@ export default function PrivateRoute({ protectedRoutes, children }: any) {
   const { loading, isAuth } = useSnapshot(authState);
   const router = useRouter();
 
-  const firstPath = router.asPath.split("/")[1];
+  const firstPath = router.pathname.split("/")[1];
 
   const pathIsProtected = protectedRoutes.indexOf("/" + firstPath) !== -1;
 
