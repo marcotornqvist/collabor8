@@ -104,15 +104,13 @@
   }
 }
 
-// .profiles handled in different scss file called _profiles.scss
-
 .landing-page .about .grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   grid-auto-rows: min-content;
   border-radius: $medium-radius;
   background: $white;
-  box-shadow: $box-shadow4;
+  box-shadow: $box-shadow2;
 
   .grid-item {
     position: relative;

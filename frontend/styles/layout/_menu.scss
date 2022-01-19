@@ -2,6 +2,7 @@
 @use "../abstracts/colors" as *;
 @use "../abstracts/breakpoints" as *;
 @use "../abstracts/border-radius" as *;
+@use "../abstracts/fonts" as *;
 
 .mobile-menu {
   position: fixed;
@@ -27,6 +28,8 @@
       a,
       span {
         font-size: 1.125rem;
+        font-weight: 400;
+        font-family: $font-body;
       }
 
       &:last-child {

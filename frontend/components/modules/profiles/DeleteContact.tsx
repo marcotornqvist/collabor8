@@ -14,12 +14,12 @@ interface IProps {
 // This component works for both when a user has sent a contact request
 // but is still in a pending state. And also when the contact state is active(true).
 const DeleteContact = ({ id, pendingState }: IProps) => {
-  const [hoverRef, isHovered] = useHover<HTMLLIElement>();
+  const [hoverRef, isHovered] = useHover<HTMLButtonElement>();
   const [showModal, setShowModal] = useState(false);
 
   return (
     <>
-      <li
+      <button
         onClick={() => setShowModal(true)}
         ref={hoverRef}
         className="danger-hover"
@@ -31,7 +31,7 @@ const DeleteContact = ({ id, pendingState }: IProps) => {
         ) : (
           <span>Delete Contact</span>
         )}
-      </li>
+      </button>
       <DeleteModal
         id={id}
         show={showModal}

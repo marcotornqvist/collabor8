@@ -1,84 +1,62 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { users_users } from "generated/users";
+import useWindowSize from "@hooks/useWindowSize";
 import Image from "next/image";
-import AliceCarousel from "react-alice-carousel";
 import ProfileImage from "@components-modules/global/ProfileImage";
 import Link from "next/link";
 import Settings from "./Settings";
 import button from "@styles-modules/Button.module.scss";
+import("scroll-behavior-polyfill");
 
 interface IProps {
   item: users_users;
   key: string;
 }
 
-const createItems = (length: any, [handleClick]: any, item: users_users) => {
-  let deltaX = 0;
-  let difference = 0;
-  const swipeDelta = 20;
-
-  const { id, username, profile } = item;
-
-  return Array.from({ length }).map((item, i) => (
-    <div
-      data-value={i + 1}
-      className="item"
-      onMouseDown={(e) => (deltaX = e.pageX)}
-      onMouseUp={(e) => (difference = Math.abs(e.pageX - deltaX))}
-      onClick={() => difference < swipeDelta && handleClick(i)}
-      key={i}
-    >
-      {i === 0 ? (
-        <div className="carousel-item content-item">
-          <div className="wrapper">
-            <div className="content">
-              <ProfileImage size={40} profileImage={profile?.profileImage} />
-              <h4>
-                {profile?.firstName} {profile?.lastName}
-              </h4>
-              <span>{profile?.discipline?.title}</span>
-            </div>
-            <Link href={`/profile/${username}`}>
-              <a>
-                <button className={`${button.lightGreen} check-profile-btn`}>
-                  See Profile
-                </button>
-              </a>
-            </Link>
-          </div>
-        </div>
-      ) : (
-        <div className="carousel-item settings-item">
-          <div className="wrapper">
-            <Settings id={id} username={username} />
-          </div>
-        </div>
-      )}
-    </div>
-  ));
-};
-
 const ProfileItem = ({ item }: IProps) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [items] = useState(createItems(2, [setActiveIndex], item));
+  const { id, username, profile } = item;
+  const [toggle, setToggle] = useState(false);
 
-  const toggleSlide = () => {
-    activeIndex === 0 ? setActiveIndex(1) : setActiveIndex(0);
+  const carouselRef: any = useRef<HTMLDivElement>(null);
+  const contentRef: any = useRef<HTMLDivElement>(null);
+  const settingsRef: any = useRef<HTMLDivElement>(null);
+  const { width } = useWindowSize();
+
+  useEffect(() => {
+    if (toggle) {
+      carouselRef.current.scroll({
+        left: 1000,
+      });
+    }
+  }, [width]);
+
+  const handleToggle = () => {
+    carouselRef.current.scroll({
+      left: toggle ? -24 : 1000,
+      behavior: "smooth",
+    });
+
+    setToggle(!toggle);
+  };
+
+  const disableScroll = () => {
+    carouselRef.current.addEventListener(
+      "wheel",
+      function (e: any) {
+        if (e.deltaX < 0) {
+          e.preventDefault();
+        } else if (e.deltaX > 0) {
+          e.preventDefault();
+        }
+      },
+      { passive: false }
+    );
   };
 
   return (
     <div className="profile-item">
-      <div className="carousel">
-        <AliceCarousel
-          // mouseTracking
-          disableDotsControls
-          disableButtonsControls
-          items={items}
-          activeIndex={activeIndex}
-          animationDuration={380}
-          touchTracking={false}
-        />
-        <div className="carousel-button" onClick={toggleSlide}>
+      <div className="toggle-button-wrapper">
+        <div className="toggle-button" onClick={() => handleToggle()}>
           <Image
             src="/icons/cog-solid-fa-green.svg"
             alt="Cog wheel"
@@ -86,6 +64,30 @@ const ProfileItem = ({ item }: IProps) => {
             height={24}
           />
         </div>
+      </div>
+      <div className="carousel" ref={carouselRef} onScroll={disableScroll}>
+        <div className="profile-content carousel-item" ref={contentRef}>
+          <div className="wrapper">
+            <ProfileImage profileImage={profile?.profileImage} />
+            <h4>
+              {profile?.firstName} {profile?.lastName}
+            </h4>
+            <span>{profile?.discipline?.title}</span>
+          </div>
+          <Link href={`/profile/${username}`}>
+            <a>
+              <button className={`${button.lightGreen} check-profile-btn`}>
+                See Profile
+              </button>
+            </a>
+          </Link>
+        </div>
+        <Settings
+          id={id}
+          username={username}
+          ref={settingsRef}
+          isVisible={toggle}
+        />
       </div>
     </div>
   );

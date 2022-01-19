@@ -33,12 +33,12 @@ const BlockUser = ({ id, isVisible }: IProps) => {
 
   return isAuth ? (
     <>
-      <li
+      <button
         onClick={() => setShowModal(true)}
         className={data?.isUserBlocked ? "success-hover" : "danger-hover"}
       >
         <span>{data?.isUserBlocked ? "Unblock" : "Block"} User</span>
-      </li>
+      </button>
       <BlockModal
         id={id}
         show={showModal}

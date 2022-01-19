@@ -3,6 +3,7 @@
 @use "../abstracts/shadows" as *;
 @use "../abstracts/zindex" as *;
 @use "../abstracts/border-radius" as *;
+@use "../abstracts/fonts" as *;
 
 .profiles {
   background: $light-green;
@@ -19,284 +20,241 @@
     gap: 1rem;
 
     .profile-item {
-      position: relative;
+      display: flex;
+      flex-direction: column;
+      border-radius: $medium-radius;
       background: $white;
       box-shadow: $box-shadow3;
-      border-radius: $medium-radius;
+      overflow: hidden;
+      // overflow: hidden;
 
-      .carousel {
-        position: absolute;
-        $transition-time: 0.2s !default;
-        width: 100%;
-        height: 100%;
+      .toggle-button-wrapper {
+        display: flex;
+        padding: 1.5rem 1.5rem 0;
 
-        .alice-carousel {
-          position: relative;
-          min-height: 100%;
-          width: 100%;
-          margin: auto;
-          direction: ltr;
-        }
-
-        .alice-carousel__wrapper {
-          position: relative;
-          overflow-x: hidden;
-          overflow-y: hidden;
-          box-sizing: border-box;
-          width: 100%;
-          height: 100%;
-
-          .alice-carousel__stage {
-            position: relative;
-            box-sizing: border-box;
-            width: 100%;
-            height: 350px;
-            margin: 0;
-            padding: 0;
-            white-space: nowrap;
-            transform-style: flat;
-            -webkit-transform-style: flat;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-
-            li {
-              .item {
-                height: 100%;
-              }
-
-              .carousel-item {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 100%;
-                width: 100%;
-                padding: 1.5rem;
-              }
-
-              .content-item .wrapper {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-direction: column;
-                min-height: 100%;
-                width: 100%;
-                position: relative;
-
-                .content {
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                  flex-direction: column;
-                  padding-bottom: 1.5rem;
-
-                  .profile-image {
-                    min-width: 4.5rem;
-                    height: 4.5rem;
-                  }
-
-                  h4 {
-                    text-align: center;
-                    overflow: hidden;
-                    width: 250px;
-                    display: -webkit-box;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                    word-wrap: break-word;
-                    margin-bottom: 0.25rem;
-                  }
-
-                  span {
-                    text-align: center;
-                    overflow: hidden;
-                    width: 250px;
-                    display: -webkit-box;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                    word-wrap: break-word;
-                  }
-                }
-
-                button {
-                  position: absolute;
-                  bottom: 0;
-                  left: 0;
-                  width: 100%;
-                  background: $white;
-
-                  &:hover {
-                    background: $green;
-                    color: $white;
-                  }
-                }
-              }
-
-              .settings-item .wrapper {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-direction: column;
-                min-height: 100%;
-                width: 100%;
-                position: relative;
-
-                ul {
-                  width: 100%;
-
-                  li {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 100%;
-                    height: 3rem;
-                    margin-bottom: 0.5rem;
-                    border-radius: $medium-radius;
-                    background: $grey-bg;
-                    cursor: pointer;
-
-                    span {
-                      font-size: 14px;
-                      font-weight: 600;
-                      text-align: center;
-                    }
-
-                    &:hover {
-                      background: $dark-grey-bg;
-                    }
-                  }
-
-                  a:last-child li {
-                    margin: 0;
-                  }
-                }
-              }
-            }
-
-            &-item {
-              position: relative;
-              display: inline-block;
-              padding: 0;
-              margin: 0;
-              box-sizing: border-box;
-              width: 100%;
-              height: 100%;
-              vertical-align: top;
-              white-space: normal;
-              line-height: 0;
-
-              * {
-                line-height: initial;
-              }
-
-              &.__hidden {
-                opacity: 0;
-                overflow: hidden;
-              }
-            }
-          }
-        }
-
-        .carousel-button {
-          position: absolute;
-          top: 1.5rem;
-          left: 1.5rem;
+        .toggle-button {
           display: flex;
           justify-content: center;
           align-items: center;
           cursor: pointer;
         }
       }
-    }
 
-    .skeleton-item {
-      display: flex;
-      width: 100%;
-      padding: 1.5rem;
-      border-radius: $medium-radius;
-      position: relative;
-      overflow: hidden;
-      background: $white;
-
-      .skeleton-content {
+      .carousel {
         flex: 1;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+        scroll-behavior: smooth;
+        overflow-x: scroll;
 
-        .skeleton {
-          background: $dark-grey-bg;
-          overflow: hidden;
+        &::-webkit-scrollbar {
+          display: none;
         }
 
-        .skeleton.cog-wheel {
-          width: 1.5rem;
-          height: 1.5rem;
-          border-radius: $large-radius;
+        .carousel-item {
+          height: 100%;
+          min-width: 100%;
+          padding: 0 1.5rem 1.5rem;
         }
 
-        .wrapper {
-          flex: 1;
+        .profile-content {
           display: flex;
-          flex-direction: column;
           justify-content: center;
           align-items: center;
+          flex-direction: column;
 
-          .skeleton.thumbnail {
-            width: 4.5rem;
-            height: 4.5rem;
-            border-radius: $large-radius;
-            margin-bottom: 0.5rem;
+          .wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+
+            .profile-image {
+              min-width: 4.5rem;
+              height: 4.5rem;
+            }
+
+            h4 {
+              text-align: center;
+              overflow: hidden;
+              width: 250px;
+              display: -webkit-box;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+              word-wrap: break-word;
+              margin-bottom: 0.25rem;
+            }
+
+            span {
+              text-align: center;
+              overflow: hidden;
+              width: 250px;
+              display: -webkit-box;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+              word-wrap: break-word;
+            }
           }
 
-          .skeleton.title {
-            width: 250px;
-            height: 24px;
-            margin-bottom: 0.5rem;
-            border-radius: $medium-radius;
-          }
+          a {
+            width: 100%;
 
-          .skeleton.subtitle {
-            width: 250px;
-            height: 20px;
-            border-radius: $medium-radius;
+            button {
+              width: inherit;
+              background: $white;
+
+              &:hover {
+                background: $green;
+                color: $white;
+              }
+            }
           }
         }
 
-        .skeleton.button {
+        .settings {
+          display: flex;
+          align-items: center;
           width: 100%;
-          height: 3rem;
-          border-radius: $medium-radius;
+
+          .wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding-bottom: 1.5rem;
+
+            button {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 100%;
+              height: 3rem;
+              margin-bottom: 0.5rem;
+              border: none;
+              border-radius: $medium-radius;
+              background: $grey-bg;
+              cursor: pointer;
+
+              span,
+              a {
+                font-size: 14px;
+                font-weight: 600;
+                text-align: center;
+                font-family: $font-body;
+
+                &:hover {
+                  color: initial;
+                }
+              }
+
+              &:hover {
+                background: $dark-grey-bg;
+              }
+            }
+
+            button:last-child {
+              margin: 0;
+            }
+          }
         }
+      }
+    }
+  }
+}
+
+.skeleton-item {
+  display: flex;
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: $medium-radius;
+  position: relative;
+  overflow: hidden;
+  background: $white;
+
+  .skeleton-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .skeleton {
+      background: $dark-grey-bg;
+      overflow: hidden;
+    }
+
+    .skeleton.cog-wheel {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: $large-radius;
+    }
+
+    .wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding-top: 1.5rem;
+
+      .skeleton.thumbnail {
+        width: 4.5rem;
+        height: 4.5rem;
+        border-radius: $large-radius;
+        margin-bottom: 0.5rem;
       }
 
-      /* animation effects */
-      .shimmer-wrapper {
-        position: absolute;
-        /* parent must be relative position & overflow hidden */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        animation: loading 2.5s infinite;
+      .skeleton.title {
+        width: 250px;
+        height: 24px;
+        margin-bottom: 0.5rem;
+        border-radius: $medium-radius;
       }
 
-      .shimmer {
-        width: 50%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.2);
-        transform: skewX(-20deg);
-        box-shadow: 0 0 30px 30px rgba(255, 255, 255, 0.2);
+      .skeleton.subtitle {
+        width: 250px;
+        height: 20px;
+        border-radius: $medium-radius;
       }
+    }
 
-      @keyframes loading {
-        0% {
-          transform: translateX(-150%);
-        }
-        50% {
-          transform: translateX(-60%);
-        }
-        100% {
-          transform: translateX(150%);
-        }
-      }
+    .skeleton.button {
+      width: 100%;
+      height: 3rem;
+      border-radius: $medium-radius;
+    }
+  }
+
+  /* animation effects */
+  .shimmer-wrapper {
+    position: absolute;
+    /* parent must be relative position & overflow hidden */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    animation: loading 2.5s infinite;
+  }
+
+  .shimmer {
+    width: 50%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: skewX(-20deg);
+    box-shadow: 0 0 30px 30px rgba(255, 255, 255, 0.2);
+  }
+
+  @keyframes loading {
+    0% {
+      transform: translateX(-150%);
+    }
+    50% {
+      transform: translateX(-60%);
+    }
+    100% {
+      transform: translateX(150%);
     }
   }
 }
@@ -311,45 +269,33 @@
       grid-template-columns: repeat(2, 1fr);
       grid-auto-rows: minmax(100px, 300px);
 
-      .profile-item .carousel {
-        .alice-carousel {
-          .alice-carousel__wrapper .alice-carousel__stage {
-            height: 300px;
+      .profile-item {
+        .toggle-button-wrapper {
+          display: flex;
+          padding: 1rem 1rem 0;
 
-            li .carousel-item {
-              padding: 1rem;
-
-              li.success-hover:hover {
-                border: 1px solid $green;
-                background: $light-green;
-
-                &:hover {
-                  background: $light-green;
-                }
-              }
-
-              li.danger-hover:hover {
-                border: 1px solid $red;
-                background: $light-red;
-
-                &:hover {
-                  background: $light-red;
-                }
-              }
-              // .wrapper .settings {
-              // }
-            }
-          }
-
-          .alice-carousel__prev-btn {
-            top: 1rem;
-            left: 1rem;
+          .toggle-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
           }
         }
 
-        .carousel-button {
-          top: 1rem;
-          left: 1rem;
+        .carousel {
+          .carousel-item {
+            padding: 0 1rem 1rem;
+
+            button.success-hover:hover {
+              border: 1px solid $green;
+              background: $light-green;
+            }
+
+            button.danger-hover:hover {
+              border: 1px solid $red;
+              background: $light-red;
+            }
+          }
         }
       }
 
@@ -364,20 +310,13 @@
   .profiles .grid {
     grid-auto-rows: minmax(100px, 350px);
 
-    .profile-item .carousel {
-      .alice-carousel {
-        .alice-carousel__wrapper .alice-carousel__stage {
-          height: 350px;
-
-          li .carousel-item {
-            padding: 1.5rem;
-          }
-        }
+    .profile-item {
+      .toggle-button-wrapper {
+        padding: 1.5rem 1.5rem 0;
       }
 
-      .carousel-button {
-        top: 1.5rem;
-        left: 1.5rem;
+      .carousel .carousel-item {
+        padding: 0 1.5rem 1.5rem;
       }
     }
 

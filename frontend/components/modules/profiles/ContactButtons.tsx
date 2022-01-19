@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { useLazyQuery } from "@apollo/client";
 import { CONTACT_STATUS } from "@operations-queries/contactStatus";
@@ -7,7 +7,6 @@ import { CONTACT_STATUS as STATUS_ENUM } from "generated/globalTypes";
 import AddContact from "./AddContact";
 import DeleteContact from "./DeleteContact";
 import PendingContact from "./PendingContact";
-import { useRouter } from "next/router";
 
 interface IProps {
   id: string;
@@ -47,11 +46,9 @@ const ContactButtons = ({ id, isVisible, isAuth, username }: IProps) => {
           query: { redirect: `/profile/${username}` },
         }}
       >
-        <a>
-          <li className="success-hover">
-            <span>Add Person</span>
-          </li>
-        </a>
+        <button className="success-hover">
+          <a>Add Person</a>
+        </button>
       </Link>
     );
   }
@@ -71,10 +68,10 @@ const ContactButtons = ({ id, isVisible, isAuth, username }: IProps) => {
       return <AddContact id={id} />;
     default:
       return (
-        <li>
+        <button>
           {loading && <span>Loading...</span>}
           {error && <span>Error...</span>}
-        </li>
+        </button>
       );
   }
 };

@@ -80,7 +80,7 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
 
   useEffect(() => {
     if (data) {
-      toastState.addToast("Contact deleted", ErrorStatus.success);
+      toastState.addToast("Contact deleted", ErrorStatus.danger);
     }
     if (error) {
       toastState.addToast(error, ErrorStatus.danger);

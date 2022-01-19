@@ -17,6 +17,7 @@
     overflow-x: scroll;
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+    scroll-behavior: smooth;
 
     &::-webkit-scrollbar {
       display: none;
@@ -259,7 +260,16 @@
   .settings-page .settings-profile {
     .wrapper {
       display: flex;
-      gap: 1.5rem;
+
+      .input-group:first-child,
+      .dropdown:first-child {
+        margin-right: 0.75rem;
+      }
+
+      .input-group:last-child,
+      .dropdown:last-child {
+        margin-left: 0.75rem;
+      }
 
       .input-group,
       .dropdown {

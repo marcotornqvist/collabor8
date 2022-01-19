@@ -16,23 +16,19 @@ const ReportButton = ({ id, isAuth }: IProps) => {
             query: { redirect: `/report/user/${id}` },
           }}
         >
-          <a>
-            <li className="danger-hover">
-              <div className="inner-div">
-                <span>Report User</span>
-              </div>
-            </li>
-          </a>
+          <button className="danger-hover">
+            <div className="inner-div">
+              <a>Report User</a>
+            </div>
+          </button>
         </Link>
       ) : (
         <Link href={`/report/user/${id}`}>
-          <a>
-            <li className="danger-hover">
-              <div className="inner-div">
-                <span>Report User</span>
-              </div>
-            </li>
-          </a>
+          <button className="danger-hover">
+            <div className="inner-div">
+              <a>Report User</a>
+            </div>
+          </button>
         </Link>
       )}
     </>

@@ -40,7 +40,7 @@ const AddContact = ({ id }: IProps) => {
   }, [data, error]);
 
   return (
-    <li
+    <button
       onClick={() => {
         setError("");
         addContact();
@@ -48,7 +48,7 @@ const AddContact = ({ id }: IProps) => {
       className="success-hover"
     >
       <span>Add Person</span>
-    </li>
+    </button>
   );
 };
 
