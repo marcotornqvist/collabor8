@@ -66,9 +66,10 @@
           .wrapper {
             flex: 1;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             flex-direction: column;
+            padding-top: 2rem;
 
             .profile-image {
               min-width: 4.5rem;
@@ -183,19 +184,21 @@
       overflow: hidden;
     }
 
-    .skeleton.cog-wheel {
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: $large-radius;
+    .top-bar {
+      .skeleton.cog-wheel {
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: $large-radius;
+      }
     }
 
     .wrapper {
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
-      padding-top: 1.7rem;
+      padding-top: 2rem;
 
       .skeleton.thumbnail {
         width: 4.5rem;

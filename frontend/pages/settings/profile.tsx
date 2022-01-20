@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import { UploadFile } from "@components-pages/settings/profile/UploadFile";
 import { GET_PROFILE_IMAGE } from "@operations-queries/getLoggedInProfile";
 import { loggedInProfileImage } from "generated/loggedInProfileImage";

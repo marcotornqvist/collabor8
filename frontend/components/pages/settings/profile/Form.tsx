@@ -1,5 +1,5 @@
-import { FormEvent, useEffect, useState } from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import { useState } from "react";
+import { useMutation, useQuery } from "@apollo/client";
 import { GET_LOGGED_IN_PROFILE } from "@operations-queries/getLoggedInProfile";
 import { loggedInProfile } from "generated/loggedInProfile";
 import { UPDATE_PROFILE } from "@operations-mutations/updateProfile";
@@ -7,6 +7,7 @@ import { updateProfile, updateProfileVariables } from "generated/updateProfile";
 import { toastState } from "store";
 import { ErrorStatus } from "@types-enums/enums";
 import { IDiscipline } from "@types-interfaces/form";
+import { Formik } from "formik";
 import input from "@styles-modules/Input.module.scss";
 import button from "@styles-modules/Button.module.scss";
 import CountriesDropdown from "./CountriesDropdown";
@@ -18,47 +19,23 @@ interface Errors {
   bio?: string;
 }
 
+interface IForm {
+  firstName: string;
+  lastName: string;
+  country: string;
+  discipline: IDiscipline | null;
+  bio: string;
+}
+
 const Form = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [country, setCountry] = useState<string | null>(null);
-  const [discipline, setDiscipline] = useState<IDiscipline | null>(null);
-  const [bio, setBio] = useState("");
   const [errors, setErrors] = useState<Errors>({});
 
-  const { data } = useQuery<loggedInProfile>(GET_LOGGED_IN_PROFILE);
+  const { data, loading } = useQuery<loggedInProfile>(GET_LOGGED_IN_PROFILE);
 
-  useEffect(() => {
-    if (data?.loggedInProfile) {
-      const { firstName, lastName, country, bio, discipline } =
-        data.loggedInProfile;
-
-      setFirstName(firstName || "");
-      setLastName(lastName || "");
-      setCountry(country || "");
-      // Checks if logged in profile returns a discipline, either discipline stays null
-      discipline &&
-        setDiscipline({
-          id: discipline.id,
-          title: discipline.title,
-        });
-      setBio(bio || "");
-    }
-  }, [data]);
-
-  // Remember to update cache
   const [updateProfile] = useMutation<updateProfile, updateProfileVariables>(
     UPDATE_PROFILE,
     {
-      variables: {
-        data: {
-          firstName,
-          lastName,
-          country,
-          disciplineId: discipline?.id,
-          bio,
-        },
-      },
+      // Update the cache profile values off the loggedInProfile
       update(cache, { data }) {
         if (data?.updateProfile) {
           cache.writeQuery<loggedInProfile>({
@@ -73,72 +50,126 @@ const Form = () => {
     }
   );
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleUpdateProfile = async (values: IForm) => {
     setErrors({});
-    const { data } = await updateProfile();
-    data && toastState.addToast("Profile settings saved", ErrorStatus.success);
+
+    const { firstName, lastName, country, discipline, bio } = values;
+
+    const { data } = await updateProfile({
+      variables: {
+        data: {
+          firstName,
+          lastName,
+          country,
+          disciplineId: discipline?.id,
+          bio,
+        },
+      },
+    });
+    data &&
+      toastState.addToast("Profile updated successfully", ErrorStatus.success);
+  };
+
+  const initialValues: IForm = {
+    firstName: data?.loggedInProfile?.firstName || "",
+    lastName: data?.loggedInProfile?.lastName || "",
+    country: data?.loggedInProfile?.country || "",
+    discipline: data?.loggedInProfile?.discipline || null,
+    bio: data?.loggedInProfile?.bio || "",
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="wrapper">
-        <div className="input-group">
-          <div className="input-text">
-            <label htmlFor="firstName">First Name</label>
-            {errors.firstName && (
-              <span className="error-message">{errors.firstName}</span>
-            )}
-          </div>
-          <input
-            className={input.default}
-            value={firstName}
-            placeholder="Your first name"
-            onChange={(e) => setFirstName(e.target.value)}
-            autoComplete="on"
-          />
-        </div>
-        <div className="input-group">
-          <div className="input-text">
-            <label htmlFor="lastName">Last Name</label>
-            {errors.lastName && <span>{errors.lastName}</span>}
-          </div>
-          <input
-            className={input.default}
-            value={lastName}
-            placeholder="Your last name"
-            onChange={(e) => setLastName(e.target.value)}
-            autoComplete="on"
-          />
-        </div>
-      </div>
-      <div className="wrapper">
-        <CountriesDropdown
-          selected={country}
-          setCountry={(country) => setCountry(country)}
-        />
-        <DisciplinesDropdown
-          discipline={discipline}
-          setDiscipline={(discipline) => setDiscipline(discipline)}
-        />
-      </div>
-      <div className="input-group">
-        <div className="input-text">
-          <label htmlFor="bio">Bio</label>
-          {errors.bio && <span>{errors.bio}</span>}
-        </div>
-        <textarea
-          className={input.textarea}
-          value={bio}
-          placeholder="Write a bio"
-          onChange={(e) => setBio(e.target.value)}
-          autoComplete="on"
-        />
-      </div>
-      <button type="submit" className={`${button.lightGreen} submit-btn`}>
-        Save Settings
-      </button>
-    </form>
+    <>
+      {!loading && (
+        <Formik
+          enableReinitialize
+          initialValues={initialValues}
+          onSubmit={(values) => handleUpdateProfile(values)}
+        >
+          {({
+            values,
+            setFieldValue,
+            handleChange,
+            handleSubmit,
+            isSubmitting,
+          }) => (
+            <form onSubmit={handleSubmit}>
+              {console.log(values)}
+              <div className="wrapper">
+                <div className="input-group">
+                  <div className="input-text">
+                    <label htmlFor="firstName">First Name</label>
+                    {errors.firstName && (
+                      <span className="error-message">{errors.firstName}</span>
+                    )}
+                  </div>
+                  <input
+                    id="firstName"
+                    name="firstName"
+                    type="text"
+                    className={input.default}
+                    value={values.firstName}
+                    onChange={handleChange}
+                    placeholder={!loading ? "Your first name" : ""}
+                    autoComplete="on"
+                  />
+                </div>
+                <div className="input-group">
+                  <div className="input-text">
+                    <label htmlFor="lastName">Last Name</label>
+                    {errors.lastName && <span>{errors.lastName}</span>}
+                  </div>
+                  <input
+                    id="lastName"
+                    name="lastName"
+                    value={values.lastName}
+                    onChange={handleChange}
+                    className={input.default}
+                    placeholder={!loading ? "Your last name" : ""}
+                    autoComplete="on"
+                  />
+                </div>
+              </div>
+              <div className="wrapper">
+                <CountriesDropdown
+                  selected={values.country}
+                  setFieldValue={setFieldValue}
+                  loading={loading}
+                />
+                <DisciplinesDropdown
+                  setFieldValue={setFieldValue}
+                  discipline={values.discipline}
+                  loading={loading}
+                />
+              </div>
+              <div className="input-group">
+                <div className="input-text">
+                  <label htmlFor="bio">Bio</label>
+                  {errors.bio && <span>{errors.bio}</span>}
+                </div>
+                <textarea
+                  id="bio"
+                  name="bio"
+                  value={values.bio}
+                  onChange={handleChange}
+                  className={input.textarea}
+                  placeholder={!loading ? "Write a bio" : ""}
+                  autoComplete="on"
+                />
+              </div>
+              <button
+                type="submit"
+                className={`${
+                  isSubmitting ? button.green : button.lightGreen
+                } submit-btn`}
+              >
+                {isSubmitting ? "Submitting..." : "Save Settings"}
+              </button>
+            </form>
+          )}
+        </Formik>
+      )}
+    </>
   );
 };
 

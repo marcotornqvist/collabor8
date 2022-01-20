@@ -46,7 +46,7 @@ const DeleteModal = ({ show, onClose }: IProps) => {
         data: {
           loggedInProfile: {
             __typename: "Profile",
-            profileImage: data?.deleteImage.profileImage ?? null,
+            profileImage: data?.deleteImage.profileImage || null,
           },
         },
       });

@@ -69,12 +69,14 @@
   color: $red;
 }
 
-.lightGreen:hover {
-  color: $white;
-  background: $green;
-}
+@media only screen and (min-width: $breakpoint-md) {
+  .lightGreen:hover {
+    color: $white;
+    background: $green;
+  }
 
-.lightRed:hover {
-  color: $white;
-  background: $red;
+  .lightRed:hover {
+    color: $white;
+    background: $red;
+  }
 }

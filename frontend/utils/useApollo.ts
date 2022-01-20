@@ -27,7 +27,6 @@ const refreshLink = new TokenRefreshLink({
 
     try {
       const { exp }: JwtPayload = jwtDecode(accessToken);
-      console.log(exp);
       if (Date.now() >= (exp || 0) * 1000) {
         return false;
       } else {
@@ -124,7 +123,9 @@ export function initializeApollo(initialState = null) {
   return apolloClient;
 }
 
-export function useApollo(initialState: any): ApolloClient<NormalizedCacheObject | null> {
+export function useApollo(
+  initialState: any
+): ApolloClient<NormalizedCacheObject | null> {
   const store = useMemo(() => initializeApollo(initialState), [initialState]);
   return store;
 }

@@ -4,7 +4,9 @@ const ProfileSkeleton = () => {
   return (
     <div className="skeleton-item">
       <div className="skeleton-content">
-        <div className="skeleton cog-wheel"></div>
+        <div className="top-bar">
+          <div className="skeleton cog-wheel"></div>
+        </div>
         <div className="wrapper">
           <div className="skeleton thumbnail"></div>
           <div className="skeleton title"></div>

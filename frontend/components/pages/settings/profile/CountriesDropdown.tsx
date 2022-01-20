@@ -7,11 +7,6 @@ import Image from "next/image";
 import useWindowSize from "@hooks/useWindowSize";
 import dropdown from "@styles-modules/Dropdown.module.scss";
 
-interface IProps {
-  selected?: string | null;
-  setCountry: (country: string | null) => void;
-}
-
 const mobileVariants = {
   visible: {
     opacity: 1,
@@ -46,7 +41,17 @@ const desktopVariants = {
   },
 };
 
-const CountriesDropdown = ({ selected, setCountry }: IProps) => {
+interface IProps {
+  setFieldValue: (
+    field: "country",
+    value: string | null,
+    shouldValidate?: boolean | undefined
+  ) => void;
+  selected: string;
+  loading: boolean;
+}
+
+const CountriesDropdown = ({ setFieldValue, selected, loading }: IProps) => {
   const [show, setShow] = useState(false);
   const { data } = useQuery<countries>(GET_COUNTRIES);
 
@@ -70,11 +75,9 @@ const CountriesDropdown = ({ selected, setCountry }: IProps) => {
         <label htmlFor="country">Country</label>
       </div>
       <div onClick={() => setShow(!show)} className="show-dropdown-menu-btn">
-        {selected ? (
-          <span>{selected}</span>
-        ) : (
-          <span className="placeholder">Select Country</span>
-        )}
+        <span className={selected ? "default-text" : "placeholder"}>
+          {!loading ? (selected ? selected : "Selected Country") : ""}
+        </span>
         <motion.div
           className="icon-container"
           initial="hidden"
@@ -108,7 +111,7 @@ const CountriesDropdown = ({ selected, setCountry }: IProps) => {
               <li
                 ref={!selected ? activeRef : null}
                 onClick={() => {
-                  setCountry(null);
+                  setFieldValue("country", null);
                   setShow(false);
                 }}
                 className={`list-item${!selected ? " active" : ""}`}
@@ -123,7 +126,7 @@ const CountriesDropdown = ({ selected, setCountry }: IProps) => {
                     selected === item.country ? " active" : ""
                   }`}
                   onClick={() => {
-                    setCountry(item.country);
+                    setFieldValue("country", item.country);
                     setShow(false);
                   }}
                 >
@@ -133,7 +136,7 @@ const CountriesDropdown = ({ selected, setCountry }: IProps) => {
               {data.countries && data.countries.length > 50 && (
                 <li
                   onClick={() => {
-                    setCountry(null);
+                    setFieldValue("country", null);
                     setShow(false);
                   }}
                   className="list-item"

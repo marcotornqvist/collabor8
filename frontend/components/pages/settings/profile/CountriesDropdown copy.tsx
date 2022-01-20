@@ -1,12 +1,17 @@
 import { RefObject, useEffect, useRef, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_DISCIPLINES } from "@operations-queries/disciplines";
-import { disciplines } from "generated/disciplines";
+import { GET_COUNTRIES } from "@operations-queries/countries";
+import { countries } from "generated/countries";
 import { AnimatePresence, motion } from "framer-motion";
-import { IDiscipline } from "@types-interfaces/form";
 import Image from "next/image";
 import useWindowSize from "@hooks/useWindowSize";
 import dropdown from "@styles-modules/Dropdown.module.scss";
+
+interface IProps {
+  selected?: string | null;
+  setCountry: (country: string | null) => void;
+  loading: boolean;
+}
 
 const mobileVariants = {
   visible: {
@@ -42,23 +47,9 @@ const desktopVariants = {
   },
 };
 
-interface IProps {
-  setFieldValue: (
-    field: "discipline",
-    value: IDiscipline | null,
-    shouldValidate?: boolean | undefined
-  ) => void;
-  discipline: IDiscipline | null;
-  loading: boolean;
-}
-
-const DisciplinesDropdown = ({
-  setFieldValue,
-  discipline,
-  loading,
-}: IProps) => {
+const CountriesDropdown = ({ selected, setCountry, loading }: IProps) => {
   const [show, setShow] = useState(false);
-  const { data } = useQuery<disciplines>(GET_DISCIPLINES);
+  const { data } = useQuery<countries>(GET_COUNTRIES);
 
   const { width } = useWindowSize();
 
@@ -75,13 +66,13 @@ const DisciplinesDropdown = ({
   }, [show]);
 
   return (
-    <div className={`dropdown ${dropdown.default}${show ? " active" : ""}`}>
+    <div className={`dropdown ${dropdown.default} ${show ? " active" : ""}`}>
       <div className="label-text">
-        <label htmlFor="discipline">Discipline</label>
+        <label htmlFor="country">Country</label>
       </div>
       <div onClick={() => setShow(!show)} className="show-dropdown-menu-btn">
-        <span className={discipline ? "default-text" : "placeholder"}>
-          {!loading ? (discipline ? discipline.title : "Selected Country") : ""}
+        <span className={selected ? "default-text" : "placeholder"}>
+          {!loading ? (selected ? selected : "Selected Country") : ""}
         </span>
         <motion.div
           className="icon-container"
@@ -108,40 +99,40 @@ const DisciplinesDropdown = ({
           >
             <div className="header-bar" onClick={() => setShow(false)}>
               <span className="selected-title">
-                {discipline ? discipline.title : "Select Discipline"}
+                {selected ? selected : "Select Country"}
               </span>
               <span className="close-btn">Close</span>
             </div>
             <ul className="dropdown-list">
               <li
-                ref={!discipline ? activeRef : null}
+                ref={!selected ? activeRef : null}
                 onClick={() => {
-                  setFieldValue("discipline", null);
+                  setCountry(null);
                   setShow(false);
                 }}
-                className={`list-item${!discipline ? " active" : ""}`}
+                className={`list-item${!selected ? " active" : ""}`}
               >
                 <span>No Selection</span>
               </li>
-              {data?.disciplines?.map((item) => (
+              {data?.countries?.map((item) => (
                 <li
-                  ref={discipline?.id === item.id ? activeRef : null}
-                  key={item.id}
+                  ref={selected === item.country ? activeRef : null}
+                  key={item.key}
                   className={`list-item${
-                    discipline?.id === item.id ? " active" : ""
+                    selected === item.country ? " active" : ""
                   }`}
                   onClick={() => {
-                    setFieldValue("discipline", item);
+                    setCountry(item.country);
                     setShow(false);
                   }}
                 >
-                  <span>{item.title}</span>
+                  <span>{item.country}</span>
                 </li>
               ))}
-              {data.disciplines && data.disciplines.length > 50 && (
+              {data.countries && data.countries.length > 50 && (
                 <li
                   onClick={() => {
-                    setFieldValue("discipline", null);
+                    setCountry(null);
                     setShow(false);
                   }}
                   className="list-item"
@@ -157,4 +148,4 @@ const DisciplinesDropdown = ({
   );
 };
 
-export default DisciplinesDropdown;
+export default CountriesDropdown;
