@@ -6,6 +6,7 @@ import { authState, navigationState } from "store";
 import { useSnapshot } from "valtio";
 import useWindowSize from "@hooks/useWindowSize";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/router";
 
 const variants = {
   visible: {
@@ -25,6 +26,7 @@ const variants = {
 };
 
 const Menu = () => {
+  const { pathname } = useRouter();
   const { menuOpen } = useSnapshot(navigationState);
   const { isAuth } = useSnapshot(authState);
   const { width } = useWindowSize();
@@ -55,7 +57,12 @@ const Menu = () => {
             {isAuth && (
               <>
                 <Link href="/notifications">
-                  <li onClick={() => closeMenu()}>
+                  <li
+                    onClick={() => closeMenu()}
+                    className={`list-item${
+                      pathname === "/notifications" ? " active" : ""
+                    }`}
+                  >
                     <a>Notifications</a>
                     <Image
                       src="/icons/chevron-right-solid.svg"
@@ -66,7 +73,12 @@ const Menu = () => {
                   </li>
                 </Link>
                 <Link href="/chat">
-                  <li onClick={() => closeMenu()}>
+                  <li
+                    onClick={() => closeMenu()}
+                    className={`list-item${
+                      pathname === "/chat" ? " active" : ""
+                    }`}
+                  >
                     <a>Chat</a>
                     <Image
                       src="/icons/chevron-right-solid.svg"
@@ -79,7 +91,12 @@ const Menu = () => {
               </>
             )}
             <Link href="/profiles">
-              <li onClick={() => closeMenu()}>
+              <li
+                onClick={() => closeMenu()}
+                className={`list-item${
+                  pathname === "/profiles" ? " active" : ""
+                }`}
+              >
                 <a>Browse Profiles</a>
                 <Image
                   src="/icons/chevron-right-solid.svg"
@@ -90,7 +107,12 @@ const Menu = () => {
               </li>
             </Link>
             <Link href="/projects">
-              <li onClick={() => closeMenu()}>
+              <li
+                onClick={() => closeMenu()}
+                className={`list-item${
+                  pathname === "/projects" ? " active" : ""
+                }`}
+              >
                 <a>Browse Projects</a>
                 <Image
                   src="/icons/chevron-right-solid.svg"
@@ -103,7 +125,12 @@ const Menu = () => {
             {isAuth ? (
               <>
                 <Link href="/my-profile">
-                  <li onClick={() => closeMenu()}>
+                  <li
+                    onClick={() => closeMenu()}
+                    className={`list-item${
+                      pathname === "/my-profile" ? " active" : ""
+                    }`}
+                  >
                     <a>My Profile</a>
                     <Image
                       src="/icons/chevron-right-solid.svg"
@@ -114,7 +141,12 @@ const Menu = () => {
                   </li>
                 </Link>
                 <Link href="/settings/profile">
-                  <li onClick={() => closeMenu()}>
+                  <li
+                    onClick={() => closeMenu()}
+                    className={`list-item${
+                      pathname === "/settings/profile" ? " active" : ""
+                    }`}
+                  >
                     <a>Profile Settings</a>
                     <Image
                       src="/icons/chevron-right-solid.svg"
@@ -125,7 +157,12 @@ const Menu = () => {
                   </li>
                 </Link>
                 <Link href="/settings/account">
-                  <li onClick={() => closeMenu()}>
+                  <li
+                    onClick={() => closeMenu()}
+                    className={`list-item${
+                      pathname === "/settings/account" ? " active" : ""
+                    }`}
+                  >
                     <a>Account Settings</a>
                     <Image
                       src="/icons/chevron-right-solid.svg"
@@ -136,7 +173,12 @@ const Menu = () => {
                   </li>
                 </Link>
                 <Link href="/settings/socials">
-                  <li onClick={() => closeMenu()}>
+                  <li
+                    onClick={() => closeMenu()}
+                    className={`list-item${
+                      pathname === "/settings/socials" ? " active" : ""
+                    }`}
+                  >
                     <a>Social Accounts</a>
                     <Image
                       src="/icons/chevron-right-solid.svg"
@@ -153,7 +195,12 @@ const Menu = () => {
             ) : (
               <>
                 <Link href="/register">
-                  <li onClick={() => closeMenu()}>
+                  <li
+                    onClick={() => closeMenu()}
+                    className={`list-item${
+                      pathname === "/register" ? " active" : ""
+                    }`}
+                  >
                     <a>Create Account</a>
                     <Image
                       src="/icons/chevron-right-solid.svg"
@@ -164,7 +211,12 @@ const Menu = () => {
                   </li>
                 </Link>
                 <Link href="/login">
-                  <li onClick={() => closeMenu()}>
+                  <li
+                    onClick={() => closeMenu()}
+                    className={`list-item${
+                      pathname === "/login" ? " active" : ""
+                    }`}
+                  >
                     <a>Sign In</a>
                     <Image
                       src="/icons/chevron-right-solid.svg"

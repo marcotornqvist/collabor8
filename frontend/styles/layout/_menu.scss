@@ -10,7 +10,7 @@
   width: 100%;
   height: calc(100vh - 80px);
   overflow: scroll;
-  z-index: $z-index2;
+  z-index: $z-index3;
   background: $white;
   padding-bottom: 8rem;
 
@@ -30,6 +30,15 @@
         font-size: 1.125rem;
         font-weight: 400;
         font-family: $font-body;
+      }
+
+      &.active {
+        background: $light-green;
+
+        a,
+        span {
+          color: $green;
+        }
       }
 
       &:last-child {

@@ -3,18 +3,14 @@ import { useQuery } from "@apollo/client";
 import { GET_DISCIPLINES } from "@operations-queries/disciplines";
 import { disciplines } from "generated/disciplines";
 import { AnimatePresence, motion } from "framer-motion";
+import { IDiscipline } from "@types-interfaces/form";
 import Image from "next/image";
 import useWindowSize from "@hooks/useWindowSize";
 import dropdown from "@styles-modules/Dropdown.module.scss";
 
-interface IDiscipline {
-  id: number | null;
-  title: string | null;
-}
-
 interface IProps {
-  discipline?: IDiscipline;
-  setDiscipline: (discipline: IDiscipline) => void;
+  discipline: IDiscipline | null;
+  setDiscipline: (discipline: IDiscipline | null) => void;
 }
 
 const mobileVariants = {
@@ -113,7 +109,7 @@ const DisciplinesDropdown = ({ discipline, setDiscipline }: IProps) => {
               <li
                 ref={!discipline?.id ? activeRef : null}
                 onClick={() => {
-                  setDiscipline({ id: null, title: null });
+                  setDiscipline(null);
                   setShow(false);
                 }}
                 className={`list-item${!discipline?.id ? " active" : ""}`}
@@ -138,7 +134,7 @@ const DisciplinesDropdown = ({ discipline, setDiscipline }: IProps) => {
               {data.disciplines && data.disciplines.length > 50 && (
                 <li
                   onClick={() => {
-                    setDiscipline({ id: null, title: null });
+                    setDiscipline(null);
                     setShow(false);
                   }}
                   className="list-item"

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { users_users } from "generated/users";
 import useWindowSize from "@hooks/useWindowSize";
 import Image from "next/image";
@@ -19,7 +19,7 @@ const ProfileItem = ({ item }: IProps) => {
 
   const carouselRef: any = useRef<HTMLDivElement>(null);
   const contentRef: any = useRef<HTMLDivElement>(null);
-  const settingsRef: any = useRef<HTMLDivElement>(null);
+  const settingsRef: any = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowSize();
 
   useEffect(() => {
@@ -32,14 +32,14 @@ const ProfileItem = ({ item }: IProps) => {
 
   const handleToggle = () => {
     carouselRef.current.scroll({
-      left: toggle ? -24 : 1000,
+      left: toggle ? -24 : 10000,
       behavior: "smooth",
     });
 
     setToggle(!toggle);
   };
 
-  const disableScroll = () => {
+  useEffect(() => {
     carouselRef.current.addEventListener(
       "wheel",
       function (e: any) {
@@ -51,7 +51,7 @@ const ProfileItem = ({ item }: IProps) => {
       },
       { passive: false }
     );
-  };
+  }, []);
 
   return (
     <div className="profile-item">
@@ -65,7 +65,7 @@ const ProfileItem = ({ item }: IProps) => {
           />
         </div>
       </div>
-      <div className="carousel" ref={carouselRef} onScroll={disableScroll}>
+      <div className="carousel" ref={carouselRef}>
         <div className="profile-content carousel-item" ref={contentRef}>
           <div className="wrapper">
             <ProfileImage profileImage={profile?.profileImage} />

@@ -7,12 +7,9 @@ import SettingsLayout from "@components-pages/settings/SettingsLayout";
 import DeleteImage from "@components-pages/settings/profile/DeleteImage";
 import ProfileImage from "@components-modules/global/ProfileImage";
 import Form from "@components-pages/settings/profile/Form";
-// import useWindowSize from "@hooks/useWindowSize";
 
 const Profile = () => {
   const { data } = useQuery<loggedInProfileImage>(GET_PROFILE_IMAGE);
-
-  // const { width } = useWindowSize();
 
   return (
     <div className="settings-profile">

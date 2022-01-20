@@ -6,7 +6,11 @@ export const UPDATE_PROFILE = gql`
       firstName
       lastName
       country
-      disciplineId
+      # disciplineId
+      discipline {
+        id
+        title
+      }
       bio
     }
   }

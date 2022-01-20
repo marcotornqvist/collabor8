@@ -9,12 +9,18 @@ import { UpdateProfileInput } from "./globalTypes";
 // GraphQL mutation operation: updateProfile
 // ====================================================
 
+export interface updateProfile_updateProfile_discipline {
+  __typename: "Discipline";
+  id: number;
+  title: string;
+}
+
 export interface updateProfile_updateProfile {
   __typename: "Profile";
   firstName: string | null;
   lastName: string | null;
   country: string | null;
-  disciplineId: number | null;
+  discipline: updateProfile_updateProfile_discipline | null;
   bio: string | null;
 }
 

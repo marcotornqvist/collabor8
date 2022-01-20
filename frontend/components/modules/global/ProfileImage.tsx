@@ -32,30 +32,28 @@ const ProfileImage = ({ size = 40, profileImage, priority = false }: Props) => {
 
   return (
     <div className={`profile-image ${image.profile}`}>
-      <AnimatePresence>
-        {!error && profileImage && (
-          <motion.div
-            className="image-container"
-            animate={imageLoaded ? "visible" : "hidden"}
-            variants={variants}
-          >
-            <Image
-              onLoadingComplete={(e) => {
-                setImageLoaded(true);
-              }}
-              onError={(e) => {
-                setError(true);
-              }}
-              src={profileImage}
-              alt="profile image"
-              layout="fill"
-              objectFit="cover"
-              className="profile"
-              priority={priority ? true : false}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {!error && profileImage && (
+        <motion.div
+          className="image-container"
+          animate={imageLoaded ? "visible" : "hidden"}
+          variants={variants}
+        >
+          <Image
+            onLoadingComplete={(e) => {
+              setImageLoaded(true);
+            }}
+            onError={(e) => {
+              setError(true);
+            }}
+            src={profileImage}
+            alt="profile image"
+            layout="fill"
+            objectFit="cover"
+            className="profile"
+            priority={priority ? true : false}
+          />
+        </motion.div>
+      )}
       <AnimatePresence>
         {(profileImage === null || error) && (
           <motion.div

@@ -6,6 +6,7 @@ import { UPDATE_PROFILE } from "@operations-mutations/updateProfile";
 import { updateProfile, updateProfileVariables } from "generated/updateProfile";
 import { toastState } from "store";
 import { ErrorStatus } from "@types-enums/enums";
+import { IDiscipline } from "@types-interfaces/form";
 import input from "@styles-modules/Input.module.scss";
 import button from "@styles-modules/Button.module.scss";
 import CountriesDropdown from "./CountriesDropdown";
@@ -17,16 +18,11 @@ interface Errors {
   bio?: string;
 }
 
-interface IDiscipline {
-  id: number | null;
-  title: string | null;
-}
-
 const Form = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [country, setCountry] = useState<string | null>("");
-  const [discipline, setDiscipline] = useState<IDiscipline>();
+  const [country, setCountry] = useState<string | null>(null);
+  const [discipline, setDiscipline] = useState<IDiscipline | null>(null);
   const [bio, setBio] = useState("");
   const [errors, setErrors] = useState<Errors>({});
 
@@ -40,10 +36,12 @@ const Form = () => {
       setFirstName(firstName || "");
       setLastName(lastName || "");
       setCountry(country || "");
-      setDiscipline({
-        id: discipline?.id || null,
-        title: discipline?.title || null,
-      });
+      // Checks if logged in profile returns a discipline, either discipline stays null
+      discipline &&
+        setDiscipline({
+          id: discipline.id,
+          title: discipline.title,
+        });
       setBio(bio || "");
     }
   }, [data]);
@@ -60,6 +58,16 @@ const Form = () => {
           disciplineId: discipline?.id,
           bio,
         },
+      },
+      update(cache, { data }) {
+        if (data?.updateProfile) {
+          cache.writeQuery<loggedInProfile>({
+            query: GET_LOGGED_IN_PROFILE,
+            data: {
+              loggedInProfile: data.updateProfile,
+            },
+          });
+        }
       },
       onError: (error) => setErrors(error.graphQLErrors[0].extensions?.errors),
     }
