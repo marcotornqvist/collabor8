@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
 import { useMutation } from "@apollo/client";
 import { DELETE_CONTACT } from "@operations-mutations/deleteContact";
@@ -62,7 +62,7 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
     setIsBrowser(true);
   }, []);
 
-  const handleCloseClick = (e: any) => {
+  const handleCloseClick = (e: MouseEvent<HTMLDivElement> | Event) => {
     e.preventDefault();
     onClose();
   };

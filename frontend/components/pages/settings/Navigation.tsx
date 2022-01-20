@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, RefObject } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import("scroll-behavior-polyfill");
@@ -8,11 +8,11 @@ const Navigation = () => {
   const pathname = router.pathname.split("/");
   const currentPath = pathname[pathname.length - 1];
 
-  const activeRef: any = useRef<HTMLLIElement>(null);
-  const listRef: any = useRef<HTMLUListElement>(null);
+  const activeRef: RefObject<HTMLLIElement> = useRef<HTMLLIElement>(null);
+  const listRef: RefObject<HTMLUListElement> = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
-    if (activeRef.current) {
+    if (activeRef.current && listRef.current) {
       const x: number = activeRef.current.offsetLeft;
       listRef.current.scroll({ left: x - 16, behavior: "smooth" });
     }

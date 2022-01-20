@@ -8,9 +8,10 @@ import {
 import { useMemo } from "react";
 import { createUploadLink } from "apollo-upload-client";
 import { TokenRefreshLink } from "apollo-link-token-refresh";
-import jwtDecode from "jwt-decode";
+import jwtDecode, { JwtPayload } from "jwt-decode";
 import { snapshot } from "valtio/vanilla";
 import { authState } from "store";
+import { Subscription } from "zen-observable-ts";
 
 let apolloClient: ApolloClient<NormalizedCacheObject | null>;
 
@@ -25,8 +26,9 @@ const refreshLink = new TokenRefreshLink({
     }
 
     try {
-      const { exp }: any = jwtDecode(accessToken);
-      if (Date.now() >= exp * 1000) {
+      const { exp }: JwtPayload = jwtDecode(accessToken);
+      console.log(exp);
+      if (Date.now() >= (exp || 0) * 1000) {
         return false;
       } else {
         return true;
@@ -56,7 +58,7 @@ const refreshLink = new TokenRefreshLink({
 const authMiddleware = new ApolloLink(
   (operation, forward) =>
     new Observable((observer) => {
-      let handle: any;
+      let handle: Subscription;
       Promise.resolve(operation)
         .then((operation) => {
           const { accessToken } = snapshot(authState);
@@ -122,7 +124,7 @@ export function initializeApollo(initialState = null) {
   return apolloClient;
 }
 
-export function useApollo(initialState: any) {
+export function useApollo(initialState: any): ApolloClient<NormalizedCacheObject | null> {
   const store = useMemo(() => initializeApollo(initialState), [initialState]);
   return store;
 }

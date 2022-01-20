@@ -5,7 +5,6 @@ import BlockModal from "./BlockModal";
 import { IS_USER_BLOCKED } from "@operations-queries/isUserBlocked";
 import { authState, toastState } from "../../../store";
 import { useSnapshot } from "valtio";
-import { ErrorStatus } from "@types-enums/enums";
 
 interface IProps {
   id: string;

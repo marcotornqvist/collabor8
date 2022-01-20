@@ -1,9 +1,14 @@
+import { ReactNode, useEffect } from "react";
 import { useSnapshot } from "valtio";
 import { authState } from "store";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
-export default function PrivateRoute({ protectedRoutes, children }: any) {
+interface IProps {
+  protectedRoutes: string[];
+  children: any;
+}
+
+export default function PrivateRoute({ protectedRoutes, children }: IProps) {
   const { loading, isAuth } = useSnapshot(authState);
   const router = useRouter();
 

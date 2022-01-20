@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_DISCIPLINES } from "@operations-queries/disciplines";
 import { disciplines } from "generated/disciplines";
@@ -53,7 +53,7 @@ const DisciplinesDropdown = ({ discipline, setDiscipline }: IProps) => {
 
   const { width } = useWindowSize();
 
-  const activeRef: any = useRef<HTMLLIElement>(null);
+  const activeRef: RefObject<HTMLLIElement> = useRef<HTMLLIElement>(null);
 
   useEffect(() => {
     if (activeRef.current) {

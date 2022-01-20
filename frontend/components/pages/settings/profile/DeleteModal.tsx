@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
 import { useMutation, useQuery } from "@apollo/client";
 import { DELETE_IMAGE } from "@operations-mutations/deleteImage";
@@ -58,7 +58,7 @@ const DeleteModal = ({ show, onClose }: IProps) => {
     setIsBrowser(true);
   }, []);
 
-  const handleCloseClick = (e: any) => {
+  const handleCloseClick = (e: MouseEvent<HTMLDivElement> | Event) => {
     e.preventDefault();
     onClose();
   };
@@ -69,7 +69,7 @@ const DeleteModal = ({ show, onClose }: IProps) => {
     onClose();
   };
 
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, handleCloseClick);
 
   useEffect(() => {

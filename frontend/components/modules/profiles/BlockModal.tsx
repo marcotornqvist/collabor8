@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, MouseEventHandler } from "react";
+import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
 import { useMutation } from "@apollo/client";
 import { blockUser, blockUserVariables } from "generated/blockUser";
@@ -79,7 +79,7 @@ const PendingModal = ({ id, show, onClose, isBlocked }: IProps) => {
     setIsBrowser(true);
   }, []);
 
-  const handleCloseClick = (e: any) => {
+  const handleCloseClick = (e: MouseEvent<HTMLDivElement> | Event) => {
     e.preventDefault();
     onClose();
   };
@@ -101,7 +101,7 @@ const PendingModal = ({ id, show, onClose, isBlocked }: IProps) => {
     }
   }, [error]);
 
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, handleCloseClick);
 
   const modalContent = show ? (

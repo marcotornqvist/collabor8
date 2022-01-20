@@ -19,7 +19,7 @@ const SignoutLink = ({ size }: IProps) => {
       authState.isAuth = false;
       await client!.resetStore();
       router.push("/");
-    } catch (error: any) {
+    } catch (error) {
       console.log(error);
     }
   };

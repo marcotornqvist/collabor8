@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { RefObject, useEffect, useRef, useState } from "react";
 import { users_users } from "generated/users";
 import useWindowSize from "@hooks/useWindowSize";
 import Image from "next/image";
@@ -13,17 +13,20 @@ interface IProps {
   key: string;
 }
 
+type RefType = RefObject<HTMLDivElement>;
+
 const ProfileItem = ({ item }: IProps) => {
   const { id, username, profile } = item;
   const [toggle, setToggle] = useState(false);
 
-  const carouselRef: any = useRef<HTMLDivElement>(null);
-  const contentRef: any = useRef<HTMLDivElement>(null);
-  const settingsRef: any = useRef<HTMLDivElement | null>(null);
+  const carouselRef: RefType = useRef<HTMLDivElement>(null);
+  const contentRef: RefType = useRef<HTMLDivElement>(null);
+  const settingsRef: RefType = useRef<HTMLDivElement>(null);
   const { width } = useWindowSize();
 
+  // Sets the menu all the way to right to persist position
   useEffect(() => {
-    if (toggle) {
+    if (toggle && carouselRef.current) {
       carouselRef.current.scroll({
         left: 1000,
       });
@@ -31,27 +34,15 @@ const ProfileItem = ({ item }: IProps) => {
   }, [width]);
 
   const handleToggle = () => {
-    carouselRef.current.scroll({
-      left: toggle ? -24 : 10000,
-      behavior: "smooth",
-    });
+    if (carouselRef.current) {
+      carouselRef.current.scroll({
+        left: toggle ? -24 : 1000,
+        behavior: "smooth",
+      });
 
-    setToggle(!toggle);
+      setToggle(!toggle);
+    }
   };
-
-  useEffect(() => {
-    carouselRef.current.addEventListener(
-      "wheel",
-      function (e: any) {
-        if (e.deltaX < 0) {
-          e.preventDefault();
-        } else if (e.deltaX > 0) {
-          e.preventDefault();
-        }
-      },
-      { passive: false }
-    );
-  }, []);
 
   return (
     <div className="profile-item">

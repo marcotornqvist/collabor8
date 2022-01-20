@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { SINGLE_UPLOAD } from "@operations-mutations/uploadFile";
 import { singleUpload, singleUploadVariables } from "generated/singleUpload";
@@ -33,7 +33,8 @@ export const UploadFile = () => {
       validity,
       files: [file],
     },
-  }: any) => validity.valid && singleUpload({ variables: { file } });
+  }: any) =>
+    validity.valid && singleUpload({ variables: { file } });
 
   useEffect(() => {
     if (data) {

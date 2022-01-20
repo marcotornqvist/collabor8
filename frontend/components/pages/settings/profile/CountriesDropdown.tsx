@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_COUNTRIES } from "@operations-queries/countries";
 import { countries } from "generated/countries";
@@ -52,7 +52,7 @@ const CountriesDropdown = ({ selected, setCountry }: IProps) => {
 
   const { width } = useWindowSize();
 
-  const activeRef: any = useRef<HTMLLIElement>(null);
+  const activeRef: RefObject<HTMLLIElement> = useRef<HTMLLIElement>(null);
 
   useEffect(() => {
     if (activeRef.current) {

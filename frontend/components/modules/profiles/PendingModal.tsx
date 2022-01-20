@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import  { MouseEvent, useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import { useMutation } from "@apollo/client";
 import { REJECT_CONTACT } from "@operations-mutations/rejectContact";
@@ -82,7 +82,7 @@ const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
     setIsBrowser(true);
   }, []);
 
-  const handleCloseClick = (e: any) => {
+  const handleCloseClick = (e: MouseEvent<HTMLDivElement> | Event) => {
     e.preventDefault();
     onClose();
   };
