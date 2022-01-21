@@ -3,43 +3,10 @@ import { useQuery } from "@apollo/client";
 import { GET_COUNTRIES } from "@operations-queries/countries";
 import { countries } from "generated/countries";
 import { AnimatePresence, motion } from "framer-motion";
+import useOnClickOutside from "@hooks/useOnClickOutside";
 import Image from "next/image";
 import useWindowSize from "@hooks/useWindowSize";
 import dropdown from "@styles-modules/Dropdown.module.scss";
-
-const mobileVariants = {
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.3,
-    },
-  },
-  hidden: {
-    opacity: 0,
-    y: "100%",
-    transition: {
-      duration: 0.3,
-    },
-  },
-};
-
-const desktopVariants = {
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.3,
-    },
-  },
-  hidden: {
-    opacity: 0,
-    y: "100%",
-    transition: {
-      duration: 0.3,
-    },
-  },
-};
 
 interface IProps {
   setFieldValue: (
@@ -49,9 +16,15 @@ interface IProps {
   ) => void;
   selected: string;
   loading: boolean;
+  variants: any;
 }
 
-const CountriesDropdown = ({ setFieldValue, selected, loading }: IProps) => {
+const CountriesDropdown = ({
+  setFieldValue,
+  selected,
+  loading,
+  variants,
+}: IProps) => {
   const [show, setShow] = useState(false);
   const { data } = useQuery<countries>(GET_COUNTRIES);
 
@@ -60,17 +33,28 @@ const CountriesDropdown = ({ setFieldValue, selected, loading }: IProps) => {
   const activeRef: RefObject<HTMLLIElement> = useRef<HTMLLIElement>(null);
 
   useEffect(() => {
-    if (activeRef.current) {
+    if (width < 768 && activeRef.current) {
       activeRef.current.scrollIntoView();
     }
     // Prevent scrolling on body
-    show
+    width < 768 && show
       ? document.body.classList.add("body-prevent-scroll")
       : document.body.classList.remove("body-prevent-scroll");
-  }, [show]);
+  }, [show, width]);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = () => {
+    setShow(false);
+  };
+
+  useOnClickOutside(dropdownRef, handleClickOutside);
 
   return (
-    <div className={`dropdown ${dropdown.default} ${show ? " active" : ""}`}>
+    <div
+      className={`dropdown ${dropdown.default} ${show ? dropdown.active : ""}`}
+      ref={dropdownRef}
+    >
       <div className="label-text">
         <label htmlFor="country">Country</label>
       </div>
@@ -99,9 +83,11 @@ const CountriesDropdown = ({ setFieldValue, selected, loading }: IProps) => {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            variants={width < 768 ? mobileVariants : desktopVariants}
+            variants={
+              width < 768 ? variants.mobileVariants : variants.desktopVariants
+            }
           >
-            <div className="header-bar" onClick={() => setShow(false)}>
+            <div className="header-bar" onClick={() => handleClickOutside()}>
               <span className="selected-title">
                 {selected ? selected : "Select Country"}
               </span>
@@ -112,7 +98,7 @@ const CountriesDropdown = ({ setFieldValue, selected, loading }: IProps) => {
                 ref={!selected ? activeRef : null}
                 onClick={() => {
                   setFieldValue("country", null);
-                  setShow(false);
+                  handleClickOutside();
                 }}
                 className={`list-item${!selected ? " active" : ""}`}
               >
@@ -127,7 +113,7 @@ const CountriesDropdown = ({ setFieldValue, selected, loading }: IProps) => {
                   }`}
                   onClick={() => {
                     setFieldValue("country", item.country);
-                    setShow(false);
+                    handleClickOutside();
                   }}
                 >
                   <span>{item.country}</span>
@@ -137,7 +123,7 @@ const CountriesDropdown = ({ setFieldValue, selected, loading }: IProps) => {
                 <li
                   onClick={() => {
                     setFieldValue("country", null);
-                    setShow(false);
+                    handleClickOutside();
                   }}
                   className="list-item"
                 >

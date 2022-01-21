@@ -105,6 +105,10 @@ textarea {
   appearance: none;
 }
 
+textarea {
+  resize: none;
+}
+
 /* Change Autocomplete styles in Chrome*/
 input:-webkit-autofill,
 input:-webkit-autofill:hover,

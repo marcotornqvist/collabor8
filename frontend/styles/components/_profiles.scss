@@ -69,7 +69,7 @@
             justify-content: flex-start;
             align-items: center;
             flex-direction: column;
-            padding-top: 2rem;
+            padding-top: 3rem;
 
             .profile-image {
               min-width: 4.5rem;
@@ -198,7 +198,7 @@
       flex-direction: column;
       justify-content: flex-start;
       align-items: center;
-      padding-top: 2rem;
+      padding-top: 3rem;
 
       .skeleton.thumbnail {
         width: 4.5rem;
@@ -297,11 +297,19 @@
               background: $light-red;
             }
           }
+
+          .profile-content .wrapper {
+            padding-top: 2rem;
+          }
         }
       }
 
       .skeleton-item {
         padding: 1rem;
+
+        .skeleton-content .wrapper {
+          padding-top: 2.5rem;
+        }
       }
     }
   }
@@ -316,13 +324,23 @@
         padding: 1.5rem 1.5rem 0;
       }
 
-      .carousel .carousel-item {
-        padding: 0 1.5rem 1.5rem;
+      .carousel {
+        .carousel-item {
+          padding: 0 1.5rem 1.5rem;
+        }
+
+        .profile-content .wrapper {
+          padding-top: 3rem;
+        }
       }
     }
 
     .skeleton-item {
       padding: 1.5rem;
+
+      .skeleton-content .wrapper {
+        padding-top: 3rem;
+      }
     }
   }
 }

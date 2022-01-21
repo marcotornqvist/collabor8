@@ -26,7 +26,7 @@ const AccountDropdown = () => {
   const [show, setShow] = useState(false);
   const [loggedInProfileImage, { data, loading, error }] =
     useLazyQuery<loggedInProfileImage>(GET_PROFILE_IMAGE);
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isAuth) {

@@ -13,6 +13,40 @@ import button from "@styles-modules/Button.module.scss";
 import CountriesDropdown from "./CountriesDropdown";
 import DisciplinesDropdown from "./DisciplinesDropdown";
 
+const mobileVariants = {
+  hidden: {
+    opacity: 0,
+    y: "100%",
+    transition: {
+      duration: 0.3,
+    },
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.3,
+    },
+  },
+};
+
+const desktopVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.8,
+    transition: {
+      duration: 0.2,
+    },
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.2,
+    },
+  },
+};
+
 interface Errors {
   firstName?: string;
   lastName?: string;
@@ -94,7 +128,6 @@ const Form = () => {
             isSubmitting,
           }) => (
             <form onSubmit={handleSubmit}>
-              {console.log(values)}
               <div className="wrapper">
                 <div className="input-group">
                   <div className="input-text">
@@ -135,11 +168,13 @@ const Form = () => {
                   selected={values.country}
                   setFieldValue={setFieldValue}
                   loading={loading}
+                  variants={{ mobileVariants, desktopVariants }}
                 />
                 <DisciplinesDropdown
                   setFieldValue={setFieldValue}
                   discipline={values.discipline}
                   loading={loading}
+                  variants={{ mobileVariants, desktopVariants }}
                 />
               </div>
               <div className="input-group">

@@ -22,40 +22,36 @@ interface Props {
 }
 
 const ProfileImage = ({ size = 40, profileImage, priority = false }: Props) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    setImageLoaded(false);
     setError(false);
   }, [profileImage]);
 
   return (
     <div className={`profile-image ${image.profile}`}>
-      {!error && profileImage && (
-        <motion.div
-          className="image-container"
-          animate={imageLoaded ? "visible" : "hidden"}
-          variants={variants}
-        >
-          <Image
-            onLoadingComplete={(e) => {
-              setImageLoaded(true);
-            }}
-            onError={(e) => {
-              setError(true);
-            }}
-            src={profileImage}
-            alt="profile image"
-            layout="fill"
-            objectFit="cover"
-            className="profile"
-            priority={priority ? true : false}
-          />
-        </motion.div>
-      )}
       <AnimatePresence>
-        {(profileImage === null || error) && (
+        {!error && profileImage && (
+          <motion.div
+            className="image-container"
+            initial="hidden"
+            animate="visible"
+            variants={variants}
+          >
+            <Image
+              onError={() => setError(true)}
+              src={profileImage}
+              alt="profile image"
+              layout="fill"
+              objectFit="cover"
+              className="profile"
+              priority={priority ? true : false}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {(error || profileImage === null) && (
           <motion.div
             className="image-container"
             initial="hidden"
