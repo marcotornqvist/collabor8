@@ -6,7 +6,7 @@ export interface IAuthState {
   loading: boolean;
 }
 
-export interface INavigationState {
+export interface ILayoutState {
   menuOpen: boolean;
 }
 

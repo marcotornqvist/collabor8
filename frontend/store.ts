@@ -1,6 +1,6 @@
 import {
   IAuthState,
-  INavigationState,
+  ILayoutState,
   IToastState,
   IToast,
 } from "@types-interfaces/store";
@@ -13,7 +13,7 @@ export const authState = proxy<IAuthState>({
   loading: true,
 });
 
-export const navigationState = proxy<INavigationState>({
+export const layoutState = proxy<ILayoutState>({
   menuOpen: false,
 });
 

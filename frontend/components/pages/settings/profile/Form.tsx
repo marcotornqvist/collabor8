@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_LOGGED_IN_PROFILE } from "@operations-queries/getLoggedInProfile";
 import { loggedInProfile } from "generated/loggedInProfile";
@@ -12,6 +12,7 @@ import input from "@styles-modules/Input.module.scss";
 import button from "@styles-modules/Button.module.scss";
 import CountriesDropdown from "./CountriesDropdown";
 import DisciplinesDropdown from "./DisciplinesDropdown";
+import useWindowSize from "@hooks/useWindowSize";
 
 const mobileVariants = {
   hidden: {
@@ -62,9 +63,15 @@ interface IForm {
 }
 
 const Form = () => {
+  const [isMobile, setIsMobile] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
-
   const { data, loading } = useQuery<loggedInProfile>(GET_LOGGED_IN_PROFILE);
+
+  const { width } = useWindowSize();
+
+  useEffect(() => {
+    setIsMobile(width < 768);
+  }, [width]);
 
   const [updateProfile] = useMutation<updateProfile, updateProfileVariables>(
     UPDATE_PROFILE,
@@ -168,13 +175,15 @@ const Form = () => {
                   selected={values.country}
                   setFieldValue={setFieldValue}
                   loading={loading}
-                  variants={{ mobileVariants, desktopVariants }}
+                  variants={isMobile ? mobileVariants : desktopVariants}
+                  isMobile={isMobile}
                 />
                 <DisciplinesDropdown
                   setFieldValue={setFieldValue}
                   discipline={values.discipline}
                   loading={loading}
-                  variants={{ mobileVariants, desktopVariants }}
+                  variants={isMobile ? mobileVariants : desktopVariants}
+                  isMobile={isMobile}
                 />
               </div>
               <div className="input-group">
@@ -209,3 +218,6 @@ const Form = () => {
 };
 
 export default Form;
+function setIsMobile(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}

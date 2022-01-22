@@ -4,7 +4,7 @@ import NotificationsIcon from "./NotificationsIcon";
 import AccountDropdown from "./AccountDropdown";
 import useWindowSize from "@hooks/useWindowSize";
 import { useSnapshot } from "valtio";
-import { authState, navigationState } from "store";
+import { authState, layoutState } from "store";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 
@@ -26,7 +26,7 @@ const Navbar = ({ hide = false }: Props) => {
   const router = useRouter();
   const { width } = useWindowSize();
   const { isAuth, loading } = useSnapshot(authState);
-  const { menuOpen } = useSnapshot(navigationState);
+  const { menuOpen } = useSnapshot(layoutState);
 
   const desktop = (
     <>
@@ -74,7 +74,7 @@ const Navbar = ({ hide = false }: Props) => {
     menuOpen
       ? document.body.classList.remove("body-prevent-scroll")
       : document.body.classList.add("body-prevent-scroll");
-    navigationState.menuOpen = !menuOpen;
+    layoutState.menuOpen = !menuOpen;
   };
 
   const mobile = (

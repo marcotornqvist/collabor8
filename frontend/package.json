@@ -44,6 +44,7 @@
   "resolutions": {
     "graphql": "14.7.0",
     "shelljs": ">=0.8.5",
+    "node-fetch": "2.6.1",
     "ansi-regex": ">=5.0.1"
   }
 }

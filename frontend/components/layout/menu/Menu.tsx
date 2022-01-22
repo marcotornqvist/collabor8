@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import SignoutLink from "@components-modules/global/SignoutLink";
 import Image from "next/image";
-import { authState, navigationState } from "store";
+import { authState, layoutState } from "store";
 import { useSnapshot } from "valtio";
 import useWindowSize from "@hooks/useWindowSize";
 import { motion, AnimatePresence } from "framer-motion";
@@ -27,13 +27,13 @@ const variants = {
 
 const Menu = () => {
   const { pathname } = useRouter();
-  const { menuOpen } = useSnapshot(navigationState);
+  const { menuOpen } = useSnapshot(layoutState);
   const { isAuth } = useSnapshot(authState);
   const { width } = useWindowSize();
 
   const closeMenu = () => {
     document.body.classList.remove("body-prevent-scroll");
-    navigationState.menuOpen = false;
+    layoutState.menuOpen = false;
   };
 
   // Closes menu if screen size width goes beyond 920px

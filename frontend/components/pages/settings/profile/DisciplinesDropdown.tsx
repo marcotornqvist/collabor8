@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { IDiscipline } from "@types-interfaces/form";
 import useOnClickOutside from "@hooks/useOnClickOutside";
 import Image from "next/image";
-import useWindowSize from "@hooks/useWindowSize";
 import dropdown from "@styles-modules/Dropdown.module.scss";
 
 interface IProps {
@@ -18,6 +17,7 @@ interface IProps {
   discipline: IDiscipline | null;
   loading: boolean;
   variants: any;
+  isMobile: boolean;
 }
 
 const DisciplinesDropdown = ({
@@ -25,25 +25,34 @@ const DisciplinesDropdown = ({
   discipline,
   loading,
   variants,
+  isMobile,
 }: IProps) => {
   const [show, setShow] = useState(false);
   const { data } = useQuery<disciplines>(GET_DISCIPLINES);
 
-  const { width } = useWindowSize();
+  const activeRef = useRef<HTMLLIElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const activeRef: RefObject<HTMLLIElement> = useRef<HTMLLIElement>(null);
+  // setShow to false to prevent glitch when variants change in dropdown menu
+  useEffect(() => {
+    setShow(false);
+  }, [isMobile]);
 
   useEffect(() => {
-    if (width < 768 && activeRef.current) {
-      activeRef.current.scrollIntoView();
+    if (activeRef.current && listRef.current) {
+      const activeElementY = activeRef.current.offsetTop;
+      // Scrolls list to activeElementY y-axis position
+      listRef.current.scroll({ top: activeElementY });
+      // scrolls screen to center
+      listRef.current.scrollIntoView({ block: "center" });
     }
+
     // Prevent scrolling on body
-    width < 768 && show
+    isMobile && show
       ? document.body.classList.add("body-prevent-scroll")
       : document.body.classList.remove("body-prevent-scroll");
-  }, [show, width]);
-
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  }, [show, isMobile]);
 
   const handleClickOutside = () => {
     setShow(false);
@@ -66,7 +75,7 @@ const DisciplinesDropdown = ({
         <motion.div
           className="icon-container"
           initial="hidden"
-          animate={{ rotate: width >= 768 && show ? 180 : 0 }}
+          animate={{ rotate: isMobile && show ? 180 : 0 }}
           transition={{ duration: 0.2 }}
         >
           <Image
@@ -78,15 +87,13 @@ const DisciplinesDropdown = ({
         </motion.div>
       </div>
       <AnimatePresence>
-        {data && show && (
+        {show && (
           <motion.div
             className="dropdown-menu"
             initial="hidden"
             animate="visible"
             exit="hidden"
-            variants={
-              width < 768 ? variants.mobileVariants : variants.desktopVariants
-            }
+            variants={variants}
           >
             <div className="header-bar" onClick={() => setShow(false)}>
               <span className="selected-title">
@@ -94,7 +101,7 @@ const DisciplinesDropdown = ({
               </span>
               <span className="close-btn">Close</span>
             </div>
-            <ul className="dropdown-list">
+            <ul className="dropdown-list" ref={listRef}>
               <li
                 ref={!discipline ? activeRef : null}
                 onClick={() => {
@@ -120,7 +127,7 @@ const DisciplinesDropdown = ({
                   <span>{item.title}</span>
                 </li>
               ))}
-              {data.disciplines && data.disciplines.length > 50 && (
+              {data?.disciplines && data.disciplines.length > 50 && (
                 <li
                   onClick={() => {
                     setFieldValue("discipline", null);
