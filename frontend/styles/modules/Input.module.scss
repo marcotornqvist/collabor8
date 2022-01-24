@@ -1,44 +1,108 @@
 @use "../abstracts/colors" as *;
 @use "../abstracts/border-radius" as *;
 
-.default {
-  width: 100%;
-  height: 3rem;
-  padding: 0 1rem;
-  border: 1px solid $light-grey;
-  border-radius: $medium-radius;
-  background: $grey-bg;
-  color: $black;
-  outline: $green !important;
+.group {
+  :global {
+    margin-bottom: 1rem;
 
-  &:focus {
-    border-color: $green;
-    background: $light-green !important;
-    box-shadow: 0 0 0px 1000px $light-green inset !important;
+    .input-text {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 0.25rem;
 
-    &::placeholder {
+      label {
+        font-weight: 400;
+        white-space: nowrap;
+      }
+
+      span {
+        padding-left: 1rem;
+        font-size: 12px;
+        text-align: right;
+
+        &.success-message {
+          color: $green;
+        }
+
+        &.error-message {
+          color: $red;
+        }
+      }
+    }
+
+    input {
+      min-width: 100%;
+      height: 3rem;
+      padding: 0 1rem;
+      border: 1px solid $light-grey;
+      border-radius: $medium-radius;
+      background: $grey-bg;
       color: $black;
+      outline: $green !important;
+
+      &:focus {
+        border-color: $green;
+        background: $light-green !important;
+        box-shadow: 0 0 0px 1000px $light-green inset !important;
+
+        &::placeholder {
+          color: $black;
+        }
+      }
     }
   }
 }
 
-.textarea {
-  width: 100%;
-  height: 12rem;
-  padding: 0.5rem 1rem;
-  border: 1px solid $light-grey;
-  border-radius: $medium-radius;
-  background: $grey-bg;
-  color: $black;
-  outline: $green !important;
+.textarea_group {
+  :global {
+    margin-bottom: 1rem;
 
-  &:focus {
-    border-color: $green;
-    background: $light-green !important;
-    box-shadow: 0 0 0px 1000px $light-green inset !important;
+    .input-text {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 0.25rem;
 
-    &::placeholder {
+      label {
+        font-weight: 400;
+        white-space: nowrap;
+      }
+
+      span {
+        padding-left: 1rem;
+        font-size: 12px;
+        text-align: right;
+
+        &.success-message {
+          color: $green;
+        }
+
+        &.error-message {
+          color: $red;
+        }
+      }
+    }
+
+    .textarea {
+      width: 100%;
+      height: 12rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid $light-grey;
+      border-radius: $medium-radius;
+      background: $grey-bg;
       color: $black;
+      outline: $green !important;
+
+      &:focus {
+        border-color: $green;
+        background: $light-green !important;
+        box-shadow: 0 0 0px 1000px $light-green inset !important;
+
+        &::placeholder {
+          color: $black;
+        }
+      }
     }
   }
 }

@@ -28,7 +28,8 @@
     "sass": "^1.37.5",
     "scroll-behavior-polyfill": "^2.0.13",
     "uuid": "^8.3.2",
-    "valtio": "^1.2.4"
+    "valtio": "^1.2.4",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@types/apollo-upload-client": "^14.1.0",
@@ -44,7 +45,6 @@
   "resolutions": {
     "graphql": "14.7.0",
     "shelljs": ">=0.8.5",
-    "node-fetch": "2.6.1",
-    "ansi-regex": ">=5.0.1"
+    "node-fetch": "2.6.1"
   }
 }

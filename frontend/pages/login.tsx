@@ -71,21 +71,24 @@ const Login = () => {
     >
       {({ values, handleChange, handleSubmit, isSubmitting }) => (
         <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <label htmlFor="email">Email</label>
+          <div className={`input-group ${input.group}`}>
+            <div className="input-text">
+              <label htmlFor="email">Email</label>
+            </div>
             <input
               id="email"
               name="email"
               type="email"
-              className={input.default}
               value={values.email}
               onChange={handleChange}
               placeholder="Please enter your email address"
               autoComplete="on"
             />
           </div>
-          <div className="input-group">
-            <label htmlFor="password">Password</label>
+          <div className={`input-group ${input.group}`}>
+            <div className="input-text">
+              <label htmlFor="password">Password</label>
+            </div>
             <input
               id="password"
               name="password"
@@ -102,6 +105,7 @@ const Login = () => {
             className={`${
               isSubmitting ? button.green : button.lightGreen
             } submit-btn`}
+            disabled={isSubmitting}
           >
             {isSubmitting ? "Signing In..." : "Sign In"}
           </button>

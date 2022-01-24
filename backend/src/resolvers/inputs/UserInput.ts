@@ -78,13 +78,6 @@ export class LoginInput {
   password: string;
 }
 
-@InputType({ description: "Update Email Input" })
-export class UpdateEmailInput {
-  @IsEmail()
-  @Field()
-  email: string;
-}
-
 @InputType({ description: "Update Password Input" })
 export class UpdatePasswordInput {
   @Field()

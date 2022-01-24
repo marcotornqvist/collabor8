@@ -46,6 +46,15 @@ export interface RegisterInput {
 }
 
 /**
+ * Update Password Input
+ */
+export interface UpdatePasswordInput {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+/**
  * Update Profile Input
  */
 export interface UpdateProfileInput {

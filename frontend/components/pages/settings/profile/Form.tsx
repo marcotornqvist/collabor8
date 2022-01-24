@@ -136,7 +136,7 @@ const Form = () => {
           }) => (
             <form onSubmit={handleSubmit}>
               <div className="wrapper">
-                <div className="input-group">
+                <div className={`input-group ${input.group}`}>
                   <div className="input-text">
                     <label htmlFor="firstName">First Name</label>
                     {errors.firstName && (
@@ -154,7 +154,7 @@ const Form = () => {
                     autoComplete="on"
                   />
                 </div>
-                <div className="input-group">
+                <div className={`input-group ${input.group}`}>
                   <div className="input-text">
                     <label htmlFor="lastName">Last Name</label>
                     {errors.lastName && <span>{errors.lastName}</span>}
@@ -186,7 +186,7 @@ const Form = () => {
                   isMobile={isMobile}
                 />
               </div>
-              <div className="input-group">
+              <div className={`input-group ${input.textarea_group}`}>
                 <div className="input-text">
                   <label htmlFor="bio">Bio</label>
                   {errors.bio && <span>{errors.bio}</span>}
@@ -196,7 +196,7 @@ const Form = () => {
                   name="bio"
                   value={values.bio}
                   onChange={handleChange}
-                  className={input.textarea}
+                  className={`textarea ${input.textarea}`}
                   placeholder={!loading ? "Write a bio" : ""}
                   autoComplete="on"
                 />
@@ -206,6 +206,7 @@ const Form = () => {
                 className={`${
                   isSubmitting ? button.green : button.lightGreen
                 } submit-btn`}
+                disabled={isSubmitting}
               >
                 {isSubmitting ? "Submitting..." : "Save Settings"}
               </button>
@@ -218,6 +219,3 @@ const Form = () => {
 };
 
 export default Form;
-function setIsMobile(arg0: boolean) {
-  throw new Error("Function not implemented.");
-}

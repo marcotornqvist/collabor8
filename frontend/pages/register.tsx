@@ -9,6 +9,7 @@ import { RegisterInput } from "generated/globalTypes";
 import { Formik } from "formik";
 import input from "@styles-modules/Input.module.scss";
 import button from "@styles-modules/Button.module.scss";
+import * as Yup from "yup";
 
 interface Errors {
   firstName?: string;
@@ -18,15 +19,35 @@ interface Errors {
   confirmPassword?: string;
 }
 
+// Form validation
+const SignupSchema = Yup.object().shape({
+  firstName: Yup.string().max(
+    255,
+    "First name cannot be more than 255 characters"
+  ),
+  lastName: Yup.string().max(
+    255,
+    "Last name cannot be more than 255 characters"
+  ),
+  email: Yup.string()
+    .email("Email is not valid")
+    .required("Email cannot be empty"),
+  password: Yup.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: Yup.string().oneOf(
+    [Yup.ref("password"), null],
+    "Passwords don't match"
+  ),
+});
+
 const Register = () => {
   const router = useRouter();
-  const [errors, setErrors] = useState<Errors>({});
+  const [formErrors, setFormErrors] = useState<Errors>({});
 
   const [register, { client }] = useMutation<register, registerVariables>(
     REGISTER_USER,
     {
       onError: (error) => {
-        setErrors(error.graphQLErrors[0].extensions?.errors);
+        setFormErrors(error.graphQLErrors[0].extensions?.errors);
       },
     }
   );
@@ -68,8 +89,12 @@ const Register = () => {
     }
   };
 
+  console.log(formErrors);
+
   return (
     <Formik
+      validationSchema={SignupSchema}
+      validateOnMount={true}
       initialValues={{
         firstName: "",
         lastName: "",
@@ -79,14 +104,20 @@ const Register = () => {
       }}
       onSubmit={(values) => handleRegister(values)}
     >
-      {({ values, handleChange, handleSubmit, isSubmitting }) => (
-        <form onSubmit={handleSubmit}>
+      {({ values, errors, handleChange, handleSubmit, isSubmitting }) => (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            setFormErrors(errors);
+            handleSubmit;
+          }}
+        >
           <div className="wrapper">
-            <div className="input-group">
+            <div className={`input-group ${input.group}`}>
               <div className="input-text">
                 <label htmlFor="firstName">First Name</label>
-                {errors.firstName && (
-                  <span className="error-message">{errors.firstName}</span>
+                {formErrors.firstName && (
+                  <span className="error-message">{formErrors.firstName}</span>
                 )}
               </div>
               <input
@@ -96,14 +127,16 @@ const Register = () => {
                 className={input.default}
                 value={values.firstName}
                 onChange={handleChange}
-                placeholder="Your last name"
+                placeholder="Please enter your first name"
                 autoComplete="on"
               />
             </div>
-            <div className="input-group">
+            <div className={`input-group ${input.group}`}>
               <div className="input-text">
                 <label htmlFor="lastName">Last Name</label>
-                {errors.lastName && <span>{errors.lastName}</span>}
+                {formErrors.lastName && (
+                  <span className="error-message">{formErrors.lastName}</span>
+                )}
               </div>
               <input
                 id="lastName"
@@ -112,16 +145,16 @@ const Register = () => {
                 className={input.default}
                 value={values.lastName}
                 onChange={handleChange}
-                placeholder="Your last name"
+                placeholder="Please enter your last name"
                 autoComplete="on"
               />
             </div>
           </div>
-          <div className="input-group">
+          <div className={`input-group ${input.group}`}>
             <div className="input-text">
               <label htmlFor="email">Email</label>
-              {errors.email && (
-                <span className="error-message">{errors.email}</span>
+              {formErrors.email && (
+                <span className="error-message">{formErrors.email}</span>
               )}
             </div>
             <input
@@ -135,11 +168,11 @@ const Register = () => {
               autoComplete="on"
             />
           </div>
-          <div className="input-group">
+          <div className={`input-group ${input.group}`}>
             <div className="input-text">
               <label htmlFor="password">Password</label>
-              {errors.password && (
-                <span className="error-message">{errors.password}</span>
+              {formErrors.password && (
+                <span className="error-message">{formErrors.password}</span>
               )}
             </div>
             <input
@@ -153,11 +186,13 @@ const Register = () => {
               autoComplete="on"
             />
           </div>
-          <div className="input-group">
+          <div className={`input-group ${input.group}`}>
             <div className="input-text">
               <label htmlFor="confirmPassword">Confirm Password</label>
-              {errors.confirmPassword && (
-                <span className="error-message">{errors.confirmPassword}</span>
+              {formErrors.confirmPassword && (
+                <span className="error-message">
+                  {formErrors.confirmPassword}
+                </span>
               )}
             </div>
             <input
@@ -176,6 +211,7 @@ const Register = () => {
             className={`${
               isSubmitting ? button.green : button.lightGreen
             } submit-btn`}
+            disabled={isSubmitting}
           >
             {isSubmitting ? "Submitting..." : "Register"}
           </button>

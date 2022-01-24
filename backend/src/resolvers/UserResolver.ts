@@ -6,7 +6,6 @@ import {
   Arg,
   Ctx,
   UseMiddleware,
-  ObjectType,
 } from "type-graphql";
 import { UserInputError } from "apollo-server-express";
 import { hash, compare } from "bcryptjs";
@@ -15,7 +14,6 @@ import { Context, LooseObject } from "../types/Interfaces";
 import {
   LoginInput,
   RegisterInput,
-  UpdateEmailInput,
   UpdatePasswordInput,
   UsersFilterArgs,
 } from "./inputs/UserInput";
@@ -235,7 +233,7 @@ export class UserResolver {
 
       // Checks that password length is more than 6 and that confirm password matches
       if (password.length < 6) {
-        errors.password = "Password must be atleast 6 characters";
+        errors.password = "Password must be at least 6 characters";
       } else if (password !== confirmPassword) {
         errors.confirmPassword = "Passwords don't match";
       }
@@ -348,8 +346,6 @@ export class UserResolver {
     }
 
     sendRefreshToken(res, createRefreshToken(user));
-    // sendRefreshToken(res, "faosoksfkfs");
-    // createCookie(res);
 
     return {
       accessToken: createAccessToken(user),
@@ -437,15 +433,15 @@ export class UserResolver {
       });
 
     // Send a notification to all contacts, that logged in user has changed username
-    // if (contactIds.length > 0) {
-    //   await prisma.notification.createMany({
-    //     data: contactIds.map((id) => ({
-    //       senderId: payload!.userId,
-    //       receiverId: id,
-    //       notificationCode: NotificationCode.CONTACT_USERNAME_UPDATED,
-    //     })),
-    //   });
-    // }
+    if (contactIds.length > 0) {
+      await prisma.notification.createMany({
+        data: contactIds.map((id) => ({
+          senderId: payload!.userId,
+          receiverId: id,
+          notificationCode: NotificationCode.CONTACT_USERNAME_UPDATED,
+        })),
+      });
+    }
 
     return username;
   }
@@ -455,7 +451,7 @@ export class UserResolver {
   })
   @UseMiddleware(isAuth)
   async updateEmail(
-    @Arg("email") { email }: UpdateEmailInput,
+    @Arg("email") email: string,
     @Ctx() { payload, prisma }: Context
   ) {
     if (email.trim() === "") {
@@ -468,6 +464,11 @@ export class UserResolver {
         email,
       },
     });
+
+    // Checks that email is valid
+    if (validateEmail(email)) {
+      throw new UserInputError("Email is not valid");
+    }
 
     if (emailExists) {
       throw new UserInputError("Email already exists");
@@ -508,7 +509,7 @@ export class UserResolver {
       }
 
       if (newPassword.length < 6) {
-        errors.newPassword = "Password must be atleast 6 characters";
+        errors.newPassword = "Password must be at least 6 characters";
       } else if (newPassword !== confirmPassword) {
         errors.confirmPassword = "Passwords don't match";
       }

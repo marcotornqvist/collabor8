@@ -7,6 +7,20 @@
 
 .settings-page {
   padding: 1rem 0 3rem;
+
+  .settings-profile,
+  .settings-account,
+  .settings-socials {
+    width: 100%;
+
+    h2 {
+      display: none;
+    }
+
+    button {
+      width: 100%;
+    }
+  }
 }
 
 .settings-page .settings-navigation {
@@ -15,8 +29,8 @@
     flex-direction: row;
     padding: 0 1rem 1rem;
     overflow-x: scroll;
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
     scroll-behavior: smooth;
 
     &::-webkit-scrollbar {
@@ -63,10 +77,6 @@
 }
 
 .settings-page .settings-profile {
-  h2.title {
-    display: none;
-  }
-
   .thumbnail-panel {
     display: flex;
     align-items: center;
@@ -119,39 +129,23 @@
     display: flex;
     flex-direction: column;
 
-    .input-group {
-      margin-bottom: 1rem;
-
-      .input-text {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding-bottom: 0.25rem;
-
-        label {
-          font-weight: 400;
-          white-space: nowrap;
-        }
-
-        span {
-          padding-left: 1rem;
-          font-size: 12px;
-          color: $red;
-          text-align: right;
-        }
-      }
-    }
-
     button.submit-btn {
       width: 100%;
     }
   }
 }
 
-// .settings-page .account-settings {
-// }
+.settings-page .settings-account {
+  .update-username,
+  .update-email,
+  .update-password {
+    margin-top: 1rem;
+    border-bottom: 1px solid $border-color1;
+    padding-bottom: 2rem;
+  }
+}
 
-// .settings-page .social-settings {
+// .settings-page .settings-socials {
 // }
 
 @media only screen and (min-width: $breakpoint-sm) {
@@ -170,6 +164,19 @@
     display: flex;
     flex-direction: row;
     max-width: $breakpoint-lg;
+
+    .settings-profile,
+    .settings-account,
+    .settings-socials {
+      h2 {
+        display: initial;
+      }
+
+      .container {
+        padding-left: 3rem;
+        padding-top: 0.5rem;
+      }
+    }
   }
 
   .settings-page .settings-navigation {
@@ -178,10 +185,12 @@
     ul {
       padding: 1rem 3rem 0rem 1.5rem;
       flex-direction: column;
-
-      a li {
-        width: 200px;
+      a {
         margin: 0 0 1rem 0;
+
+        li {
+          width: 200px;
+        }
       }
 
       a:last-child {
@@ -198,12 +207,6 @@
   }
 
   .settings-page .settings-profile {
-    width: 100%;
-
-    h2.title {
-      display: initial;
-    }
-
     .thumbnail-panel {
       align-items: center;
       flex-direction: row;
@@ -234,15 +237,6 @@
       }
     }
   }
-
-  .settings-page .settings-profile,
-  .settings-page .settings-account,
-  .settings-page .settings-socials {
-    .container {
-      padding-left: 3rem;
-      padding-top: 0.5rem;
-    }
-  }
 }
 
 @media only screen and (min-width: $breakpoint-lg) {
@@ -250,6 +244,19 @@
     padding-bottom: 6rem;
     margin: 0 auto;
     max-width: $breakpoint-lg;
+
+    .settings-profile,
+    .settings-account,
+    .settings-socials {
+      .container {
+        padding-left: 4rem;
+      }
+
+      button {
+        margin-top: 1rem;
+        max-width: 255px;
+      }
+    }
   }
 
   .settings-page .settings-navigation ul {
@@ -274,14 +281,6 @@
       .dropdown {
         width: 100%;
       }
-    }
-  }
-
-  .settings-page .settings-profile,
-  .settings-page .settings-account,
-  .settings-page .settings-socials {
-    .container {
-      padding-left: 4rem;
     }
   }
 }
