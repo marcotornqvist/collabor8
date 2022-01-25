@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { useLazyQuery } from "@apollo/client";
-import { CONTACT_STATUS } from "@operations-queries/contactStatus";
+import { CONTACT_STATUS } from "@/operations-queries/contactStatus";
 import { contactStatus, contactStatusVariables } from "generated/contactStatus";
 import { CONTACT_STATUS as STATUS_ENUM } from "generated/globalTypes";
 import AddContact from "./AddContact";

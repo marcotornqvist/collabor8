@@ -1,15 +1,15 @@
 import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
 import { useMutation, useQuery } from "@apollo/client";
-import { DELETE_IMAGE } from "@operations-mutations/deleteImage";
-import { GET_PROFILE_IMAGE } from "@operations-queries/getLoggedInProfile";
+import { DELETE_IMAGE } from "@/operations-mutations/deleteImage";
+import { GET_PROFILE_IMAGE } from "@/operations-queries/getLoggedInProfile";
 import { deleteImage } from "generated/deleteImage";
 import { loggedInProfileImage } from "generated/loggedInProfileImage";
 import { motion } from "framer-motion";
 import { toastState } from "store";
-import { ErrorStatus } from "@types-enums/enums";
-import button from "@styles-modules/Button.module.scss";
-import useOnClickOutside from "@hooks/useOnClickOutside";
+import { ErrorStatus } from "@/types-enums/enums";
+import button from "@/styles-modules/Button.module.scss";
+import useOnClickOutside from "@/hooks/useOnClickOutside";
 
 const dropIn = {
   hidden: {

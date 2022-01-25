@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { Formik } from "formik";
-import { UPDATE_PASSWORD } from "@operations-mutations/updatePassword";
+import { UPDATE_PASSWORD } from "@/operations-mutations/updatePassword";
 import {
   updatePassword,
   updatePasswordVariables,
@@ -10,11 +10,11 @@ import {
   loggedInUser,
   loggedInUser_loggedInUser,
 } from "generated/loggedInUser";
-import { GET_LOGGED_IN_USER } from "@operations-queries/getLoggedInUser";
+import { GET_LOGGED_IN_USER } from "@/operations-queries/getLoggedInUser";
 import { toastState } from "store";
-import { ErrorStatus } from "@types-enums/enums";
-import input from "@styles-modules/Input.module.scss";
-import button from "@styles-modules/Button.module.scss";
+import { ErrorStatus } from "@/types-enums/enums";
+import input from "@/styles-modules/Input.module.scss";
+import button from "@/styles-modules/Button.module.scss";
 import * as Yup from "yup";
 
 interface IProps {

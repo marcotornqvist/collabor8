@@ -2,15 +2,15 @@ import { useState, useEffect, ReactElement } from "react";
 import { useMutation } from "@apollo/client";
 import { login, loginVariables } from "generated/login";
 import { authState } from "store";
-import { LOGIN_USER } from "@operations-mutations/login";
+import { LOGIN_USER } from "@/operations-mutations/login";
 import { useRouter } from "next/router";
 import { toastState } from "store";
-import { ErrorStatus } from "@types-enums/enums";
+import { ErrorStatus } from "@/types-enums/enums";
 import { Formik } from "formik";
 import { LoginInput } from "generated/globalTypes";
-import AuthLayout from "@components-pages/auth/AuthLayout";
-import button from "@styles-modules/Button.module.scss";
-import input from "@styles-modules/Input.module.scss";
+import AuthLayout from "@/components-pages/auth/AuthLayout";
+import button from "@/styles-modules/Button.module.scss";
+import input from "@/styles-modules/Input.module.scss";
 
 const Login = () => {
   const router = useRouter();

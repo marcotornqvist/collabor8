@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_COUNTRIES } from "@operations-queries/countries";
+import { GET_COUNTRIES } from "@/operations-queries/countries";
 import { countries } from "generated/countries";
 import { AnimatePresence, motion } from "framer-motion";
-import useOnClickOutside from "@hooks/useOnClickOutside";
+import useOnClickOutside from "@/hooks/useOnClickOutside";
 import Image from "next/image";
-import dropdown from "@styles-modules/Dropdown.module.scss";
+import dropdown from "@/styles-modules/Dropdown.module.scss";
 
 interface IProps {
   setFieldValue: (

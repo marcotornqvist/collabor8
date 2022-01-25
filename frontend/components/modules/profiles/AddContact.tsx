@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
-import { ADD_CONTACT } from "@operations-mutations/addContact";
+import { ADD_CONTACT } from "@/operations-mutations/addContact";
 import { addContact, addContactVariables } from "generated/addContact";
-import { CONTACT_STATUS } from "@operations-queries/contactStatus";
+import { CONTACT_STATUS } from "@/operations-queries/contactStatus";
 import { toastState } from "store";
-import { ErrorStatus } from "@types-enums/enums";
+import { ErrorStatus } from "@/types-enums/enums";
 
 interface IProps {
   id: string;

@@ -2,7 +2,7 @@ import Link from "next/link";
 import InboxIcon from "./InboxIcon";
 import NotificationsIcon from "./NotificationsIcon";
 import AccountDropdown from "./AccountDropdown";
-import useWindowSize from "@hooks/useWindowSize";
+import useWindowSize from "@/hooks/useWindowSize";
 import { useSnapshot } from "valtio";
 import { authState, layoutState } from "store";
 import { useRouter } from "next/router";

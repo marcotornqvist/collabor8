@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { toastState } from "store";
-import { IToast } from "@types-interfaces/store";
+import { IToast } from "@/types-interfaces/store";
 
 const ToastItem = ({ id, message, status, duration = 3500 }: IToast) => {
   const [isBrowser, setIsBrowser] = useState(false);

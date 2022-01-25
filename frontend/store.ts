@@ -3,7 +3,7 @@ import {
   ILayoutState,
   IToastState,
   IToast,
-} from "@types-interfaces/store";
+} from "@/types-interfaces/store";
 import { proxy } from "valtio";
 import { v4 as uuidv4 } from "uuid";
 

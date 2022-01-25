@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import image from "@styles-modules/Image.module.scss";
+import image from "@/styles-modules/Image.module.scss";
 
 const variants = {
   hidden: {

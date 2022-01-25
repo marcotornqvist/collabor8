@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import button from "@styles-modules/Button.module.scss";
-import DeleteModal from "@components-pages/settings/profile/DeleteModal";
+import button from "@/styles-modules/Button.module.scss";
+import DeleteModal from "@/components-pages/settings/profile/DeleteModal";
 
 interface IProps {
   current: Boolean;

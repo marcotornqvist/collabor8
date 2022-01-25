@@ -1,17 +1,17 @@
 import { useRef, useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { Formik } from "formik";
-import { UPDATE_USERNAME } from "@operations-mutations/updateUsername";
+import { UPDATE_USERNAME } from "@/operations-mutations/updateUsername";
 import {
   updateUsername,
   updateUsernameVariables,
 } from "generated/updateUsername";
 import { loggedInUser } from "generated/loggedInUser";
-import { GET_LOGGED_IN_USER } from "@operations-queries/getLoggedInUser";
+import { GET_LOGGED_IN_USER } from "@/operations-queries/getLoggedInUser";
 import { toastState } from "store";
-import { ErrorStatus } from "@types-enums/enums";
-import input from "@styles-modules/Input.module.scss";
-import button from "@styles-modules/Button.module.scss";
+import { ErrorStatus } from "@/types-enums/enums";
+import input from "@/styles-modules/Input.module.scss";
+import button from "@/styles-modules/Button.module.scss";
 
 interface IProps {
   currentUsername?: string;

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import button from "@styles-modules/Button.module.scss";
+import button from "@/styles-modules/Button.module.scss";
 import Image from "next/image";
 import { authState } from "store";
 import { useSnapshot } from "valtio";

@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import SettingsLayout from "@components-pages/settings/SettingsLayout";
+import SettingsLayout from "@/components-pages/settings/SettingsLayout";
 
 const Socials = () => {
   return (

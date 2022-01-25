@@ -2,13 +2,13 @@ import { useState, ReactElement, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import { register, registerVariables } from "generated/register";
 import { authState } from "store";
-import { REGISTER_USER } from "@operations-mutations/register";
+import { REGISTER_USER } from "@/operations-mutations/register";
 import { useRouter } from "next/router";
 import { RegisterInput } from "generated/globalTypes";
 import { Formik } from "formik";
-import AuthLayout from "@components-pages/auth/AuthLayout";
-import input from "@styles-modules/Input.module.scss";
-import button from "@styles-modules/Button.module.scss";
+import AuthLayout from "@/components-pages/auth/AuthLayout";
+import input from "@/styles-modules/Input.module.scss";
+import button from "@/styles-modules/Button.module.scss";
 import * as Yup from "yup";
 
 interface Errors {

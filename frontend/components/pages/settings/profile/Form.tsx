@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
-import { GET_LOGGED_IN_PROFILE } from "@operations-queries/getLoggedInProfile";
+import { GET_LOGGED_IN_PROFILE } from "@/operations-queries/getLoggedInProfile";
 import { loggedInProfile } from "generated/loggedInProfile";
-import { UPDATE_PROFILE } from "@operations-mutations/updateProfile";
+import { UPDATE_PROFILE } from "@/operations-mutations/updateProfile";
 import { updateProfile, updateProfileVariables } from "generated/updateProfile";
 import { toastState } from "store";
-import { ErrorStatus } from "@types-enums/enums";
-import { IDiscipline } from "@types-interfaces/form";
+import { ErrorStatus } from "@/types-enums/enums";
+import { IDiscipline } from "@/types-interfaces/form";
 import { Formik } from "formik";
-import input from "@styles-modules/Input.module.scss";
-import button from "@styles-modules/Button.module.scss";
+import input from "@/styles-modules/Input.module.scss";
+import button from "@/styles-modules/Button.module.scss";
 import CountriesDropdown from "./CountriesDropdown";
 import DisciplinesDropdown from "./DisciplinesDropdown";
-import useWindowSize from "@hooks/useWindowSize";
+import useWindowSize from "@/hooks/useWindowSize";
 
 const mobileVariants = {
   hidden: {

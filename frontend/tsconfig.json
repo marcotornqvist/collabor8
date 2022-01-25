@@ -16,15 +16,15 @@
     "jsx": "preserve",
     "baseUrl": "./",
     "paths": {
-      "@styles-modules/*": ["styles/modules/*"],
-      "@components-layout/*": ["components/layout/*"],
-      "@components-modules/*": ["components/modules/*"],
-      "@components-pages/*": ["components/pages/*"],
-      "@operations-mutations/*": ["operations/mutations/*"],
-      "@operations-queries/*": ["operations/queries/*"],
-      "@types-interfaces/*": ["types/interfaces/*"],
-      "@types-enums/*": ["types/enums/*"],
-      "@hooks/*": ["hooks/*"]
+      "@/styles-modules/*": ["styles/modules/*"],
+      "@/components-layout/*": ["components/layout/*"],
+      "@/components-modules/*": ["components/modules/*"],
+      "@/components-pages/*": ["components/pages/*"],
+      "@/operations-mutations/*": ["operations/mutations/*"],
+      "@/operations-queries/*": ["operations/queries/*"],
+      "@/types-interfaces/*": ["types/interfaces/*"],
+      "@/types-enums/*": ["types/enums/*"],
+      "@/hooks/*": ["hooks/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "next.config.js"],

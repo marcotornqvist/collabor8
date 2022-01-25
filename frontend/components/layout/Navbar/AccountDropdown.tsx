@@ -4,11 +4,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLazyQuery } from "@apollo/client";
 import { useSnapshot } from "valtio";
 import { authState } from "store";
-import { GET_PROFILE_IMAGE } from "@operations-queries/getLoggedInProfile";
+import { GET_PROFILE_IMAGE } from "@/operations-queries/getLoggedInProfile";
 import { loggedInProfileImage } from "generated/loggedInProfileImage";
-import SignoutLink from "@components-modules/global/SignoutLink";
-import useOnClickOutside from "@hooks/useOnClickOutside";
-import ProfileImage from "@components-modules/global/ProfileImage";
+import SignoutLink from "@/components-modules/global/SignoutLink";
+import useOnClickOutside from "@/hooks/useOnClickOutside";
+import ProfileImage from "@/components-modules/global/ProfileImage";
 
 const variants = {
   visible: {

@@ -1,12 +1,12 @@
 import { RefObject, useEffect, useRef, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_DISCIPLINES } from "@operations-queries/disciplines";
+import { GET_DISCIPLINES } from "@/operations-queries/disciplines";
 import { disciplines } from "generated/disciplines";
 import { AnimatePresence, motion } from "framer-motion";
-import { IDiscipline } from "@types-interfaces/form";
-import useOnClickOutside from "@hooks/useOnClickOutside";
+import { IDiscipline } from "@/types-interfaces/form";
+import useOnClickOutside from "@/hooks/useOnClickOutside";
 import Image from "next/image";
-import dropdown from "@styles-modules/Dropdown.module.scss";
+import dropdown from "@/styles-modules/Dropdown.module.scss";
 
 interface IProps {
   setFieldValue: (

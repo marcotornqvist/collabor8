@@ -6,11 +6,11 @@ import { useApollo } from "../utils/useApollo";
 import { authState, layoutState } from "store";
 import { useRouter } from "next/router";
 import PrivateRoute from "../utils/privateRoute";
-import Navbar from "@components-layout/navbar/Navbar";
-import Footer from "@components-layout/footer/Footer";
-import Menu from "@components-layout/menu/Menu";
+import Navbar from "@/components-layout/navbar/Navbar";
+import Footer from "@/components-layout/footer/Footer";
+import Menu from "@/components-layout/menu/Menu";
 import "../styles/app.scss";
-import Toasts from "@components-modules/global/toasts/Toasts";
+import Toasts from "@/components-modules/global/toasts/Toasts";
 
 // <script src="https://kit.fontawesome.com/0f6f932cce.js" crossorigin="anonymous"></script>
 

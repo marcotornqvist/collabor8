@@ -4,13 +4,13 @@ import { useMutation } from "@apollo/client";
 import { blockUser, blockUserVariables } from "generated/blockUser";
 import { unblockUser, unblockUserVariables } from "generated/unblockUser";
 import { motion } from "framer-motion";
-import { IS_USER_BLOCKED } from "@operations-queries/isUserBlocked";
-import { BLOCK_USER } from "@operations-mutations/blockUser";
-import { UNBLOCK_USER } from "@operations-mutations/unblockUser";
+import { IS_USER_BLOCKED } from "@/operations-queries/isUserBlocked";
+import { BLOCK_USER } from "@/operations-mutations/blockUser";
+import { UNBLOCK_USER } from "@/operations-mutations/unblockUser";
 import { toastState } from "store";
-import { ErrorStatus } from "@types-enums/enums";
-import button from "@styles-modules/Button.module.scss";
-import useOnClickOutside from "@hooks/useOnClickOutside";
+import { ErrorStatus } from "@/types-enums/enums";
+import button from "@/styles-modules/Button.module.scss";
+import useOnClickOutside from "@/hooks/useOnClickOutside";
 
 const dropIn = {
   hidden: {

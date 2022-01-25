@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import ProfileItem from "./ProfileItem";
 import { useLazyQuery } from "@apollo/client";
-import { GET_USERS } from "@operations-queries/getAllUsers";
+import { GET_USERS } from "@/operations-queries/getAllUsers";
 import { users, usersVariables } from "generated/users";
 import { authState } from "store";
 import { useSnapshot } from "valtio";

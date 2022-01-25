@@ -1,7 +1,7 @@
-import Showcase from "@components-pages/landing/Showcase";
-import Disciplines from "@components-pages/landing/Disciplines";
-import Profiles from "@components-modules/profiles/Profiles";
-import About from "@components-pages/landing/About";
+import Showcase from "@/components-pages/landing/Showcase";
+import Disciplines from "@/components-pages/landing/Disciplines";
+import Profiles from "@/components-modules/profiles/Profiles";
+import About from "@/components-pages/landing/About";
 
 const Home = () => {
   // Follow this guide to properly use the useMutation hook with proper caching

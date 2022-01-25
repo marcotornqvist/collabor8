@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useMutation } from "@apollo/client";
-import { DELETE_CONTACT } from "@operations-mutations/deleteContact";
+import { DELETE_CONTACT } from "@/operations-mutations/deleteContact";
 import { deleteContact, deleteContactVariables } from "generated/deleteContact";
-import { CONTACT_STATUS } from "@operations-queries/contactStatus";
-import useHover from "@hooks/useHover";
-import DeleteModal from "@components-modules/profiles/DeleteModal";
+import { CONTACT_STATUS } from "@/operations-queries/contactStatus";
+import useHover from "@/hooks/useHover";
+import DeleteModal from "@/components-modules/profiles/DeleteModal";
 
 interface IProps {
   id: string;

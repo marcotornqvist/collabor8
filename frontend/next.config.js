@@ -22,6 +22,7 @@ module.exports = (phase) => {
         sizeLimit: "1mb",
       },
     },
+    jsconfigPaths : false,
     env: {
       BASE_URL: BASE_URL,
     },

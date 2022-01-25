@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { isUserBlocked, isUserBlockedVariables } from "generated/isUserBlocked";
 import BlockModal from "./BlockModal";
-import { IS_USER_BLOCKED } from "@operations-queries/isUserBlocked";
+import { IS_USER_BLOCKED } from "@/operations-queries/isUserBlocked";
 import { authState, toastState } from "../../../store";
 import { useSnapshot } from "valtio";
 

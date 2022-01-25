@@ -1,16 +1,16 @@
-import  { MouseEvent, useEffect, useState, useRef } from "react";
+import { MouseEvent, useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import { useMutation } from "@apollo/client";
-import { REJECT_CONTACT } from "@operations-mutations/rejectContact";
+import { REJECT_CONTACT } from "@/operations-mutations/rejectContact";
 import { rejectContact, rejectContactVariables } from "generated/rejectContact";
-import { ACCEPT_CONTACT } from "@operations-mutations/acceptContact";
+import { ACCEPT_CONTACT } from "@/operations-mutations/acceptContact";
 import { acceptContact, acceptContactVariables } from "generated/acceptContact";
-import { CONTACT_STATUS } from "@operations-queries/contactStatus";
+import { CONTACT_STATUS } from "@/operations-queries/contactStatus";
 import { motion } from "framer-motion";
 import { toastState } from "store";
-import { ErrorStatus } from "@types-enums/enums";
-import button from "@styles-modules/Button.module.scss";
-import useOnClickOutside from "@hooks/useOnClickOutside";
+import { ErrorStatus } from "@/types-enums/enums";
+import button from "@/styles-modules/Button.module.scss";
+import useOnClickOutside from "@/hooks/useOnClickOutside";
 
 const dropIn = {
   hidden: {

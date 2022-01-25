@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useSnapshot } from "valtio";
 import { authState } from "store";
 import Link from "next/link";
-import Branding from "@components-pages/auth/Branding";
+import Branding from "@/components-pages/auth/Branding";
 
 interface Props {
   children: React.ReactNode;

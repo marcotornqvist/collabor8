@@ -1,12 +1,17 @@
-import React, { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  ChangeEventHandler,
+  useEffect,
+  useState,
+} from "react";
 import { useMutation } from "@apollo/client";
-import { SINGLE_UPLOAD } from "@operations-mutations/uploadFile";
+import { SINGLE_UPLOAD } from "@/operations-mutations/uploadFile";
 import { singleUpload, singleUploadVariables } from "generated/singleUpload";
-import { GET_PROFILE_IMAGE } from "@operations-queries/getLoggedInProfile";
+import { GET_PROFILE_IMAGE } from "@/operations-queries/getLoggedInProfile";
 import { loggedInProfileImage } from "generated/loggedInProfileImage";
 import { toastState } from "store";
-import { ErrorStatus } from "@types-enums/enums";
-import button from "@styles-modules/Button.module.scss";
+import { ErrorStatus } from "@/types-enums/enums";
+import button from "@/styles-modules/Button.module.scss";
 
 export const UploadFile = () => {
   const [error, setError] = useState("");
@@ -33,8 +38,7 @@ export const UploadFile = () => {
       validity,
       files: [file],
     },
-  }: any) =>
-    validity.valid && singleUpload({ variables: { file } });
+  }: any) => validity.valid && singleUpload({ variables: { file } });
 
   useEffect(() => {
     if (data) {

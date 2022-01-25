@@ -1,11 +1,11 @@
 import React, { RefObject, useEffect, useRef, useState } from "react";
 import { users_users } from "generated/users";
-import useWindowSize from "@hooks/useWindowSize";
+import useWindowSize from "@/hooks/useWindowSize";
 import Image from "next/image";
-import ProfileImage from "@components-modules/global/ProfileImage";
+import ProfileImage from "@/components-modules/global/ProfileImage";
 import Link from "next/link";
 import Settings from "./Settings";
-import button from "@styles-modules/Button.module.scss";
+import button from "@/styles-modules/Button.module.scss";
 import("scroll-behavior-polyfill");
 
 interface IProps {

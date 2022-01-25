@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import styles from "@styles-modules/Spinner.module.scss";
+import styles from "@/styles-modules/Spinner.module.scss";
 
 const Spinner = () => {
   return (

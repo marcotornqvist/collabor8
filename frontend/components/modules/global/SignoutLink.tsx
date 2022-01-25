@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import { authState } from "store";
-import { LOGOUT_USER } from "@operations-mutations/logout";
+import { LOGOUT_USER } from "@/operations-mutations/logout";
 import { useRouter } from "next/router";
 import Image from "next/image";
 

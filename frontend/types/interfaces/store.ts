@@ -1,4 +1,4 @@
-import { ErrorStatus } from "@types-enums/enums";
+import { ErrorStatus } from "@/types-enums/enums";
 
 export interface IAuthState {
   accessToken: string;
