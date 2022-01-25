@@ -22,6 +22,7 @@ import { ForbiddenError, UserInputError } from "apollo-server-express";
 import { Message } from "../types/Message";
 import { ChatInput, CreateMessageInput } from "./inputs/ChatInput";
 import { User } from "../types/User";
+import { messageValidationSchema } from "../validations/schemas";
 
 // TODO: Queries/mutations/subscriptions to be implemented:
 // projectsChatRoom:        Return all chatrooms for projects - Done
@@ -625,12 +626,12 @@ export class ChatResolver {
     @Ctx() { payload, prisma }: Context,
     @PubSub("NEW_CHATROOM_MESSAGE") publish: Publisher<Message>
   ): Promise<Message> {
-    // Validate length of body
-    if (!body || body.length > 255) {
-      throw new UserInputError(
-        "Message cannot be empty or longer than 255 characters"
-      );
-    }
+    // Validate username
+    await messageValidationSchema.validate({
+      body,
+    });
+
+    console.log(id);
 
     // Checks that contact exists and logged in user is part of it
     const contact = await prisma.contact.findFirst({
@@ -655,6 +656,8 @@ export class ChatResolver {
         },
       },
     });
+
+    console.log(contact);
 
     if (!contact) {
       throw new UserInputError("Not Authorized");

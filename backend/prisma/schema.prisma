@@ -82,7 +82,7 @@ model Discipline {
 model Project {
   id          String          @id @default(uuid())
   title       String
-  body        String?
+  body        String
   country     String?
   chatRoom    ChatRoom?
   members     Member[]

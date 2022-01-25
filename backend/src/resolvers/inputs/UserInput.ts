@@ -6,6 +6,7 @@ import {
   Length,
   MinLength,
   MaxLength,
+  Min,
 } from "class-validator";
 import { Sort } from "../../types/Enums";
 import { PaginationArgs } from "./GlobalInputs";
@@ -61,9 +62,11 @@ export class RegisterInput {
   @Field(() => String, { nullable: true })
   lastName?: string | null;
 
+  @Min(6)
   @Field()
   password: string;
 
+  @Min(6)
   @Field()
   confirmPassword: string;
 }
@@ -83,9 +86,11 @@ export class UpdatePasswordInput {
   @Field()
   currentPassword: string;
 
+  @Min(6)
   @Field()
   newPassword: string;
 
+  @Min(6)
   @Field()
   confirmPassword: string;
 }

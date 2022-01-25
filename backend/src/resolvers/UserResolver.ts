@@ -238,8 +238,6 @@ export class UserResolver {
         username = createUsername(32);
       }
 
-      // console.log(username);
-
       // Make sure email doesn't already exist
       const emailExists = await prisma.user.findUnique({
         where: {

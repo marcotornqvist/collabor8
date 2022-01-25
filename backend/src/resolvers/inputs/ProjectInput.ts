@@ -1,24 +1,26 @@
-import { Length } from "class-validator";
+import { Length, Max } from "class-validator";
 import { Field, InputType, ID, registerEnumType } from "type-graphql";
 import { Sort } from "../../types/Enums";
 import { PaginationArgs, SearchArgs } from "./GlobalInputs";
 
 @InputType({ description: "Input Arguments for Project" })
 export class CreateProjectInput {
+  @Length(10, 50)
   @Field(() => String)
   title: string;
 
-  @Field(() => String, { nullable: true })
-  body?: string | null;
+  @Max(1000)
+  @Field(() => String)
+  body: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   country?: string | null;
 
-  @Field(() => [Number], { nullable: true })
-  disciplines?: number[] | null;
+  @Field(() => [Number])
+  disciplines?: number[];
 
-  @Field(() => [String], { nullable: true })
-  members?: string[] | null;
+  @Field(() => [String])
+  members?: string[];
 }
 
 @InputType({ description: "Input Arguments for Project" })
@@ -26,18 +28,22 @@ export class UpdateProjectInput {
   @Field(() => ID)
   id: string;
 
-  @Length(1, 50)
+  @Length(10, 50)
   @Field(() => String)
   title: string;
 
-  @Field(() => String, { nullable: true })
-  body?: string | null;
+  @Max(1000)
+  @Field(() => String)
+  body: string;
 
   @Field(() => String, { nullable: true })
   country?: string | null;
 
-  @Field(() => [Number], { nullable: true })
-  disciplines?: number[] | null;
+  @Field(() => [Number])
+  disciplines?: number[];
+
+  @Field(() => [String])
+  members?: string[];
 }
 
 @InputType({

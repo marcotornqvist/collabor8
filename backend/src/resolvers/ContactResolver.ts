@@ -203,6 +203,11 @@ export class ContactResolver {
 
     // Send a notification that logged in user has sent a contact request
     if (contact) {
+      await prisma.chatRoom.create({
+        data: {
+          contactId: contact.id,
+        },
+      });
       await prisma.notification.create({
         data: {
           senderId: payload!.userId,

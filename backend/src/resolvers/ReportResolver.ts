@@ -78,7 +78,7 @@ export class ReportResolver {
   ): Promise<ReportProject> {
     // Validate the input fields
     const errors: LooseObject = await validateFields<
-      Omit<ReportUserInput, "userId">
+      Omit<ReportProjectInput, "projectId">
     >({
       fields: {
         violation,

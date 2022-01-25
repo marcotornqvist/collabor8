@@ -24,6 +24,8 @@ import countries from "../data/countries";
 import { pagination } from "../utils/pagination";
 import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
 import { NotificationCode } from "@prisma/client";
+import { validateFields } from "../validations/validateFields";
+import { CreateProjectValidationSchema } from "../validations/schemas";
 
 // Queries/mutations to be implemented:
 // projects:                  Return all projects - Done
@@ -173,25 +175,25 @@ export class ProjectResolver {
     { title, body, country, disciplines, members }: CreateProjectInput,
     @Ctx() { payload, prisma }: Context
   ): Promise<Project> {
-    let errors: LooseObject = {};
-    try {
-      title = capitalizeFirstLetter(title.trim());
-      body = body ? capitalizeFirstLetter(body.trim()) : null;
+    title = capitalizeFirstLetter(title.trim());
+    body = capitalizeFirstLetter(body.trim());
 
+    // Validate the input fields
+    const errors: LooseObject = await validateFields<CreateProjectInput>({
+      fields: {
+        title,
+        body,
+      },
+      validationSchema: CreateProjectValidationSchema,
+    });
+
+    try {
       const countryExists = countries.filter(
         (item) => item.country === country
       );
 
       if (countryExists.length < 1) {
         country = null;
-      }
-
-      if (title.length < 1 && title.length > 50) {
-        errors.title = "Title cannot be empty or more than 50 characters";
-      }
-
-      if (body && body.length > 1000) {
-        errors.body = "Description cannot be more than 1000 characters";
       }
 
       if (Object.keys(errors).length > 0) {
@@ -208,7 +210,7 @@ export class ProjectResolver {
           },
           // Add members to the project and set the logged in user as "ADMIN"
           members: {
-            create: { userId: payload!.userId, role: "ADMIN" },
+            create: { userId: payload!.userId, role: "ADMIN", status: "TRUE" },
             createMany: {
               data: members?.map((item) => ({ userId: item })) || [],
             },
@@ -417,7 +419,17 @@ export class ProjectResolver {
     { id, title, body, country, disciplines }: UpdateProjectInput,
     @Ctx() { payload, prisma }: Context
   ): Promise<Project> {
-    let errors: LooseObject = {};
+    // Validate the input fields
+    const errors: LooseObject = await validateFields<
+      Omit<UpdateProjectInput, "id">
+    >({
+      fields: {
+        title,
+        body,
+      },
+      validationSchema: CreateProjectValidationSchema,
+    });
+
     try {
       const countryExists = countries.filter(
         (item) => item.country === country
@@ -425,14 +437,6 @@ export class ProjectResolver {
 
       if (countryExists.length < 1) {
         country = null;
-      }
-
-      if (title.length < 1 && title.length > 50) {
-        errors.title = "Title cannot be empty or more than 50 characters";
-      }
-
-      if (body && body.length > 1000) {
-        errors.body = "Description cannot be more than 1000 characters";
       }
 
       if (Object.keys(errors).length > 0) {
@@ -454,10 +458,10 @@ export class ProjectResolver {
       });
 
       if (!project) {
-        throw new UserInputError("Project doesn't exist.");
+        throw new UserInputError("Project doesn't exist");
       }
 
-      // List that deletes disconnects disciplines
+      // List that disconnects disciplines from project
       const removeDisciplines = project.disciplines.filter(
         (item) => !disciplines?.some((item2) => item.id === item2)
       );
@@ -476,8 +480,8 @@ export class ProjectResolver {
           id,
         },
         data: {
-          title: title && capitalizeFirstLetter(title.trim()),
-          body: body && capitalizeFirstLetter(body.trim()),
+          title: capitalizeFirstLetter(title.trim()),
+          body: capitalizeFirstLetter(body.trim()),
           country,
           disciplines: {
             connect: disciplines?.map((item) => ({ id: item })),

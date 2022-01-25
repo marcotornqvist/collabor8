@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { ObjectType, Field, ID } from "type-graphql";
 import { Length, MaxLength } from "class-validator";
-import { User } from "./User";
 import { Member } from "./Member";
 import { ReportProject } from "./Report";
 import { ChatRoom } from "./ChatRoom";
@@ -12,13 +11,13 @@ export class Project {
   @Field(() => ID)
   id: string;
 
-  @Length(1, 50)
+  @Length(10, 50)
   @Field(() => String)
   title: string;
 
   @MaxLength(1000)
-  @Field(() => String, { nullable: true })
-  body?: string | null;
+  @Field(() => String)
+  body: string;
 
   @Field(() => String, { nullable: true })
   country?: string | null;
