@@ -101,7 +101,7 @@ export class ProfileResolver {
     let fullName = (firstName + " " + lastName).trim() || null;
     bio = capitalizeFirstLetter(bio).trim();
 
-    // Validate the register input
+    // Validate the input fields
     const errors: LooseObject = await validateFields<UpdateProfileInput>({
       fields: {
         firstName,

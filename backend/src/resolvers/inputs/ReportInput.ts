@@ -13,8 +13,8 @@ export class ReportUserInput {
   title: string;
 
   @MaxLength(1000)
-  @Field(() => String, { nullable: true })
-  body?: string | null;
+  @Field(() => String)
+  body: string;
 
   @Field(() => String)
   userId: string;
@@ -28,8 +28,8 @@ export class ReportProjectInput {
   @Field(() => String)
   title: string;
 
-  @Field(() => String, { nullable: true })
-  body?: string | null;
+  @Field(() => String)
+  body: string;
 
   @Field(() => String)
   projectId: string;

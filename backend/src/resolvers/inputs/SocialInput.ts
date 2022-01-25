@@ -2,7 +2,6 @@ import { Field, InputType } from "type-graphql";
 
 @InputType({ description: "Input Arguments for social links" })
 export class SocialInput {
-  [x: string]: any;
   @Field(() => String)
   instagram: string;
 

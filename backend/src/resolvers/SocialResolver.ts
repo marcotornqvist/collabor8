@@ -51,7 +51,7 @@ export class SocialResolver {
     return social;
   }
 
-  @Mutation(() => Boolean, {
+  @Mutation(() => Social, {
     description: "Update socials",
   })
   @UseMiddleware(isAuth)
@@ -59,59 +59,24 @@ export class SocialResolver {
     @Arg("data")
     data: SocialInput,
     @Ctx() { payload, prisma }: Context
-  ): Promise<Boolean> {
-    // Sets values to lowercase and removes all whitespace from object values
-    for (const [key, value] of Object.entries(data)) {
-      data[key] = value.toLowerCase().replace(/ /g, "");
-    }
-
+  ): Promise<Social> {
     // Validate the input fields
     const errors: LooseObject = await validateFields<SocialInput>({
       fields: data,
       validationSchema: UpdateSocialsValidationSchema,
     });
 
-    console.log(errors);
+    if (Object.keys(errors).length > 0) {
+      throw errors;
+    }
 
-    // console.log(errors);
+    const socials = await prisma.social.update({
+      where: {
+        userId: payload!.userId,
+      },
+      data: data,
+    });
 
-    // Destructuring values returned in function that validates all social usernames
-    // const validated = validateSocials(
-    //   instagram,
-    //   linkedin,
-    //   dribbble,
-    //   behance,
-    //   pinterest,
-    //   soundcloud,
-    //   spotify,
-    //   medium,
-    //   vimeo,
-    //   youtube,
-    //   github,
-    //   discord
-    // );
-
-    // const socials = await prisma.social.update({
-    //   where: {
-    //     userId: payload!.userId,
-    //   },
-    //   data: {
-    //     instagram: validated.instagram,
-    //     linkedin: validated.linkedin,
-    //     dribbble: validated.dribbble,
-    //     behance: validated.behance,
-    //     pinterest: validated.pinterest,
-    //     soundcloud: validated.soundcloud,
-    //     spotify: validated.spotify,
-    //     medium: validated.medium,
-    //     vimeo: validated.vimeo,
-    //     youtube: validated.youtube,
-    //     github: validated.github,
-    //     discord: validated.discord,
-    //   },
-    // });
-
-    // return socials;
-    return true;
+    return socials;
   }
 }

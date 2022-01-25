@@ -8,7 +8,8 @@ interface IArgs<T> {
 type IErr = { inner: { path: string; errors: string[] }[] };
 type IItem = { path: string; errors: string[] };
 
-// Function can be used to validate multiple fields
+// Function validates multiple fields by providing the fields object with the validationSchema
+// Function then returns errors if there are any, and otherwise it returns an empty object if there are no errors 
 export const validateFields = async <T>({
   fields,
   validationSchema,

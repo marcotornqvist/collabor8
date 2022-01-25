@@ -177,7 +177,7 @@ export class UserResolver {
     { email, firstName, lastName, password, confirmPassword }: RegisterInput,
     @Ctx() { res, prisma }: Context
   ): Promise<AuthResponse> {
-    // Validate the register input
+    // Validate the input fields
     const errors: LooseObject = await validateFields<RegisterInput>({
       fields: {
         firstName,
@@ -475,7 +475,7 @@ export class UserResolver {
     { currentPassword, newPassword, confirmPassword }: UpdatePasswordInput,
     @Ctx() { payload, prisma }: Context
   ) {
-    // Validate the updatePassword input
+    // Validate the input fields
     const errors: LooseObject = await validateFields<
       Omit<UpdatePasswordInput, "currentPassword"> // Doesn't include currentPassword from UpdatePasswordInput interface
     >({

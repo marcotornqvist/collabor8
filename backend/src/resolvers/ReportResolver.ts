@@ -7,6 +7,8 @@ import { UserInputError } from "apollo-server-express";
 import { ReportUserInput, ReportProjectInput } from "./inputs/ReportInput";
 import { LooseObject } from "../types/Interfaces";
 import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
+import { validateFields } from "../validations/validateFields";
+import { ReportValidationSchema } from "../validations/schemas";
 
 // TODO: Queries/mutations to be implemented:
 // reportUser - In Progress (implement send email to host)
@@ -22,17 +24,19 @@ export class ReportResolver {
     @Arg("data") { violation, title, body, userId }: ReportUserInput,
     @Ctx() { payload, prisma }: Context
   ): Promise<ReportUser> {
-    let errors: LooseObject = {};
+    // Validate the input fields
+    const errors: LooseObject = await validateFields<
+      Omit<ReportUserInput, "userId">
+    >({
+      fields: {
+        violation,
+        title,
+        body,
+      },
+      validationSchema: ReportValidationSchema,
+    });
+
     try {
-      if (title.length < 10 && title.length > 255) {
-        errors.title =
-          "Title cannot be less than 10 or more than 255 characters";
-      }
-
-      if (body && body.length > 1000) {
-        errors.body = "Description cannot be more than 1000 characters";
-      }
-
       if (Object.keys(errors).length > 0) {
         throw errors;
       }
@@ -51,7 +55,7 @@ export class ReportResolver {
         data: {
           violation,
           title,
-          body: body && capitalizeFirstLetter(body.trim()),
+          body,
           senderId: payload!.userId,
           userId,
         },
@@ -72,17 +76,19 @@ export class ReportResolver {
     @Arg("data") { violation, title, body, projectId }: ReportProjectInput,
     @Ctx() { payload, prisma }: Context
   ): Promise<ReportProject> {
-    let errors: LooseObject = {};
+    // Validate the input fields
+    const errors: LooseObject = await validateFields<
+      Omit<ReportUserInput, "userId">
+    >({
+      fields: {
+        violation,
+        title,
+        body,
+      },
+      validationSchema: ReportValidationSchema,
+    });
+
     try {
-      if (title.length < 10 && title.length > 255) {
-        errors.title =
-          "Title cannot be less than 10 or more than 255 characters";
-      }
-
-      if (body && body.length > 1000) {
-        errors.body = "Description cannot be more than 1000 characters";
-      }
-
       if (Object.keys(errors).length > 0) {
         throw errors;
       }
@@ -101,7 +107,7 @@ export class ReportResolver {
         data: {
           violation,
           title,
-          body: body && capitalizeFirstLetter(body.trim()),
+          body: body,
           senderId: payload!.userId,
           projectId,
         },
