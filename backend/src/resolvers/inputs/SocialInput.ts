@@ -2,39 +2,40 @@ import { Field, InputType } from "type-graphql";
 
 @InputType({ description: "Input Arguments for social links" })
 export class SocialInput {
-  @Field(() => String, { nullable: true })
-  instagram?: string;
+  [x: string]: any;
+  @Field(() => String)
+  instagram: string;
 
-  @Field(() => String, { nullable: true })
-  linkedin?: string | null;
+  @Field(() => String)
+  linkedin: string;
 
-  @Field(() => String, { nullable: true })
-  dribbble?: string | null;
+  @Field(() => String)
+  dribbble: string;
 
-  @Field(() => String, { nullable: true })
-  behance?: string | null;
+  @Field(() => String)
+  behance: string;
 
-  @Field(() => String, { nullable: true })
-  pinterest?: string | null;
+  @Field(() => String)
+  pinterest: string;
 
-  @Field(() => String, { nullable: true })
-  soundcloud?: string | null;
+  @Field(() => String)
+  soundcloud: string;
 
-  @Field(() => String, { nullable: true })
-  spotify?: string | null;
+  @Field(() => String)
+  spotify: string;
 
-  @Field(() => String, { nullable: true })
-  medium?: string | null;
+  @Field(() => String)
+  medium: string;
 
-  @Field(() => String, { nullable: true })
-  vimeo?: string | null;
+  @Field(() => String)
+  vimeo: string;
 
-  @Field(() => String, { nullable: true })
-  youtube?: string | null;
+  @Field(() => String)
+  youtube: string;
 
-  @Field(() => String, { nullable: true })
-  github?: string | null;
+  @Field(() => String)
+  github: string;
 
-  @Field(() => String, { nullable: true })
-  discord?: string | null;
+  @Field(() => String)
+  discord: string;
 }

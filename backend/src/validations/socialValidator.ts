@@ -1,5 +1,5 @@
 import { UserInputError } from "apollo-server-express";
-import { LooseObject } from "../../types/Interfaces";
+import { LooseObject } from "../types/Interfaces";
 
 /*
   All of the functions below have almost the same type of functionallity,

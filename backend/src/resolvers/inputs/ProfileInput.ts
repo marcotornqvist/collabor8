@@ -5,19 +5,19 @@ import { MaxLength } from "class-validator";
 @InputType({ description: "Update Profile Input" })
 export class UpdateProfileInput {
   @MaxLength(255)
-  @Field(() => String, { nullable: true })
-  firstName?: string | null;
+  @Field(() => String)
+  firstName?: string;
 
   @MaxLength(255)
-  @Field(() => String, { nullable: true })
-  lastName?: string | null;
+  @Field(() => String)
+  lastName?: string;
 
   @Field(() => String, { nullable: true })
   country?: string | null;
 
   @MaxLength(500)
-  @Field(() => String, { nullable: true })
-  bio?: string | null;
+  @Field(() => String)
+  bio?: string;
 
   @Field(() => Number, { nullable: true })
   disciplineId?: number | null;

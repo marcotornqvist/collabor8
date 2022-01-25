@@ -10,8 +10,10 @@ import {
 import { Social } from "../types/Social";
 import { isAuth } from "../utils/isAuth";
 import { Context, LooseObject } from "../types/Interfaces";
-import { validateSocials } from "./validations/socialValidator";
+// import { validateSocials } from "../validations/socialValidator";
 import { SocialInput } from "./inputs/SocialInput";
+import { validateFields } from "../validations/validateFields";
+import { UpdateSocialsValidationSchema } from "../validations/schemas";
 
 // TODO: Queries/mutations to be implemented:
 // updateSocials:           Update all socials for a user
@@ -49,64 +51,67 @@ export class SocialResolver {
     return social;
   }
 
-  @Mutation(() => Social, {
+  @Mutation(() => Boolean, {
     description: "Update socials",
   })
   @UseMiddleware(isAuth)
   async updateSocials(
     @Arg("data")
-    {
-      instagram,
-      linkedin,
-      dribbble,
-      behance,
-      pinterest,
-      soundcloud,
-      spotify,
-      medium,
-      vimeo,
-      youtube,
-      github,
-      discord,
-    }: SocialInput,
+    data: SocialInput,
     @Ctx() { payload, prisma }: Context
-  ): Promise<Social> {
-    // Destructuring values returned in function that validates all social usernames
-    const validated = validateSocials(
-      instagram,
-      linkedin,
-      dribbble,
-      behance,
-      pinterest,
-      soundcloud,
-      spotify,
-      medium,
-      vimeo,
-      youtube,
-      github,
-      discord
-    );
+  ): Promise<Boolean> {
+    // Sets values to lowercase and removes all whitespace from object values
+    for (const [key, value] of Object.entries(data)) {
+      data[key] = value.toLowerCase().replace(/ /g, "");
+    }
 
-    const socials = await prisma.social.update({
-      where: {
-        userId: payload!.userId,
-      },
-      data: {
-        instagram: validated.instagram,
-        linkedin: validated.linkedin,
-        dribbble: validated.dribbble,
-        behance: validated.behance,
-        pinterest: validated.pinterest,
-        soundcloud: validated.soundcloud,
-        spotify: validated.spotify,
-        medium: validated.medium,
-        vimeo: validated.vimeo,
-        youtube: validated.youtube,
-        github: validated.github,
-        discord: validated.discord,
-      },
+    // Validate the input fields
+    const errors: LooseObject = await validateFields<SocialInput>({
+      fields: data,
+      validationSchema: UpdateSocialsValidationSchema,
     });
 
-    return socials;
+    console.log(errors);
+
+    // console.log(errors);
+
+    // Destructuring values returned in function that validates all social usernames
+    // const validated = validateSocials(
+    //   instagram,
+    //   linkedin,
+    //   dribbble,
+    //   behance,
+    //   pinterest,
+    //   soundcloud,
+    //   spotify,
+    //   medium,
+    //   vimeo,
+    //   youtube,
+    //   github,
+    //   discord
+    // );
+
+    // const socials = await prisma.social.update({
+    //   where: {
+    //     userId: payload!.userId,
+    //   },
+    //   data: {
+    //     instagram: validated.instagram,
+    //     linkedin: validated.linkedin,
+    //     dribbble: validated.dribbble,
+    //     behance: validated.behance,
+    //     pinterest: validated.pinterest,
+    //     soundcloud: validated.soundcloud,
+    //     spotify: validated.spotify,
+    //     medium: validated.medium,
+    //     vimeo: validated.vimeo,
+    //     youtube: validated.youtube,
+    //     github: validated.github,
+    //     discord: validated.discord,
+    //   },
+    // });
+
+    // return socials;
+    return true;
   }
 }

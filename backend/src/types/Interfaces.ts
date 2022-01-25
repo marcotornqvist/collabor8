@@ -17,6 +17,11 @@ export interface LooseObject {
   [key: string]: string | null | undefined;
 }
 
+// Same as LooseObject but returns all values
+export interface IFields {
+  [key: string]: any;
+}
+
 export interface Upload {
   filename: string;
   mimetype: string;

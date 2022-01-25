@@ -24,9 +24,15 @@ import { isAuth, isAuthOrNot } from "../utils/isAuth";
 import { createUsername } from "../helpers/createUsername";
 import { pagination } from "../utils/pagination";
 import { capitalizeWords } from "../helpers/capitalizeWords";
-import countries from "../data/countries";
-import { validateEmail } from "../helpers/validateEmail";
 import { NotificationCode } from ".prisma/client";
+import {
+  UsernameValidationSchema,
+  RegisterValidationSchema,
+  EmailValidationSchema,
+  UpdatePasswordValidationSchema,
+} from "../validations/schemas";
+import { validateFields } from "../validations/validateFields";
+import countries from "../data/countries";
 
 // TODO: Queries/mutations to be implemented:
 // users:           Return all users - Done
@@ -171,7 +177,17 @@ export class UserResolver {
     { email, firstName, lastName, password, confirmPassword }: RegisterInput,
     @Ctx() { res, prisma }: Context
   ): Promise<AuthResponse> {
-    let errors: LooseObject = {};
+    // Validate the register input
+    const errors: LooseObject = await validateFields<RegisterInput>({
+      fields: {
+        firstName,
+        lastName,
+        email,
+        password,
+        confirmPassword,
+      },
+      validationSchema: RegisterValidationSchema,
+    });
 
     try {
       let username = "";
@@ -188,15 +204,16 @@ export class UserResolver {
       // Sets username string to lowercase and replaces all whitespace
       username = username.toLowerCase().replace(/ /g, "");
 
-      // Numbers and Letters between A-z with length of 3-50
-      const regex = new RegExp(/[A-z0-9]{3,50}/);
-      const match = username.match(regex);
+      // Validate username
+      const isValid = await UsernameValidationSchema.validate({
+        username,
+      }).catch(() => false);
 
       // Checks that length is between 3 and 50 characters
       // The reason is that "-" and createUsername is 9 characters
       // this will make sure that username doesn't exceed the 50 character username limit
-      if (match?.includes(username)) {
-        // Make sure username doesn't already exist
+      // Make sure username doesn't already exist
+      if (isValid) {
         const usernameExists = await prisma.user.findUnique({
           where: {
             username,
@@ -221,32 +238,7 @@ export class UserResolver {
         username = createUsername(32);
       }
 
-      // Check that first name length is not more than 255 characters
-      if (firstName && firstName.length > 255) {
-        errors.firstName = "First name cannot be more than 255 characters";
-      }
-
-      // Check that last name length is not more than 255 characters
-      if (lastName && lastName.length > 255) {
-        errors.lastName = "Last name cannot be more than 255 characters";
-      }
-
-      // Checks that password length is more than 6 and that confirm password matches
-      if (password.length < 6) {
-        errors.password = "Password must be at least 6 characters";
-      } else if (password !== confirmPassword) {
-        errors.confirmPassword = "Passwords don't match";
-      }
-
-      // Checks that email is valid
-      if (validateEmail(email)) {
-        errors.email = "Email is not valid";
-      }
-
-      // Check that email input is not empty
-      if (email.trim() === "") {
-        errors.email = "Email cannot be empty";
-      }
+      // console.log(username);
 
       // Make sure email doesn't already exist
       const emailExists = await prisma.user.findUnique({
@@ -307,7 +299,7 @@ export class UserResolver {
         user: newUser,
       };
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       throw new UserInputError("Errors", { errors });
     }
   }
@@ -364,16 +356,10 @@ export class UserResolver {
     // Sets username to lowercase and removes all whitespace
     username = username.toLowerCase().replace(/ /g, "");
 
-    // Numbers and Letters between A-z with length of 3-50
-    const regex = new RegExp(/[A-z0-9]{3,50}/);
-    const match = username.match(regex);
-
-    // Checks if username matches regex constraints
-    if (!match?.includes(username)) {
-      throw new UserInputError(
-        "Username cannot be less than 3 characters or more than 50 characters and can only contain letters(A-z) and numbers"
-      );
-    }
+    // Validate username
+    await UsernameValidationSchema.validate({
+      username,
+    });
 
     // Checks if username already exists
     const usernameExists = await prisma.user.findUnique({
@@ -454,9 +440,10 @@ export class UserResolver {
     @Arg("email") email: string,
     @Ctx() { payload, prisma }: Context
   ) {
-    if (email.trim() === "") {
-      throw new UserInputError("Email cannot be empty");
-    }
+    // Validate email
+    await EmailValidationSchema.validate({
+      email,
+    });
 
     // Checks if email exists
     const emailExists = await prisma.user.findUnique({
@@ -464,11 +451,6 @@ export class UserResolver {
         email,
       },
     });
-
-    // Checks that email is valid
-    if (validateEmail(email)) {
-      throw new UserInputError("Email is not valid");
-    }
 
     if (emailExists) {
       throw new UserInputError("Email already exists");
@@ -493,7 +475,16 @@ export class UserResolver {
     { currentPassword, newPassword, confirmPassword }: UpdatePasswordInput,
     @Ctx() { payload, prisma }: Context
   ) {
-    let errors: LooseObject = {};
+    // Validate the updatePassword input
+    const errors: LooseObject = await validateFields<
+      Omit<UpdatePasswordInput, "currentPassword"> // Doesn't include currentPassword from UpdatePasswordInput interface
+    >({
+      fields: {
+        newPassword,
+        confirmPassword,
+      },
+      validationSchema: UpdatePasswordValidationSchema,
+    });
 
     try {
       const user = await prisma.user.findUnique({
@@ -506,12 +497,6 @@ export class UserResolver {
 
       if (!valid) {
         errors.currentPassword = "The current password is not correct";
-      }
-
-      if (newPassword.length < 6) {
-        errors.newPassword = "Password must be at least 6 characters";
-      } else if (newPassword !== confirmPassword) {
-        errors.confirmPassword = "Passwords don't match";
       }
 
       if (Object.keys(errors).length > 0) {

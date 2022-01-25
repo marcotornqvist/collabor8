@@ -21,7 +21,9 @@ import { S3 } from "aws-sdk";
 import { GraphQLUpload } from "graphql-upload";
 import { uuidFilenameTransform } from "../helpers/uuidFileNameTransform";
 import { Discipline } from "../types/Discipline";
-const sharp = require("sharp");
+import { UpdateProfileValidationSchema } from "../validations/schemas";
+import { validateFields } from "../validations/validateFields";
+import sharp from "sharp";
 
 // TODO: Queries/mutations to be implemented:
 // countries:             Return all countries - Done
@@ -94,16 +96,31 @@ export class ProfileResolver {
     { firstName, lastName, country, disciplineId, bio }: UpdateProfileInput,
     @Ctx() { payload, prisma }: Context
   ): Promise<Profile> {
-    let errors: LooseObject = {};
+    firstName = capitalizeWords(firstName).trim();
+    lastName = capitalizeWords(lastName).trim();
+    let fullName = (firstName + " " + lastName).trim() || null;
+    bio = capitalizeFirstLetter(bio).trim();
+
+    // Validate the register input
+    const errors: LooseObject = await validateFields<UpdateProfileInput>({
+      fields: {
+        firstName,
+        lastName,
+        bio,
+      },
+      validationSchema: UpdateProfileValidationSchema,
+    });
 
     try {
-      // trim() removes whitespace from the beginning and end
-      firstName = firstName ? capitalizeWords(firstName.trim()) : null;
-      lastName = lastName ? capitalizeWords(lastName.trim()) : null;
-      let fullName =
-        ((firstName ?? "") + " " + (lastName ?? "")).trim() || null;
-      country = country || null;
-      bio = bio ? capitalizeFirstLetter(bio.trim()) : null;
+      // Check that country exists by comparing selected country with countries list
+      const countryExists = countries.filter(
+        (item) => item.country === country
+      );
+
+      if (countryExists.length < 1) {
+        console.log(country);
+        country = null;
+      }
 
       let fields = {
         firstName,
@@ -113,30 +130,6 @@ export class ProfileResolver {
         bio,
       };
 
-      // Check that first name length is not more than 255 characters
-      if (firstName && firstName.length > 255) {
-        errors.firstName = "First name cannot be more than 255 characters";
-      }
-
-      // Check that last name length is not more than 255 characters
-      if (lastName && lastName.length > 255) {
-        errors.lastName = "Last name cannot be more than 255 characters";
-      }
-
-      // Check that bio length is not more than 500 characters
-      if (bio && bio.length > 500) {
-        errors.bio = "Bio cannot be more than 500 characters";
-      }
-
-      // Check that country exists by comparing selected country with countries list
-      const countryExists = countries.filter(
-        (item) => item.country === country
-      );
-
-      if (countryExists.length < 1) {
-        country = null;
-      }
-
       // Checks if a disciplineId was provided else disconnect the single disciplineId
       if (disciplineId) {
         // Checks if discipline exist
@@ -145,7 +138,6 @@ export class ProfileResolver {
             id: disciplineId,
           },
         });
-
         if (disciplineExists) {
           Object.assign(fields, {
             discipline: {
@@ -222,7 +214,7 @@ export class ProfileResolver {
       mimetype !== "image/png"
     ) {
       // Checks that file type is either jpeg, jpg or png
-      throw new Error("Image has to be jpeg/jpg or png");
+      throw new Error("Image has to be jpeg, jpg or png");
     }
 
     filename = uuidFilenameTransform(filename);
@@ -233,7 +225,7 @@ export class ProfileResolver {
       Conditions: [
         ["content-length-range", 0, 1024000], // 1 Mb
       ],
-      ContentType: "image/jpeg,image/png",
+      ContentType: "image/jpg,image/jpeg,image/png",
     };
 
     // Aws credentials

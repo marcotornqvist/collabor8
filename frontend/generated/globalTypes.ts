@@ -58,10 +58,10 @@ export interface UpdatePasswordInput {
  * Update Profile Input
  */
 export interface UpdateProfileInput {
-  firstName?: string | null;
-  lastName?: string | null;
+  firstName: string;
+  lastName: string;
   country?: string | null;
-  bio?: string | null;
+  bio: string;
   disciplineId?: number | null;
 }
 

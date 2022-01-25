@@ -57,7 +57,7 @@ interface Errors {
 interface IForm {
   firstName: string;
   lastName: string;
-  country: string;
+  country: string | null;
   discipline: IDiscipline | null;
   bio: string;
 }
@@ -114,7 +114,7 @@ const Form = () => {
   const initialValues: IForm = {
     firstName: data?.loggedInProfile?.firstName || "",
     lastName: data?.loggedInProfile?.lastName || "",
-    country: data?.loggedInProfile?.country || "",
+    country: data?.loggedInProfile?.country || null,
     discipline: data?.loggedInProfile?.discipline || null,
     bio: data?.loggedInProfile?.bio || "",
   };

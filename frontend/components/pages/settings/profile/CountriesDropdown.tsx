@@ -13,7 +13,7 @@ interface IProps {
     value: string | null,
     shouldValidate?: boolean | undefined
   ) => void;
-  selected: string;
+  selected: string | null;
   loading: boolean;
   variants: any;
   isMobile: boolean;

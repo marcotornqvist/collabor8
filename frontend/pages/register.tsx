@@ -1,5 +1,4 @@
 import { useState, ReactElement, useEffect } from "react";
-import AuthLayout from "@components-pages/auth/AuthLayout";
 import { useMutation } from "@apollo/client";
 import { register, registerVariables } from "generated/register";
 import { authState } from "store";
@@ -7,6 +6,7 @@ import { REGISTER_USER } from "@operations-mutations/register";
 import { useRouter } from "next/router";
 import { RegisterInput } from "generated/globalTypes";
 import { Formik } from "formik";
+import AuthLayout from "@components-pages/auth/AuthLayout";
 import input from "@styles-modules/Input.module.scss";
 import button from "@styles-modules/Button.module.scss";
 import * as Yup from "yup";
@@ -20,7 +20,7 @@ interface Errors {
 }
 
 // Form validation
-const SignupSchema = Yup.object().shape({
+const RegisterValidationSchema = Yup.object().shape({
   firstName: Yup.string().max(
     255,
     "First name cannot be more than 255 characters"
@@ -93,7 +93,7 @@ const Register = () => {
 
   return (
     <Formik
-      validationSchema={SignupSchema}
+      validationSchema={RegisterValidationSchema}
       validateOnMount={true}
       initialValues={{
         firstName: "",

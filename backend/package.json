@@ -27,6 +27,7 @@
     "@types/jest": "^26.0.24",
     "@types/jsonwebtoken": "^8.5.4",
     "@types/node": "^16.4.3",
+    "@types/sharp": "^0.29.5",
     "@types/uuid": "^8.3.1",
     "@types/ws": "^7.4.7",
     "prisma": "^3.0.2",
@@ -54,7 +55,8 @@
     "stream": "^0.0.2",
     "subscriptions-transport-ws": "^0.9.19",
     "type-graphql": "^1.1.1",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "yup": "^0.32.11"
   },
   "resolutions": {
     "graphql": "15.6.1"
