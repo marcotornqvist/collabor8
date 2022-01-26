@@ -89,8 +89,6 @@ const Register = () => {
     }
   };
 
-  console.log(formErrors);
-
   return (
     <Formik
       validationSchema={RegisterValidationSchema}

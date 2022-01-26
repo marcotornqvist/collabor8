@@ -9,8 +9,8 @@ import PrivateRoute from "../utils/privateRoute";
 import Navbar from "@/components-layout/navbar/Navbar";
 import Footer from "@/components-layout/footer/Footer";
 import Menu from "@/components-layout/menu/Menu";
-import "../styles/app.scss";
 import Toasts from "@/components-modules/global/toasts/Toasts";
+import "../styles/app.scss";
 
 // <script src="https://kit.fontawesome.com/0f6f932cce.js" crossorigin="anonymous"></script>
 

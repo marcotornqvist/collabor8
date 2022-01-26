@@ -23,6 +23,8 @@ import { Message } from "../types/Message";
 import { ChatInput, CreateMessageInput } from "./inputs/ChatInput";
 import { User } from "../types/User";
 import { messageValidationSchema } from "../validations/schemas";
+import { MessageSubscribtionResponse } from "./responses/MessageResponse";
+import { JwtPayload } from "jsonwebtoken";
 
 // TODO: Queries/mutations/subscriptions to be implemented:
 // projectsChatRoom:        Return all chatrooms for projects - Done
@@ -624,14 +626,13 @@ export class ChatResolver {
   async contactAddMessage(
     @Arg("data") { id, body }: CreateMessageInput,
     @Ctx() { payload, prisma }: Context,
-    @PubSub("NEW_CHATROOM_MESSAGE") publish: Publisher<Message>
+    @PubSub("NEW_CHATROOM_MESSAGE")
+    publish: Publisher<MessageSubscribtionResponse>
   ): Promise<Message> {
     // Validate username
     await messageValidationSchema.validate({
       body,
     });
-
-    console.log(id);
 
     // Checks that contact exists and logged in user is part of it
     const contact = await prisma.contact.findFirst({
@@ -654,10 +655,10 @@ export class ChatResolver {
             id: true,
           },
         },
+        // contactId: true,
+        // userId: true,
       },
     });
-
-    console.log(contact);
 
     if (!contact) {
       throw new UserInputError("Not Authorized");
@@ -685,7 +686,18 @@ export class ChatResolver {
     });
 
     // Sends a new message to all subscribers
-    await publish(newMessage);
+    await publish({
+      id: newMessage.id,
+      body: newMessage.body,
+      chatId: newMessage.chatId,
+      fullname: newMessage.user?.profile?.fullName,
+      profileImage: newMessage.user?.profile?.profileImage,
+      authReceivers: [
+        payload!.userId,
+        id
+      ],
+      createdAt: newMessage.createdAt,
+    });
 
     return newMessage;
   }
@@ -693,10 +705,21 @@ export class ChatResolver {
   @Subscription({
     topics: "NEW_CHATROOM_MESSAGE",
     filter: ({ payload, args, context }) => {
+      // return payload.authReceivers.includes(context.currentUser.userId);
       return payload.chatId === args.chatId;
     },
   })
-  newMessage(@Root() message: Message, @Arg("chatId") chatId: string): Message {
+  newMessage(
+    @Root() message: MessageSubscribtionResponse,
+    @Arg("chatId") chatId: string,
+    @Ctx() { userId }: JwtPayload
+  ): MessageSubscribtionResponse {
+    const isAuthorized = message.authReceivers.includes(userId);
+
+    if (!isAuthorized) {
+      throw new ForbiddenError("Not Authorized");
+    }
+
     return message;
   }
 }

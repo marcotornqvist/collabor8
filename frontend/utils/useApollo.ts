@@ -4,14 +4,17 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
   Observable,
+  split,
 } from "@apollo/client";
 import { useMemo } from "react";
 import { createUploadLink } from "apollo-upload-client";
 import { TokenRefreshLink } from "apollo-link-token-refresh";
-import jwtDecode, { JwtPayload } from "jwt-decode";
 import { snapshot } from "valtio/vanilla";
 import { authState } from "store";
 import { Subscription } from "zen-observable-ts";
+import jwtDecode, { JwtPayload } from "jwt-decode";
+import { WebSocketLink } from "@apollo/client/link/ws";
+import { getMainDefinition } from "@apollo/client/utilities";
 
 let apolloClient: ApolloClient<NormalizedCacheObject | null>;
 
@@ -61,7 +64,6 @@ const authMiddleware = new ApolloLink(
       Promise.resolve(operation)
         .then((operation) => {
           const { accessToken } = snapshot(authState);
-
           operation.setContext(({ headers = {} }) => ({
             headers: {
               ...headers,
@@ -92,10 +94,46 @@ const uploadLink = createUploadLink({
   },
 });
 
+// Create a WebSocket link:
+const wsLink = process.browser
+  ? new WebSocketLink({
+      // uri: process.env.SUBSCRIPTION_URL!,
+      uri: process.env.SUBSCRIPTION_URL!,
+      options: {
+        reconnect: true,
+        connectionParams: () => {
+          const { accessToken } = snapshot(authState);
+
+          return {
+            headers: {
+              authorization: accessToken ? `bearer ${accessToken}` : "",
+            },
+          };
+        },
+      },
+    })
+  : null;
+
+// only create the split in the browser
+const splitLink = wsLink
+  ? split(
+      // split based on operation type
+      ({ query }) => {
+        let definition = getMainDefinition(query);
+        return (
+          definition.kind === "OperationDefinition" &&
+          definition.operation === "subscription"
+        );
+      },
+      wsLink,
+      uploadLink
+    )
+  : uploadLink;
+
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: ApolloLink.from([authMiddleware, refreshLink, uploadLink]),
+    link: ApolloLink.from([authMiddleware, refreshLink, splitLink]),
     cache: new InMemoryCache({
       typePolicies: {
         Query: {

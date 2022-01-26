@@ -137,7 +137,7 @@ model ChatRoom {
 model Message {
   id        String   @id @default(uuid())
   body      String
-  user      User     @relation("Message", fields: [userId], references: [id], onDelete: Cascade)
+  user      User?    @relation("Message", fields: [userId], references: [id])
   userId    String
   chat      ChatRoom @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId    String
@@ -219,5 +219,3 @@ enum NotificationCode {
   CONTACT_ACCEPTED
   ADMIN_ASSIGNED
 }
-
-// Tet

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { verify } from "jsonwebtoken";
 import { createAccessToken, createRefreshToken } from "./auth";
-import { prisma } from "./context";
+import prisma from "./context";
 
 export const refreshToken = async (req: Request, res: Response) => {
   const token = req.cookies.jid;

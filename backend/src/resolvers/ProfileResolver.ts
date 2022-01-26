@@ -118,7 +118,6 @@ export class ProfileResolver {
       );
 
       if (countryExists.length < 1) {
-        console.log(country);
         country = null;
       }
 

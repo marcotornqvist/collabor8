@@ -534,12 +534,9 @@ export class UserResolver {
   @UseMiddleware(isAuth)
   async deleteAccount(@Ctx() { res, payload, prisma }: Context) {
     // Makes the user disabled and therefore cannot be accessed
-    await prisma.user.update({
+    await prisma.user.delete({
       where: {
         id: payload!.userId,
-      },
-      data: {
-        disabled: true,
       },
     });
 

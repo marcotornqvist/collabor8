@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { ObjectType, Field, ID } from "type-graphql";
 import { User } from "./User";
 import { ChatRoom } from "./ChatRoom";
-import { Length } from "class-validator";
+import { Length,  } from "class-validator";
 
 @ObjectType()
 export class Message {

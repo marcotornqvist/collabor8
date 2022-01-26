@@ -248,7 +248,7 @@ export class ContactResolver {
       throw new Error("Contact doesn't exist");
     }
 
-    // Delete contact from contacts list
+    // Disable contact from contacts list, this action deletes chatRoom and all messages related to that chatRoom.
     const deleted = await prisma.contact.delete({
       where: {
         id: contact.id,

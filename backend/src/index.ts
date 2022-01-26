@@ -13,7 +13,6 @@ import { NotificationResolver } from "./resolvers/NotificationResolver";
 import { ContactResolver } from "./resolvers/ContactResolver";
 import { ApolloServer } from "apollo-server-express";
 import { DateTimeResolver } from "graphql-scalars";
-import { prisma } from "./utils/context";
 import { Context } from "./types/Interfaces";
 import { GraphQLScalarType } from "graphql";
 import { corsOptions } from "./utils/corsOptions";
@@ -22,9 +21,10 @@ import { SubscriptionServer } from "subscriptions-transport-ws";
 import { execute, subscribe } from "graphql";
 import { createServer } from "http";
 import { findUser } from "./utils/findUser";
+import { graphqlUploadExpress } from "graphql-upload";
+import prisma from "./utils/context";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { graphqlUploadExpress } from "graphql-upload";
 
 const PORT = process.env.PORT || 4000;
 
@@ -79,7 +79,7 @@ const PORT = process.env.PORT || 4000;
       async onConnect(connectionParams: any) {
         if (connectionParams.Authorization) {
           const currentUser = await findUser(connectionParams.Authorization);
-          return { currentUser };
+          return currentUser;
         }
 
         throw new Error("Missing auth token!");

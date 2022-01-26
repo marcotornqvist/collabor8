@@ -7,6 +7,9 @@ module.exports = (phase) => {
   const BASE_URL = isDev
     ? "http://localhost:4000"
     : process.env.NEXT_PUBLIC_BASE_URL;
+  const SUBSCRIPTION_URL = isDev
+    ? "ws://localhost:4000"
+    : process.env.NEXT_PUBLIC_SUBSCRIPTION_URL;
 
   return {
     swcMinify: true,
@@ -22,9 +25,10 @@ module.exports = (phase) => {
         sizeLimit: "1mb",
       },
     },
-    jsconfigPaths : false,
+    jsconfigPaths: false,
     env: {
-      BASE_URL: BASE_URL,
+      BASE_URL,
+      SUBSCRIPTION_URL,
     },
     plugins: [
       "postcss-flexbugs-fixes",
