@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { gql, useMutation, useSubscription } from "@apollo/client";
-import { newMessage, newMessageVariables } from "generated/newMessage";
-import { NEW_MESSAGE } from "operations/subscriptions/newMessage";
-import { CONTACT_ADD_MESSAGE } from "@/operations-mutations/contactAddMessage";
-import {
-  contactAddMessage,
-  contactAddMessageVariables,
-} from "generated/contactAddMessage";
 import input from "@/styles-modules/Input.module.scss";
+import {
+  useContactAddMessageMutation,
+  useNewMessageSubscription,
+} from "generated/graphql";
 
 const Chatroom = () => {
   const router = useRouter();
@@ -23,14 +19,11 @@ const Chatroom = () => {
   //   },
   // });
 
-  const { data, loading } = useSubscription<newMessage, newMessageVariables>(
-    NEW_MESSAGE,
-    {
-      variables: {
-        id: chatroomId,
-      },
-    }
-  );
+  const { data, loading } = useNewMessageSubscription({
+    variables: {
+      id: chatroomId,
+    },
+  });
 
   useEffect(() => {
     console.log(data);
@@ -38,10 +31,7 @@ const Chatroom = () => {
 
   const [message, setMessage] = useState("");
 
-  const [contactAddMessage] = useMutation<
-    contactAddMessage,
-    contactAddMessageVariables
-  >(CONTACT_ADD_MESSAGE, {
+  const [contactAddMessage] = useContactAddMessageMutation({
     variables: {
       data: {
         id: chatroomId,

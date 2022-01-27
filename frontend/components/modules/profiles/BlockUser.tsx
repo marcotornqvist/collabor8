@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { isUserBlocked, isUserBlockedVariables } from "generated/isUserBlocked";
 import BlockModal from "./BlockModal";
-import { IS_USER_BLOCKED } from "@/operations-queries/isUserBlocked";
-import { authState, toastState } from "../../../store";
+import { authState } from "../../../store";
 import { useSnapshot } from "valtio";
+import { useIsUserBlockedLazyQuery } from "generated/graphql";
 
 interface IProps {
   id: string;
@@ -15,10 +13,7 @@ const BlockUser = ({ id, isVisible }: IProps) => {
   const [showModal, setShowModal] = useState(false);
   const { isAuth } = useSnapshot(authState);
 
-  const [isUserBlocked, { data }] = useLazyQuery<
-    isUserBlocked,
-    isUserBlockedVariables
-  >(IS_USER_BLOCKED, {
+  const [isUserBlocked, { data }] = useIsUserBlockedLazyQuery({
     variables: {
       id,
     },

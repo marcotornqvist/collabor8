@@ -1,9 +1,7 @@
-import { RefObject, useEffect, useRef, useState } from "react";
-import { useQuery } from "@apollo/client";
-import { GET_DISCIPLINES } from "@/operations-queries/disciplines";
-import { disciplines } from "generated/disciplines";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IDiscipline } from "@/types-interfaces/form";
+import { useDisciplinesQuery } from "generated/graphql";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import Image from "next/image";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
@@ -28,7 +26,7 @@ const DisciplinesDropdown = ({
   isMobile,
 }: IProps) => {
   const [show, setShow] = useState(false);
-  const { data } = useQuery<disciplines>(GET_DISCIPLINES);
+  const { data } = useDisciplinesQuery();
 
   const activeRef = useRef<HTMLLIElement>(null);
   const listRef = useRef<HTMLUListElement>(null);

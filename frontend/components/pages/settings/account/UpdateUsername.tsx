@@ -1,17 +1,12 @@
-import { useRef, useEffect, useState } from "react";
-import { useMutation } from "@apollo/client";
+import { useEffect, useState } from "react";
 import { Formik } from "formik";
-import { UPDATE_USERNAME } from "@/operations-mutations/updateUsername";
-import {
-  updateUsername,
-  updateUsernameVariables,
-} from "generated/updateUsername";
-import { loggedInUser } from "generated/loggedInUser";
+
 import { GET_LOGGED_IN_USER } from "@/operations-queries/getLoggedInUser";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
 import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
+import { LoggedInUserQuery, useUpdateUsernameMutation } from "generated/graphql";
 
 interface IProps {
   currentUsername?: string;
@@ -21,31 +16,28 @@ interface IProps {
 const UpdateUsername = ({ currentUsername, loading }: IProps) => {
   const [isValid, setIsValid] = useState(false);
   const [error, setError] = useState("");
-  const [updateUsername] = useMutation<updateUsername, updateUsernameVariables>(
-    UPDATE_USERNAME,
-    {
-      update(cache, { data }) {
-        const user = cache.readQuery<loggedInUser>({
-          query: GET_LOGGED_IN_USER,
-        });
+  const [updateUsername] = useUpdateUsernameMutation({
+    update(cache, { data }) {
+      const user = cache.readQuery<LoggedInUserQuery>({
+        query: GET_LOGGED_IN_USER,
+      });
 
-        if (data?.updateUsername && user) {
-          const merge = {
-            ...user.loggedInUser,
-            username: data.updateUsername,
-          };
-          cache.writeQuery<loggedInUser>({
-            query: GET_LOGGED_IN_USER,
-            data: {
-              loggedInUser: merge,
-            },
-          });
-          setIsValid(true);
-        }
-      },
-      onError: (error) => setError(error.message),
-    }
-  );
+      if (data?.updateUsername && user) {
+        const merge = {
+          ...user.loggedInUser,
+          username: data.updateUsername,
+        };
+        cache.writeQuery<LoggedInUserQuery>({
+          query: GET_LOGGED_IN_USER,
+          data: {
+            loggedInUser: merge,
+          },
+        });
+        setIsValid(true);
+      }
+    },
+    onError: (error) => setError(error.message),
+  });
 
   useEffect(() => {
     if (error) {

@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLazyQuery } from "@apollo/client";
 import { useSnapshot } from "valtio";
 import { authState } from "store";
-import { GET_PROFILE_IMAGE } from "@/operations-queries/getLoggedInProfile";
-import { loggedInProfileImage } from "generated/loggedInProfileImage";
+import { useLoggedInProfileImageLazyQuery } from "generated/graphql";
 import SignoutLink from "@/components-modules/global/SignoutLink";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import ProfileImage from "@/components-modules/global/ProfileImage";
@@ -25,7 +23,7 @@ const AccountDropdown = () => {
   const { isAuth } = useSnapshot(authState);
   const [show, setShow] = useState(false);
   const [loggedInProfileImage, { data, loading, error }] =
-    useLazyQuery<loggedInProfileImage>(GET_PROFILE_IMAGE);
+    useLoggedInProfileImageLazyQuery();
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

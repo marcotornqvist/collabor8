@@ -1,9 +1,6 @@
 import React, { useEffect } from "react";
+import { Contact_Status, useContactStatusLazyQuery } from "generated/graphql";
 import Link from "next/link";
-import { useLazyQuery } from "@apollo/client";
-import { CONTACT_STATUS } from "@/operations-queries/contactStatus";
-import { contactStatus, contactStatusVariables } from "generated/contactStatus";
-import { CONTACT_STATUS as STATUS_ENUM } from "generated/globalTypes";
 import AddContact from "./AddContact";
 import DeleteContact from "./DeleteContact";
 import PendingContact from "./PendingContact";
@@ -23,20 +20,20 @@ interface IProps {
 // - If no contact is returned: Add Person
 
 const ContactButtons = ({ id, isVisible, isAuth, username }: IProps) => {
-  const [getContactStatus, { data, loading, error }] = useLazyQuery<
-    contactStatus,
-    contactStatusVariables
-  >(CONTACT_STATUS, {
-    variables: {
-      id
-    },
-  });
+  const [getContactStatus, { data, loading, error }] =
+    useContactStatusLazyQuery({
+      variables: {
+        id,
+      },
+    });
 
   useEffect(() => {
     if (isVisible) {
       getContactStatus();
     }
   }, [isVisible]);
+
+  console.log(data);
 
   if (!isAuth) {
     return (
@@ -56,15 +53,15 @@ const ContactButtons = ({ id, isVisible, isAuth, username }: IProps) => {
   // Returns a button depending on the contactStatus
   // Example: if a user has received a contact request a certain button will be rendered
   switch (data?.contactStatus) {
-    case STATUS_ENUM.REQUEST_SENT:
+    case Contact_Status.RequestSent:
       return <DeleteContact id={id} pendingState={true} />;
-    case STATUS_ENUM.ACTIVE_CONTACT:
+    case Contact_Status.ActiveContact:
       return <DeleteContact id={id} pendingState={false} />;
-    case STATUS_ENUM.REQUEST_RECEIVED:
+    case Contact_Status.RequestReceived:
       return <PendingContact id={id} />;
-    case STATUS_ENUM.REQUEST_RECEIVED_FALSE:
+    case Contact_Status.RequestReceivedFalse:
       return <PendingContact id={id} hideDelete={true} />;
-    case STATUS_ENUM.NO_CONTACT:
+    case Contact_Status.NoContact:
       return <AddContact id={id} />;
     default:
       return (

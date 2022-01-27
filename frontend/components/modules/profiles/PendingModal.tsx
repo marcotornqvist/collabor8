@@ -1,14 +1,10 @@
 import { MouseEvent, useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
-import { useMutation } from "@apollo/client";
-import { REJECT_CONTACT } from "@/operations-mutations/rejectContact";
-import { rejectContact, rejectContactVariables } from "generated/rejectContact";
-import { ACCEPT_CONTACT } from "@/operations-mutations/acceptContact";
-import { acceptContact, acceptContactVariables } from "generated/acceptContact";
 import { CONTACT_STATUS } from "@/operations-queries/contactStatus";
 import { motion } from "framer-motion";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
+import { useAcceptContactMutation, useRejectContactMutation } from "generated/graphql";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 
@@ -42,41 +38,35 @@ const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
   const [error, setError] = useState("");
   const [isBrowser, setIsBrowser] = useState(false);
 
-  const [acceptContact] = useMutation<acceptContact, acceptContactVariables>(
-    ACCEPT_CONTACT,
-    {
-      variables: {
-        id,
-      },
-      refetchQueries: [
-        {
-          query: CONTACT_STATUS,
-          variables: {
-            id,
-          },
+  const [acceptContact] = useAcceptContactMutation({
+    variables: {
+      id,
+    },
+    refetchQueries: [
+      {
+        query: CONTACT_STATUS,
+        variables: {
+          id,
         },
-      ],
-      onError: (error) => setError(error.message),
-    }
-  );
+      },
+    ],
+    onError: (error) => setError(error.message),
+  });
 
-  const [rejectContact] = useMutation<rejectContact, rejectContactVariables>(
-    REJECT_CONTACT,
-    {
-      variables: {
-        id,
-      },
-      refetchQueries: [
-        {
-          query: CONTACT_STATUS,
-          variables: {
-            id,
-          },
+  const [rejectContact] = useRejectContactMutation({
+    variables: {
+      id,
+    },
+    refetchQueries: [
+      {
+        query: CONTACT_STATUS,
+        variables: {
+          id,
         },
-      ],
-      onError: (error) => setError(error.message),
-    }
-  );
+      },
+    ],
+    onError: (error) => setError(error.message),
+  });
 
   useEffect(() => {
     setIsBrowser(true);

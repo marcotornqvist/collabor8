@@ -1,21 +1,18 @@
 import { useEffect, useState } from "react";
-import { useMutation } from "@apollo/client";
 import { Formik } from "formik";
-import { UPDATE_PASSWORD } from "@/operations-mutations/updatePassword";
-import {
-  updatePassword,
-  updatePasswordVariables,
-} from "generated/updatePassword";
-import {
-  loggedInUser,
-  loggedInUser_loggedInUser,
-} from "generated/loggedInUser";
-import { GET_LOGGED_IN_USER } from "@/operations-queries/getLoggedInUser";
+// import {
+//   updatePassword,
+//   updatePasswordVariables,
+// } from "generated3/updatePassword";
+// import {
+//   loggedInUser,
+//   loggedInUser_loggedInUser,
+// } from "generated3/loggedInUser";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
 import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
-import * as Yup from "yup";
+import { useUpdatePasswordMutation } from "generated/graphql";
 
 interface IProps {
   loading: boolean;
@@ -23,10 +20,7 @@ interface IProps {
 
 const UpdatePassword = ({ loading }: IProps) => {
   const [error, setError] = useState("");
-  const [updatePassword, { data }] = useMutation<
-    updatePassword,
-    updatePasswordVariables
-  >(UPDATE_PASSWORD, {
+  const [updatePassword, { data }] = useUpdatePasswordMutation({
     update(cache, { data }) {
       // const user = cache.readQuery<loggedInUser>({
       //   query: GET_LOGGED_IN_USER,

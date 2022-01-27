@@ -7,11 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "codegen": "npx apollo client:codegen --target typescript --endpoint=http://localhost:4000 --outputFlat --includes \"operations/*/*.tsx\" --excludes \"generated\" generated",
-    "preinstall": "npx npm-force-resolutions"
+    "preinstall": "npx npm-force-resolutions",
+    "codegen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.21",
+    "@apollo/client": "^3.5.8",
+    "@graphql-codegen/cli": "^2.4.0",
     "apollo-link-error": "^1.1.13",
     "apollo-link-token-refresh": "^0.3.2",
     "apollo-upload-client": "^16.0.0",
@@ -19,7 +20,7 @@
     "dotenv": "^10.0.0",
     "formik": "^2.2.9",
     "framer-motion": "^4.1.17",
-    "graphql": "^14.7.0",
+    "graphql": "^15.7.2",
     "jwt-decode": "^3.1.2",
     "next": "^12.0.7",
     "npm-force-resolutions": "^0.0.10",
@@ -33,6 +34,9 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@graphql-codegen/typescript": "2.4.2",
+    "@graphql-codegen/typescript-operations": "2.2.2",
+    "@graphql-codegen/typescript-react-apollo": "3.2.4",
     "@types/apollo-upload-client": "^14.1.0",
     "@types/graphql": "^14.5.0",
     "@types/react": "17.0.15",
@@ -41,10 +45,12 @@
     "apollo": "^2.33.9",
     "eslint": "7.31.0",
     "eslint-config-next": "11.0.1",
-    "typescript": "4.3.5"
+    "typescript": "4.3.5",
+    "@graphql-codegen/cli": "2.4.0"
   },
   "resolutions": {
     "shelljs": ">=0.8.5",
-    "node-fetch": "2.6.1"
+    "node-fetch": "2.6.1",
+    "graphql": "15.7.2"
   }
 }

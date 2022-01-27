@@ -7,7 +7,6 @@ import ContactButtons from "./ContactButtons";
 import BlockUser from "./BlockUser";
 import ReportButton from "./ReportButton";
 
-type ButtonProps = React.ComponentPropsWithoutRef<"div">;
 
 interface IProps {
   id: string;

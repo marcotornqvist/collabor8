@@ -1,11 +1,8 @@
 import { useEffect } from "react";
-import ProfileItem from "./ProfileItem";
-import { useLazyQuery } from "@apollo/client";
-import { GET_USERS } from "@/operations-queries/getAllUsers";
-import { users, usersVariables } from "generated/users";
 import { authState } from "store";
 import { useSnapshot } from "valtio";
-import { UsersFilterArgs } from "generated/globalTypes";
+import { UsersFilterArgs, useUsersLazyQuery } from "generated/graphql";
+import ProfileItem from "./ProfileItem";
 import ProfileSkeleton from "./ProfileSkeleton";
 
 // Check that user is not a friend
@@ -22,7 +19,7 @@ const Profiles = ({
   sort,
 }: UsersFilterArgs) => {
   const { loading } = useSnapshot(authState);
-  const [users, { data }] = useLazyQuery<users, usersVariables>(GET_USERS, {
+  const [users, { data }] = useUsersLazyQuery({
     variables: {
       data: {
         first,
@@ -43,7 +40,15 @@ const Profiles = ({
         <div className="grid">
           {data?.users
             ? data.users.map((item) => (
-                <ProfileItem key={item.id} item={item} />
+                <ProfileItem
+                  key={item.id}
+                  id={item.id}
+                  username={item.username}
+                  firstName={item.profile?.firstName}
+                  lastName={item.profile?.lastName}
+                  profileImage={item.profile?.profileImage}
+                  title={item.profile?.discipline?.title}
+                />
               ))
             : [1, 2, 3].map((n) => <ProfileSkeleton key={n} />)}
         </div>

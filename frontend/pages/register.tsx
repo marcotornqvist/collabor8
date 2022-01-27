@@ -1,11 +1,8 @@
 import { useState, ReactElement, useEffect } from "react";
-import { useMutation } from "@apollo/client";
-import { register, registerVariables } from "generated/register";
 import { authState } from "store";
-import { REGISTER_USER } from "@/operations-mutations/register";
 import { useRouter } from "next/router";
-import { RegisterInput } from "generated/globalTypes";
 import { Formik } from "formik";
+import { RegisterInput, useRegisterMutation } from "generated/graphql";
 import AuthLayout from "@/components-pages/auth/AuthLayout";
 import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
@@ -43,14 +40,11 @@ const Register = () => {
   const router = useRouter();
   const [formErrors, setFormErrors] = useState<Errors>({});
 
-  const [register, { client }] = useMutation<register, registerVariables>(
-    REGISTER_USER,
-    {
-      onError: (error) => {
-        setFormErrors(error.graphQLErrors[0].extensions?.errors);
-      },
-    }
-  );
+  const [register, { client }] = useRegisterMutation({
+    onError: (error) => {
+      setFormErrors(error.graphQLErrors[0].extensions?.errors);
+    },
+  });
 
   const redirect = router.query.redirect;
 

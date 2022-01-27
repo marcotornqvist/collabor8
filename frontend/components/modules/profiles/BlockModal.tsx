@@ -1,14 +1,13 @@
 import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
-import { useMutation } from "@apollo/client";
-import { blockUser, blockUserVariables } from "generated/blockUser";
-import { unblockUser, unblockUserVariables } from "generated/unblockUser";
 import { motion } from "framer-motion";
 import { IS_USER_BLOCKED } from "@/operations-queries/isUserBlocked";
-import { BLOCK_USER } from "@/operations-mutations/blockUser";
-import { UNBLOCK_USER } from "@/operations-mutations/unblockUser";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
+import {
+  useBlockUserMutation,
+  useUnblockUserMutation,
+} from "generated/graphql";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 
@@ -42,7 +41,7 @@ const PendingModal = ({ id, show, onClose, isBlocked }: IProps) => {
   const [isBrowser, setIsBrowser] = useState(false);
   const [error, setError] = useState("");
 
-  const [blockUser] = useMutation<blockUser, blockUserVariables>(BLOCK_USER, {
+  const [blockUser] = useBlockUserMutation({
     variables: {
       id,
     },
@@ -57,23 +56,20 @@ const PendingModal = ({ id, show, onClose, isBlocked }: IProps) => {
     onError: (error) => setError(error.message),
   });
 
-  const [unblockUser] = useMutation<unblockUser, unblockUserVariables>(
-    UNBLOCK_USER,
-    {
-      variables: {
-        id,
-      },
-      refetchQueries: [
-        {
-          query: IS_USER_BLOCKED,
-          variables: {
-            id,
-          },
+  const [unblockUser] = useUnblockUserMutation({
+    variables: {
+      id,
+    },
+    refetchQueries: [
+      {
+        query: IS_USER_BLOCKED,
+        variables: {
+          id,
         },
-      ],
-      onError: (error) => setError(error.message),
-    }
-  );
+      },
+    ],
+    onError: (error) => setError(error.message),
+  });
 
   useEffect(() => {
     setIsBrowser(true);

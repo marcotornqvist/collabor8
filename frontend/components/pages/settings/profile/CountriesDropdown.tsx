@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_COUNTRIES } from "@/operations-queries/countries";
-import { countries } from "generated/countries";
 import { AnimatePresence, motion } from "framer-motion";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import Image from "next/image";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
+import { useCountriesQuery } from "generated/graphql";
 
 interface IProps {
   setFieldValue: (
@@ -27,7 +27,7 @@ const CountriesDropdown = ({
   isMobile,
 }: IProps) => {
   const [show, setShow] = useState(false);
-  const { data } = useQuery<countries>(GET_COUNTRIES);
+  const { data } = useCountriesQuery();
 
   const activeRef = useRef<HTMLLIElement>(null);
   const listRef = useRef<HTMLUListElement>(null);

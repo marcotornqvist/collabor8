@@ -1,22 +1,37 @@
 import React, { RefObject, useEffect, useRef, useState } from "react";
-import { users_users } from "generated/users";
 import useWindowSize from "@/hooks/useWindowSize";
 import Image from "next/image";
 import ProfileImage from "@/components-modules/global/ProfileImage";
 import Link from "next/link";
 import Settings from "./Settings";
 import button from "@/styles-modules/Button.module.scss";
+import { Profile, User } from "generated/graphql";
 import("scroll-behavior-polyfill");
 
+interface Discipline {
+  title: string;
+}
+
 interface IProps {
-  item: users_users;
   key: string;
+  id: string;
+  username: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  profileImage?: string | null;
+  title?: string;
 }
 
 type RefType = RefObject<HTMLDivElement>;
 
-const ProfileItem = ({ item }: IProps) => {
-  const { id, username, profile } = item;
+const ProfileItem = ({
+  id,
+  username,
+  firstName,
+  lastName,
+  profileImage,
+  title,
+}: IProps) => {
   const [toggle, setToggle] = useState(false);
 
   const carouselRef: RefType = useRef<HTMLDivElement>(null);
@@ -59,11 +74,11 @@ const ProfileItem = ({ item }: IProps) => {
       <div className="carousel" ref={carouselRef}>
         <div className="profile-content carousel-item" ref={contentRef}>
           <div className="wrapper">
-            <ProfileImage profileImage={profile?.profileImage} />
+            <ProfileImage profileImage={profileImage} />
             <h4>
-              {profile?.firstName} {profile?.lastName}
+              {firstName} {lastName}
             </h4>
-            <span>{profile?.discipline?.title}</span>
+            <span>{title}</span>
           </div>
           <Link href={`/profile/${username}`}>
             <a>

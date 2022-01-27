@@ -1,26 +1,18 @@
-import React, {
-  ChangeEvent,
-  ChangeEventHandler,
-  useEffect,
-  useState,
-} from "react";
-import { useMutation } from "@apollo/client";
-import { SINGLE_UPLOAD } from "@/operations-mutations/uploadFile";
-import { singleUpload, singleUploadVariables } from "generated/singleUpload";
+import React, { useEffect, useState } from "react";
 import { GET_PROFILE_IMAGE } from "@/operations-queries/getLoggedInProfile";
-import { loggedInProfileImage } from "generated/loggedInProfileImage";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
 import button from "@/styles-modules/Button.module.scss";
+import {
+  LoggedInProfileImageQuery,
+  useSingleUploadMutation,
+} from "generated/graphql";
 
 export const UploadFile = () => {
   const [error, setError] = useState("");
-  const [singleUpload, { data }] = useMutation<
-    singleUpload,
-    singleUploadVariables
-  >(SINGLE_UPLOAD, {
+  const [singleUpload, { data }] = useSingleUploadMutation({
     update(cache, { data }) {
-      cache.writeQuery<loggedInProfileImage>({
+      cache.writeQuery<LoggedInProfileImageQuery>({
         query: GET_PROFILE_IMAGE,
         data: {
           loggedInProfile: {

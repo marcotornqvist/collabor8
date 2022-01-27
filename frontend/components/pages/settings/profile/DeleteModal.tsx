@@ -1,13 +1,13 @@
 import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
-import { useMutation, useQuery } from "@apollo/client";
-import { DELETE_IMAGE } from "@/operations-mutations/deleteImage";
 import { GET_PROFILE_IMAGE } from "@/operations-queries/getLoggedInProfile";
-import { deleteImage } from "generated/deleteImage";
-import { loggedInProfileImage } from "generated/loggedInProfileImage";
 import { motion } from "framer-motion";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
+import {
+  LoggedInProfileImageQuery,
+  useDeleteImageMutation,
+} from "generated/graphql";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 
@@ -39,9 +39,9 @@ const DeleteModal = ({ show, onClose }: IProps) => {
   const [error, setError] = useState("");
   const [isBrowser, setIsBrowser] = useState(false);
 
-  const [deleteImage, { data }] = useMutation<deleteImage>(DELETE_IMAGE, {
+  const [deleteImage, { data }] = useDeleteImageMutation({
     update(cache, { data }) {
-      cache.writeQuery<loggedInProfileImage>({
+      cache.writeQuery<LoggedInProfileImageQuery>({
         query: GET_PROFILE_IMAGE,
         data: {
           loggedInProfile: {

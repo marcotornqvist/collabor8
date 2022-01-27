@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@apollo/client";
 import { GET_LOGGED_IN_PROFILE } from "@/operations-queries/getLoggedInProfile";
-import { loggedInProfile } from "generated/loggedInProfile";
-import { UPDATE_PROFILE } from "@/operations-mutations/updateProfile";
-import { updateProfile, updateProfileVariables } from "generated/updateProfile";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
 import { IDiscipline } from "@/types-interfaces/form";
@@ -13,6 +9,11 @@ import button from "@/styles-modules/Button.module.scss";
 import CountriesDropdown from "./CountriesDropdown";
 import DisciplinesDropdown from "./DisciplinesDropdown";
 import useWindowSize from "@/hooks/useWindowSize";
+import {
+  LoggedInProfileQuery,
+  useLoggedInProfileQuery,
+  useUpdateProfileMutation,
+} from "generated/graphql";
 
 const mobileVariants = {
   hidden: {
@@ -65,7 +66,7 @@ interface IForm {
 const Form = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
-  const { data, loading } = useQuery<loggedInProfile>(GET_LOGGED_IN_PROFILE);
+  const { data, loading } = useLoggedInProfileQuery();
 
   const { width } = useWindowSize();
 
@@ -73,23 +74,20 @@ const Form = () => {
     setIsMobile(width < 768);
   }, [width]);
 
-  const [updateProfile] = useMutation<updateProfile, updateProfileVariables>(
-    UPDATE_PROFILE,
-    {
-      // Update the cache profile values off the loggedInProfile
-      update(cache, { data }) {
-        if (data?.updateProfile) {
-          cache.writeQuery<loggedInProfile>({
-            query: GET_LOGGED_IN_PROFILE,
-            data: {
-              loggedInProfile: data.updateProfile,
-            },
-          });
-        }
-      },
-      onError: (error) => setErrors(error.graphQLErrors[0].extensions?.errors),
-    }
-  );
+  const [updateProfile] = useUpdateProfileMutation({
+    // Update the cache profile values off the loggedInProfile
+    update(cache, { data }) {
+      if (data?.updateProfile) {
+        cache.writeQuery<LoggedInProfileQuery>({
+          query: GET_LOGGED_IN_PROFILE,
+          data: {
+            loggedInProfile: data.updateProfile,
+          },
+        });
+      }
+    },
+    onError: (error) => setErrors(error.graphQLErrors[0].extensions?.errors),
+  });
 
   const handleUpdateProfile = async (values: IForm) => {
     setErrors({});
