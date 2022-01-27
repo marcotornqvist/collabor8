@@ -27,6 +27,14 @@ export enum Sort {
 }
 
 /**
+ * Create Message
+ */
+export interface CreateMessageInput {
+  id: string;
+  body: string;
+}
+
+/**
  * Login a User
  */
 export interface LoginInput {

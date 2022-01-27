@@ -15,5 +15,5 @@ export interface blockUser {
 }
 
 export interface blockUserVariables {
-  blockUserId: string;
+  id: string;
 }

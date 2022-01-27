@@ -28,7 +28,7 @@ const ContactButtons = ({ id, isVisible, isAuth, username }: IProps) => {
     contactStatusVariables
   >(CONTACT_STATUS, {
     variables: {
-      contactStatusId: id,
+      id
     },
   });
 

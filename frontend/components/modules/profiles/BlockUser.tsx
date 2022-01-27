@@ -20,7 +20,7 @@ const BlockUser = ({ id, isVisible }: IProps) => {
     isUserBlockedVariables
   >(IS_USER_BLOCKED, {
     variables: {
-      isUserBlockedId: id,
+      id,
     },
   });
 

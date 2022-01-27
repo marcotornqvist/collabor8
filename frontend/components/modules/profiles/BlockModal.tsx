@@ -44,13 +44,13 @@ const PendingModal = ({ id, show, onClose, isBlocked }: IProps) => {
 
   const [blockUser] = useMutation<blockUser, blockUserVariables>(BLOCK_USER, {
     variables: {
-      blockUserId: id,
+      id,
     },
     refetchQueries: [
       {
         query: IS_USER_BLOCKED,
         variables: {
-          isUserBlockedId: id,
+          id,
         },
       },
     ],
@@ -61,13 +61,13 @@ const PendingModal = ({ id, show, onClose, isBlocked }: IProps) => {
     UNBLOCK_USER,
     {
       variables: {
-        unblockUserId: id,
+        id,
       },
       refetchQueries: [
         {
           query: IS_USER_BLOCKED,
           variables: {
-            isUserBlockedId: id,
+            id,
           },
         },
       ],

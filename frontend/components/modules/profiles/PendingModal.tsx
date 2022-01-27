@@ -46,13 +46,13 @@ const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
     ACCEPT_CONTACT,
     {
       variables: {
-        acceptContactId: id,
+        id,
       },
       refetchQueries: [
         {
           query: CONTACT_STATUS,
           variables: {
-            contactStatusId: id,
+            id,
           },
         },
       ],
@@ -64,13 +64,13 @@ const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
     REJECT_CONTACT,
     {
       variables: {
-        rejectContactId: id,
+        id,
       },
       refetchQueries: [
         {
           query: CONTACT_STATUS,
           variables: {
-            contactStatusId: id,
+            id,
           },
         },
       ],

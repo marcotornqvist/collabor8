@@ -20,5 +20,5 @@ export interface acceptContact {
 }
 
 export interface acceptContactVariables {
-  acceptContactId: string;
+  id: string;
 }

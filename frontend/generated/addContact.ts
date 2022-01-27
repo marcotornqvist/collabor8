@@ -20,5 +20,5 @@ export interface addContact {
 }
 
 export interface addContactVariables {
-  addContactId: string;
+  id: string;
 }

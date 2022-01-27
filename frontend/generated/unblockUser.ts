@@ -15,5 +15,5 @@ export interface unblockUser {
 }
 
 export interface unblockUserVariables {
-  unblockUserId: string;
+  id: string;
 }

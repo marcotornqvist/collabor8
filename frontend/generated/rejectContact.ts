@@ -15,5 +15,5 @@ export interface rejectContact {
 }
 
 export interface rejectContactVariables {
-  rejectContactId: string;
+  id: string;
 }

@@ -45,13 +45,13 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
     deleteContactVariables
   >(DELETE_CONTACT, {
     variables: {
-      deleteContactId: id,
+      id,
     },
     refetchQueries: [
       {
         query: CONTACT_STATUS, // DocumentNode object parsed with gql
         variables: {
-          contactStatusId: id,
+          id,
         },
       },
     ],

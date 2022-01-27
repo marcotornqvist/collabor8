@@ -38,5 +38,5 @@ export interface users {
 }
 
 export interface usersVariables {
-  usersData: UsersFilterArgs;
+  data: UsersFilterArgs;
 }

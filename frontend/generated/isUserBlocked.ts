@@ -15,5 +15,5 @@ export interface isUserBlocked {
 }
 
 export interface isUserBlockedVariables {
-  isUserBlockedId: string;
+  id: string;
 }

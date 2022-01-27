@@ -97,7 +97,6 @@ const uploadLink = createUploadLink({
 // Create a WebSocket link:
 const wsLink = process.browser
   ? new WebSocketLink({
-      // uri: process.env.SUBSCRIPTION_URL!,
       uri: process.env.SUBSCRIPTION_URL!,
       options: {
         reconnect: true,
@@ -105,9 +104,7 @@ const wsLink = process.browser
           const { accessToken } = snapshot(authState);
 
           return {
-            headers: {
-              authorization: accessToken ? `bearer ${accessToken}` : "",
-            },
+            authorization: accessToken ? `bearer ${accessToken}` : "",
           };
         },
       },

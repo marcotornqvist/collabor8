@@ -15,5 +15,5 @@ export interface deleteContact {
 }
 
 export interface deleteContactVariables {
-  deleteContactId: string;
+  id: string;
 }

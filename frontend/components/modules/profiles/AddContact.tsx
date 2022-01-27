@@ -16,13 +16,13 @@ const AddContact = ({ id }: IProps) => {
     ADD_CONTACT,
     {
       variables: {
-        addContactId: id,
+        id,
       },
       refetchQueries: [
         {
           query: CONTACT_STATUS, // DocumentNode object parsed with gql
           variables: {
-            contactStatusId: id,
+            id,
           },
         },
       ],

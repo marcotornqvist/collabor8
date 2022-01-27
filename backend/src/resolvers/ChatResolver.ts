@@ -236,7 +236,7 @@ export class ChatResolver {
       },
     });
 
-    // Returns all users who have new messages
+    // Returns all users who have sent new messages
     const usersWithNewMessages = await prisma.user.findMany({
       where: {
         OR: contactsWithNewMessages.map((user) => ({
@@ -266,8 +266,8 @@ export class ChatResolver {
       )
       .map((item) => ({ id: item.contactId }));
 
-    // Returns all users who have don't have new messages
-    const usersWithOldMessages = await prisma.user.findMany({
+    // Returns all users who don't have new messages
+    const usersWithNoNewMessages = await prisma.user.findMany({
       where: {
         ...pagination({ after, before, first, last }),
         OR: remainingContacts,
@@ -290,7 +290,7 @@ export class ChatResolver {
 
     return {
       usersWithNewMessages,
-      usersWithOldMessages,
+      usersWithNoNewMessages,
     };
   }
 
@@ -305,7 +305,9 @@ export class ChatResolver {
   ) {
     const project = await prisma.project.findFirst({
       where: {
-        id,
+        chatRoom: {
+          id,
+        },
         members: {
           some: {
             userId: payload!.userId,
@@ -313,24 +315,6 @@ export class ChatResolver {
           },
         },
         disabled: false,
-      },
-      select: {
-        title: true,
-        members: {
-          select: {
-            user: {
-              select: {
-                username: true,
-                profile: {
-                  select: {
-                    fullName: true,
-                    profileImage: true,
-                  },
-                },
-              },
-            },
-          },
-        },
       },
     });
 
@@ -558,19 +542,20 @@ export class ChatResolver {
   async projectAddMessage(
     @Arg("data") { id, body }: CreateMessageInput,
     @Ctx() { payload, prisma }: Context,
-    @PubSub("NEW_CHATROOM_MESSAGE") publish: Publisher<Message>
+    @PubSub("NEW_CHATROOM_MESSAGE")
+    publish: Publisher<MessageSubscribtionResponse>
   ): Promise<Message> {
-    // Validate length of body
-    if (body.length < 1 || body.length > 255) {
-      throw new UserInputError(
-        "Message cannot be empty or longer than 255 characters"
-      );
-    }
+    // Validate body input
+    await messageValidationSchema.validate({
+      body,
+    });
 
     // Checks that project exists and logged in user is part of it
     const project = await prisma.project.findFirst({
       where: {
-        id,
+        chatRoom: {
+          id,
+        },
         members: {
           some: {
             userId: payload!.userId,
@@ -585,6 +570,14 @@ export class ChatResolver {
             id: true,
           },
         },
+        members: {
+          where: {
+            status: "TRUE",
+          },
+          select: {
+            userId: true,
+          },
+        },
       },
     });
 
@@ -592,7 +585,7 @@ export class ChatResolver {
       throw new ForbiddenError("Not Authorized");
     }
 
-    // Creates a newMessage
+    // Creates a new message
     const newMessage = await prisma.message.create({
       data: {
         chatId: project.chatRoom!.id,
@@ -613,8 +606,18 @@ export class ChatResolver {
       },
     });
 
-    // Sends a new message to all subscribers
-    await publish(newMessage);
+    const authReceivers = project.members.map((item) => item.userId);
+
+    // Sends a new message to all users who are in the chatRoom
+    await publish({
+      id: newMessage.id,
+      body: newMessage.body,
+      chatId: newMessage.chatId,
+      fullname: newMessage.user?.profile?.fullName,
+      profileImage: newMessage.user?.profile?.profileImage,
+      authReceivers: authReceivers,
+      createdAt: newMessage.createdAt,
+    });
 
     return newMessage;
   }
@@ -629,45 +632,37 @@ export class ChatResolver {
     @PubSub("NEW_CHATROOM_MESSAGE")
     publish: Publisher<MessageSubscribtionResponse>
   ): Promise<Message> {
-    // Validate username
+    // Validate body input
     await messageValidationSchema.validate({
       body,
     });
 
-    // Checks that contact exists and logged in user is part of it
-    const contact = await prisma.contact.findFirst({
+    // Checks that logged in user is part of the chatroom by chatroom id and by
+    // Checking that logged in user is part of the contact with a status of "TRUE"
+    const chatroom = await prisma.chatRoom.findFirst({
       where: {
-        OR: [
-          {
-            userId: payload!.userId,
-            contactId: id,
-          },
-          {
-            userId: id,
-            contactId: payload!.userId,
-          },
-        ],
-        status: "TRUE",
-      },
-      select: {
-        chatRoom: {
-          select: {
-            id: true,
-          },
+        contact: {
+          OR: [
+            {
+              userId: payload!.userId,
+            },
+            {
+              contactId: payload!.userId,
+            },
+          ],
+          status: "TRUE",
         },
-        // contactId: true,
-        // userId: true,
       },
     });
 
-    if (!contact) {
+    if (!chatroom) {
       throw new UserInputError("Not Authorized");
     }
 
     // Create a new message based on the chatRoom id and logged in user id
     const newMessage = await prisma.message.create({
       data: {
-        chatId: contact.chatRoom!.id,
+        chatId: id,
         userId: payload!.userId,
         body,
       },
@@ -685,17 +680,14 @@ export class ChatResolver {
       },
     });
 
-    // Sends a new message to all subscribers
+    // Sends a new message to all users who are in the chatRoom
     await publish({
       id: newMessage.id,
       body: newMessage.body,
       chatId: newMessage.chatId,
       fullname: newMessage.user?.profile?.fullName,
       profileImage: newMessage.user?.profile?.profileImage,
-      authReceivers: [
-        payload!.userId,
-        id
-      ],
+      authReceivers: [payload!.userId, id],
       createdAt: newMessage.createdAt,
     });
 
@@ -704,8 +696,9 @@ export class ChatResolver {
 
   @Subscription({
     topics: "NEW_CHATROOM_MESSAGE",
-    filter: ({ payload, args, context }) => {
-      // return payload.authReceivers.includes(context.currentUser.userId);
+    filter: ({ payload, args }) => {
+      console.log(payload);
+      // Subscribes to a certain chatRoom by chatId
       return payload.chatId === args.chatId;
     },
   })
@@ -714,6 +707,7 @@ export class ChatResolver {
     @Arg("chatId") chatId: string,
     @Ctx() { userId }: JwtPayload
   ): MessageSubscribtionResponse {
+    // Checks that logged in user is authorized to read message
     const isAuthorized = message.authReceivers.includes(userId);
 
     if (!isAuthorized) {

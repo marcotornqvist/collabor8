@@ -24,7 +24,7 @@ const Profiles = ({
   const { loading } = useSnapshot(authState);
   const [users, { data }] = useLazyQuery<users, usersVariables>(GET_USERS, {
     variables: {
-      usersData: {
+      data: {
         first,
       },
     },

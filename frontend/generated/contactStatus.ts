@@ -17,5 +17,5 @@ export interface contactStatus {
 }
 
 export interface contactStatusVariables {
-  contactStatusId: string;
+  id: string;
 }
