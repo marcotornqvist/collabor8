@@ -21,7 +21,6 @@ const Login = () => {
     if (error) {
       toastState.addToast(error, ErrorStatus.danger);
     }
-    return;
   }, [error]);
 
   const redirect = router.query.redirect;

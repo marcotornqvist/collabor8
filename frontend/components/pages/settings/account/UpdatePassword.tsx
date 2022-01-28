@@ -1,87 +1,87 @@
 import { useEffect, useState } from "react";
 import { Formik } from "formik";
-// import {
-//   updatePassword,
-//   updatePasswordVariables,
-// } from "generated3/updatePassword";
-// import {
-//   loggedInUser,
-//   loggedInUser_loggedInUser,
-// } from "generated3/loggedInUser";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
+import { useUpdatePasswordMutation } from "generated/graphql";
 import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
-import { useUpdatePasswordMutation } from "generated/graphql";
+import isNotEmptyObject from "utils/isNotEmptyObject";
+import { UpdatePasswordValidationSchema } from "@/validations/schemas";
+import InputErrorMessage from "@/components-modules/global/InputErrorMessage";
 
 interface IProps {
   loading: boolean;
 }
 
+interface FormErrors {
+  currentPassword?: string;
+  newPassword?: string;
+  confirmPassword?: string;
+}
+
 const UpdatePassword = ({ loading }: IProps) => {
-  const [error, setError] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState(""); // Error message, server error
+  const [formErrors, setFormErrors] = useState<FormErrors>({}); // UserInput Errors
+
   const [updatePassword, { data }] = useUpdatePasswordMutation({
-    update(cache, { data }) {
-      // const user = cache.readQuery<loggedInUser>({
-      //   query: GET_LOGGED_IN_USER,
-      // });
-      // if (data?.updatePassword && user) {
-      //   // const merge: loggedInUser_loggedInUser = {
-      //   //   ...user.loggedInUser,
-      //   //   password: data.updatePassword,
-      //   // };
-      //   cache.writeQuery<loggedInUser>({
-      //     query: GET_LOGGED_IN_USER,
-      //     data: {
-      //       loggedInUser: merge,
-      //     },
-      //   });
-      // }
+    onError: (error) => {
+      setFormErrors(error.graphQLErrors[0].extensions?.errors);
+      setError(error.message);
     },
-    onError: (error) => setError(error.message),
   });
 
   useEffect(() => {
-    if (error) {
+    if (error && !formErrors) {
       toastState.addToast(error, ErrorStatus.danger);
     }
-  }, [error]);
+    if (data) {
+      setIsSubmitted(true);
+      setFormErrors({});
+      toastState.addToast("Password updated successfully", ErrorStatus.success);
+    }
+  }, [error, data]);
 
   return (
     <div className="update-password">
       {!loading && (
         <Formik
+          validationSchema={UpdatePasswordValidationSchema}
+          validateOnMount={true}
           initialValues={{
             currentPassword: "",
             newPassword: "",
             confirmPassword: "",
           }}
-          onSubmit={async (values) => {
-            setError("");
-            // if (values.password && values.password !== password) {
-            await updatePassword({
+          onSubmit={(values) =>
+            updatePassword({
               variables: {
                 data: values,
               },
-            });
-          }}
+            })
+          }
         >
-          {({ values, handleChange, handleSubmit, isSubmitting }) => (
-            <form onSubmit={handleSubmit}>
+          {({ values, errors, handleChange, handleSubmit, isSubmitting }) => (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                isNotEmptyObject(errors) && setFormErrors(errors);
+                handleSubmit();
+              }}
+            >
               <div className={`input-group ${input.group}`}>
                 <div className="input-text">
                   <label htmlFor="currentPassword">Current Password</label>
-                  {/* {error && <span className="error-message">{error}</span>} */}
-                  {/* {data && (
-                    <span className="success-message">
-                      Valid Current Password
-                    </span>
-                  )} */}
+                  <InputErrorMessage
+                    errorMessage={formErrors.currentPassword}
+                    successMessage={"Current password is valid"}
+                    isSubmitted={isSubmitted}
+                  />
                 </div>
                 <input
                   id="currentPassword"
                   name="currentPassword"
-                  type="text"
+                  type="password"
                   value={values.currentPassword}
                   onChange={handleChange}
                   placeholder={"Please enter your current password"}
@@ -91,15 +91,16 @@ const UpdatePassword = ({ loading }: IProps) => {
               <div className={`input-group ${input.group}`}>
                 <div className="input-text">
                   <label htmlFor="newPassword">New Password</label>
-                  {/* {error && <span className="error-message">{error}</span>} */}
-                  {/* {data && (
-                    <span className="success-message">Valid New Password</span>
-                  )} */}
+                  <InputErrorMessage
+                    errorMessage={formErrors.newPassword}
+                    successMessage={"New password is valid"}
+                    isSubmitted={isSubmitted}
+                  />
                 </div>
                 <input
                   id="newPassword"
                   name="newPassword"
-                  type="text"
+                  type="password"
                   value={values.newPassword}
                   onChange={handleChange}
                   placeholder={"Please enter your new password"}
@@ -109,17 +110,16 @@ const UpdatePassword = ({ loading }: IProps) => {
               <div className={`input-group ${input.group}`}>
                 <div className="input-text">
                   <label htmlFor="confirmPassword">Confirm Password</label>
-                  {/* {error && <span className="error-message">{error}</span>} */}
-                  {/* {data && (
-                    <span className="success-message">
-                      Valid Confirm Password
-                    </span>
-                  )} */}
+                  <InputErrorMessage
+                    errorMessage={formErrors.confirmPassword}
+                    successMessage={"Confirm password is valid"}
+                    isSubmitted={isSubmitted}
+                  />
                 </div>
                 <input
                   id="confirmPassword"
                   name="confirmPassword"
-                  type="text"
+                  type="password"
                   value={values.confirmPassword}
                   onChange={handleChange}
                   placeholder={"Please confirm new password"}

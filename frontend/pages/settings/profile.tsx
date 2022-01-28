@@ -1,11 +1,10 @@
 import { ReactElement, useEffect } from "react";
 import { UploadFile } from "@/components-pages/settings/profile/UploadFile";
-import { useQuery } from "@apollo/client";
+import { useLoggedInProfileImageQuery } from "generated/graphql";
 import SettingsLayout from "@/components-pages/settings/SettingsLayout";
 import DeleteImage from "@/components-pages/settings/profile/DeleteImage";
 import ProfileImage from "@/components-modules/global/ProfileImage";
 import Form from "@/components-pages/settings/profile/Form";
-import { useLoggedInProfileImageQuery } from "generated/graphql";
 
 const Profile = () => {
   const { data } = useLoggedInProfileImageQuery();

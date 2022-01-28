@@ -116,11 +116,13 @@ const PendingModal = ({ id, show, onClose, isBlocked }: IProps) => {
             <span>&times;</span>
           </div>
         </div>
-        <h4>
-          {isBlocked
-            ? "Are you sure you want to Unblock User?"
-            : "Are you sure you want to Block User?"}
-        </h4>
+        <div className="modal-content">
+          <h4>
+            {isBlocked
+              ? "Are you sure you want to Unblock User?"
+              : "Are you sure you want to Block User?"}
+          </h4>
+        </div>
         <button
           className={isBlocked ? button.lightGreen : button.lightRed}
           onClick={() => blockToggler()}

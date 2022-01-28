@@ -98,7 +98,9 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
             <span>&times;</span>
           </div>
         </div>
-        <h4>{title}</h4>
+        <div className="modal-content">
+          <h4>{title}</h4>
+        </div>
         <button className={button.lightRed} onClick={() => onClickHandler()}>
           Delete
         </button>

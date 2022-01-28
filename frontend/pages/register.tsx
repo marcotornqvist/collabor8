@@ -1,14 +1,17 @@
 import { useState, ReactElement, useEffect } from "react";
-import { authState } from "store";
+import { authState, toastState } from "store";
 import { useRouter } from "next/router";
 import { Formik } from "formik";
 import { RegisterInput, useRegisterMutation } from "generated/graphql";
+import { RegisterValidationSchema } from "@/validations/schemas";
+import { ErrorStatus } from "@/types-enums/enums";
+import isNotEmptyObject from "utils/isNotEmptyObject";
 import AuthLayout from "@/components-pages/auth/AuthLayout";
 import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
-import * as Yup from "yup";
+import InputErrorMessage from "@/components-modules/global/InputErrorMessage";
 
-interface Errors {
+interface FormErrors {
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -16,33 +19,17 @@ interface Errors {
   confirmPassword?: string;
 }
 
-// Form validation
-const RegisterValidationSchema = Yup.object().shape({
-  firstName: Yup.string().max(
-    255,
-    "First name cannot be more than 255 characters"
-  ),
-  lastName: Yup.string().max(
-    255,
-    "Last name cannot be more than 255 characters"
-  ),
-  email: Yup.string()
-    .email("Email is not valid")
-    .required("Email cannot be empty"),
-  password: Yup.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: Yup.string().oneOf(
-    [Yup.ref("password"), null],
-    "Passwords don't match"
-  ),
-});
-
 const Register = () => {
   const router = useRouter();
-  const [formErrors, setFormErrors] = useState<Errors>({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState(""); // Error message, server error
+  const [formErrors, setFormErrors] = useState<FormErrors>({}); // UserInput Errors
 
   const [register, { client }] = useRegisterMutation({
     onError: (error) => {
+      setIsSubmitted(true);
       setFormErrors(error.graphQLErrors[0].extensions?.errors);
+      setError(error.message);
     },
   });
 
@@ -83,6 +70,12 @@ const Register = () => {
     }
   };
 
+  useEffect(() => {
+    if (error && !formErrors) {
+      toastState.addToast(error, ErrorStatus.danger);
+    }
+  }, [error]);
+
   return (
     <Formik
       validationSchema={RegisterValidationSchema}
@@ -100,17 +93,19 @@ const Register = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            setFormErrors(errors);
-            handleSubmit;
+            isNotEmptyObject(errors) && setFormErrors(errors);
+            handleSubmit();
           }}
         >
           <div className="wrapper">
             <div className={`input-group ${input.group}`}>
               <div className="input-text">
                 <label htmlFor="firstName">First Name</label>
-                {formErrors.firstName && (
-                  <span className="error-message">{formErrors.firstName}</span>
-                )}
+                <InputErrorMessage
+                  errorMessage={formErrors.firstName}
+                  successMessage={"First name is valid"}
+                  isSubmitted={isSubmitted}
+                />
               </div>
               <input
                 id="firstName"
@@ -119,16 +114,18 @@ const Register = () => {
                 className={input.default}
                 value={values.firstName}
                 onChange={handleChange}
-                placeholder="Please enter your first name"
+                placeholder="Your first name"
                 autoComplete="on"
               />
             </div>
             <div className={`input-group ${input.group}`}>
               <div className="input-text">
                 <label htmlFor="lastName">Last Name</label>
-                {formErrors.lastName && (
-                  <span className="error-message">{formErrors.lastName}</span>
-                )}
+                <InputErrorMessage
+                  errorMessage={formErrors.lastName}
+                  successMessage={"Last name is valid"}
+                  isSubmitted={isSubmitted}
+                />
               </div>
               <input
                 id="lastName"
@@ -137,7 +134,7 @@ const Register = () => {
                 className={input.default}
                 value={values.lastName}
                 onChange={handleChange}
-                placeholder="Please enter your last name"
+                placeholder="Your last name"
                 autoComplete="on"
               />
             </div>
@@ -145,9 +142,11 @@ const Register = () => {
           <div className={`input-group ${input.group}`}>
             <div className="input-text">
               <label htmlFor="email">Email</label>
-              {formErrors.email && (
-                <span className="error-message">{formErrors.email}</span>
-              )}
+              <InputErrorMessage
+                errorMessage={formErrors.email}
+                successMessage={"Email is valid"}
+                isSubmitted={isSubmitted}
+              />
             </div>
             <input
               id="email"
@@ -163,9 +162,11 @@ const Register = () => {
           <div className={`input-group ${input.group}`}>
             <div className="input-text">
               <label htmlFor="password">Password</label>
-              {formErrors.password && (
-                <span className="error-message">{formErrors.password}</span>
-              )}
+              <InputErrorMessage
+                errorMessage={formErrors.password}
+                successMessage={"Password is valid"}
+                isSubmitted={isSubmitted}
+              />
             </div>
             <input
               id="password"
@@ -181,11 +182,11 @@ const Register = () => {
           <div className={`input-group ${input.group}`}>
             <div className="input-text">
               <label htmlFor="confirmPassword">Confirm Password</label>
-              {formErrors.confirmPassword && (
-                <span className="error-message">
-                  {formErrors.confirmPassword}
-                </span>
-              )}
+              <InputErrorMessage
+                errorMessage={formErrors.confirmPassword}
+                successMessage={"Confirm Password is valid"}
+                isSubmitted={isSubmitted}
+              />
             </div>
             <input
               id="confirmPassword"

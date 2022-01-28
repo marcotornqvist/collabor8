@@ -20,10 +20,10 @@ const BlockUser = ({ id, isVisible }: IProps) => {
   });
 
   useEffect(() => {
-    if (isVisible) {
+    if (isVisible && isAuth) {
       isUserBlocked();
     }
-  }, [isVisible]);
+  }, [isVisible, isAuth]);
 
   return isAuth ? (
     <>

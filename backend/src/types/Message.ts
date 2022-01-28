@@ -16,8 +16,8 @@ export class Message {
   @Field(() => User, { nullable: true })
   user?: User | null;
 
-  @Field(() => ID)
-  userId: string;
+  @Field(() => ID, { nullable: true })
+  userId?: string | null;
 
   @Field(() => ChatRoom, { nullable: true })
   chatRoom?: ChatRoom | null;

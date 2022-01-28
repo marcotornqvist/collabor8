@@ -24,7 +24,6 @@ import { isAuth, isAuthOrNot } from "../utils/isAuth";
 import { createUsername } from "../helpers/createUsername";
 import { pagination } from "../utils/pagination";
 import { capitalizeWords } from "../helpers/capitalizeWords";
-import { NotificationCode } from ".prisma/client";
 import {
   UsernameValidationSchema,
   RegisterValidationSchema,
@@ -354,80 +353,105 @@ export class UserResolver {
     // Sets username to lowercase and removes all whitespace
     username = username.toLowerCase().replace(/ /g, "");
 
-    // Validate username
-    await UsernameValidationSchema.validate({
-      username,
-    });
-
-    // Checks if username already exists
-    const usernameExists = await prisma.user.findUnique({
-      where: {
+    // Validate the input field
+    const errors: LooseObject = await validateFields<{ username: string }>({
+      fields: {
         username,
       },
+      validationSchema: UsernameValidationSchema,
     });
 
-    if (usernameExists) {
-      throw new UserInputError("Username already exists");
-    }
-
-    // Gets the old username for notification
-    // const oldUsername = await prisma.user.findUnique({
-    //   where: {
-    //     id: payload!.userId,
-    //   },
-    //   select: {
-    //     username: true,
-    //   },
-    // });
-
-    // Updates username and returns contacts
-    const contactIds = await prisma.user
-      .update({
+    try {
+      // Checks if username already exists
+      const usernameExists = await prisma.user.findUnique({
         where: {
-          id: payload!.userId,
+          username,
         },
-        data: { username },
-        include: {
-          contactsSent: {
-            where: {
-              status: {
-                in: ["TRUE"],
-              },
-            },
-            select: {
-              contactId: true,
-            },
-          },
-          contactsRcvd: {
-            where: {
-              status: {
-                in: ["TRUE"],
-              },
-            },
-            select: {
-              userId: true,
-            },
-          },
-        },
-      })
-      .then((users) => {
-        const contactsRcvd = users.contactsRcvd.map((item) => item.userId);
-        const contactsSent = users.contactsSent.map((item) => item.contactId);
-        return contactsRcvd.concat(contactsSent);
       });
 
-    // Send a notification to all contacts, that logged in user has changed username
-    if (contactIds.length > 0) {
-      await prisma.notification.createMany({
-        data: contactIds.map((id) => ({
-          senderId: payload!.userId,
-          receiverId: id,
-          notificationCode: NotificationCode.CONTACT_USERNAME_UPDATED,
-        })),
-      });
+      if (usernameExists) {
+        errors.username = "Username already exists";
+      }
+
+      if (Object.keys(errors).length > 0) {
+        throw errors;
+      }
+
+      if (!usernameExists) {
+        await prisma.user.update({
+          where: {
+            id: payload!.userId,
+          },
+          data: { username },
+        });
+      }
+
+      // -- NOTIFICATION FEATURE BELOW --
+
+      // Gets the old username for notification
+      // const oldUsername = await prisma.user.findUnique({
+      //   where: {
+      //     id: payload!.userId,
+      //   },
+      //   select: {
+      //     username: true,
+      //   },
+      // });
+
+      // Updates username and returns contacts
+      // const contactIds = await prisma.user
+      //   .update({
+      //     where: {
+      //       id: payload!.userId,
+      //     },
+      //     data: { username },
+      //     include: {
+      //       contactsSent: {
+      //         where: {
+      //           status: {
+      //             in: ["TRUE"],
+      //           },
+      //         },
+      //         select: {
+      //           contactId: true,
+      //         },
+      //       },
+      //       contactsRcvd: {
+      //         where: {
+      //           status: {
+      //             in: ["TRUE"],
+      //           },
+      //         },
+      //         select: {
+      //           userId: true,
+      //         },
+      //       },
+      //     },
+      //   })
+      //   .then((users) => {
+      //     const contactsRcvd = users.contactsRcvd.map((item) => item.userId);
+      //     const contactsSent = users.contactsSent.map((item) => item.contactId);
+      //     return contactsRcvd.concat(contactsSent);
+      //   });
+
+      // Send a notification to all contacts, that logged in user has changed username
+      // if (contactIds.length > 0) {
+      //   await prisma.notification.createMany({
+      //     data: contactIds.map((id) => ({
+      //       senderId: payload!.userId,
+      //       receiverId: id,
+      //       notificationCode: NotificationCode.CONTACT_USERNAME_UPDATED,
+      //     })),
+      //   });
+      // }
+
+      // -- FEATURE ENDS --
+
+      return username;
+    } catch (err) {
+      console.log(err);
+      throw new UserInputError("Errors", { errors });
     }
-
-    return username;
   }
 
   @Mutation(() => String, {
@@ -438,30 +462,42 @@ export class UserResolver {
     @Arg("email") email: string,
     @Ctx() { payload, prisma }: Context
   ) {
-    // Validate email
-    await EmailValidationSchema.validate({
-      email,
-    });
-
-    // Checks if email exists
-    const emailExists = await prisma.user.findUnique({
-      where: {
+    // Validate the input field
+    const errors: LooseObject = await validateFields<{ email: string }>({
+      fields: {
         email,
       },
+      validationSchema: EmailValidationSchema,
     });
 
-    if (emailExists) {
-      throw new UserInputError("Email already exists");
+    try {
+      // Checks if email exists
+      const emailExists = await prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      if (emailExists) {
+        errors.email = "Email already exists";
+      }
+
+      if (Object.keys(errors).length > 0) {
+        throw errors;
+      }
+
+      await prisma.user.update({
+        where: {
+          id: payload!.userId,
+        },
+        data: { email },
+      });
+
+      return email;
+    } catch (err) {
+      console.log(err);
+      throw new UserInputError("Errors", { errors });
     }
-
-    await prisma.user.update({
-      where: {
-        id: payload!.userId,
-      },
-      data: { email },
-    });
-
-    return email;
   }
 
   @Mutation(() => Boolean, {
@@ -533,6 +569,7 @@ export class UserResolver {
   })
   @UseMiddleware(isAuth)
   async deleteAccount(@Ctx() { res, payload, prisma }: Context) {
+    console.log(payload!.userId);
     // Makes the user disabled and therefore cannot be accessed
     await prisma.user.delete({
       where: {

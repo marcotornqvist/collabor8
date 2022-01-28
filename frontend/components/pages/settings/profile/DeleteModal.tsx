@@ -97,7 +97,9 @@ const DeleteModal = ({ show, onClose }: IProps) => {
             <span>&times;</span>
           </div>
         </div>
-        <h4>Are you sure you want to delete the image?</h4>
+        <div className="modal-content">
+          <h4>Are you sure you want to delete the image?</h4>
+        </div>
         <button className={button.lightRed} onClick={() => deleteHandler()}>
           Delete
         </button>

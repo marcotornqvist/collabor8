@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { Contact_Status, useContactStatusLazyQuery } from "generated/graphql";
+import { useSnapshot } from "valtio";
+import { authState } from "store";
 import Link from "next/link";
 import AddContact from "./AddContact";
 import DeleteContact from "./DeleteContact";
@@ -8,7 +10,6 @@ import PendingContact from "./PendingContact";
 interface IProps {
   id: string;
   isVisible: boolean;
-  isAuth: boolean;
   username: string;
 }
 
@@ -19,23 +20,45 @@ interface IProps {
 // - If you contact request is accepted: Delete Contact
 // - If no contact is returned: Add Person
 
-const ContactButtons = ({ id, isVisible, isAuth, username }: IProps) => {
+const ContactButtons = ({ id, isVisible, username }: IProps) => {
+  const { isAuth } = useSnapshot(authState);
+
   const [getContactStatus, { data, loading, error }] =
-    useContactStatusLazyQuery({
-      variables: {
-        id,
-      },
-    });
+    useContactStatusLazyQuery();
 
   useEffect(() => {
-    if (isVisible) {
-      getContactStatus();
+    if (isVisible && isAuth) {
+      getContactStatus({
+        variables: {
+          id,
+        },
+      });
     }
-  }, [isVisible]);
+  }, [isVisible, isAuth]);
 
-  console.log(data);
-
-  if (!isAuth) {
+  // Returns a button depending on the contactStatus
+  // Example: if a user has received a contact request a certain button will be rendered
+  if (isAuth) {
+    switch (data?.contactStatus) {
+      case Contact_Status.RequestSent:
+        return <DeleteContact id={id} pendingState={true} />;
+      case Contact_Status.ActiveContact:
+        return <DeleteContact id={id} pendingState={false} />;
+      case Contact_Status.RequestReceived:
+        return <PendingContact id={id} />;
+      case Contact_Status.RequestReceivedFalse:
+        return <PendingContact id={id} hideDelete={true} />;
+      case Contact_Status.NoContact:
+        return <AddContact id={id} />;
+      default:
+        return (
+          <button>
+            {loading && <span>Loading...</span>}
+            {error && <span>Error...</span>}
+          </button>
+        );
+    }
+  } else {
     return (
       <Link
         href={{
@@ -48,28 +71,6 @@ const ContactButtons = ({ id, isVisible, isAuth, username }: IProps) => {
         </button>
       </Link>
     );
-  }
-
-  // Returns a button depending on the contactStatus
-  // Example: if a user has received a contact request a certain button will be rendered
-  switch (data?.contactStatus) {
-    case Contact_Status.RequestSent:
-      return <DeleteContact id={id} pendingState={true} />;
-    case Contact_Status.ActiveContact:
-      return <DeleteContact id={id} pendingState={false} />;
-    case Contact_Status.RequestReceived:
-      return <PendingContact id={id} />;
-    case Contact_Status.RequestReceivedFalse:
-      return <PendingContact id={id} hideDelete={true} />;
-    case Contact_Status.NoContact:
-      return <AddContact id={id} />;
-    default:
-      return (
-        <button>
-          {loading && <span>Loading...</span>}
-          {error && <span>Error...</span>}
-        </button>
-      );
   }
 };
 

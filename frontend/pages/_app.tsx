@@ -3,7 +3,7 @@ import { AppContext, AppInitialProps, AppLayoutProps } from "next/app";
 import type { NextComponentType } from "next";
 import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "../utils/useApollo";
-import { authState, layoutState } from "store";
+import { authState } from "store";
 import { useRouter } from "next/router";
 import PrivateRoute from "../utils/privateRoute";
 import Navbar from "@/components-layout/navbar/Navbar";

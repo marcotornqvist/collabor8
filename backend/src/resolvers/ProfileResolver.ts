@@ -10,7 +10,6 @@ import {
 import { Profile } from "../types/Profile";
 import { Context, LooseObject, Upload } from "../types/Interfaces";
 import { CountryResponse } from "./responses/CountryResponse";
-import countries from "../data/countries";
 import { isAuth } from "../utils/isAuth";
 import { UpdateProfileInput } from "./inputs/ProfileInput";
 import { UserInputError } from "apollo-server-errors";
@@ -23,6 +22,7 @@ import { uuidFilenameTransform } from "../helpers/uuidFileNameTransform";
 import { Discipline } from "../types/Discipline";
 import { UpdateProfileValidationSchema } from "../validations/schemas";
 import { validateFields } from "../validations/validateFields";
+import countries from "../data/countries";
 import sharp from "sharp";
 
 // TODO: Queries/mutations to be implemented:

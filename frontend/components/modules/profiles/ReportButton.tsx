@@ -1,12 +1,15 @@
 import React from "react";
 import Link from "next/link";
+import { useSnapshot } from "valtio";
+import { authState } from "store";
 
 interface IProps {
   id: string;
-  isAuth: boolean;
 }
 
-const ReportButton = ({ id, isAuth }: IProps) => {
+const ReportButton = ({ id }: IProps) => {
+  const { isAuth } = useSnapshot(authState);
+
   return (
     <>
       {!isAuth ? (

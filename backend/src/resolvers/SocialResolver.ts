@@ -10,10 +10,10 @@ import {
 import { Social } from "../types/Social";
 import { isAuth } from "../utils/isAuth";
 import { Context, LooseObject } from "../types/Interfaces";
-// import { validateSocials } from "../validations/socialValidator";
 import { SocialInput } from "./inputs/SocialInput";
 import { validateFields } from "../validations/validateFields";
 import { UpdateSocialsValidationSchema } from "../validations/schemas";
+import { UserInputError } from "apollo-server-express";
 
 // TODO: Queries/mutations to be implemented:
 // updateSocials:           Update all socials for a user
@@ -66,17 +66,22 @@ export class SocialResolver {
       validationSchema: UpdateSocialsValidationSchema,
     });
 
-    if (Object.keys(errors).length > 0) {
-      throw errors;
+    try {
+      if (Object.keys(errors).length > 0) {
+        throw errors;
+      }
+
+      const socials = await prisma.social.update({
+        where: {
+          userId: payload!.userId,
+        },
+        data: data,
+      });
+
+      return socials;
+    } catch (err) {
+      console.log(err);
+      throw new UserInputError("Errors", { errors });
     }
-
-    const socials = await prisma.social.update({
-      where: {
-        userId: payload!.userId,
-      },
-      data: data,
-    });
-
-    return socials;
   }
 }

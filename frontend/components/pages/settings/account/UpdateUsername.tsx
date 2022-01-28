@@ -1,22 +1,33 @@
 import { useEffect, useState } from "react";
 import { Formik } from "formik";
-
 import { GET_LOGGED_IN_USER } from "@/operations-queries/getLoggedInUser";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
+import {
+  LoggedInUserQuery,
+  useUpdateUsernameMutation,
+} from "generated/graphql";
+import { UsernameValidationSchema } from "@/validations/schemas";
 import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
-import { LoggedInUserQuery, useUpdateUsernameMutation } from "generated/graphql";
+import isNotEmptyObject from "utils/isNotEmptyObject";
+import InputErrorMessage from "@/components-modules/global/InputErrorMessage";
 
 interface IProps {
   currentUsername?: string;
   loading: boolean;
 }
 
+interface FormErrors {
+  username?: string;
+}
+
 const UpdateUsername = ({ currentUsername, loading }: IProps) => {
-  const [isValid, setIsValid] = useState(false);
-  const [error, setError] = useState("");
-  const [updateUsername] = useUpdateUsernameMutation({
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState(""); // Error message, server error
+  const [formErrors, setFormErrors] = useState<FormErrors>({}); // UserInput Errors
+
+  const [updateUsername, { data }] = useUpdateUsernameMutation({
     update(cache, { data }) {
       const user = cache.readQuery<LoggedInUserQuery>({
         query: GET_LOGGED_IN_USER,
@@ -33,47 +44,63 @@ const UpdateUsername = ({ currentUsername, loading }: IProps) => {
             loggedInUser: merge,
           },
         });
-        setIsValid(true);
       }
     },
-    onError: (error) => setError(error.message),
+    onError: (error) => {
+      setFormErrors(error.graphQLErrors[0].extensions?.errors);
+      setError(error.message);
+    },
   });
 
   useEffect(() => {
-    if (error) {
+    if (error && !formErrors) {
       toastState.addToast(error, ErrorStatus.danger);
     }
-  }, [error]);
+    if (data) {
+      setIsSubmitted(true);
+      setFormErrors({});
+      toastState.addToast("Username updated successfully", ErrorStatus.success);
+    }
+  }, [error, data]);
 
   return (
     <div className="update-username">
       {!loading && (
         <Formik
+          validationSchema={UsernameValidationSchema}
+          validateOnMount={true}
           enableReinitialize
           initialValues={{ username: currentUsername || "" }}
-          onSubmit={async (values) => {
-            setIsValid(false);
-            setError("");
-            if (values.username && values.username !== currentUsername) {
-              await updateUsername({
-                variables: {
-                  username: values.username,
-                },
-              });
-            }
-          }}
+          onSubmit={(values) =>
+            updateUsername({
+              variables: {
+                username: values.username,
+              },
+            })
+          }
         >
-          {({ values, handleChange, handleSubmit, isSubmitting }) => (
-            <form onSubmit={handleSubmit}>
+          {({ values, errors, handleChange, handleSubmit, isSubmitting }) => (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                // If currentUsername is not the same as before, handle submit
+                if (values.username && values.username !== currentUsername) {
+                  isNotEmptyObject(errors) && setFormErrors(errors);
+                  handleSubmit();
+                } else {
+                  setIsSubmitted(false);
+                  setFormErrors({});
+                }
+              }}
+            >
               <div className={`input-group ${input.group}`}>
                 <div className="input-text">
                   <label htmlFor="username">Username</label>
-                  {error && (
-                    <span className="error-message">Username is not valid</span>
-                  )}
-                  {isValid && (
-                    <span className="success-message">Username is valid</span>
-                  )}
+                  <InputErrorMessage
+                    errorMessage={formErrors.username}
+                    successMessage={"Username is valid"}
+                    isSubmitted={isSubmitted}
+                  />
                 </div>
                 <input
                   id="username"
@@ -92,7 +119,7 @@ const UpdateUsername = ({ currentUsername, loading }: IProps) => {
                 } submit-btn`}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Submitting..." : "Save Username"}
+                Save Username
               </button>
             </form>
           )}

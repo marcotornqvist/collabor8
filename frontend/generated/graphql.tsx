@@ -156,7 +156,7 @@ export type Message = {
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
   user?: Maybe<User>;
-  userId: Scalars['ID'];
+  userId?: Maybe<Scalars['ID']>;
 };
 
 export type MessageSubscribtionResponse = {

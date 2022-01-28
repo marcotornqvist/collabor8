@@ -11,8 +11,6 @@ const MyProfile = () => {
     },
   });
 
-  console.log(data);
-
   return (
     <div className="my-profile-page">
       <div className="container"></div>

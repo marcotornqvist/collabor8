@@ -1,15 +1,18 @@
-import { MouseEvent, useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
-import { CONTACT_STATUS } from "@/operations-queries/contactStatus";
 import { motion } from "framer-motion";
+import { IS_USER_BLOCKED } from "@/operations-queries/isUserBlocked";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
 import {
-  useAcceptContactMutation,
-  useRejectContactMutation,
+  useBlockUserMutation,
+  useDeleteAccountMutation,
+  useUnblockUserMutation,
 } from "generated/graphql";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
+import { authState } from "store";
+import { useRouter } from "next/router";
 
 const dropIn = {
   hidden: {
@@ -31,43 +34,16 @@ const dropIn = {
 };
 
 interface IProps {
-  id: string;
   show: boolean;
   onClose: () => void;
-  hideDelete?: boolean;
 }
 
-const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
-  const [error, setError] = useState("");
+const DeleteModal = ({ show, onClose }: IProps) => {
+  const router = useRouter();
   const [isBrowser, setIsBrowser] = useState(false);
+  const [error, setError] = useState("");
 
-  const [acceptContact] = useAcceptContactMutation({
-    variables: {
-      id,
-    },
-    refetchQueries: [
-      {
-        query: CONTACT_STATUS,
-        variables: {
-          id,
-        },
-      },
-    ],
-    onError: (error) => setError(error.message),
-  });
-
-  const [rejectContact] = useRejectContactMutation({
-    variables: {
-      id,
-    },
-    refetchQueries: [
-      {
-        query: CONTACT_STATUS,
-        variables: {
-          id,
-        },
-      },
-    ],
+  const [deleteAccount, { loading, client }] = useDeleteAccountMutation({
     onError: (error) => setError(error.message),
   });
 
@@ -80,26 +56,29 @@ const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
     onClose();
   };
 
-  const acceptHandler = () => {
-    setError("");
-    acceptContact();
-    onClose();
+  // Deletes account and sets auth state to false
+  const deleteHandler = async () => {
+    try {
+      await deleteAccount();
+      toastState.addToast("Account deleted successfully", ErrorStatus.success);
+      onClose();
+      authState.accessToken = "";
+      authState.isAuth = false;
+      await client!.resetStore();
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
-
-  const rejectHandler = () => {
-    setError("");
-    rejectContact();
-    onClose();
-  };
-
-  const ref = useRef(null);
-  useOnClickOutside(ref, handleCloseClick);
 
   useEffect(() => {
     if (error) {
       toastState.addToast(error, ErrorStatus.danger);
     }
   }, [error]);
+
+  const ref = useRef<HTMLDivElement>(null);
+  useOnClickOutside(ref, handleCloseClick);
 
   const modalContent = show ? (
     <div className="modal-backdrop">
@@ -118,18 +97,18 @@ const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
           </div>
         </div>
         <div className="modal-content">
-          <h4>Delete or accept contact request</h4>
+          <h4>Are you sure you want to delete your account?</h4>
+          <p>
+            This will permanently delete your account. All projects and contacts
+            will also be removed in the process.
+          </p>
         </div>
-        <div className="buttons">
-          <button className={button.lightGreen} onClick={() => acceptHandler()}>
-            Accept
-          </button>
-          {!hideDelete && (
-            <button className={button.lightRed} onClick={() => rejectHandler()}>
-              Delete
-            </button>
-          )}
-        </div>
+        <button
+          onClick={() => deleteHandler()}
+          className={loading ? button.red : button.lightRed}
+        >
+          Delete Account
+        </button>
       </motion.div>
     </div>
   ) : null;
@@ -144,4 +123,4 @@ const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
   }
 };
 
-export default PendingModal;
+export default DeleteModal;

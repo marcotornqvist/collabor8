@@ -20,12 +20,12 @@ import {
 import { PaginationArgs } from "./inputs/GlobalInputs";
 import { UserInputError, ForbiddenError } from "apollo-server-express";
 import { isAuth } from "../utils/isAuth";
-import countries from "../data/countries";
 import { pagination } from "../utils/pagination";
 import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
 import { NotificationCode } from "@prisma/client";
 import { validateFields } from "../validations/validateFields";
 import { CreateProjectValidationSchema } from "../validations/schemas";
+import countries from "../data/countries";
 
 // Queries/mutations to be implemented:
 // projects:                  Return all projects - Done

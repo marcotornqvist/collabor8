@@ -4,16 +4,21 @@ import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
 import { IDiscipline } from "@/types-interfaces/form";
 import { Formik } from "formik";
+import {
+  LoggedInProfileQuery,
+  LoggedInProfileQueryVariables,
+  useLoggedInProfileLazyQuery,
+  useLoggedInProfileQuery,
+  useUpdateProfileMutation,
+} from "generated/graphql";
+import { UpdateProfileValidationSchema } from "@/validations/schemas";
 import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
 import CountriesDropdown from "./CountriesDropdown";
 import DisciplinesDropdown from "./DisciplinesDropdown";
 import useWindowSize from "@/hooks/useWindowSize";
-import {
-  LoggedInProfileQuery,
-  useLoggedInProfileQuery,
-  useUpdateProfileMutation,
-} from "generated/graphql";
+import InputErrorMessage from "@/components-modules/global/InputErrorMessage";
+import isNotEmptyObject from "utils/isNotEmptyObject";
 
 const mobileVariants = {
   hidden: {
@@ -49,7 +54,7 @@ const desktopVariants = {
   },
 };
 
-interface Errors {
+interface FormErrors {
   firstName?: string;
   lastName?: string;
   bio?: string;
@@ -65,8 +70,9 @@ interface IForm {
 
 const Form = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const [errors, setErrors] = useState<Errors>({});
-  const { data, loading } = useLoggedInProfileQuery();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState(""); // Error message, server error
+  const [formErrors, setFormErrors] = useState<FormErrors>({}); // UserInput Errors
 
   const { width } = useWindowSize();
 
@@ -74,7 +80,7 @@ const Form = () => {
     setIsMobile(width < 768);
   }, [width]);
 
-  const [updateProfile] = useUpdateProfileMutation({
+  const [updateProfile, { data }] = useUpdateProfileMutation({
     // Update the cache profile values off the loggedInProfile
     update(cache, { data }) {
       if (data?.updateProfile) {
@@ -86,60 +92,81 @@ const Form = () => {
         });
       }
     },
-    onError: (error) => setErrors(error.graphQLErrors[0].extensions?.errors),
+    onError: (error) => {
+      setFormErrors(error.graphQLErrors[0].extensions?.errors);
+      setError(error.message);
+      console.log(error);
+    },
   });
 
-  const handleUpdateProfile = async (values: IForm) => {
-    setErrors({});
-
-    const { firstName, lastName, country, discipline, bio } = values;
-
-    const { data } = await updateProfile({
-      variables: {
-        data: {
-          firstName,
-          lastName,
-          country,
-          disciplineId: discipline?.id,
-          bio,
-        },
-      },
-    });
-    data &&
+  useEffect(() => {
+    if (error && !formErrors) {
+      toastState.addToast(error, ErrorStatus.danger);
+    }
+    if (data) {
+      setIsSubmitted(true);
+      setFormErrors({});
       toastState.addToast("Profile updated successfully", ErrorStatus.success);
-  };
+    }
+  }, [error, data]);
+
+  // Get saved form data
+  const { data: formData, loading } = useLoggedInProfileQuery();
 
   const initialValues: IForm = {
-    firstName: data?.loggedInProfile?.firstName || "",
-    lastName: data?.loggedInProfile?.lastName || "",
-    country: data?.loggedInProfile?.country || null,
-    discipline: data?.loggedInProfile?.discipline || null,
-    bio: data?.loggedInProfile?.bio || "",
+    firstName: formData?.loggedInProfile?.firstName || "",
+    lastName: formData?.loggedInProfile?.lastName || "",
+    country: formData?.loggedInProfile?.country || null,
+    discipline: formData?.loggedInProfile?.discipline || null,
+    bio: formData?.loggedInProfile?.bio || "",
   };
 
   return (
     <>
       {!loading && (
         <Formik
+          validationSchema={UpdateProfileValidationSchema}
+          validateOnMount={true}
           enableReinitialize
           initialValues={initialValues}
-          onSubmit={(values) => handleUpdateProfile(values)}
+          onSubmit={(values) =>
+            updateProfile({
+              variables: {
+                data: {
+                  firstName: values.firstName,
+                  lastName: values.lastName,
+                  country: values.country,
+                  bio: values.bio,
+                  disciplineId: values.discipline?.id,
+                },
+              },
+            })
+          }
         >
           {({
             values,
+            errors,
             setFieldValue,
             handleChange,
             handleSubmit,
             isSubmitting,
           }) => (
-            <form onSubmit={handleSubmit}>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                isNotEmptyObject(errors) && setFormErrors(errors);
+                handleSubmit();
+              }}
+            >
               <div className="wrapper">
                 <div className={`input-group ${input.group}`}>
                   <div className="input-text">
                     <label htmlFor="firstName">First Name</label>
-                    {errors.firstName && (
-                      <span className="error-message">{errors.firstName}</span>
-                    )}
+                    <InputErrorMessage
+                      errorMessage={formErrors.firstName}
+                      successMessage={"First name is valid"}
+                      isSubmitted={isSubmitted}
+                    />
                   </div>
                   <input
                     id="firstName"
@@ -155,7 +182,11 @@ const Form = () => {
                 <div className={`input-group ${input.group}`}>
                   <div className="input-text">
                     <label htmlFor="lastName">Last Name</label>
-                    {errors.lastName && <span>{errors.lastName}</span>}
+                    <InputErrorMessage
+                      errorMessage={formErrors.lastName}
+                      successMessage={"Last name is valid"}
+                      isSubmitted={isSubmitted}
+                    />
                   </div>
                   <input
                     id="lastName"
@@ -187,7 +218,11 @@ const Form = () => {
               <div className={`input-group ${input.textarea_group}`}>
                 <div className="input-text">
                   <label htmlFor="bio">Bio</label>
-                  {errors.bio && <span>{errors.bio}</span>}
+                  <InputErrorMessage
+                    errorMessage={formErrors.bio}
+                    successMessage={"Bio is valid"}
+                    isSubmitted={isSubmitted}
+                  />
                 </div>
                 <textarea
                   id="bio"

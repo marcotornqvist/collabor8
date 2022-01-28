@@ -3,6 +3,9 @@
 
 .group {
   :global {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     margin-bottom: 1rem;
 
     .input-text {
@@ -39,12 +42,12 @@
       border-radius: $medium-radius;
       background: $grey-bg;
       color: $black;
-      outline: $green !important;
+      outline: $green;
 
       &:focus {
         border-color: $green;
-        background: $light-green !important;
-        box-shadow: 0 0 0px 1000px $light-green inset !important;
+        background: $light-green;
+        box-shadow: 0 0 0px 1000px $light-green inset;
 
         &::placeholder {
           color: $black;

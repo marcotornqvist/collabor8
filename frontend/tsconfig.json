@@ -21,6 +21,7 @@
       "@/components-modules/*": ["components/modules/*"],
       "@/components-pages/*": ["components/pages/*"],
       "@/operations-mutations/*": ["operations/mutations/*"],
+      "@/validations/*": ["validations/*"],
       "@/operations-queries/*": ["operations/queries/*"],
       "@/types-interfaces/*": ["types/interfaces/*"],
       "@/types-enums/*": ["types/enums/*"],
