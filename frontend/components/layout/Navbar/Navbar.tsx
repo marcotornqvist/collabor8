@@ -5,7 +5,6 @@ import AccountDropdown from "./AccountDropdown";
 import useWindowSize from "@/hooks/useWindowSize";
 import { useSnapshot } from "valtio";
 import { authState, layoutState } from "store";
-import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 
 const variants = {
@@ -23,7 +22,6 @@ interface Props {
 }
 
 const Navbar = ({ hide = false }: Props) => {
-  const router = useRouter();
   const { width } = useWindowSize();
   const { isAuth, loading } = useSnapshot(authState);
   const { menuOpen } = useSnapshot(layoutState);
@@ -88,34 +86,33 @@ const Navbar = ({ hide = false }: Props) => {
   return (
     <>
       {(width < 920 || !hide) && (
-        <nav
-          className={`navbar${
-            router.asPath === "/" && !menuOpen ? " no-border-navbar" : ""
-          }`}
-        >
-          <div className="container">
-            <div className="links">
-              <Link href="/">
-                <a className="title">
-                  <h4>Collabor8</h4>
-                </a>
-              </Link>
-              <ul>
-                <li>
-                  <Link href="/profiles">
-                    <a>Browse Profiles</a>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/projects">
-                    <a>Browse Projects</a>
-                  </Link>
-                </li>
-              </ul>
+        <>
+          <div className="navbar-shadow"></div>
+          <nav className="navbar">
+            <div className="container">
+              <div className="links">
+                <Link href="/">
+                  <a className="title">
+                    <h4>Collabor8</h4>
+                  </a>
+                </Link>
+                <ul>
+                  <li>
+                    <Link href="/profiles">
+                      <a>Browse Profiles</a>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/projects">
+                      <a>Browse Projects</a>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+              {width !== 0 && <>{width < 920 ? mobile : desktop}</>}
             </div>
-            {width !== 0 && <>{width < 920 ? mobile : desktop}</>}
-          </div>
-        </nav>
+          </nav>
+        </>
       )}
     </>
   );

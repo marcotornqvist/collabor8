@@ -6,8 +6,6 @@ import { IDiscipline } from "@/types-interfaces/form";
 import { Formik } from "formik";
 import {
   LoggedInProfileQuery,
-  LoggedInProfileQueryVariables,
-  useLoggedInProfileLazyQuery,
   useLoggedInProfileQuery,
   useUpdateProfileMutation,
 } from "generated/graphql";
@@ -18,7 +16,7 @@ import CountriesDropdown from "./CountriesDropdown";
 import DisciplinesDropdown from "./DisciplinesDropdown";
 import useWindowSize from "@/hooks/useWindowSize";
 import InputErrorMessage from "@/components-modules/global/InputErrorMessage";
-import isNotEmptyObject from "utils/isNotEmptyObject";
+import { isNotEmptyObject } from "utils/helpers";
 
 const mobileVariants = {
   hidden: {
@@ -95,7 +93,6 @@ const Form = () => {
     onError: (error) => {
       setFormErrors(error.graphQLErrors[0].extensions?.errors);
       setError(error.message);
-      console.log(error);
     },
   });
 

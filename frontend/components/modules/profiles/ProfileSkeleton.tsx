@@ -1,8 +1,9 @@
 import React from "react";
+import profile from "@/styles-modules/ProfileItem.module.scss";
 
 const ProfileSkeleton = () => {
   return (
-    <div className="skeleton-item">
+    <div className={profile.skeleton}>
       <div className="skeleton-content">
         <div className="top-bar">
           <div className="skeleton cog-wheel"></div>

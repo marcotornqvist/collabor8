@@ -3,10 +3,10 @@ import { Formik } from "formik";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
 import { useUpdatePasswordMutation } from "generated/graphql";
+import { UpdatePasswordValidationSchema } from "@/validations/schemas";
 import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
-import isNotEmptyObject from "utils/isNotEmptyObject";
-import { UpdatePasswordValidationSchema } from "@/validations/schemas";
+import { isNotEmptyObject } from "utils/helpers";
 import InputErrorMessage from "@/components-modules/global/InputErrorMessage";
 
 interface IProps {

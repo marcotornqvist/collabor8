@@ -12,7 +12,7 @@ import { number } from "yup";
 import { ErrorStatus } from "@/types-enums/enums";
 import { toastState } from "store";
 import { EmailValidationSchema } from "@/validations/schemas";
-import isNotEmptyObject from "utils/isNotEmptyObject";
+import { isNotEmptyObject } from "utils/helpers";
 import InputErrorMessage from "@/components-modules/global/InputErrorMessage";
 
 interface IProps {

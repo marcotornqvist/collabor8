@@ -4,8 +4,8 @@ import Image from "next/image";
 import ProfileImage from "@/components-modules/global/ProfileImage";
 import Link from "next/link";
 import Settings from "./Settings";
+import profile from "@/styles-modules/ProfileItem.module.scss";
 import button from "@/styles-modules/Button.module.scss";
-import { Profile, User } from "generated/graphql";
 import("scroll-behavior-polyfill");
 
 interface Discipline {
@@ -60,7 +60,7 @@ const ProfileItem = ({
   };
 
   return (
-    <div className="profile-item">
+    <div className={profile.default}>
       <div className="toggle-button-wrapper">
         <div className="toggle-button" onClick={() => handleToggle()}>
           <Image

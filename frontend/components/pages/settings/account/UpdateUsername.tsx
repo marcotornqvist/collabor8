@@ -10,7 +10,7 @@ import {
 import { UsernameValidationSchema } from "@/validations/schemas";
 import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
-import isNotEmptyObject from "utils/isNotEmptyObject";
+import { isNotEmptyObject } from "utils/helpers";
 import InputErrorMessage from "@/components-modules/global/InputErrorMessage";
 
 interface IProps {

@@ -1,12 +1,12 @@
-import { useEffect } from "react";
+import { MutableRefObject, Ref, RefObject, useEffect, useRef } from "react";
+import { authState, layoutState } from "store";
+import { useSnapshot } from "valtio";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import SignoutLink from "@/components-modules/global/SignoutLink";
 import Image from "next/image";
-import { authState, layoutState } from "store";
-import { useSnapshot } from "valtio";
 import useWindowSize from "@/hooks/useWindowSize";
-import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/router";
 
 const variants = {
   visible: {

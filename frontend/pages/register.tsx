@@ -5,7 +5,7 @@ import { Formik } from "formik";
 import { RegisterInput, useRegisterMutation } from "generated/graphql";
 import { RegisterValidationSchema } from "@/validations/schemas";
 import { ErrorStatus } from "@/types-enums/enums";
-import isNotEmptyObject from "utils/isNotEmptyObject";
+import { isNotEmptyObject } from "utils/helpers";
 import AuthLayout from "@/components-pages/auth/AuthLayout";
 import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
