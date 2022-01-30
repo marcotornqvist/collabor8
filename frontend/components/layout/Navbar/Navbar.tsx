@@ -6,6 +6,8 @@ import useWindowSize from "@/hooks/useWindowSize";
 import { useSnapshot } from "valtio";
 import { authState, layoutState } from "store";
 import { motion } from "framer-motion";
+import { useLoggedInUserLazyQuery } from "generated/graphql";
+import { useEffect } from "react";
 
 const variants = {
   hidden: {
@@ -25,6 +27,15 @@ const Navbar = ({ hide = false }: Props) => {
   const { width } = useWindowSize();
   const { isAuth, loading } = useSnapshot(authState);
   const { menuOpen } = useSnapshot(layoutState);
+
+  // Fetches all data about logged in user, and places it in cache
+  const [loggedInUser] = useLoggedInUserLazyQuery();
+
+  useEffect(() => {
+    if (isAuth && !loading) {
+      loggedInUser();
+    }
+  }, [loading]);
 
   const desktop = (
     <>

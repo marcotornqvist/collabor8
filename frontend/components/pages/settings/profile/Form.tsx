@@ -1,22 +1,25 @@
 import { useEffect, useState } from "react";
-import { GET_LOGGED_IN_PROFILE } from "@/operations-queries/getLoggedInProfile";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
 import { IDiscipline } from "@/types-interfaces/form";
 import { Formik } from "formik";
 import {
-  LoggedInProfileQuery,
-  useLoggedInProfileQuery,
+  LoggedInAccountDetailsQuery,
+  LoggedInProfileDetailsDocument,
+  LoggedInProfileDetailsQuery,
+  LoggedInUserDocument,
+  LoggedInUserQuery,
+  useLoggedInProfileDetailsQuery,
   useUpdateProfileMutation,
 } from "generated/graphql";
 import { UpdateProfileValidationSchema } from "@/validations/schemas";
+import { isNotEmptyObject } from "utils/helpers";
 import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
 import CountriesDropdown from "./CountriesDropdown";
 import DisciplinesDropdown from "./DisciplinesDropdown";
 import useWindowSize from "@/hooks/useWindowSize";
 import InputErrorMessage from "@/components-modules/global/InputErrorMessage";
-import { isNotEmptyObject } from "utils/helpers";
 
 const mobileVariants = {
   hidden: {
@@ -79,13 +82,23 @@ const Form = () => {
   }, [width]);
 
   const [updateProfile, { data }] = useUpdateProfileMutation({
-    // Update the cache profile values off the loggedInProfile
+    // Update the cache profile values off the logged in user
     update(cache, { data }) {
-      if (data?.updateProfile) {
-        cache.writeQuery<LoggedInProfileQuery>({
-          query: GET_LOGGED_IN_PROFILE,
+      const user = cache.readQuery<LoggedInUserQuery>({
+        query: LoggedInUserDocument,
+      });
+
+      if (data?.updateProfile && user) {
+        cache.writeQuery<LoggedInUserQuery>({
+          query: LoggedInUserDocument,
           data: {
-            loggedInProfile: data.updateProfile,
+            loggedInUser: {
+              ...user.loggedInUser,
+              profile: {
+                ...data.updateProfile,
+                profileImage: user.loggedInUser.profile?.profileImage,
+              },
+            },
           },
         });
       }
@@ -108,14 +121,16 @@ const Form = () => {
   }, [error, data]);
 
   // Get saved form data
-  const { data: formData, loading } = useLoggedInProfileQuery();
+  const { data: formData, loading } = useLoggedInProfileDetailsQuery({
+    fetchPolicy: "cache-only", // Fetches from cache only, navbar fetches all the logged in user data when page is loaded and authState is true..
+  });
 
   const initialValues: IForm = {
-    firstName: formData?.loggedInProfile?.firstName || "",
-    lastName: formData?.loggedInProfile?.lastName || "",
-    country: formData?.loggedInProfile?.country || null,
-    discipline: formData?.loggedInProfile?.discipline || null,
-    bio: formData?.loggedInProfile?.bio || "",
+    firstName: formData?.loggedInUser.profile?.firstName || "",
+    lastName: formData?.loggedInUser.profile?.lastName || "",
+    country: formData?.loggedInUser.profile?.country || null,
+    discipline: formData?.loggedInUser.profile?.discipline || null,
+    bio: formData?.loggedInUser.profile?.bio || "",
   };
 
   return (

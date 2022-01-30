@@ -135,7 +135,7 @@ function createApolloClient() {
       typePolicies: {
         Query: {
           fields: {
-            loggedInProfile: {
+            loggedInUser: {
               merge: true,
             },
           },

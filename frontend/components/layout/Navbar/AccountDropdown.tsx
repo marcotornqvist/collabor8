@@ -3,7 +3,10 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSnapshot } from "valtio";
 import { authState } from "store";
-import { useLoggedInProfileImageLazyQuery } from "generated/graphql";
+import {
+  useProfileImageLazyQuery,
+  useProfileImageQuery,
+} from "generated/graphql";
 import SignoutLink from "@/components-modules/global/SignoutLink";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import ProfileImage from "@/components-modules/global/ProfileImage";
@@ -22,15 +25,11 @@ const variants = {
 const AccountDropdown = () => {
   const { isAuth } = useSnapshot(authState);
   const [show, setShow] = useState(false);
-  const [loggedInProfileImage, { data, loading, error }] =
-    useLoggedInProfileImageLazyQuery();
-  const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (isAuth) {
-      loggedInProfileImage();
-    }
-  }, [isAuth]);
+  const ref = useRef<HTMLDivElement>(null);
+  const { data } = useProfileImageQuery({
+    fetchPolicy: "cache-only", // Fetches from cache only, navbar fetches all the logged in user data when page is loaded and authState is true. and authState is true.
+  });
 
   const handleClickOutside = () => {
     setShow(false);
@@ -43,7 +42,7 @@ const AccountDropdown = () => {
       <div onClick={() => setShow(!show)}>
         <ProfileImage
           size={24}
-          profileImage={data?.loggedInProfile?.profileImage}
+          profileImage={data?.loggedInUser.profile?.profileImage}
           priority={true}
         />
       </div>
@@ -57,27 +56,27 @@ const AccountDropdown = () => {
             variants={variants}
           >
             <ul>
-              <Link href="/settings/profile">
-                <a>
-                  <li onClick={() => setShow(false)}>
+              <li onClick={() => setShow(false)}>
+                <Link href="/settings/profile">
+                  <a>
                     <span>Profile Settings</span>
-                  </li>
-                </a>
-              </Link>
-              <Link href="/settings/account">
-                <a>
-                  <li onClick={() => setShow(false)}>
+                  </a>
+                </Link>
+              </li>
+              <li onClick={() => setShow(false)}>
+                <Link href="/settings/account">
+                  <a>
                     <span>Account Settings</span>
-                  </li>
-                </a>
-              </Link>
-              <Link href="/settings/socials">
-                <a>
-                  <li onClick={() => setShow(false)}>
+                  </a>
+                </Link>
+              </li>
+              <li onClick={() => setShow(false)}>
+                <Link href="/settings/socials">
+                  <a>
                     <span>Social Accounts</span>
-                  </li>
-                </a>
-              </Link>
+                  </a>
+                </Link>
+              </li>
               <hr />
               <SignoutLink size={16} />
             </ul>

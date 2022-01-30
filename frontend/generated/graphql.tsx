@@ -474,8 +474,6 @@ export type Query = {
   disciplines?: Maybe<Array<Discipline>>;
   /** Checks if user is blocked */
   isUserBlocked: Scalars['Boolean'];
-  /** Returns logged in user profile */
-  loggedInProfile?: Maybe<Profile>;
   /** Returns the "user" data for the user that is currently logged in  */
   loggedInUser: User;
   /** Query all notifications, project invitations & friend requests for logged in user */
@@ -917,20 +915,30 @@ export type UsersQueryVariables = Exact<{
 
 export type UsersQuery = { __typename?: 'Query', users?: Array<{ __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', firstName?: string | null | undefined, lastName?: string | null | undefined, profileImage?: string | null | undefined, country?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined }> | null | undefined };
 
-export type LoggedInProfileQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type LoggedInProfileQuery = { __typename?: 'Query', loggedInProfile?: { __typename?: 'Profile', firstName?: string | null | undefined, lastName?: string | null | undefined, country?: string | null | undefined, bio?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string, id: number } | null | undefined } | null | undefined };
-
-export type LoggedInProfileImageQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type LoggedInProfileImageQuery = { __typename?: 'Query', loggedInProfile?: { __typename?: 'Profile', profileImage?: string | null | undefined } | null | undefined };
-
 export type LoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', username: string, email: string } };
+export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', email: string, username: string, profile?: { __typename?: 'Profile', firstName?: string | null | undefined, lastName?: string | null | undefined, bio?: string | null | undefined, profileImage?: string | null | undefined, country?: string | null | undefined, discipline?: { __typename?: 'Discipline', id: number, title: string } | null | undefined } | null | undefined, socials?: { __typename?: 'Social', instagram?: string | null | undefined, linkedin?: string | null | undefined, dribbble?: string | null | undefined, behance?: string | null | undefined, soundcloud?: string | null | undefined, pinterest?: string | null | undefined, spotify?: string | null | undefined, medium?: string | null | undefined, vimeo?: string | null | undefined, youtube?: string | null | undefined, github?: string | null | undefined, discord?: string | null | undefined } | null | undefined } };
+
+export type LoggedInSocialDetailsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LoggedInSocialDetailsQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', socials?: { __typename?: 'Social', instagram?: string | null | undefined, linkedin?: string | null | undefined, dribbble?: string | null | undefined, behance?: string | null | undefined, soundcloud?: string | null | undefined, pinterest?: string | null | undefined, spotify?: string | null | undefined, medium?: string | null | undefined, vimeo?: string | null | undefined, youtube?: string | null | undefined, github?: string | null | undefined, discord?: string | null | undefined } | null | undefined } };
+
+export type LoggedInProfileDetailsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LoggedInProfileDetailsQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', profile?: { __typename?: 'Profile', firstName?: string | null | undefined, lastName?: string | null | undefined, bio?: string | null | undefined, country?: string | null | undefined, discipline?: { __typename?: 'Discipline', id: number, title: string } | null | undefined } | null | undefined } };
+
+export type LoggedInAccountDetailsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LoggedInAccountDetailsQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', email: string, username: string } };
+
+export type ProfileImageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProfileImageQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', profile?: { __typename?: 'Profile', profileImage?: string | null | undefined } | null | undefined } };
 
 export type IsUserBlockedQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1660,86 +1668,36 @@ export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<User
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
-export const LoggedInProfileDocument = gql`
-    query loggedInProfile {
-  loggedInProfile {
-    firstName
-    lastName
-    country
-    bio
-    discipline {
-      title
-      id
-    }
-  }
-}
-    `;
-
-/**
- * __useLoggedInProfileQuery__
- *
- * To run a query within a React component, call `useLoggedInProfileQuery` and pass it any options that fit your needs.
- * When your component renders, `useLoggedInProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useLoggedInProfileQuery({
- *   variables: {
- *   },
- * });
- */
-export function useLoggedInProfileQuery(baseOptions?: Apollo.QueryHookOptions<LoggedInProfileQuery, LoggedInProfileQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<LoggedInProfileQuery, LoggedInProfileQueryVariables>(LoggedInProfileDocument, options);
-      }
-export function useLoggedInProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoggedInProfileQuery, LoggedInProfileQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<LoggedInProfileQuery, LoggedInProfileQueryVariables>(LoggedInProfileDocument, options);
-        }
-export type LoggedInProfileQueryHookResult = ReturnType<typeof useLoggedInProfileQuery>;
-export type LoggedInProfileLazyQueryHookResult = ReturnType<typeof useLoggedInProfileLazyQuery>;
-export type LoggedInProfileQueryResult = Apollo.QueryResult<LoggedInProfileQuery, LoggedInProfileQueryVariables>;
-export const LoggedInProfileImageDocument = gql`
-    query loggedInProfileImage {
-  loggedInProfile {
-    profileImage
-  }
-}
-    `;
-
-/**
- * __useLoggedInProfileImageQuery__
- *
- * To run a query within a React component, call `useLoggedInProfileImageQuery` and pass it any options that fit your needs.
- * When your component renders, `useLoggedInProfileImageQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useLoggedInProfileImageQuery({
- *   variables: {
- *   },
- * });
- */
-export function useLoggedInProfileImageQuery(baseOptions?: Apollo.QueryHookOptions<LoggedInProfileImageQuery, LoggedInProfileImageQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<LoggedInProfileImageQuery, LoggedInProfileImageQueryVariables>(LoggedInProfileImageDocument, options);
-      }
-export function useLoggedInProfileImageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoggedInProfileImageQuery, LoggedInProfileImageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<LoggedInProfileImageQuery, LoggedInProfileImageQueryVariables>(LoggedInProfileImageDocument, options);
-        }
-export type LoggedInProfileImageQueryHookResult = ReturnType<typeof useLoggedInProfileImageQuery>;
-export type LoggedInProfileImageLazyQueryHookResult = ReturnType<typeof useLoggedInProfileImageLazyQuery>;
-export type LoggedInProfileImageQueryResult = Apollo.QueryResult<LoggedInProfileImageQuery, LoggedInProfileImageQueryVariables>;
 export const LoggedInUserDocument = gql`
     query loggedInUser {
   loggedInUser {
-    username
     email
+    username
+    profile {
+      firstName
+      lastName
+      bio
+      profileImage
+      discipline {
+        id
+        title
+      }
+      country
+    }
+    socials {
+      instagram
+      linkedin
+      dribbble
+      behance
+      soundcloud
+      pinterest
+      spotify
+      medium
+      vimeo
+      youtube
+      github
+      discord
+    }
   }
 }
     `;
@@ -1770,6 +1728,167 @@ export function useLoggedInUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type LoggedInUserQueryHookResult = ReturnType<typeof useLoggedInUserQuery>;
 export type LoggedInUserLazyQueryHookResult = ReturnType<typeof useLoggedInUserLazyQuery>;
 export type LoggedInUserQueryResult = Apollo.QueryResult<LoggedInUserQuery, LoggedInUserQueryVariables>;
+export const LoggedInSocialDetailsDocument = gql`
+    query loggedInSocialDetails {
+  loggedInUser {
+    socials {
+      instagram
+      linkedin
+      dribbble
+      behance
+      soundcloud
+      pinterest
+      spotify
+      medium
+      vimeo
+      youtube
+      github
+      discord
+    }
+  }
+}
+    `;
+
+/**
+ * __useLoggedInSocialDetailsQuery__
+ *
+ * To run a query within a React component, call `useLoggedInSocialDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLoggedInSocialDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLoggedInSocialDetailsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLoggedInSocialDetailsQuery(baseOptions?: Apollo.QueryHookOptions<LoggedInSocialDetailsQuery, LoggedInSocialDetailsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LoggedInSocialDetailsQuery, LoggedInSocialDetailsQueryVariables>(LoggedInSocialDetailsDocument, options);
+      }
+export function useLoggedInSocialDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoggedInSocialDetailsQuery, LoggedInSocialDetailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LoggedInSocialDetailsQuery, LoggedInSocialDetailsQueryVariables>(LoggedInSocialDetailsDocument, options);
+        }
+export type LoggedInSocialDetailsQueryHookResult = ReturnType<typeof useLoggedInSocialDetailsQuery>;
+export type LoggedInSocialDetailsLazyQueryHookResult = ReturnType<typeof useLoggedInSocialDetailsLazyQuery>;
+export type LoggedInSocialDetailsQueryResult = Apollo.QueryResult<LoggedInSocialDetailsQuery, LoggedInSocialDetailsQueryVariables>;
+export const LoggedInProfileDetailsDocument = gql`
+    query loggedInProfileDetails {
+  loggedInUser {
+    profile {
+      firstName
+      lastName
+      bio
+      discipline {
+        id
+        title
+      }
+      country
+    }
+  }
+}
+    `;
+
+/**
+ * __useLoggedInProfileDetailsQuery__
+ *
+ * To run a query within a React component, call `useLoggedInProfileDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLoggedInProfileDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLoggedInProfileDetailsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLoggedInProfileDetailsQuery(baseOptions?: Apollo.QueryHookOptions<LoggedInProfileDetailsQuery, LoggedInProfileDetailsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LoggedInProfileDetailsQuery, LoggedInProfileDetailsQueryVariables>(LoggedInProfileDetailsDocument, options);
+      }
+export function useLoggedInProfileDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoggedInProfileDetailsQuery, LoggedInProfileDetailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LoggedInProfileDetailsQuery, LoggedInProfileDetailsQueryVariables>(LoggedInProfileDetailsDocument, options);
+        }
+export type LoggedInProfileDetailsQueryHookResult = ReturnType<typeof useLoggedInProfileDetailsQuery>;
+export type LoggedInProfileDetailsLazyQueryHookResult = ReturnType<typeof useLoggedInProfileDetailsLazyQuery>;
+export type LoggedInProfileDetailsQueryResult = Apollo.QueryResult<LoggedInProfileDetailsQuery, LoggedInProfileDetailsQueryVariables>;
+export const LoggedInAccountDetailsDocument = gql`
+    query loggedInAccountDetails {
+  loggedInUser {
+    email
+    username
+  }
+}
+    `;
+
+/**
+ * __useLoggedInAccountDetailsQuery__
+ *
+ * To run a query within a React component, call `useLoggedInAccountDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLoggedInAccountDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLoggedInAccountDetailsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLoggedInAccountDetailsQuery(baseOptions?: Apollo.QueryHookOptions<LoggedInAccountDetailsQuery, LoggedInAccountDetailsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LoggedInAccountDetailsQuery, LoggedInAccountDetailsQueryVariables>(LoggedInAccountDetailsDocument, options);
+      }
+export function useLoggedInAccountDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoggedInAccountDetailsQuery, LoggedInAccountDetailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LoggedInAccountDetailsQuery, LoggedInAccountDetailsQueryVariables>(LoggedInAccountDetailsDocument, options);
+        }
+export type LoggedInAccountDetailsQueryHookResult = ReturnType<typeof useLoggedInAccountDetailsQuery>;
+export type LoggedInAccountDetailsLazyQueryHookResult = ReturnType<typeof useLoggedInAccountDetailsLazyQuery>;
+export type LoggedInAccountDetailsQueryResult = Apollo.QueryResult<LoggedInAccountDetailsQuery, LoggedInAccountDetailsQueryVariables>;
+export const ProfileImageDocument = gql`
+    query profileImage {
+  loggedInUser {
+    profile {
+      profileImage
+    }
+  }
+}
+    `;
+
+/**
+ * __useProfileImageQuery__
+ *
+ * To run a query within a React component, call `useProfileImageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProfileImageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProfileImageQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useProfileImageQuery(baseOptions?: Apollo.QueryHookOptions<ProfileImageQuery, ProfileImageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProfileImageQuery, ProfileImageQueryVariables>(ProfileImageDocument, options);
+      }
+export function useProfileImageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProfileImageQuery, ProfileImageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProfileImageQuery, ProfileImageQueryVariables>(ProfileImageDocument, options);
+        }
+export type ProfileImageQueryHookResult = ReturnType<typeof useProfileImageQuery>;
+export type ProfileImageLazyQueryHookResult = ReturnType<typeof useProfileImageLazyQuery>;
+export type ProfileImageQueryResult = Apollo.QueryResult<ProfileImageQuery, ProfileImageQueryVariables>;
 export const IsUserBlockedDocument = gql`
     query isUserBlocked($id: String!) {
   isUserBlocked(id: $id)

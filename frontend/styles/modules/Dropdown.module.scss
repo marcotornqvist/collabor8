@@ -21,11 +21,29 @@
 .default {
   :global {
     // :global for not having to define nested module classes in jsx
-    .label-text {
+    .input-text {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       padding-bottom: 0.25rem;
 
       label {
         font-weight: 400;
+        white-space: nowrap;
+      }
+
+      span {
+        padding-left: 1rem;
+        font-size: 12px;
+        text-align: right;
+
+        &.success-message {
+          color: $green;
+        }
+
+        &.error-message {
+          color: $red;
+        }
       }
     }
 

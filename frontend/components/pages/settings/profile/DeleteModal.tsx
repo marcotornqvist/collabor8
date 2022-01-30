@@ -1,11 +1,13 @@
 import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
-import { GET_PROFILE_IMAGE } from "@/operations-queries/getLoggedInProfile";
 import { motion } from "framer-motion";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
 import {
-  LoggedInProfileImageQuery,
+  LoggedInUserDocument,
+  LoggedInUserQuery,
+  ProfileImageDocument,
+  ProfileImageQuery,
   useDeleteImageMutation,
 } from "generated/graphql";
 import button from "@/styles-modules/Button.module.scss";
@@ -41,15 +43,24 @@ const DeleteModal = ({ show, onClose }: IProps) => {
 
   const [deleteImage, { data }] = useDeleteImageMutation({
     update(cache, { data }) {
-      cache.writeQuery<LoggedInProfileImageQuery>({
-        query: GET_PROFILE_IMAGE,
-        data: {
-          loggedInProfile: {
-            __typename: "Profile",
-            profileImage: data?.deleteImage.profileImage || null,
-          },
-        },
+      const user = cache.readQuery<LoggedInUserQuery>({
+        query: LoggedInUserDocument,
       });
+
+      if (data?.deleteImage && user) {
+        cache.writeQuery<LoggedInUserQuery>({
+          query: LoggedInUserDocument,
+          data: {
+            loggedInUser: {
+              ...user.loggedInUser,
+              profile: {
+                ...user.loggedInUser.profile,
+                profileImage: data.deleteImage.profileImage,
+              },
+            },
+          },
+        });
+      }
     },
     onError: (error) => setError(error.message),
   });

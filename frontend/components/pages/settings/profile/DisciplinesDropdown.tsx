@@ -63,7 +63,7 @@ const DisciplinesDropdown = ({
       className={`dropdown ${dropdown.default} ${show ? dropdown.active : ""}`}
       ref={dropdownRef}
     >
-      <div className="label-text">
+      <div className="input-text">
         <label htmlFor="discipline">Discipline</label>
       </div>
       <div onClick={() => setShow(!show)} className="show-dropdown-menu-btn">

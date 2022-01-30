@@ -3,12 +3,10 @@ import { Formik } from "formik";
 import { GET_LOGGED_IN_USER } from "@/operations-queries/getLoggedInUser";
 import {
   LoggedInUserQuery,
-  UpdateEmailMutationVariables,
   useUpdateEmailMutation,
 } from "generated/graphql";
 import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
-import { number } from "yup";
 import { ErrorStatus } from "@/types-enums/enums";
 import { toastState } from "store";
 import { EmailValidationSchema } from "@/validations/schemas";

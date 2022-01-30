@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { GET_PROFILE_IMAGE } from "@/operations-queries/getLoggedInProfile";
+// import { GET_PROFILE_IMAGE } from "@/operations-queries/getLoggedInProfile";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
 import button from "@/styles-modules/Button.module.scss";
 import {
-  LoggedInProfileImageQuery,
+  LoggedInProfileDetailsDocument,
+  LoggedInUserDocument,
+  LoggedInUserQuery,
+  ProfileImageDocument,
+  ProfileImageQuery,
   useSingleUploadMutation,
 } from "generated/graphql";
 
@@ -12,15 +16,25 @@ export const UploadFile = () => {
   const [error, setError] = useState("");
   const [singleUpload, { data }] = useSingleUploadMutation({
     update(cache, { data }) {
-      cache.writeQuery<LoggedInProfileImageQuery>({
-        query: GET_PROFILE_IMAGE,
-        data: {
-          loggedInProfile: {
-            __typename: "Profile",
-            profileImage: data?.singleUpload.url || null,
-          },
-        },
+      const user = cache.readQuery<LoggedInUserQuery>({
+        query: LoggedInUserDocument,
       });
+
+      if (data?.singleUpload && user) {
+        console.log(user);
+        cache.writeQuery<LoggedInUserQuery>({
+          query: LoggedInUserDocument,
+          data: {
+            loggedInUser: {
+              ...user.loggedInUser,
+              profile: {
+                ...user.loggedInUser.profile,
+                profileImage: data.singleUpload.url,
+              },
+            },
+          },
+        });
+      }
     },
     onError: (error) => setError(error.message),
   });

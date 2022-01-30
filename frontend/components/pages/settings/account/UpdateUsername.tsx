@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { Formik } from "formik";
-import { GET_LOGGED_IN_USER } from "@/operations-queries/getLoggedInUser";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
 import {
+  LoggedInUserDocument,
   LoggedInUserQuery,
   useUpdateUsernameMutation,
 } from "generated/graphql";
 import { UsernameValidationSchema } from "@/validations/schemas";
+import { isNotEmptyObject } from "utils/helpers";
 import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
-import { isNotEmptyObject } from "utils/helpers";
 import InputErrorMessage from "@/components-modules/global/InputErrorMessage";
 
 interface IProps {
@@ -30,7 +30,7 @@ const UpdateUsername = ({ currentUsername, loading }: IProps) => {
   const [updateUsername, { data }] = useUpdateUsernameMutation({
     update(cache, { data }) {
       const user = cache.readQuery<LoggedInUserQuery>({
-        query: GET_LOGGED_IN_USER,
+        query: LoggedInUserDocument,
       });
 
       if (data?.updateUsername && user) {
@@ -39,7 +39,7 @@ const UpdateUsername = ({ currentUsername, loading }: IProps) => {
           username: data.updateUsername,
         };
         cache.writeQuery<LoggedInUserQuery>({
-          query: GET_LOGGED_IN_USER,
+          query: LoggedInUserDocument,
           data: {
             loggedInUser: merge,
           },

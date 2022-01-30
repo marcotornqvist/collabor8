@@ -64,7 +64,7 @@ const CountriesDropdown = ({
       className={`dropdown ${dropdown.default} ${show ? dropdown.active : ""}`}
       ref={dropdownRef}
     >
-      <div className="label-text">
+      <div className="input-text">
         <label htmlFor="country">Country</label>
       </div>
       <div
