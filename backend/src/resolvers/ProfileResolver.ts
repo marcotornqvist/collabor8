@@ -68,24 +68,24 @@ export class ProfileResolver {
     return disciplines;
   }
 
-  @Query(() => Profile, {
-    nullable: true,
-    description: "Returns logged in user profile",
-  })
-  @UseMiddleware(isAuth)
-  async loggedInProfile(@Ctx() { payload, prisma }: Context) {
-    // Return logged in profile details
-    const profile = await prisma.profile.findUnique({
-      where: {
-        userId: payload!.userId,
-      },
-      include: {
-        discipline: true,
-      },
-    });
+  // @Query(() => Profile, {
+  //   nullable: true,
+  //   description: "Returns logged in user profile",
+  // })
+  // @UseMiddleware(isAuth)
+  // async loggedInProfile(@Ctx() { payload, prisma }: Context) {
+  //   // Return logged in profile details
+  //   const profile = await prisma.profile.findUnique({
+  //     where: {
+  //       userId: payload!.userId,
+  //     },
+  //     include: {
+  //       discipline: true,
+  //     },
+  //   });
 
-    return profile;
-  }
+  //   return profile;
+  // }
 
   @Mutation(() => Profile, {
     description: "Update Profile",

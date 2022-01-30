@@ -163,7 +163,12 @@ export class UserResolver {
         id: payload!.userId,
       },
       include: {
-        profile: true,
+        profile: {
+          include: {
+            discipline: true,
+          },
+        },
+        socials: true,
       },
     });
 
