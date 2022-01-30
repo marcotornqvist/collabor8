@@ -1,4 +1,4 @@
-import { MutableRefObject, Ref, RefObject, useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { authState, layoutState } from "store";
 import { useSnapshot } from "valtio";
 import { motion, AnimatePresence } from "framer-motion";

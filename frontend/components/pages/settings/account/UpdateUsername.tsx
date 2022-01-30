@@ -5,13 +5,13 @@ import { ErrorStatus } from "@/types-enums/enums";
 import {
   LoggedInUserDocument,
   LoggedInUserQuery,
+  UpdateUsernameMutation,
   useUpdateUsernameMutation,
 } from "generated/graphql";
 import { UsernameValidationSchema } from "@/validations/schemas";
 import { isNotEmptyObject } from "utils/helpers";
-import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
-import InputErrorMessage from "@/components-modules/global/InputErrorMessage";
+import InputField from "@/components-modules/global/InputField";
 
 interface IProps {
   currentUsername?: string;
@@ -23,7 +23,7 @@ interface FormErrors {
 }
 
 const UpdateUsername = ({ currentUsername, loading }: IProps) => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [lastSubmit, setLastSubmit] = useState<UpdateUsernameMutation>(); // Last submit response values
   const [error, setError] = useState(""); // Error message, server error
   const [formErrors, setFormErrors] = useState<FormErrors>({}); // UserInput Errors
 
@@ -57,7 +57,7 @@ const UpdateUsername = ({ currentUsername, loading }: IProps) => {
       toastState.addToast(error, ErrorStatus.danger);
     }
     if (data) {
-      setIsSubmitted(true);
+      setLastSubmit(data);
       setFormErrors({});
       toastState.addToast("Username updated successfully", ErrorStatus.success);
     }
@@ -84,34 +84,25 @@ const UpdateUsername = ({ currentUsername, loading }: IProps) => {
               onSubmit={(e) => {
                 e.preventDefault();
                 // If currentUsername is not the same as before, handle submit
-                if (values.username && values.username !== currentUsername) {
+                if (values.username !== currentUsername) {
                   isNotEmptyObject(errors) && setFormErrors(errors);
                   handleSubmit();
                 } else {
-                  setIsSubmitted(false);
                   setFormErrors({});
                 }
               }}
             >
-              <div className={`input-group ${input.group}`}>
-                <div className="input-text">
-                  <label htmlFor="username">Username</label>
-                  <InputErrorMessage
-                    errorMessage={formErrors.username}
-                    successMessage={"Username is valid"}
-                    isSubmitted={isSubmitted}
-                  />
-                </div>
-                <input
-                  id="username"
-                  name="username"
-                  type="text"
-                  value={values.username.toLowerCase()}
-                  onChange={handleChange}
-                  placeholder={"Write a username"}
-                  autoComplete="on"
-                />
-              </div>
+              <InputField
+                name="username"
+                value={values.username.toLowerCase()}
+                handleChange={handleChange}
+                label="Username"
+                type="text"
+                placeholder={"Please enter a username"}
+                successMessage="Username is valid"
+                errorMessage={formErrors.username}
+                lastSubmitValue={lastSubmit?.updateUsername}
+              />
               <button
                 type="submit"
                 className={`${

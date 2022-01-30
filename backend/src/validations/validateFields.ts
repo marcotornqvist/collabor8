@@ -1,4 +1,4 @@
-import { IFields, LooseObject } from "../types/Interfaces";
+import { IFields, FormErrors } from "../types/Interfaces";
 
 interface IArgs<T> {
   fields: T;
@@ -21,7 +21,7 @@ export const validateFields = async <T>({
       return {};
     })
     .catch((err: IErr) => {
-      const errors: LooseObject = {};
+      const errors: FormErrors = {};
       // Appends errors returned from yup validator to errors object
       err.inner.forEach((item: IItem) => {
         errors[item.path] = item.errors[0];

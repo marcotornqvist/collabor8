@@ -8,7 +8,7 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { Profile } from "../types/Profile";
-import { Context, LooseObject, Upload } from "../types/Interfaces";
+import { Context, FormErrors, Upload } from "../types/Interfaces";
 import { CountryResponse } from "./responses/CountryResponse";
 import { isAuth } from "../utils/isAuth";
 import { UpdateProfileInput } from "./inputs/ProfileInput";
@@ -102,7 +102,7 @@ export class ProfileResolver {
     bio = capitalizeFirstLetter(bio).trim();
 
     // Validate the input fields
-    const errors: LooseObject = await validateFields<UpdateProfileInput>({
+    const errors: FormErrors = await validateFields<UpdateProfileInput>({
       fields: {
         firstName,
         lastName,

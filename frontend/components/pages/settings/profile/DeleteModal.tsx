@@ -6,8 +6,6 @@ import { ErrorStatus } from "@/types-enums/enums";
 import {
   LoggedInUserDocument,
   LoggedInUserQuery,
-  ProfileImageDocument,
-  ProfileImageQuery,
   useDeleteImageMutation,
 } from "generated/graphql";
 import button from "@/styles-modules/Button.module.scss";

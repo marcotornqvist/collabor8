@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { Formik } from "formik";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
-import { useUpdatePasswordMutation } from "generated/graphql";
+import {
+  UpdatePasswordInput,
+  useUpdatePasswordMutation,
+} from "generated/graphql";
 import { UpdatePasswordValidationSchema } from "@/validations/schemas";
-import input from "@/styles-modules/Input.module.scss";
-import button from "@/styles-modules/Button.module.scss";
 import { isNotEmptyObject } from "utils/helpers";
-import InputErrorMessage from "@/components-modules/global/InputErrorMessage";
+import button from "@/styles-modules/Button.module.scss";
+import InputField from "@/components-modules/global/InputField";
 
 interface IProps {
   loading: boolean;
@@ -20,23 +22,23 @@ interface FormErrors {
 }
 
 const UpdatePassword = ({ loading }: IProps) => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [lastSubmit, setLastSubmit] = useState<UpdatePasswordInput>(); // Last submit response values
   const [error, setError] = useState(""); // Error message, server error
   const [formErrors, setFormErrors] = useState<FormErrors>({}); // UserInput Errors
 
-  const [updatePassword, { data }] = useUpdatePasswordMutation({
-    onError: (error) => {
-      setFormErrors(error.graphQLErrors[0].extensions?.errors);
-      setError(error.message);
-    },
-  });
+  const [updatePassword, { data, loading: updateLoading }] =
+    useUpdatePasswordMutation({
+      onError: (error) => {
+        setFormErrors(error.graphQLErrors[0].extensions?.errors);
+        setError(error.message);
+      },
+    });
 
   useEffect(() => {
     if (error && !formErrors) {
       toastState.addToast(error, ErrorStatus.danger);
     }
     if (data) {
-      setIsSubmitted(true);
       setFormErrors({});
       toastState.addToast("Password updated successfully", ErrorStatus.success);
     }
@@ -53,13 +55,15 @@ const UpdatePassword = ({ loading }: IProps) => {
             newPassword: "",
             confirmPassword: "",
           }}
-          onSubmit={(values) =>
-            updatePassword({
+          onSubmit={async (values) => {
+            await updatePassword({
               variables: {
                 data: values,
               },
-            })
-          }
+            });
+
+            !updateLoading && setLastSubmit(values);
+          }}
         >
           {({ values, errors, handleChange, handleSubmit, isSubmitting }) => (
             <form
@@ -69,63 +73,39 @@ const UpdatePassword = ({ loading }: IProps) => {
                 handleSubmit();
               }}
             >
-              <div className={`input-group ${input.group}`}>
-                <div className="input-text">
-                  <label htmlFor="currentPassword">Current Password</label>
-                  <InputErrorMessage
-                    errorMessage={formErrors.currentPassword}
-                    successMessage={"Current password is valid"}
-                    isSubmitted={isSubmitted}
-                  />
-                </div>
-                <input
-                  id="currentPassword"
-                  name="currentPassword"
-                  type="password"
-                  value={values.currentPassword}
-                  onChange={handleChange}
-                  placeholder={"Please enter your current password"}
-                  autoComplete="on"
-                />
-              </div>
-              <div className={`input-group ${input.group}`}>
-                <div className="input-text">
-                  <label htmlFor="newPassword">New Password</label>
-                  <InputErrorMessage
-                    errorMessage={formErrors.newPassword}
-                    successMessage={"New password is valid"}
-                    isSubmitted={isSubmitted}
-                  />
-                </div>
-                <input
-                  id="newPassword"
-                  name="newPassword"
-                  type="password"
-                  value={values.newPassword}
-                  onChange={handleChange}
-                  placeholder={"Please enter your new password"}
-                  autoComplete="on"
-                />
-              </div>
-              <div className={`input-group ${input.group}`}>
-                <div className="input-text">
-                  <label htmlFor="confirmPassword">Confirm Password</label>
-                  <InputErrorMessage
-                    errorMessage={formErrors.confirmPassword}
-                    successMessage={"Confirm password is valid"}
-                    isSubmitted={isSubmitted}
-                  />
-                </div>
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  value={values.confirmPassword}
-                  onChange={handleChange}
-                  placeholder={"Please confirm new password"}
-                  autoComplete="on"
-                />
-              </div>
+              <InputField
+                name="currentPassword"
+                value={values.currentPassword}
+                handleChange={handleChange}
+                label="Current Password"
+                type="password"
+                placeholder="Please enter your current password"
+                successMessage="Current password is valid"
+                errorMessage={formErrors.currentPassword}
+                lastSubmitValue={lastSubmit?.currentPassword}
+              />
+              <InputField
+                name="newPassword"
+                value={values.newPassword}
+                handleChange={handleChange}
+                label="New Password"
+                type="password"
+                placeholder="Please enter your new password"
+                successMessage="New password is valid"
+                errorMessage={formErrors.newPassword}
+                lastSubmitValue={lastSubmit?.newPassword}
+              />
+              <InputField
+                name="confirmPassword"
+                value={values.confirmPassword}
+                handleChange={handleChange}
+                label="Confirm Password"
+                type="password"
+                placeholder="Please confirm new password"
+                successMessage="Confirm password is valid"
+                errorMessage={formErrors.confirmPassword}
+                lastSubmitValue={lastSubmit?.confirmPassword}
+              />
               <button
                 type="submit"
                 className={`${

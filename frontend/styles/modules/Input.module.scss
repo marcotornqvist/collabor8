@@ -34,7 +34,7 @@
       }
     }
 
-    input {
+    .input {
       min-width: 100%;
       height: 3rem;
       padding: 0 1rem;
@@ -52,6 +52,77 @@
         &::placeholder {
           color: $black;
         }
+      }
+    }
+  }
+}
+
+.social {
+  :global {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+
+    .input-text {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 0.25rem;
+
+      label {
+        font-weight: 400;
+        white-space: nowrap;
+      }
+
+      span {
+        padding-left: 1rem;
+        font-size: 12px;
+        text-align: right;
+
+        &.success-message {
+          color: $green;
+        }
+
+        &.error-message {
+          color: $red;
+        }
+      }
+    }
+
+    .input-field {
+      display: flex;
+      align-items: center;
+      min-width: 100%;
+      height: 3rem;
+      padding: 0 1rem;
+      border: 1px solid $light-grey;
+      border-radius: $medium-radius;
+      background: $grey-bg;
+      color: $black;
+      outline: $green;
+      cursor: pointer;
+      outline: none;
+
+      span {
+        font-size: 14px;
+        color: $grey;
+      }
+
+      input {
+        all: unset;
+        font-size: 14px;
+        width: 100%;
+        text-align: left;
+        background: $grey-bg;
+        outline: none;
+        // background: none !important;
+      }
+
+      &.focus {
+        border-color: $green;
+        background: $light-green;
+        box-shadow: 0 0 0px 1000px $light-green inset;
       }
     }
   }

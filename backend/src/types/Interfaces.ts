@@ -13,11 +13,11 @@ export interface Context extends Prisma {
   payload?: { userId: string };
 }
 
-export interface LooseObject {
-  [key: string]: string | null | undefined;
+export interface FormErrors {
+  [key: string]: string | undefined;
 }
 
-// Same as LooseObject but returns all values
+// Same as FormErrors but can be any value
 export interface IFields {
   [key: string]: any;
 }

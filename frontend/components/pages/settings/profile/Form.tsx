@@ -4,22 +4,21 @@ import { ErrorStatus } from "@/types-enums/enums";
 import { IDiscipline } from "@/types-interfaces/form";
 import { Formik } from "formik";
 import {
-  LoggedInAccountDetailsQuery,
-  LoggedInProfileDetailsDocument,
-  LoggedInProfileDetailsQuery,
   LoggedInUserDocument,
   LoggedInUserQuery,
+  UpdateProfileInput,
+  UpdateProfileMutation,
   useLoggedInProfileDetailsQuery,
   useUpdateProfileMutation,
 } from "generated/graphql";
 import { UpdateProfileValidationSchema } from "@/validations/schemas";
 import { isNotEmptyObject } from "utils/helpers";
-import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
 import CountriesDropdown from "./CountriesDropdown";
 import DisciplinesDropdown from "./DisciplinesDropdown";
 import useWindowSize from "@/hooks/useWindowSize";
-import InputErrorMessage from "@/components-modules/global/InputErrorMessage";
+import InputField from "@/components-modules/global/InputField";
+import TextareaField from "@/components-modules/global/TextareaField";
 
 const mobileVariants = {
   hidden: {
@@ -61,7 +60,7 @@ interface FormErrors {
   bio?: string;
 }
 
-interface IForm {
+interface InitialValues {
   firstName: string;
   lastName: string;
   country: string | null;
@@ -71,7 +70,7 @@ interface IForm {
 
 const Form = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [lastSubmit, setLastSubmit] = useState<any>(); // Last submit response values
   const [error, setError] = useState(""); // Error message, server error
   const [formErrors, setFormErrors] = useState<FormErrors>({}); // UserInput Errors
 
@@ -81,40 +80,40 @@ const Form = () => {
     setIsMobile(width < 768);
   }, [width]);
 
-  const [updateProfile, { data }] = useUpdateProfileMutation({
-    // Update the cache profile values off the logged in user
-    update(cache, { data }) {
-      const user = cache.readQuery<LoggedInUserQuery>({
-        query: LoggedInUserDocument,
-      });
-
-      if (data?.updateProfile && user) {
-        cache.writeQuery<LoggedInUserQuery>({
+  const [updateProfile, { data, loading: updateLoading }] =
+    useUpdateProfileMutation({
+      // Update the cache profile values off the logged in user
+      update(cache, { data }) {
+        const user = cache.readQuery<LoggedInUserQuery>({
           query: LoggedInUserDocument,
-          data: {
-            loggedInUser: {
-              ...user.loggedInUser,
-              profile: {
-                ...data.updateProfile,
-                profileImage: user.loggedInUser.profile?.profileImage,
+        });
+
+        if (data?.updateProfile && user) {
+          cache.writeQuery<LoggedInUserQuery>({
+            query: LoggedInUserDocument,
+            data: {
+              loggedInUser: {
+                ...user.loggedInUser,
+                profile: {
+                  ...data.updateProfile,
+                  profileImage: user.loggedInUser.profile?.profileImage,
+                },
               },
             },
-          },
-        });
-      }
-    },
-    onError: (error) => {
-      setFormErrors(error.graphQLErrors[0].extensions?.errors);
-      setError(error.message);
-    },
-  });
+          });
+        }
+      },
+      onError: (error) => {
+        setFormErrors(error.graphQLErrors[0].extensions?.errors);
+        setError(error.message);
+      },
+    });
 
   useEffect(() => {
     if (error && !formErrors) {
       toastState.addToast(error, ErrorStatus.danger);
     }
     if (data) {
-      setIsSubmitted(true);
       setFormErrors({});
       toastState.addToast("Profile updated successfully", ErrorStatus.success);
     }
@@ -125,7 +124,7 @@ const Form = () => {
     fetchPolicy: "cache-only", // Fetches from cache only, navbar fetches all the logged in user data when page is loaded and authState is true..
   });
 
-  const initialValues: IForm = {
+  const initialValues: InitialValues = {
     firstName: formData?.loggedInUser.profile?.firstName || "",
     lastName: formData?.loggedInUser.profile?.lastName || "",
     country: formData?.loggedInUser.profile?.country || null,
@@ -141,8 +140,8 @@ const Form = () => {
           validateOnMount={true}
           enableReinitialize
           initialValues={initialValues}
-          onSubmit={(values) =>
-            updateProfile({
+          onSubmit={async (values) => {
+            await updateProfile({
               variables: {
                 data: {
                   firstName: values.firstName,
@@ -152,8 +151,10 @@ const Form = () => {
                   disciplineId: values.discipline?.id,
                 },
               },
-            })
-          }
+            });
+
+            !updateLoading && setLastSubmit(values);
+          }}
         >
           {({
             values,
@@ -171,45 +172,28 @@ const Form = () => {
               }}
             >
               <div className="wrapper">
-                <div className={`input-group ${input.group}`}>
-                  <div className="input-text">
-                    <label htmlFor="firstName">First Name</label>
-                    <InputErrorMessage
-                      errorMessage={formErrors.firstName}
-                      successMessage={"First name is valid"}
-                      isSubmitted={isSubmitted}
-                    />
-                  </div>
-                  <input
-                    id="firstName"
-                    name="firstName"
-                    type="text"
-                    className={input.default}
-                    value={values.firstName}
-                    onChange={handleChange}
-                    placeholder={!loading ? "Your first name" : ""}
-                    autoComplete="on"
-                  />
-                </div>
-                <div className={`input-group ${input.group}`}>
-                  <div className="input-text">
-                    <label htmlFor="lastName">Last Name</label>
-                    <InputErrorMessage
-                      errorMessage={formErrors.lastName}
-                      successMessage={"Last name is valid"}
-                      isSubmitted={isSubmitted}
-                    />
-                  </div>
-                  <input
-                    id="lastName"
-                    name="lastName"
-                    value={values.lastName}
-                    onChange={handleChange}
-                    className={input.default}
-                    placeholder={!loading ? "Your last name" : ""}
-                    autoComplete="on"
-                  />
-                </div>
+                <InputField
+                  name="firstName"
+                  value={values.firstName}
+                  handleChange={handleChange}
+                  label="First name"
+                  type="text"
+                  placeholder={!loading ? "Enter your first name" : ""}
+                  successMessage="First name is valid"
+                  errorMessage={formErrors.firstName}
+                  lastSubmitValue={lastSubmit?.firstName}
+                />
+                <InputField
+                  name="lastName"
+                  value={values.lastName}
+                  handleChange={handleChange}
+                  label="Last name"
+                  type="text"
+                  placeholder={!loading ? "Enter your last name" : ""}
+                  successMessage="Last name is valid"
+                  errorMessage={formErrors.lastName}
+                  lastSubmitValue={lastSubmit?.lastName}
+                />
               </div>
               <div className="wrapper">
                 <CountriesDropdown
@@ -218,6 +202,8 @@ const Form = () => {
                   loading={loading}
                   variants={isMobile ? mobileVariants : desktopVariants}
                   isMobile={isMobile}
+                  error={error}
+                  lastSubmitValue={lastSubmit?.country}
                 />
                 <DisciplinesDropdown
                   setFieldValue={setFieldValue}
@@ -225,27 +211,20 @@ const Form = () => {
                   loading={loading}
                   variants={isMobile ? mobileVariants : desktopVariants}
                   isMobile={isMobile}
+                  error={error}
+                  lastSubmitValue={lastSubmit?.discipline}
                 />
               </div>
-              <div className={`input-group ${input.textarea_group}`}>
-                <div className="input-text">
-                  <label htmlFor="bio">Bio</label>
-                  <InputErrorMessage
-                    errorMessage={formErrors.bio}
-                    successMessage={"Bio is valid"}
-                    isSubmitted={isSubmitted}
-                  />
-                </div>
-                <textarea
-                  id="bio"
-                  name="bio"
-                  value={values.bio}
-                  onChange={handleChange}
-                  className={`textarea ${input.textarea}`}
-                  placeholder={!loading ? "Write a bio" : ""}
-                  autoComplete="on"
-                />
-              </div>
+              <TextareaField
+                name="bio"
+                value={values.bio}
+                handleChange={handleChange}
+                label="Bio"
+                placeholder={!loading ? "Write a bio" : ""}
+                successMessage="Bio is valid"
+                errorMessage={formErrors.bio}
+                lastSubmitValue={lastSubmit?.bio}
+              />
               <button
                 type="submit"
                 className={`${

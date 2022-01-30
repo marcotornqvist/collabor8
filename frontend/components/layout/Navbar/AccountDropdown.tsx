@@ -57,6 +57,13 @@ const AccountDropdown = () => {
           >
             <ul>
               <li onClick={() => setShow(false)}>
+                <Link href="/my-profile">
+                  <a>
+                    <span>My Profile</span>
+                  </a>
+                </Link>
+              </li>
+              <li onClick={() => setShow(false)}>
                 <Link href="/settings/profile">
                   <a>
                     <span>Profile Settings</span>

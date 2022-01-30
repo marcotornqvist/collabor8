@@ -9,7 +9,7 @@ import {
 } from "type-graphql";
 import { Project } from "../types/Project";
 import { Member } from "../types/Member";
-import { Context, LooseObject } from "../types/Interfaces";
+import { Context, FormErrors } from "../types/Interfaces";
 import {
   MemberInput,
   CreateProjectInput,
@@ -179,7 +179,7 @@ export class ProjectResolver {
     body = capitalizeFirstLetter(body.trim());
 
     // Validate the input fields
-    const errors: LooseObject = await validateFields<CreateProjectInput>({
+    const errors: FormErrors = await validateFields<CreateProjectInput>({
       fields: {
         title,
         body,
@@ -420,7 +420,7 @@ export class ProjectResolver {
     @Ctx() { payload, prisma }: Context
   ): Promise<Project> {
     // Validate the input fields
-    const errors: LooseObject = await validateFields<
+    const errors: FormErrors = await validateFields<
       Omit<UpdateProjectInput, "id">
     >({
       fields: {

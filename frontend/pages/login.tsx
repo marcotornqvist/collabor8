@@ -7,7 +7,7 @@ import { Formik } from "formik";
 import { LoginInput, useLoginMutation } from "generated/graphql";
 import AuthLayout from "@/components-pages/auth/AuthLayout";
 import button from "@/styles-modules/Button.module.scss";
-import input from "@/styles-modules/Input.module.scss";
+import InputField from "@/components-modules/global/InputField";
 
 const Login = () => {
   const router = useRouter();
@@ -67,35 +67,22 @@ const Login = () => {
     >
       {({ values, handleChange, handleSubmit, isSubmitting }) => (
         <form onSubmit={handleSubmit}>
-          <div className={`input-group ${input.group}`}>
-            <div className="input-text">
-              <label htmlFor="email">Email</label>
-            </div>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={values.email}
-              onChange={handleChange}
-              placeholder="Please enter your email address"
-              autoComplete="on"
-            />
-          </div>
-          <div className={`input-group ${input.group}`}>
-            <div className="input-text">
-              <label htmlFor="password">Password</label>
-            </div>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              className={input.default}
-              value={values.password}
-              onChange={handleChange}
-              placeholder="Please enter your password"
-              autoComplete="on"
-            />
-          </div>
+          <InputField
+            name="email"
+            value={values.email}
+            handleChange={handleChange}
+            label="Email"
+            type="text"
+            placeholder="Please enter your email address"
+          />
+          <InputField
+            name="password"
+            value={values.password}
+            handleChange={handleChange}
+            label="Password"
+            type="password"
+            placeholder="Please enter your password"
+          />
           <button
             type="submit"
             className={`${

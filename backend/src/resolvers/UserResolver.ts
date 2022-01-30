@@ -10,7 +10,7 @@ import {
 import { UserInputError } from "apollo-server-express";
 import { hash, compare } from "bcryptjs";
 import { User } from "../types/User";
-import { Context, LooseObject } from "../types/Interfaces";
+import { Context, FormErrors } from "../types/Interfaces";
 import {
   LoginInput,
   RegisterInput,
@@ -182,7 +182,7 @@ export class UserResolver {
     @Ctx() { res, prisma }: Context
   ): Promise<AuthResponse> {
     // Validate the input fields
-    const errors: LooseObject = await validateFields<RegisterInput>({
+    const errors: FormErrors = await validateFields<RegisterInput>({
       fields: {
         firstName,
         lastName,
@@ -359,7 +359,7 @@ export class UserResolver {
     username = username.toLowerCase().replace(/ /g, "");
 
     // Validate the input field
-    const errors: LooseObject = await validateFields<{ username: string }>({
+    const errors: FormErrors = await validateFields<{ username: string }>({
       fields: {
         username,
       },
@@ -468,7 +468,7 @@ export class UserResolver {
     @Ctx() { payload, prisma }: Context
   ) {
     // Validate the input field
-    const errors: LooseObject = await validateFields<{ email: string }>({
+    const errors: FormErrors = await validateFields<{ email: string }>({
       fields: {
         email,
       },
@@ -515,7 +515,7 @@ export class UserResolver {
     @Ctx() { payload, prisma }: Context
   ) {
     // Validate the input fields
-    const errors: LooseObject = await validateFields<
+    const errors: FormErrors = await validateFields<
       Omit<UpdatePasswordInput, "currentPassword"> // Doesn't include currentPassword from UpdatePasswordInput interface
     >({
       fields: {

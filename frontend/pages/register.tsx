@@ -7,9 +7,8 @@ import { RegisterValidationSchema } from "@/validations/schemas";
 import { ErrorStatus } from "@/types-enums/enums";
 import { isNotEmptyObject } from "utils/helpers";
 import AuthLayout from "@/components-pages/auth/AuthLayout";
-import input from "@/styles-modules/Input.module.scss";
 import button from "@/styles-modules/Button.module.scss";
-import InputErrorMessage from "@/components-modules/global/InputErrorMessage";
+import InputField from "@/components-modules/global/InputField";
 
 interface FormErrors {
   firstName?: string;
@@ -21,13 +20,12 @@ interface FormErrors {
 
 const Register = () => {
   const router = useRouter();
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [lastSubmit, setLastSubmit] = useState<RegisterInput>(); // Last submit response values
   const [error, setError] = useState(""); // Error message, server error
   const [formErrors, setFormErrors] = useState<FormErrors>({}); // UserInput Errors
 
-  const [register, { client }] = useRegisterMutation({
+  const [register, { client, loading }] = useRegisterMutation({
     onError: (error) => {
-      setIsSubmitted(true);
       setFormErrors(error.graphQLErrors[0].extensions?.errors);
       setError(error.message);
     },
@@ -41,6 +39,8 @@ const Register = () => {
         data: values,
       },
     });
+
+    !loading && setLastSubmit(values);
 
     if (data) {
       authState.loading = true;
@@ -98,107 +98,62 @@ const Register = () => {
           }}
         >
           <div className="wrapper">
-            <div className={`input-group ${input.group}`}>
-              <div className="input-text">
-                <label htmlFor="firstName">First Name</label>
-                <InputErrorMessage
-                  errorMessage={formErrors.firstName}
-                  successMessage={"First name is valid"}
-                  isSubmitted={isSubmitted}
-                />
-              </div>
-              <input
-                id="firstName"
-                name="firstName"
-                type="text"
-                className={input.default}
-                value={values.firstName}
-                onChange={handleChange}
-                placeholder="Your first name"
-                autoComplete="on"
-              />
-            </div>
-            <div className={`input-group ${input.group}`}>
-              <div className="input-text">
-                <label htmlFor="lastName">Last Name</label>
-                <InputErrorMessage
-                  errorMessage={formErrors.lastName}
-                  successMessage={"Last name is valid"}
-                  isSubmitted={isSubmitted}
-                />
-              </div>
-              <input
-                id="lastName"
-                name="lastName"
-                type="text"
-                className={input.default}
-                value={values.lastName}
-                onChange={handleChange}
-                placeholder="Your last name"
-                autoComplete="on"
-              />
-            </div>
-          </div>
-          <div className={`input-group ${input.group}`}>
-            <div className="input-text">
-              <label htmlFor="email">Email</label>
-              <InputErrorMessage
-                errorMessage={formErrors.email}
-                successMessage={"Email is valid"}
-                isSubmitted={isSubmitted}
-              />
-            </div>
-            <input
-              id="email"
-              name="email"
+            <InputField
+              name="firstName"
+              value={values.firstName}
+              handleChange={handleChange}
+              label="First name"
               type="text"
-              className={input.default}
-              value={values.email}
-              onChange={handleChange}
-              placeholder="Please enter your email address"
-              autoComplete="on"
+              placeholder="Enter your first name"
+              successMessage="First name is valid"
+              errorMessage={formErrors.firstName}
+              lastSubmitValue={lastSubmit?.firstName}
+            />
+            <InputField
+              name="lastName"
+              value={values.lastName}
+              handleChange={handleChange}
+              label="Last name"
+              type="text"
+              placeholder="Enter your last name"
+              successMessage="Last name is valid"
+              errorMessage={formErrors.lastName}
+              lastSubmitValue={lastSubmit?.lastName}
             />
           </div>
-          <div className={`input-group ${input.group}`}>
-            <div className="input-text">
-              <label htmlFor="password">Password</label>
-              <InputErrorMessage
-                errorMessage={formErrors.password}
-                successMessage={"Password is valid"}
-                isSubmitted={isSubmitted}
-              />
-            </div>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              className={input.default}
-              value={values.password}
-              onChange={handleChange}
-              placeholder="Please enter a new password"
-              autoComplete="on"
-            />
-          </div>
-          <div className={`input-group ${input.group}`}>
-            <div className="input-text">
-              <label htmlFor="confirmPassword">Confirm Password</label>
-              <InputErrorMessage
-                errorMessage={formErrors.confirmPassword}
-                successMessage={"Confirm Password is valid"}
-                isSubmitted={isSubmitted}
-              />
-            </div>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              className={input.default}
-              value={values.confirmPassword}
-              onChange={handleChange}
-              placeholder="Confirm your new password"
-              autoComplete="on"
-            />
-          </div>
+          <InputField
+            name="email"
+            value={values.email}
+            handleChange={handleChange}
+            label="Email"
+            type="text"
+            placeholder={"Please enter your email address"}
+            successMessage="Email is valid"
+            errorMessage={formErrors.email}
+            lastSubmitValue={lastSubmit?.email}
+          />
+          <InputField
+            name="password"
+            value={values.password}
+            handleChange={handleChange}
+            label="Password"
+            type="password"
+            placeholder="Please enter a new password"
+            successMessage="Password is valid"
+            errorMessage={formErrors.password}
+            lastSubmitValue={lastSubmit?.password}
+          />
+          <InputField
+            name="confirmPassword"
+            value={values.confirmPassword}
+            handleChange={handleChange}
+            label="Confirm Password"
+            type="password"
+            placeholder="Please confirm password"
+            successMessage="Confirm password is valid"
+            errorMessage={formErrors.confirmPassword}
+            lastSubmitValue={lastSubmit?.confirmPassword}
+          />
           <button
             type="submit"
             className={`${

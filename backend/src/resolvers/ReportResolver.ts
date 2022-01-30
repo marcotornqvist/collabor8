@@ -5,8 +5,7 @@ import { isAuth } from "../utils/isAuth";
 import { Context } from "../types/Interfaces";
 import { UserInputError } from "apollo-server-express";
 import { ReportUserInput, ReportProjectInput } from "./inputs/ReportInput";
-import { LooseObject } from "../types/Interfaces";
-import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
+import { FormErrors } from "../types/Interfaces";
 import { validateFields } from "../validations/validateFields";
 import { ReportValidationSchema } from "../validations/schemas";
 
@@ -25,7 +24,7 @@ export class ReportResolver {
     @Ctx() { payload, prisma }: Context
   ): Promise<ReportUser> {
     // Validate the input fields
-    const errors: LooseObject = await validateFields<
+    const errors: FormErrors = await validateFields<
       Omit<ReportUserInput, "userId">
     >({
       fields: {
@@ -77,7 +76,7 @@ export class ReportResolver {
     @Ctx() { payload, prisma }: Context
   ): Promise<ReportProject> {
     // Validate the input fields
-    const errors: LooseObject = await validateFields<
+    const errors: FormErrors = await validateFields<
       Omit<ReportProjectInput, "projectId">
     >({
       fields: {

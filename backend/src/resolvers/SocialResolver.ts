@@ -9,7 +9,7 @@ import {
 } from "type-graphql";
 import { Social } from "../types/Social";
 import { isAuth } from "../utils/isAuth";
-import { Context, LooseObject } from "../types/Interfaces";
+import { Context, FormErrors } from "../types/Interfaces";
 import { SocialInput } from "./inputs/SocialInput";
 import { validateFields } from "../validations/validateFields";
 import { UpdateSocialsValidationSchema } from "../validations/schemas";
@@ -61,7 +61,7 @@ export class SocialResolver {
     @Ctx() { payload, prisma }: Context
   ): Promise<Social> {
     // Validate the input fields
-    const errors: LooseObject = await validateFields<SocialInput>({
+    const errors: FormErrors = await validateFields<SocialInput>({
       fields: data,
       validationSchema: UpdateSocialsValidationSchema,
     });

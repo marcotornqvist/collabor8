@@ -16,6 +16,8 @@ interface IProps {
   loading: boolean;
   variants: any;
   isMobile: boolean;
+  error: string;
+  lastSubmitValue?: IDiscipline | null;
 }
 
 const DisciplinesDropdown = ({
@@ -24,6 +26,8 @@ const DisciplinesDropdown = ({
   loading,
   variants,
   isMobile,
+  error,
+  lastSubmitValue,
 }: IProps) => {
   const [show, setShow] = useState(false);
   const { data } = useDisciplinesQuery();
@@ -65,6 +69,9 @@ const DisciplinesDropdown = ({
     >
       <div className="input-text">
         <label htmlFor="discipline">Discipline</label>
+        {!error && lastSubmitValue?.id === discipline?.id && discipline && (
+          <span className="success-message">Country is valid</span>
+        )}
       </div>
       <div onClick={() => setShow(!show)} className="show-dropdown-menu-btn">
         <span className={discipline ? "default-text" : "placeholder"}>

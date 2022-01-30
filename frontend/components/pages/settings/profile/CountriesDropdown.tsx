@@ -17,6 +17,8 @@ interface IProps {
   loading: boolean;
   variants: any;
   isMobile: boolean;
+  error: string;
+  lastSubmitValue?: string | null;
 }
 
 const CountriesDropdown = ({
@@ -25,6 +27,8 @@ const CountriesDropdown = ({
   loading,
   variants,
   isMobile,
+  error,
+  lastSubmitValue,
 }: IProps) => {
   const [show, setShow] = useState(false);
   const { data } = useCountriesQuery();
@@ -66,6 +70,9 @@ const CountriesDropdown = ({
     >
       <div className="input-text">
         <label htmlFor="country">Country</label>
+        {!error && lastSubmitValue === selected && selected !== null && (
+          <span className="success-message">Country is valid</span>
+        )}
       </div>
       <div
         onClick={() => {

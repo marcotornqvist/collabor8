@@ -3,27 +3,27 @@ import { Formik } from "formik";
 import { GET_LOGGED_IN_USER } from "@/operations-queries/getLoggedInUser";
 import {
   LoggedInUserQuery,
+  UpdateEmailMutation,
   useUpdateEmailMutation,
 } from "generated/graphql";
-import input from "@/styles-modules/Input.module.scss";
-import button from "@/styles-modules/Button.module.scss";
 import { ErrorStatus } from "@/types-enums/enums";
 import { toastState } from "store";
 import { EmailValidationSchema } from "@/validations/schemas";
 import { isNotEmptyObject } from "utils/helpers";
-import InputErrorMessage from "@/components-modules/global/InputErrorMessage";
+import button from "@/styles-modules/Button.module.scss";
+import InputField from "@/components-modules/global/InputField";
+
+interface FormErrors {
+  email?: string;
+}
 
 interface IProps {
   currentEmail?: string;
   loading: boolean;
 }
 
-interface FormErrors {
-  email?: string;
-}
-
 const UpdateEmail = ({ currentEmail, loading }: IProps) => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [lastSubmit, setLastSubmit] = useState<UpdateEmailMutation>(); // Last submit response values
   const [error, setError] = useState(""); // Error message, server error
   const [formErrors, setFormErrors] = useState<FormErrors>({}); // UserInput Errors
 
@@ -57,7 +57,7 @@ const UpdateEmail = ({ currentEmail, loading }: IProps) => {
       toastState.addToast(error, ErrorStatus.danger);
     }
     if (data) {
-      setIsSubmitted(true);
+      setLastSubmit(data);
       setFormErrors({});
       toastState.addToast("Email updated successfully", ErrorStatus.success);
     }
@@ -84,34 +84,25 @@ const UpdateEmail = ({ currentEmail, loading }: IProps) => {
               onSubmit={(e) => {
                 e.preventDefault();
                 // If currentEmail value is not the same as before, handle submit
-                if (values.email && values.email !== currentEmail) {
+                if (values.email !== currentEmail) {
                   isNotEmptyObject(errors) && setFormErrors(errors);
                   handleSubmit();
                 } else {
-                  setIsSubmitted(false);
                   setFormErrors({});
                 }
               }}
             >
-              <div className={`input-group ${input.group}`}>
-                <div className="input-text">
-                  <label htmlFor="email">Email</label>
-                  <InputErrorMessage
-                    errorMessage={formErrors.email}
-                    successMessage={"Email is valid"}
-                    isSubmitted={isSubmitted}
-                  />
-                </div>
-                <input
-                  id="email"
-                  name="email"
-                  type="text"
-                  value={values.email}
-                  onChange={handleChange}
-                  placeholder={"Please enter your email address"}
-                  autoComplete="on"
-                />
-              </div>
+              <InputField
+                name="email"
+                value={values.email}
+                handleChange={handleChange}
+                label="Email"
+                type="text"
+                placeholder={"Please enter your email address"}
+                successMessage="Email is valid"
+                errorMessage={formErrors.email}
+                lastSubmitValue={lastSubmit?.updateEmail}
+              />
               <button
                 type="submit"
                 className={`${

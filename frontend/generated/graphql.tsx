@@ -877,6 +877,13 @@ export type UpdateProfileMutationVariables = Exact<{
 
 export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'Profile', firstName?: string | null | undefined, lastName?: string | null | undefined, country?: string | null | undefined, bio?: string | null | undefined, discipline?: { __typename?: 'Discipline', id: number, title: string } | null | undefined } };
 
+export type UpdateSocialsMutationVariables = Exact<{
+  data: SocialInput;
+}>;
+
+
+export type UpdateSocialsMutation = { __typename?: 'Mutation', updateSocials: { __typename?: 'Social', instagram?: string | null | undefined, behance?: string | null | undefined, linkedin?: string | null | undefined, dribbble?: string | null | undefined, pinterest?: string | null | undefined, soundcloud?: string | null | undefined, spotify?: string | null | undefined, vimeo?: string | null | undefined, medium?: string | null | undefined, youtube?: string | null | undefined, github?: string | null | undefined, discord?: string | null | undefined } };
+
 export type UpdateUsernameMutationVariables = Exact<{
   username: Scalars['String'];
 }>;
@@ -1453,6 +1460,50 @@ export function useUpdateProfileMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateProfileMutationHookResult = ReturnType<typeof useUpdateProfileMutation>;
 export type UpdateProfileMutationResult = Apollo.MutationResult<UpdateProfileMutation>;
 export type UpdateProfileMutationOptions = Apollo.BaseMutationOptions<UpdateProfileMutation, UpdateProfileMutationVariables>;
+export const UpdateSocialsDocument = gql`
+    mutation updateSocials($data: SocialInput!) {
+  updateSocials(data: $data) {
+    instagram
+    behance
+    linkedin
+    dribbble
+    pinterest
+    soundcloud
+    spotify
+    vimeo
+    medium
+    youtube
+    github
+    discord
+  }
+}
+    `;
+export type UpdateSocialsMutationFn = Apollo.MutationFunction<UpdateSocialsMutation, UpdateSocialsMutationVariables>;
+
+/**
+ * __useUpdateSocialsMutation__
+ *
+ * To run a mutation, you first call `useUpdateSocialsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSocialsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSocialsMutation, { data, loading, error }] = useUpdateSocialsMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateSocialsMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSocialsMutation, UpdateSocialsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateSocialsMutation, UpdateSocialsMutationVariables>(UpdateSocialsDocument, options);
+      }
+export type UpdateSocialsMutationHookResult = ReturnType<typeof useUpdateSocialsMutation>;
+export type UpdateSocialsMutationResult = Apollo.MutationResult<UpdateSocialsMutation>;
+export type UpdateSocialsMutationOptions = Apollo.BaseMutationOptions<UpdateSocialsMutation, UpdateSocialsMutationVariables>;
 export const UpdateUsernameDocument = gql`
     mutation updateUsername($username: String!) {
   updateUsername(username: $username)

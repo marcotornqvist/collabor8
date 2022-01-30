@@ -11,8 +11,6 @@ import {
 import {
   instagram,
   linkedin,
-  pinterest,
-  soundcloud,
   medium,
   youtube,
   github,
@@ -54,12 +52,12 @@ export const UpdateProfileValidationSchema = Yup.object().shape({
 export const UpdateSocialsValidationSchema = Yup.object().shape({
   instagram,
   linkedin,
-  pinterest,
-  soundcloud,
   medium,
   youtube,
   github,
   discord,
+  pinterest: defaultValidator,
+  soundcloud: defaultValidator,
   dribbble: defaultValidator,
   behance: defaultValidator,
   spotify: defaultValidator,
