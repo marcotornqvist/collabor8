@@ -94,7 +94,7 @@ const Register = () => {
           onSubmit={(e) => {
             e.preventDefault();
             isNotEmptyObject(errors) && setFormErrors(errors);
-            handleSubmit();
+            handleSubmit(); 
           }}
         >
           <div className="wrapper">

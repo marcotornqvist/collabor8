@@ -26,13 +26,15 @@ const SignoutLink = ({ size }: IProps) => {
 
   return (
     <li onClick={() => clickHandler()}>
-      <a>Sign Out</a>
-      <Image
-        src="/icons/sign-out-alt-solid.svg"
-        alt="sign out"
-        width={size}
-        height={size}
-      />
+      <a>
+        <span>Sign Out</span>
+        <Image
+          src="/icons/sign-out-alt-solid.svg"
+          alt="sign out"
+          width={size}
+          height={size}
+        />
+      </a>
     </li>
   );
 };

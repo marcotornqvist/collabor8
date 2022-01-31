@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import useHover from "@/hooks/useHover";
-import PendingModal from "@/components-modules/profiles/PendingModal";
+import PendingModal from "@/components-modules/profileItem/PendingModal";
 
 interface IProps {
   id: string;

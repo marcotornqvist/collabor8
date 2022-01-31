@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useHover from "@/hooks/useHover";
-import DeleteModal from "@/components-modules/profiles/DeleteModal";
+import DeleteModal from "@/components-modules/profileItem/DeleteModal";
 
 interface IProps {
   id: string;

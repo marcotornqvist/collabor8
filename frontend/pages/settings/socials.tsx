@@ -131,7 +131,7 @@ const Socials = () => {
                 >
                   <InputSocialField
                     name="behance"
-                    value={values.behance}
+                    value={values.behance.trim()}
                     handleChange={handleChange}
                     label="Behance Profile"
                     url="https://behance.net/"
@@ -141,7 +141,7 @@ const Socials = () => {
                   />
                   <InputSocialField
                     name="discord"
-                    value={values.discord}
+                    value={values.discord.trim()}
                     handleChange={handleChange}
                     label="Discord Tag"
                     successMessage="Discord username is valid"
@@ -150,7 +150,7 @@ const Socials = () => {
                   />
                   <InputSocialField
                     name="dribbble"
-                    value={values.dribbble}
+                    value={values.dribbble.trim()}
                     handleChange={handleChange}
                     label="Dribbble Profile"
                     url="https://dribbble.com/"
@@ -160,7 +160,7 @@ const Socials = () => {
                   />
                   <InputSocialField
                     name="github"
-                    value={values.github}
+                    value={values.github.trim()}
                     handleChange={handleChange}
                     label="Github Profile"
                     url="https://github.com/"
@@ -170,7 +170,7 @@ const Socials = () => {
                   />
                   <InputSocialField
                     name="instagram"
-                    value={values.instagram}
+                    value={values.instagram.trim()}
                     handleChange={handleChange}
                     label="Instagram Profile"
                     url="https://www.instagram.com/"
@@ -180,7 +180,7 @@ const Socials = () => {
                   />
                   <InputSocialField
                     name="linkedin"
-                    value={values.linkedin}
+                    value={values.linkedin.trim()}
                     handleChange={handleChange}
                     label="LinkedIn Profile"
                     url="https://linkedin.com/in/"
@@ -190,7 +190,7 @@ const Socials = () => {
                   />
                   <InputSocialField
                     name="medium"
-                    value={values.medium}
+                    value={values.medium.trim()}
                     handleChange={handleChange}
                     label="Medium Profile"
                     url="https://medium.com/"
@@ -200,7 +200,7 @@ const Socials = () => {
                   />
                   <InputSocialField
                     name="pinterest"
-                    value={values.pinterest}
+                    value={values.pinterest.trim()}
                     handleChange={handleChange}
                     label="Pinterest Profile"
                     url="https://pinterest.com/"
@@ -210,7 +210,7 @@ const Socials = () => {
                   />
                   <InputSocialField
                     name="soundcloud"
-                    value={values.soundcloud}
+                    value={values.soundcloud.trim()}
                     handleChange={handleChange}
                     label="Soundcloud Profile"
                     url="https://soundcloud.com/"
@@ -220,7 +220,7 @@ const Socials = () => {
                   />
                   <InputSocialField
                     name="spotify"
-                    value={values.spotify}
+                    value={values.spotify.trim()}
                     handleChange={handleChange}
                     label="Spotify Artist"
                     url="https://open.spotify.com/artist/"
@@ -230,7 +230,7 @@ const Socials = () => {
                   />
                   <InputSocialField
                     name="vimeo"
-                    value={values.vimeo}
+                    value={values.vimeo.trim()}
                     handleChange={handleChange}
                     label="Vimeo Profile"
                     url="https://vimeo.com/"
@@ -240,7 +240,7 @@ const Socials = () => {
                   />
                   <InputSocialField
                     name="youtube"
-                    value={values.youtube}
+                    value={values.youtube.trim()}
                     handleChange={handleChange}
                     label="Youtube Channel"
                     url="https://www.youtube.com/channel/"

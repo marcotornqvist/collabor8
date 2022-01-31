@@ -3,41 +3,37 @@
 @use "../abstracts/border-radius" as *;
 
 footer {
-  background: $light-green;
+  background: $green;
 
   .footer-main-content {
-    padding: 3rem 1rem;
     display: grid;
-    gap: 1.5rem;
-    max-width: 1280px;
+    padding: 3rem 1rem;
     margin: 0 auto;
+    max-width: $breakpoint-xl;
 
     .title-content {
+      margin-bottom: 2rem;
+
       h1 {
-        color: $green;
+        color: $white;
       }
     }
 
-    .links {
-      .page-links {
-        margin-bottom: 1.5rem;
-      }
+    .page-links {
+      margin-bottom: 2rem;
+    }
 
-      .page-links,
-      .contact-links {
-        h4 {
-          margin-bottom: 1rem;
-          font-size: 1.5rem;
-          color: $green;
-        }
+    h4 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      color: $white;
+    }
 
-        ul li {
-          margin-bottom: 1rem;
+    ul li {
+      margin-bottom: 1rem;
 
-          a {
-            font-size: 1rem;
-          }
-        }
+      a {
+        color: $white;
       }
     }
   }
@@ -47,10 +43,9 @@ footer {
     align-items: center;
     justify-content: center;
     height: 4rem;
-    background: $light-green-darker;
 
     span {
-      color: $grey;
+      color: $white;
       font-size: 14px;
     }
   }
@@ -58,27 +53,66 @@ footer {
 
 @media only screen and (min-width: $breakpoint-md) {
   footer .footer-main-content {
-    grid-template-columns: repeat(2, 1fr);
-    padding: 6rem 1rem;
-    gap: 3rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 6rem 0;
+    max-width: $breakpoint-md;
+    gap: 1rem;
+
+    .contact-links,
+    .page-links,
+    .title-content {
+      margin: 0 auto;
+    }
 
     .title-content {
       display: flex;
       justify-content: center;
-      align-items: center;
-      padding-bottom: 4rem;
+      padding-top: 4rem;
+      // align-items: center;
+      // padding-bottom: 4rem;
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-lg) {
+  footer .footer-main-content {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+    max-width: $breakpoint-lg;
+
+    .title-content {
+      grid-column: 1 / 3;
     }
 
-    .links {
-      display: flex;
-      gap: 4rem;
+    .contact-links,
+    .page-links {
+      h4 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+      }
 
-      .page-links,
-      .contact-links {
-        h4 {
-          margin-bottom: 1rem;
+      ul li {
+        margin-bottom: 1.5rem;
+
+        a {
+          font-size: 1.125rem;
         }
       }
     }
+
+    .page-links {
+      grid-column: 3 / 4;
+    }
+
+    .contact-links {
+      grid-column: 4 / 5;
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-max) {
+  footer .footer-main-content {
+    padding: 8rem 0;
   }
 }

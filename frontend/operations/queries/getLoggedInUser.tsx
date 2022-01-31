@@ -95,3 +95,12 @@ export const GET_PROFILE_IMAGE = gql`
     }
   }
 `;
+
+// Get logged in users username
+export const GET_LOGGEDIN_USERNAME = gql`
+  query loggedInUsername {
+    loggedInUser {
+      username
+    }
+  }
+`;

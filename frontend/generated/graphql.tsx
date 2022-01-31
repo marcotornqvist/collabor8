@@ -947,6 +947,11 @@ export type ProfileImageQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ProfileImageQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', profile?: { __typename?: 'Profile', profileImage?: string | null | undefined } | null | undefined } };
 
+export type LoggedInUsernameQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LoggedInUsernameQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', username: string } };
+
 export type IsUserBlockedQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -1940,6 +1945,40 @@ export function useProfileImageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type ProfileImageQueryHookResult = ReturnType<typeof useProfileImageQuery>;
 export type ProfileImageLazyQueryHookResult = ReturnType<typeof useProfileImageLazyQuery>;
 export type ProfileImageQueryResult = Apollo.QueryResult<ProfileImageQuery, ProfileImageQueryVariables>;
+export const LoggedInUsernameDocument = gql`
+    query loggedInUsername {
+  loggedInUser {
+    username
+  }
+}
+    `;
+
+/**
+ * __useLoggedInUsernameQuery__
+ *
+ * To run a query within a React component, call `useLoggedInUsernameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLoggedInUsernameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLoggedInUsernameQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLoggedInUsernameQuery(baseOptions?: Apollo.QueryHookOptions<LoggedInUsernameQuery, LoggedInUsernameQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LoggedInUsernameQuery, LoggedInUsernameQueryVariables>(LoggedInUsernameDocument, options);
+      }
+export function useLoggedInUsernameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoggedInUsernameQuery, LoggedInUsernameQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LoggedInUsernameQuery, LoggedInUsernameQueryVariables>(LoggedInUsernameDocument, options);
+        }
+export type LoggedInUsernameQueryHookResult = ReturnType<typeof useLoggedInUsernameQuery>;
+export type LoggedInUsernameLazyQueryHookResult = ReturnType<typeof useLoggedInUsernameLazyQuery>;
+export type LoggedInUsernameQueryResult = Apollo.QueryResult<LoggedInUsernameQuery, LoggedInUsernameQueryVariables>;
 export const IsUserBlockedDocument = gql`
     query isUserBlocked($id: String!) {
   isUserBlocked(id: $id)

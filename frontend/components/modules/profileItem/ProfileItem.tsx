@@ -20,6 +20,7 @@ interface IProps {
   lastName?: string | null;
   profileImage?: string | null;
   title?: string;
+  country?: string | null;
 }
 
 type RefType = RefObject<HTMLDivElement>;
@@ -31,6 +32,7 @@ const ProfileItem = ({
   lastName,
   profileImage,
   title,
+  country,
 }: IProps) => {
   const [toggle, setToggle] = useState(false);
 
@@ -60,7 +62,7 @@ const ProfileItem = ({
   };
 
   return (
-    <div className={profile.default}>
+    <div className={`profile-item ${profile.default}`}>
       <div className="toggle-button-wrapper">
         <div className="toggle-button" onClick={() => handleToggle()}>
           <Image
@@ -78,7 +80,7 @@ const ProfileItem = ({
             <h4>
               {firstName} {lastName}
             </h4>
-            <span>{title}</span>
+            <div className="info">{title && <span>{title}</span>} </div>
           </div>
           <Link href={`/profile/${username}`}>
             <a>

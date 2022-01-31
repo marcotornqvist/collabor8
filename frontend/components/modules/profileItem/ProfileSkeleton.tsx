@@ -3,7 +3,7 @@ import profile from "@/styles-modules/ProfileItem.module.scss";
 
 const ProfileSkeleton = () => {
   return (
-    <div className={profile.skeleton}>
+    <div className={`skeleton-item ${profile.skeleton}`}>
       <div className="skeleton-content">
         <div className="top-bar">
           <div className="skeleton cog-wheel"></div>
@@ -15,9 +15,9 @@ const ProfileSkeleton = () => {
         </div>
         <div className="skeleton button"></div>
       </div>
-      <div className="shimmer-wrapper">
+      {/* <div className="shimmer-wrapper">
         <div className="shimmer"></div>
-      </div>
+      </div> */}
     </div>
   );
 };

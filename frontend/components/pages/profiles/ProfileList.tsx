@@ -2,13 +2,13 @@ import { useEffect } from "react";
 import { authState } from "store";
 import { useSnapshot } from "valtio";
 import { UsersFilterArgs, useUsersLazyQuery } from "generated/graphql";
-import ProfileItem from "./ProfileItem";
-import ProfileSkeleton from "./ProfileSkeleton";
+import ProfileItem from "@/components-modules/profileItem/ProfileItem";
+import ProfileSkeleton from "@/components-modules/profileItem/ProfileSkeleton";
 
 // Check that user is not a friend
 // Check that user is not you when returning
 
-const Profiles = ({
+const ProfileList = ({
   after,
   before,
   first,
@@ -34,9 +34,8 @@ const Profiles = ({
   }, [loading]);
 
   return (
-    <section className="profiles">
+    <section className="profile-list">
       <div className="container">
-        <h2>Recent Profiles</h2>
         <div className="grid">
           {data?.users
             ? data.users.map((item) => (
@@ -50,11 +49,11 @@ const Profiles = ({
                   title={item.profile?.discipline?.title}
                 />
               ))
-            : [1, 2, 3].map((n) => <ProfileSkeleton key={n} />)}
+            : [1, 2, 3, 4, 5, 6].map((n) => <ProfileSkeleton key={n} />)}
         </div>
       </div>
     </section>
   );
 };
 
-export default Profiles;
+export default ProfileList;

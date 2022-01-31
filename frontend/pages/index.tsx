@@ -1,6 +1,6 @@
 import Showcase from "@/components-pages/landing/Showcase";
 import Disciplines from "@/components-pages/landing/Disciplines";
-import Profiles from "@/components-modules/profiles/Profiles";
+import Profiles from "@/components-pages/landing/Profiles";
 import About from "@/components-pages/landing/About";
 
 const Home = () => {

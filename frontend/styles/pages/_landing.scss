@@ -59,7 +59,7 @@
   }
 }
 
-.profiles {
+.landing-page .profiles {
   background: $light-green;
 
   h2 {
@@ -242,7 +242,7 @@
     }
   }
 
-  .profiles {
+  .landing-page .profiles {
     h2 {
       text-align: left;
     }
@@ -250,6 +250,32 @@
     .grid {
       grid-template-columns: repeat(2, 1fr);
       grid-auto-rows: minmax(100px, 300px);
+
+      .profile-item {
+        .toggle-button-wrapper {
+          padding: 1rem 1rem 0;
+        }
+
+        .carousel {
+          .carousel-item {
+            padding: 0 1rem 1rem;
+          }
+
+          .profile-content .wrapper {
+            padding-top: 2rem;
+          }
+        }
+      }
+
+      .skeleton-item {
+        padding: 1rem;
+
+        .skeleton-content {
+          .wrapper {
+            padding-top: 2rem;
+          }
+        }
+      }
     }
   }
 
@@ -309,6 +335,30 @@
 
   .landing-page .profiles .grid {
     grid-auto-rows: minmax(100px, 350px);
+
+    .profile-item {
+      .toggle-button-wrapper {
+        padding: 1.5rem 1.5rem 0;
+      }
+
+      .carousel {
+        .carousel-item {
+          padding: 0 1.5rem 1.5rem;
+        }
+
+        .profile-content .wrapper {
+          padding-top: 3rem;
+        }
+      }
+    }
+
+    .skeleton-item {
+      padding: 1.5rem;
+
+      .skeleton-content .wrapper {
+        padding-top: 3rem;
+      }
+    }
   }
 
   .landing-page .about .grid {

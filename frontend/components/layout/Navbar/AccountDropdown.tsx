@@ -1,12 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSnapshot } from "valtio";
-import { authState } from "store";
-import {
-  useProfileImageLazyQuery,
-  useProfileImageQuery,
-} from "generated/graphql";
+import { useProfileImageQuery } from "generated/graphql";
 import SignoutLink from "@/components-modules/global/SignoutLink";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import ProfileImage from "@/components-modules/global/ProfileImage";
@@ -23,12 +18,11 @@ const variants = {
 };
 
 const AccountDropdown = () => {
-  const { isAuth } = useSnapshot(authState);
   const [show, setShow] = useState(false);
 
   const ref = useRef<HTMLDivElement>(null);
   const { data } = useProfileImageQuery({
-    fetchPolicy: "cache-only", // Fetches from cache only, navbar fetches all the logged in user data when page is loaded and authState is true. and authState is true.
+    fetchPolicy: "cache-only", // Fetches from cache only, navbar fetches all the logged in user data when page is loaded
   });
 
   const handleClickOutside = () => {

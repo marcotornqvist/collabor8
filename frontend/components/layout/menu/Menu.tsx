@@ -56,176 +56,196 @@ const Menu = () => {
           <ul className="links">
             {isAuth && (
               <>
-                <Link href="/notifications">
-                  <li
-                    onClick={() => closeMenu()}
-                    className={`list-item${
-                      pathname === "/notifications" ? " active" : ""
-                    }`}
-                  >
-                    <a>Notifications</a>
-                    <Image
-                      src="/icons/chevron-right-solid.svg"
-                      alt="chevron right"
-                      width={16}
-                      height={16}
-                    />
-                  </li>
-                </Link>
-                <Link href="/chat">
-                  <li
-                    onClick={() => closeMenu()}
-                    className={`list-item${
-                      pathname === "/chat" ? " active" : ""
-                    }`}
-                  >
-                    <a>Chat</a>
-                    <Image
-                      src="/icons/chevron-right-solid.svg"
-                      alt="chevron right"
-                      width={16}
-                      height={16}
-                    />
-                  </li>
-                </Link>
+                <li
+                  onClick={() => closeMenu()}
+                  className={`list-item${
+                    pathname === "/notifications" ? " active" : ""
+                  }`}
+                >
+                  <Link href="/notifications">
+                    <a>
+                      <span>Notifications</span>
+                      <Image
+                        src="/icons/chevron-right-solid.svg"
+                        alt="chevron right"
+                        width={16}
+                        height={16}
+                      />
+                    </a>
+                  </Link>
+                </li>
+                <li
+                  onClick={() => closeMenu()}
+                  className={`list-item${
+                    pathname === "/chat" ? " active" : ""
+                  }`}
+                >
+                  <Link href="/chat">
+                    <a>
+                      <span>Chat</span>
+                      <Image
+                        src="/icons/chevron-right-solid.svg"
+                        alt="chevron right"
+                        width={16}
+                        height={16}
+                      />
+                    </a>
+                  </Link>
+                </li>
               </>
             )}
-            <Link href="/profiles">
-              <li
-                onClick={() => closeMenu()}
-                className={`list-item${
-                  pathname === "/profiles" ? " active" : ""
-                }`}
-              >
-                <a>Browse Profiles</a>
-                <Image
-                  src="/icons/chevron-right-solid.svg"
-                  alt="chevron right"
-                  width={16}
-                  height={16}
-                />
-              </li>
-            </Link>
-            <Link href="/projects">
-              <li
-                onClick={() => closeMenu()}
-                className={`list-item${
-                  pathname === "/projects" ? " active" : ""
-                }`}
-              >
-                <a>Browse Projects</a>
-                <Image
-                  src="/icons/chevron-right-solid.svg"
-                  alt="chevron right"
-                  width={16}
-                  height={16}
-                />
-              </li>
-            </Link>
+            <li
+              onClick={() => closeMenu()}
+              className={`list-item${
+                pathname === "/profiles" ? " active" : ""
+              }`}
+            >
+              <Link href="/profiles">
+                <a>
+                  <span>Browse Profiles</span>
+                  <Image
+                    src="/icons/chevron-right-solid.svg"
+                    alt="chevron right"
+                    width={16}
+                    height={16}
+                  />
+                </a>
+              </Link>
+            </li>
+            <li
+              onClick={() => closeMenu()}
+              className={`list-item${
+                pathname === "/projects" ? " active" : ""
+              }`}
+            >
+              <Link href="/projects">
+                <a>
+                  <span>Browse Projects</span>
+                  <Image
+                    src="/icons/chevron-right-solid.svg"
+                    alt="chevron right"
+                    width={16}
+                    height={16}
+                  />
+                </a>
+              </Link>
+            </li>
             {isAuth ? (
               <>
-                <Link href="/my-profile">
-                  <li
-                    onClick={() => closeMenu()}
-                    className={`list-item${
-                      pathname === "/my-profile" ? " active" : ""
-                    }`}
-                  >
-                    <a>My Profile</a>
-                    <Image
-                      src="/icons/chevron-right-solid.svg"
-                      alt="chevron right"
-                      width={16}
-                      height={16}
-                    />
-                  </li>
-                </Link>
-                <Link href="/settings/profile">
-                  <li
-                    onClick={() => closeMenu()}
-                    className={`list-item${
-                      pathname === "/settings/profile" ? " active" : ""
-                    }`}
-                  >
-                    <a>Profile Settings</a>
-                    <Image
-                      src="/icons/chevron-right-solid.svg"
-                      alt="chevron right"
-                      width={16}
-                      height={16}
-                    />
-                  </li>
-                </Link>
-                <Link href="/settings/account">
-                  <li
-                    onClick={() => closeMenu()}
-                    className={`list-item${
-                      pathname === "/settings/account" ? " active" : ""
-                    }`}
-                  >
-                    <a>Account Settings</a>
-                    <Image
-                      src="/icons/chevron-right-solid.svg"
-                      alt="chevron right"
-                      width={16}
-                      height={16}
-                    />
-                  </li>
-                </Link>
-                <Link href="/settings/socials">
-                  <li
-                    onClick={() => closeMenu()}
-                    className={`list-item${
-                      pathname === "/settings/socials" ? " active" : ""
-                    }`}
-                  >
-                    <a>Social Accounts</a>
-                    <Image
-                      src="/icons/chevron-right-solid.svg"
-                      alt="chevron right"
-                      width={16}
-                      height={16}
-                    />
-                  </li>
-                </Link>
+                <li
+                  onClick={() => closeMenu()}
+                  className={`list-item${
+                    pathname === "/my-profile" ? " active" : ""
+                  }`}
+                >
+                  <Link href="/my-profile">
+                    <a>
+                      <span>My Profile</span>
+                      <Image
+                        src="/icons/chevron-right-solid.svg"
+                        alt="chevron right"
+                        width={16}
+                        height={16}
+                      />
+                    </a>
+                  </Link>
+                </li>
+                <li
+                  onClick={() => closeMenu()}
+                  className={`list-item${
+                    pathname === "/settings/profile" ? " active" : ""
+                  }`}
+                >
+                  <Link href="/settings/profile">
+                    <a>
+                      <span>Profile Settings</span>
+                      <Image
+                        src="/icons/chevron-right-solid.svg"
+                        alt="chevron right"
+                        width={16}
+                        height={16}
+                      />
+                    </a>
+                  </Link>
+                </li>
+                <li
+                  onClick={() => closeMenu()}
+                  className={`list-item${
+                    pathname === "/settings/account" ? " active" : ""
+                  }`}
+                >
+                  <Link href="/settings/account">
+                    <a>
+                      <span>Account Settings</span>
+                      <Image
+                        src="/icons/chevron-right-solid.svg"
+                        alt="chevron right"
+                        width={16}
+                        height={16}
+                      />
+                    </a>
+                  </Link>
+                </li>
+                <li
+                  onClick={() => closeMenu()}
+                  className={`list-item${
+                    pathname === "/settings/socials" ? " active" : ""
+                  }`}
+                >
+                  <Link href="/settings/socials">
+                    <a>
+                      <span>Social Accounts</span>
+                      <Image
+                        src="/icons/chevron-right-solid.svg"
+                        alt="chevron right"
+                        width={16}
+                        height={16}
+                      />
+                    </a>
+                  </Link>
+                </li>
                 <div onClick={() => closeMenu()}>
                   <SignoutLink size={18} />
                 </div>
               </>
             ) : (
               <>
-                <Link href="/register">
-                  <li
-                    onClick={() => closeMenu()}
-                    className={`list-item${
-                      pathname === "/register" ? " active" : ""
-                    }`}
-                  >
-                    <a>Create Account</a>
-                    <Image
-                      src="/icons/chevron-right-solid.svg"
-                      alt="chevron right"
-                      width={16}
-                      height={16}
-                    />
-                  </li>
-                </Link>
-                <Link href="/login">
-                  <li
-                    onClick={() => closeMenu()}
-                    className={`list-item${
-                      pathname === "/login" ? " active" : ""
-                    }`}
-                  >
-                    <a>Sign In</a>
-                    <Image
-                      src="/icons/chevron-right-solid.svg"
-                      alt="chevron right"
-                      width={16}
-                      height={16}
-                    />
-                  </li>
-                </Link>
+                <li
+                  onClick={() => closeMenu()}
+                  className={`list-item${
+                    pathname === "/register" ? " active" : ""
+                  }`}
+                >
+                  <Link href="/register">
+                    <a>
+                      <span>Create Account</span>
+                      <Image
+                        src="/icons/chevron-right-solid.svg"
+                        alt="chevron right"
+                        width={16}
+                        height={16}
+                      />
+                    </a>
+                  </Link>
+                </li>
+                <li
+                  onClick={() => closeMenu()}
+                  className={`list-item${
+                    pathname === "/login" ? " active" : ""
+                  }`}
+                >
+                  <Link href="/login">
+                    <a>
+                      <span>Sign In</span>
+                      <Image
+                        src="/icons/chevron-right-solid.svg"
+                        alt="chevron right"
+                        width={16}
+                        height={16}
+                      />
+                    </a>
+                  </Link>
+                </li>
               </>
             )}
           </ul>

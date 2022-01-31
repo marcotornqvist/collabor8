@@ -19,27 +19,32 @@
     overflow-y: scroll;
 
     li {
-      border-bottom: 1px solid $light-grey;
-      cursor: pointer;
       height: 4rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       min-width: 100%;
       padding: 0 1rem;
+      cursor: pointer;
+      border-bottom: 1px solid $light-grey;
 
-      a,
-      span {
-        font-size: 1.125rem;
-        font-weight: 600;
-        font-family: $font-body;
+      a {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        align-items: center;
 
-        &.active {
-          background: $light-green;
+        span {
+          font-size: 1.125rem;
+          font-weight: 600;
+          font-family: $font-title;
+        }
+      }
 
-          span {
-            color: $green;
-          }
+      &.active {
+        background: $light-green;
+
+        a span {
+          color: $green;
         }
       }
 
