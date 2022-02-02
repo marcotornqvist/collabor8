@@ -1,4 +1,4 @@
-import { ChangeEvent, RefObject, useEffect, useRef, useState } from "react";
+import { ChangeEvent, RefObject, useRef, useState } from "react";
 import input from "@/styles-modules/Input.module.scss";
 
 interface InputFieldProps {

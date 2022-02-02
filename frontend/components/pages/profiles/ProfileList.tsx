@@ -1,28 +1,29 @@
 import { useEffect } from "react";
 import { authState } from "store";
 import { useSnapshot } from "valtio";
-import { UsersFilterArgs, useUsersLazyQuery } from "generated/graphql";
+import { useUsersLazyQuery } from "generated/graphql";
+import { useRouter } from "next/router";
+import { isNumbersArray } from "utils/helpers";
 import ProfileItem from "@/components-modules/profileItem/ProfileItem";
 import ProfileSkeleton from "@/components-modules/profileItem/ProfileSkeleton";
 
 // Check that user is not a friend
 // Check that user is not you when returning
 
-const ProfileList = ({
-  after,
-  before,
-  first,
-  last,
-  searchText,
-  disciplines,
-  country,
-  sort,
-}: UsersFilterArgs) => {
+const ProfileList = () => {
+  const {
+    query: { country, disciplines },
+  } = useRouter();
+
+  console.log(disciplines)
+
   const { loading } = useSnapshot(authState);
   const [users, { data }] = useUsersLazyQuery({
     variables: {
       data: {
-        first,
+        // first: 3,
+        // country: typeof country === "string" ? country : undefined,
+        disciplines: isNumbersArray(disciplines),
       },
     },
   });

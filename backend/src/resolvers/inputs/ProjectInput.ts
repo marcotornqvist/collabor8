@@ -61,6 +61,9 @@ export class MemberInput {
   description: "Filter Projects",
 })
 export class ProjectsFilterArgs extends SearchArgs {
+  @Field(() => String, { nullable: true })
+  searchText?: string | null;
+
   @Field(() => [Number], { nullable: true })
   disciplines?: number[] | null;
 

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { useProfileImageQuery } from "generated/graphql";
+import { useLoggedInUsernameQuery, useProfileImageQuery } from "generated/graphql";
 import SignoutLink from "@/components-modules/global/SignoutLink";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import ProfileImage from "@/components-modules/global/ProfileImage";
@@ -31,6 +31,10 @@ const AccountDropdown = () => {
 
   useOnClickOutside(ref, handleClickOutside);
 
+  const { data: usernameData } = useLoggedInUsernameQuery({
+    fetchPolicy: "cache-only",
+  });
+
   return (
     <div className="account-dropdown" ref={ref}>
       <div onClick={() => setShow(!show)}>
@@ -51,7 +55,7 @@ const AccountDropdown = () => {
           >
             <ul>
               <li onClick={() => setShow(false)}>
-                <Link href="/my-profile">
+                <Link href={`/profile/${usernameData?.loggedInUser.username}`}>
                   <a>
                     <span>My Profile</span>
                   </a>

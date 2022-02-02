@@ -24,6 +24,7 @@ import { UpdateProfileValidationSchema } from "../validations/schemas";
 import { validateFields } from "../validations/validateFields";
 import countries from "../data/countries";
 import sharp from "sharp";
+import { DisciplineInput } from "./inputs/DisciplineInput";
 
 // TODO: Queries/mutations to be implemented:
 // countries:             Return all countries - Done
@@ -56,13 +57,22 @@ export class ProfileResolver {
     nullable: true,
     description: "Returns disciplines",
   })
-  async disciplines(@Ctx() { prisma }: Context) {
+  async disciplines(
+    @Arg("data", { nullable: true }) data: DisciplineInput,
+    @Ctx() { prisma }: Context
+  ) {
     const disciplines = await prisma.discipline.findMany({
+      where: {
+        id: { in: data?.disciplineIds || undefined },
+      },
       orderBy: [
         {
           title: "asc",
         },
       ],
+      include: {
+        image: true,
+      },
     });
 
     return disciplines;

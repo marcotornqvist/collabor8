@@ -62,7 +62,7 @@ export class ProjectResolver {
     }: ProjectsFilterArgs,
     @Ctx() { prisma }: Context
   ) {
-    const filters = {};
+    const filters = { disciplines: {} };
 
     if (searchText) {
       Object.assign(filters, {
@@ -74,12 +74,10 @@ export class ProjectResolver {
     }
 
     if (disciplines && disciplines.length > 0) {
-      Object.assign(filters, {
-        disciplines: {
-          some: {
-            id: {
-              in: disciplines,
-            },
+      Object.assign(filters.disciplines, {
+        some: {
+          id: {
+            in: disciplines,
           },
         },
       });

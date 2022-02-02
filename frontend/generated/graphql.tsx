@@ -116,11 +116,28 @@ export type Discipline = {
   __typename?: 'Discipline';
   createdAt: Scalars['DateTime'];
   id: Scalars['Float'];
+  image?: Maybe<Image>;
+  imageId: Scalars['ID'];
   profiles?: Maybe<Array<Profile>>;
   projects?: Maybe<Array<Project>>;
-  slug: Scalars['String'];
   title: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+/** Get disciplines by id */
+export type DisciplineInput = {
+  disciplineIds?: InputMaybe<Array<Scalars['Float']>>;
+};
+
+export type Image = {
+  __typename?: 'Image';
+  alt?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
+  disciplines?: Maybe<Array<Discipline>>;
+  id: Scalars['ID'];
+  large?: Maybe<Scalars['String']>;
+  medium?: Maybe<Scalars['String']>;
+  small?: Maybe<Scalars['String']>;
 };
 
 /** Login a User */
@@ -523,6 +540,11 @@ export type QueryContactsChatRoomArgs = {
 };
 
 
+export type QueryDisciplinesArgs = {
+  data?: InputMaybe<DisciplineInput>;
+};
+
+
 export type QueryIsUserBlockedArgs = {
   id: Scalars['String'];
 };
@@ -913,7 +935,14 @@ export type CountriesQuery = { __typename?: 'Query', countries?: Array<{ __typen
 export type DisciplinesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type DisciplinesQuery = { __typename?: 'Query', disciplines?: Array<{ __typename?: 'Discipline', id: number, title: string }> | null | undefined };
+export type DisciplinesQuery = { __typename?: 'Query', disciplines?: Array<{ __typename?: 'Discipline', id: number, title: string, image?: { __typename?: 'Image', id: string, small?: string | null | undefined, alt?: string | null | undefined } | null | undefined }> | null | undefined };
+
+export type DisciplinesLandingQueryVariables = Exact<{
+  data?: InputMaybe<DisciplineInput>;
+}>;
+
+
+export type DisciplinesLandingQuery = { __typename?: 'Query', disciplines?: Array<{ __typename?: 'Discipline', id: number, title: string, image?: { __typename?: 'Image', small?: string | null | undefined, alt?: string | null | undefined } | null | undefined }> | null | undefined };
 
 export type UsersQueryVariables = Exact<{
   data: UsersFilterArgs;
@@ -1649,6 +1678,11 @@ export const DisciplinesDocument = gql`
   disciplines {
     id
     title
+    image {
+      id
+      small
+      alt
+    }
   }
 }
     `;
@@ -1679,6 +1713,46 @@ export function useDisciplinesLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type DisciplinesQueryHookResult = ReturnType<typeof useDisciplinesQuery>;
 export type DisciplinesLazyQueryHookResult = ReturnType<typeof useDisciplinesLazyQuery>;
 export type DisciplinesQueryResult = Apollo.QueryResult<DisciplinesQuery, DisciplinesQueryVariables>;
+export const DisciplinesLandingDocument = gql`
+    query disciplinesLanding($data: DisciplineInput) {
+  disciplines(data: $data) {
+    id
+    title
+    image {
+      small
+      alt
+    }
+  }
+}
+    `;
+
+/**
+ * __useDisciplinesLandingQuery__
+ *
+ * To run a query within a React component, call `useDisciplinesLandingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDisciplinesLandingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDisciplinesLandingQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useDisciplinesLandingQuery(baseOptions?: Apollo.QueryHookOptions<DisciplinesLandingQuery, DisciplinesLandingQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DisciplinesLandingQuery, DisciplinesLandingQueryVariables>(DisciplinesLandingDocument, options);
+      }
+export function useDisciplinesLandingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DisciplinesLandingQuery, DisciplinesLandingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DisciplinesLandingQuery, DisciplinesLandingQueryVariables>(DisciplinesLandingDocument, options);
+        }
+export type DisciplinesLandingQueryHookResult = ReturnType<typeof useDisciplinesLandingQuery>;
+export type DisciplinesLandingLazyQueryHookResult = ReturnType<typeof useDisciplinesLandingLazyQuery>;
+export type DisciplinesLandingQueryResult = Apollo.QueryResult<DisciplinesLandingQuery, DisciplinesLandingQueryVariables>;
 export const UsersDocument = gql`
     query users($data: UsersFilterArgs!) {
   users(data: $data) {

@@ -4,32 +4,21 @@ import { useCountriesQuery } from "generated/graphql";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import Image from "next/image";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
+import { useQueryParam, StringParam, withDefault } from "next-query-params";
 
 interface IProps {
-  setFieldValue: (
-    field: "country",
-    value: string | null,
-    shouldValidate?: boolean | undefined
-  ) => void;
-  selected: string | null;
-  loading: boolean;
   variants: any;
   isMobile: boolean;
-  error: string;
-  lastSubmitValue?: string | null;
 }
 
-const CountriesDropdown = ({
-  setFieldValue,
-  selected,
-  loading,
-  variants,
-  isMobile,
-  error,
-  lastSubmitValue,
-}: IProps) => {
+const CountriesFilter = ({ variants, isMobile }: IProps) => {
   const [show, setShow] = useState(false);
   const { data } = useCountriesQuery();
+
+  const [country, setCountry] = useQueryParam(
+    "country",
+    withDefault(StringParam, "")
+  );
 
   const activeRef = useRef<HTMLLIElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
@@ -68,9 +57,6 @@ const CountriesDropdown = ({
     >
       <div className="input-text">
         <label htmlFor="country">Country</label>
-        {!error && lastSubmitValue === selected && selected !== null && (
-          <span className="success-message">Country is valid</span>
-        )}
       </div>
       <div
         onClick={() => {
@@ -78,8 +64,8 @@ const CountriesDropdown = ({
         }}
         className="show-dropdown-menu-btn"
       >
-        <span className={selected ? "default-text" : "placeholder"}>
-          {!loading ? (selected ? selected : "Select Country") : ""}
+        <span className={country ? "default-text" : "placeholder"}>
+          {country ? country : "Select Country"}
         </span>
         <motion.div
           className="icon-container"
@@ -107,30 +93,30 @@ const CountriesDropdown = ({
           >
             <div className="header-bar" onClick={() => setShow(false)}>
               <span className="selected-title">
-                {selected ? selected : "Select Country"}
+                {country ? country : "Select Country"}
               </span>
               <span className="close-btn">Close</span>
             </div>
             <ul className="dropdown-list" ref={listRef}>
               <li
-                ref={!selected ? activeRef : null}
+                ref={!country ? activeRef : null}
                 onClick={() => {
-                  setFieldValue("country", null);
+                  setCountry(undefined);
                   setShow(false);
                 }}
-                className={`list-item${!selected ? " active" : ""}`}
+                className={`list-item${!country ? " active" : ""}`}
               >
                 <span>No Selection</span>
               </li>
               {data?.countries?.map((item) => (
                 <li
-                  ref={selected === item.country ? activeRef : null}
+                  ref={country === item.country ? activeRef : null}
                   key={item.key}
                   className={`list-item${
-                    selected === item.country ? " active" : ""
+                    country === item.country ? " active" : ""
                   }`}
                   onClick={() => {
-                    setFieldValue("country", item.country);
+                    setCountry(item.country);
                     setShow(false);
                   }}
                 >
@@ -140,7 +126,7 @@ const CountriesDropdown = ({
               {data?.countries && data.countries.length > 50 && (
                 <li
                   onClick={() => {
-                    setFieldValue("country", null);
+                    setCountry(undefined);
                     setShow(false);
                   }}
                   className="list-item"
@@ -156,4 +142,4 @@ const CountriesDropdown = ({
   );
 };
 
-export default CountriesDropdown;
+export default CountriesFilter;

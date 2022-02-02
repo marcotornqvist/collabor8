@@ -1,3 +1,4 @@
+import { useLoggedInUsernameQuery } from "generated/graphql";
 import Link from "next/link";
 import React from "react";
 import { authState } from "store";
@@ -5,13 +6,14 @@ import { useSnapshot } from "valtio";
 
 const Footer = () => {
   const { isAuth } = useSnapshot(authState);
-  // const { data } = useProfileImageQuery({
-  //     fetchPolicy: "cache-only", // Fetches from cache only, navbar fetches all the logged in user data when page is loaded and authState is true. and authState is true.
-  //   });
+  const { data } = useLoggedInUsernameQuery({
+    fetchPolicy: "cache-only",
+  });
+
   const authLinks = (
     <ul>
       <li>
-        <Link href="/profiles">
+        <Link href={`/profile/${data?.loggedInUser.username}`}>
           <a>My Profile</a>
         </Link>
       </li>

@@ -70,6 +70,7 @@ const ProfileItem = ({
             alt="Cog wheel"
             width={24}
             height={24}
+            layout="fixed"
           />
         </div>
       </div>

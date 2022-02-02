@@ -17,6 +17,10 @@ export const layoutState = proxy<ILayoutState>({
   menuOpen: false,
 });
 
+// export const filters = proxy<IFiltersState>({
+
+// })
+
 export const toastState = proxy<IToastState>({
   toasts: [],
   addToast(message, status, duration = 3500) {

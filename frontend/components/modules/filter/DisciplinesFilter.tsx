@@ -1,40 +1,65 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { IDiscipline } from "@/types-interfaces/form";
 import { useDisciplinesQuery } from "generated/graphql";
+import {
+  useQueryParam,
+  withDefault,
+  NumericArrayParam,
+} from "next-query-params";
+import { IDiscipline } from "@/types-interfaces/form";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import Image from "next/image";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
 
 interface IProps {
-  setFieldValue: (
-    field: "discipline",
-    value: IDiscipline | null,
-    shouldValidate?: boolean | undefined
-  ) => void;
-  discipline: IDiscipline | null;
-  loading: boolean;
   variants: any;
   isMobile: boolean;
-  error: string;
-  lastSubmitValue?: IDiscipline | null;
 }
 
-const DisciplinesDropdown = ({
-  setFieldValue,
-  discipline,
-  loading,
-  variants,
-  isMobile,
-  error,
-  lastSubmitValue,
-}: IProps) => {
+const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
   const [show, setShow] = useState(false);
   const { data } = useDisciplinesQuery();
+  const [title, setTitle] = useState("");
 
-  const activeRef = useRef<HTMLLIElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [disciplines, setDisciplines] = useQueryParam(
+    "disciplines",
+    withDefault(NumericArrayParam, [])
+  );
+
+  const disciplineHandler = (item: IDiscipline) => {
+    const findItem = disciplines.find((el) => el === item.id);
+    // If item exists in array it gets filtered out, else it gets added to array
+    if (findItem) {
+      const filterItem = disciplines.filter((el) => el !== item.id);
+      setDisciplines(filterItem);
+    } else {
+      setDisciplines([...disciplines, item.id]);
+    }
+  };
+
+  useEffect(() => {
+    // Sets the title
+    if (data?.disciplines && disciplines.length === 1) {
+      const findTitle = data.disciplines.find((item) => {
+        if (item.id === disciplines[0]) return item.title;
+      });
+      setTitle(findTitle?.title || "No Title Found");
+    } else if (disciplines.length > 1) {
+      setTitle("Multiple Disciplines");
+    } else {
+      setTitle("Select Discipline");
+    }
+  }, [disciplines, data]);
+
+  // Add boolean property named active to every element
+  // with the value of true to elements that are selected
+  const disciplineList = data?.disciplines?.map((item) => {
+    const found = disciplines.some((el) => el === item.id);
+    return {
+      ...item,
+      active: found,
+    };
+  });
 
   // setShow to false to prevent glitch when variants change in dropdown menu
   useEffect(() => {
@@ -42,14 +67,6 @@ const DisciplinesDropdown = ({
   }, [isMobile]);
 
   useEffect(() => {
-    if (activeRef.current && listRef.current) {
-      const activeElementY = activeRef.current.offsetTop;
-      // Scrolls list to activeElementY y-axis position
-      listRef.current.scroll({ top: activeElementY });
-      // scrolls screen to center
-      listRef.current.scrollIntoView({ block: "center" });
-    }
-
     // Prevent scrolling on body
     isMobile && show
       ? document.body.classList.add("body-prevent-scroll")
@@ -60,6 +77,8 @@ const DisciplinesDropdown = ({
     setShow(false);
   };
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   useOnClickOutside(dropdownRef, handleClickOutside);
 
   return (
@@ -69,17 +88,12 @@ const DisciplinesDropdown = ({
     >
       <div className="input-text">
         <label htmlFor="discipline">Discipline</label>
-        {!error && lastSubmitValue?.id === discipline?.id && discipline && (
-          <span className="success-message">Discipline is valid</span>
-        )}
       </div>
       <div onClick={() => setShow(!show)} className="show-dropdown-menu-btn">
-        <span className={discipline ? "default-text" : "placeholder"}>
-          {!loading
-            ? discipline
-              ? discipline.title
-              : "Select Discipline"
-            : ""}
+        <span
+          className={disciplines.length >= 1 ? "default-text" : "placeholder"}
+        >
+          {title}
         </span>
         <motion.div
           className="icon-container"
@@ -105,45 +119,26 @@ const DisciplinesDropdown = ({
             exit="hidden"
             variants={variants}
           >
-            <div className="header-bar" onClick={() => setShow(false)}>
-              <span className="selected-title">
-                {discipline ? discipline.title : "Select Discipline"}
-              </span>
-              <span className="close-btn">Close</span>
-            </div>
-            <ul className="dropdown-list" ref={listRef}>
+            <ul className="dropdown-list">
               <li
-                ref={!discipline ? activeRef : null}
-                onClick={() => {
-                  setFieldValue("discipline", null);
-                  setShow(false);
-                }}
-                className={`list-item${!discipline ? " active" : ""}`}
+                className="list-item"
+                onClick={() => setDisciplines(undefined)}
               >
                 <span>No Selection</span>
               </li>
-              {data?.disciplines?.map((item) => (
+              {disciplineList?.map((item) => (
                 <li
-                  ref={discipline?.id === item.id ? activeRef : null}
                   key={item.id}
-                  className={`list-item${
-                    discipline?.id === item.id ? " active" : ""
-                  }`}
-                  onClick={() => {
-                    setFieldValue("discipline", item);
-                    setShow(false);
-                  }}
+                  className={`list-item${item.active && " active"}`}
+                  onClick={() => disciplineHandler(item)}
                 >
                   <span>{item.title}</span>
                 </li>
               ))}
               {data?.disciplines && data.disciplines.length > 50 && (
                 <li
-                  onClick={() => {
-                    setFieldValue("discipline", null);
-                    setShow(false);
-                  }}
                   className="list-item"
+                  onClick={() => setDisciplines(undefined)}
                 >
                   <span>No Selection</span>
                 </li>
@@ -156,4 +151,4 @@ const DisciplinesDropdown = ({
   );
 };
 
-export default DisciplinesDropdown;
+export default DisciplinesFilter;

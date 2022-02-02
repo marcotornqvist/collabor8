@@ -18,7 +18,7 @@ const variants = {
 interface IProps {
   title: string;
   src: string;
-  link: string;
+  link?: number;
   alt: string;
 }
 
@@ -26,7 +26,12 @@ const DisciplineItem = ({ title, src, link, alt }: IProps) => {
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <Link href={"/profiles/" + link}>
+    <Link
+      href={{
+        pathname: `/profiles`,
+        query: link ? { discipline: link } : null,
+      }}
+    >
       <a className="grid-item">
         <motion.div
           className="image-container"

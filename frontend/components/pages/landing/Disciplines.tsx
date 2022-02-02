@@ -1,60 +1,43 @@
+import {
+  DisciplinesQuery,
+  useDisciplinesLandingQuery,
+} from "generated/graphql";
 import React from "react";
 import DisciplineItem from "./DisciplineItem";
 
-const items = [
-  {
-    title: "Guitarist",
-    src: "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/guitarist.jpg",
-    link: "guitarist",
-    alt: "Person playing the guitar",
-  },
-  {
-    title: "Photographer",
-    src: "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/photographer.jpg",
-    link: "photograper",
-    alt: "Person taking a photo",
-  },
-  {
-    title: "Graphic Designer",
-    src: "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/graphic-designer.jpg",
-    link: "graphic-designer",
-    alt: "Person doing graphic design",
-  },
-  {
-    title: "Pianist",
-    src: "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/pianist.jpg",
-    link: "pianist",
-    alt: "Person playing the piano",
-  },
-  {
-    title: "Videographer",
-    src: "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/videographer.jpg",
-    link: "videographer",
-    alt: "Person filming a video",
-  },
-  {
-    title: "More",
-    src: "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/more-small.jpg",
-    link: "more",
-    alt: "Person standing",
-  },
-];
+const Disciplines = ({ disciplines }: any) => {
+  // const { data } = useDisciplinesLandingQuery({
+  //   variables: {
+  //     data: {
+  //       disciplineIds: [1, 2, 3, 4, 5],
+  //     },
+  //   },
+  // });
 
-const Disciplines = () => {
   return (
     <section className="disciplines">
       <div className="container">
         <h2>Popular Disciplines</h2>
         <div className="grid">
-          {items.map((item, index) => (
-            <DisciplineItem
-              key={index}
-              src={item.src}
-              link={item.link}
-              title={item.title}
-              alt={item.alt}
-            />
-          ))}
+          {disciplines?.map(
+            (item: any) =>
+              item.image?.small && (
+                <DisciplineItem
+                  key={item.id}
+                  src={item.image?.small}
+                  link={item.id}
+                  title={item.title}
+                  alt={item.image.alt || ""}
+                />
+              )
+          )}
+          <DisciplineItem
+            src={
+              "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/more-small.jpg"
+            }
+            title={"More"}
+            alt={"Person looking up"}
+          />
         </div>
       </div>
     </section>

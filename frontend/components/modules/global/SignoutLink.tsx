@@ -33,6 +33,7 @@ const SignoutLink = ({ size }: IProps) => {
           alt="sign out"
           width={size}
           height={size}
+          layout="fixed"
         />
       </a>
     </li>

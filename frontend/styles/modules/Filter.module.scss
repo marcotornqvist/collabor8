@@ -1,0 +1,27 @@
+@use "../abstracts/colors" as *;
+@use "../abstracts/shadows" as *;
+@use "../abstracts/breakpoints" as *;
+@use "../abstracts/border-radius" as *;
+
+.mobile {
+  background: orange;
+}
+
+.desktop {
+  display: none;
+}
+
+@media only screen and (min-width: $breakpoint-md) {
+  .mobile {
+    display: none;
+  }
+
+  .desktop {
+    display: initial;
+    background: blue;
+
+    h2 {
+      color: red;
+    }
+  }
+}

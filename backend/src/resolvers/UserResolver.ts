@@ -68,7 +68,7 @@ export class UserResolver {
     }: UsersFilterArgs,
     @Ctx() { prisma, payload }: Context
   ) {
-    const filters = {};
+    const filters = { profile: {} };
 
     // Don't return logged in user
     if (payload && payload!.userId) {
@@ -99,11 +99,9 @@ export class UserResolver {
 
     // Checks if there are disciplines then add disciplines
     if (disciplines && disciplines.length > 0) {
-      Object.assign(filters, {
-        profile: {
-          disciplineId: {
-            in: disciplines,
-          },
+      Object.assign(filters.profile, {
+        disciplineId: {
+          in: disciplines,
         },
       });
     }
@@ -112,7 +110,7 @@ export class UserResolver {
     const countryExists = countries.filter((item) => item.country === country);
 
     if (countryExists.length > 0) {
-      Object.assign(filters, {
+      Object.assign(filters.profile, {
         country,
       });
     }
@@ -301,7 +299,7 @@ export class UserResolver {
         user: newUser,
       };
     } catch (err) {
-      // console.log(err);
+      console.log(err);
       throw new UserInputError("Errors", { errors });
     }
   }

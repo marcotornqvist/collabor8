@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { ObjectType, Field, ID } from "type-graphql";
 import { Profile } from "./Profile";
 import { Project } from "./Project";
+import { Image } from "./Image"
 
 @ObjectType()
 export class Discipline {
@@ -11,8 +12,11 @@ export class Discipline {
   @Field(() => String)
   title: string;
 
-  @Field(() => String)
-  slug: string;
+  @Field(() => Image, { nullable: true })
+  image?: Image | null;
+
+  @Field(() => ID)
+  imageId?: string | null;
 
   @Field(() => [Profile], { nullable: true })
   profiles?: Profile[] | null;

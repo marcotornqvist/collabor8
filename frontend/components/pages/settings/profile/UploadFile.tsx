@@ -21,7 +21,6 @@ export const UploadFile = () => {
       });
 
       if (data?.singleUpload && user) {
-        console.log(user);
         cache.writeQuery<LoggedInUserQuery>({
           query: LoggedInUserDocument,
           data: {

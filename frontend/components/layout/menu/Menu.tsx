@@ -3,6 +3,7 @@ import { authState, layoutState } from "store";
 import { useSnapshot } from "valtio";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
+import { useLoggedInUsernameQuery } from "generated/graphql";
 import Link from "next/link";
 import SignoutLink from "@/components-modules/global/SignoutLink";
 import Image from "next/image";
@@ -26,10 +27,14 @@ const variants = {
 };
 
 const Menu = () => {
-  const { pathname } = useRouter();
+  const { pathname, asPath } = useRouter();
   const { menuOpen } = useSnapshot(layoutState);
   const { isAuth } = useSnapshot(authState);
   const { width } = useWindowSize();
+
+  const { data } = useLoggedInUsernameQuery({
+    fetchPolicy: "cache-only",
+  });
 
   const closeMenu = () => {
     document.body.classList.remove("body-prevent-scroll");
@@ -70,6 +75,7 @@ const Menu = () => {
                         alt="chevron right"
                         width={16}
                         height={16}
+                        layout="fixed"
                       />
                     </a>
                   </Link>
@@ -88,6 +94,28 @@ const Menu = () => {
                         alt="chevron right"
                         width={16}
                         height={16}
+                        layout="fixed"
+                      />
+                    </a>
+                  </Link>
+                </li>
+                <li
+                  onClick={() => closeMenu()}
+                  className={`list-item${
+                    asPath === `/profile/${data?.loggedInUser.username}`
+                      ? " active"
+                      : ""
+                  }`}
+                >
+                  <Link href={`/profile/${data?.loggedInUser.username}`}>
+                    <a>
+                      <span>My Profile</span>
+                      <Image
+                        src="/icons/chevron-right-solid.svg"
+                        alt="chevron right"
+                        width={16}
+                        height={16}
+                        layout="fixed"
                       />
                     </a>
                   </Link>
@@ -108,6 +136,7 @@ const Menu = () => {
                     alt="chevron right"
                     width={16}
                     height={16}
+                    layout="fixed"
                   />
                 </a>
               </Link>
@@ -126,30 +155,13 @@ const Menu = () => {
                     alt="chevron right"
                     width={16}
                     height={16}
+                    layout="fixed"
                   />
                 </a>
               </Link>
             </li>
             {isAuth ? (
               <>
-                <li
-                  onClick={() => closeMenu()}
-                  className={`list-item${
-                    pathname === "/my-profile" ? " active" : ""
-                  }`}
-                >
-                  <Link href="/my-profile">
-                    <a>
-                      <span>My Profile</span>
-                      <Image
-                        src="/icons/chevron-right-solid.svg"
-                        alt="chevron right"
-                        width={16}
-                        height={16}
-                      />
-                    </a>
-                  </Link>
-                </li>
                 <li
                   onClick={() => closeMenu()}
                   className={`list-item${
@@ -164,6 +176,7 @@ const Menu = () => {
                         alt="chevron right"
                         width={16}
                         height={16}
+                        layout="fixed"
                       />
                     </a>
                   </Link>
@@ -182,6 +195,7 @@ const Menu = () => {
                         alt="chevron right"
                         width={16}
                         height={16}
+                        layout="fixed"
                       />
                     </a>
                   </Link>
@@ -200,6 +214,7 @@ const Menu = () => {
                         alt="chevron right"
                         width={16}
                         height={16}
+                        layout="fixed"
                       />
                     </a>
                   </Link>
@@ -224,6 +239,7 @@ const Menu = () => {
                         alt="chevron right"
                         width={16}
                         height={16}
+                        layout="fixed"
                       />
                     </a>
                   </Link>
@@ -242,6 +258,7 @@ const Menu = () => {
                         alt="chevron right"
                         width={16}
                         height={16}
+                        layout="fixed"
                       />
                     </a>
                   </Link>
