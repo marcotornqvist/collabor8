@@ -4,27 +4,11 @@ import { useSnapshot } from "valtio";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import { useLoggedInUsernameQuery } from "generated/graphql";
+import { menuVariants } from "utils/variants";
 import Link from "next/link";
 import SignoutLink from "@/components-modules/global/SignoutLink";
 import Image from "next/image";
 import useWindowSize from "@/hooks/useWindowSize";
-
-const variants = {
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.3,
-    },
-  },
-  hidden: {
-    opacity: 0,
-    y: "100%",
-    transition: {
-      duration: 0.3,
-    },
-  },
-};
 
 const Menu = () => {
   const { pathname, asPath } = useRouter();
@@ -56,7 +40,7 @@ const Menu = () => {
           initial="hidden"
           animate="visible"
           exit="hidden"
-          variants={variants}
+          variants={menuVariants}
         >
           <ul className="links">
             {isAuth && (

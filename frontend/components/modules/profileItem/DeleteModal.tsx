@@ -4,28 +4,10 @@ import { CONTACT_STATUS } from "@/operations-queries/contactStatus";
 import { motion } from "framer-motion";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
+import { useDeleteContactMutation } from "generated/graphql";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
-import { useDeleteContactMutation } from "generated/graphql";
-
-const dropIn = {
-  hidden: {
-    y: "-100px",
-    opacity: 0,
-  },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.1,
-      type: "spring",
-      damping: 25,
-    },
-  },
-  exit: {
-    opacity: 0,
-  },
-};
+import { dropInVariants } from "utils/variants";
 
 interface IProps {
   id: string;
@@ -87,7 +69,7 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
       <motion.div
         className="modal delete-modal"
         onClick={(e) => e.stopPropagation()}
-        variants={dropIn}
+        variants={dropInVariants}
         initial="hidden"
         animate="visible"
         exit="exit"

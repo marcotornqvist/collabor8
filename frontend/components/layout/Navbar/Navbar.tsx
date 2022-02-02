@@ -8,16 +8,7 @@ import { authState, layoutState } from "store";
 import { motion } from "framer-motion";
 import { useLoggedInUserLazyQuery } from "generated/graphql";
 import { useEffect } from "react";
-
-const variants = {
-  hidden: {
-    opacity: 0,
-  },
-  visible: {
-    opacity: 1,
-    transition: { duration: 0.3 },
-  },
-};
+import { fadeInVariants } from "utils/variants";
 
 interface Props {
   hide: boolean;
@@ -46,7 +37,7 @@ const Navbar = ({ hide = false }: Props) => {
               className="icons"
               initial="hidden"
               animate="visible"
-              variants={variants}
+              variants={fadeInVariants}
             >
               <InboxIcon />
               <NotificationsIcon />
@@ -57,7 +48,7 @@ const Navbar = ({ hide = false }: Props) => {
               className="auth-links"
               initial="hidden"
               animate="visible"
-              variants={variants}
+              variants={fadeInVariants}
             >
               <li>
                 <Link href="/register">

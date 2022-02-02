@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, Variants } from "framer-motion";
 import { IDiscipline } from "@/types-interfaces/form";
 import { useDisciplinesQuery } from "generated/graphql";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
-import Image from "next/image";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
+import ChevronIcon from "@/components-modules/global/ChevronIcon";
 
 interface IProps {
   setFieldValue: (
@@ -14,7 +14,7 @@ interface IProps {
   ) => void;
   discipline: IDiscipline | null;
   loading: boolean;
-  variants: any;
+  variants: Variants;
   isMobile: boolean;
   error: string;
   lastSubmitValue?: IDiscipline | null;
@@ -81,20 +81,11 @@ const DisciplinesDropdown = ({
               : "Select Discipline"
             : ""}
         </span>
-        <motion.div
-          className="icon-container"
-          initial="hidden"
-          animate={{ rotate: isMobile && show ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <Image
-            src="/icons/chevron-down-solid.svg"
-            alt="Chevron"
-            width={18}
-            height={18}
-            layout="fixed"
-          />
-        </motion.div>
+        <ChevronIcon
+          isMobile={isMobile}
+          show={show}
+          initialRotate={"rotate(0deg)"}
+        />
       </div>
       <AnimatePresence>
         {show && (
@@ -105,7 +96,7 @@ const DisciplinesDropdown = ({
             exit="hidden"
             variants={variants}
           >
-            <div className="header-bar" onClick={() => setShow(false)}>
+            <div className="top-bar" onClick={() => setShow(false)}>
               <span className="selected-title">
                 {discipline ? discipline.title : "Select Discipline"}
               </span>

@@ -1,50 +1,17 @@
 import { useEffect, useState } from "react";
-import { IFilters } from "@/types-interfaces/filters";
-import { useQueryParam, StringParam, withDefault } from "next-query-params";
+import { AnimatePresence, motion } from "framer-motion";
+import { dropdownVariants, menuVariants } from "utils/variants";
 import CountriesFilter from "./CountriesFilter";
 import SearchFilter from "./SearchFilter";
 import DisciplinesFilter from "./DisciplinesFilter";
 import useWindowSize from "@/hooks/useWindowSize";
 import SortFilter from "./SortFilter";
-import button from "@/styles-modules/Button.module.scss";
 import filterStyles from "@/styles-modules/Filter.module.scss";
-import { AnimatePresence, motion } from "framer-motion";
+import RemoveFilters from "./RemoveFilters";
+import button from "@/styles-modules/Button.module.scss";
+import Image from "next/image";
 
-const mobileVariants = {
-  hidden: {
-    opacity: 0,
-    y: "100%",
-    transition: {
-      duration: 0.3,
-    },
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.3,
-    },
-  },
-};
-
-const desktopVariants = {
-  hidden: {
-    opacity: 0,
-    scale: 0.8,
-    transition: {
-      duration: 0.2,
-    },
-  },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 0.2,
-    },
-  },
-};
-
-const Filters = ({ filters, setFilters }: any) => {
+const Filters = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [show, setShow] = useState(false);
 
@@ -58,60 +25,84 @@ const Filters = ({ filters, setFilters }: any) => {
     }
   }, [width]);
 
+  useEffect(() => {
+    // Prevent scrolling on body
+    isMobile && show
+      ? document.body.classList.add("body-prevent-scroll")
+      : document.body.classList.remove("body-prevent-scroll");
+  }, [show, isMobile]);
+
   return (
     <div className="filters">
       <div className="container">
         {width < 768 ? (
           <div className={filterStyles.mobile}>
-            <button onClick={() => setShow(!show)} className="show-filters-btn">
-              Show Filters
+            <button
+              onClick={() => setShow(!show)}
+              className={`show-filters-btn ${button.green}`}
+            >
+              <span className="text">Show Filters</span>
+              <div className="filter-icon">
+                <Image
+                  src="/icons/filter-icon-white.svg"
+                  alt="filtration"
+                  width={24}
+                  height={24}
+                  layout="fixed"
+                />
+              </div>
             </button>
             <AnimatePresence>
               {show && (
-                <motion.div className="filters-menu">
-                  <SearchFilter />
-                  <CountriesFilter
-                    variants={desktopVariants}
-                    isMobile={false}
-                  />
-                  <DisciplinesFilter
-                    variants={desktopVariants}
-                    isMobile={false}
-                  />
-                  <SortFilter variants={desktopVariants} isMobile={false} />
-                  <button
-                    className={button.black}
-                    onClick={() => {
-                      // setSearchText("");
-                      // setCountry(null);
-                      // setDiscipline(null);
-                      // setSort("desc");
-                    }}
-                  >
-                    Remove Filters
-                  </button>
+                <motion.div
+                  className="filters-menu"
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden"
+                  variants={menuVariants}
+                >
+                  <div className="top-bar-menu" onClick={() => setShow(false)}>
+                    <span className="title">Filters</span>
+                    <span className="close-btn">Close</span>
+                  </div>
+                  <div className="filter-container">
+                    <SearchFilter />
+                    <CountriesFilter
+                      variants={dropdownVariants.slideIn}
+                      isMobile={true}
+                    />
+                    <DisciplinesFilter
+                      variants={dropdownVariants.slideIn}
+                      isMobile={true}
+                    />
+                    <SortFilter
+                      variants={dropdownVariants.slideIn}
+                      isMobile={true}
+                    />
+                  </div>
+                  <div className="bottom-bar">
+                    <RemoveFilters />
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
         ) : (
           <div className={filterStyles.desktop}>
-            <h2>Desktop</h2>
+            <div className="top-bar">
+              <h2>Desktop</h2>
+            </div>
             <SearchFilter />
-            <CountriesFilter variants={desktopVariants} isMobile={false} />
-            <DisciplinesFilter variants={desktopVariants} isMobile={false} />
-            <SortFilter variants={desktopVariants} isMobile={false} />
-            <button
-              className={button.black}
-              onClick={() => {
-                // setSearchText("");
-                // setCountry(null);
-                // setDiscipline(null);
-                // setSort("desc");
-              }}
-            >
-              Remove Filters
-            </button>
+            <CountriesFilter
+              variants={dropdownVariants.desktop}
+              isMobile={false}
+            />
+            <DisciplinesFilter
+              variants={dropdownVariants.desktop}
+              isMobile={false}
+            />
+            <SortFilter variants={dropdownVariants.desktop} isMobile={false} />
+            <RemoveFilters />
           </div>
         )}
       </div>

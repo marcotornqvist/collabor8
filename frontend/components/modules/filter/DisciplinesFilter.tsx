@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, Variants } from "framer-motion";
 import { useDisciplinesQuery } from "generated/graphql";
 import {
   useQueryParam,
@@ -8,18 +8,19 @@ import {
 } from "next-query-params";
 import { IDiscipline } from "@/types-interfaces/form";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
-import Image from "next/image";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
+import ChevronIcon from "../global/ChevronIcon";
+import Image from "next/image";
 
 interface IProps {
-  variants: any;
+  variants: Variants;
   isMobile: boolean;
 }
 
 const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
   const [show, setShow] = useState(false);
-  const { data } = useDisciplinesQuery();
   const [title, setTitle] = useState("");
+  const { data } = useDisciplinesQuery();
 
   const [disciplines, setDisciplines] = useQueryParam(
     "disciplines",
@@ -95,20 +96,11 @@ const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
         >
           {title}
         </span>
-        <motion.div
-          className="icon-container"
-          initial="hidden"
-          animate={{ rotate: isMobile && show ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <Image
-            src="/icons/chevron-down-solid.svg"
-            alt="Chevron"
-            width={18}
-            height={18}
-            layout="fixed"
-          />
-        </motion.div>
+        <ChevronIcon
+          isMobile={isMobile}
+          show={show}
+          initialRotate={isMobile ? "rotate(90deg)" : "rotate(0deg)"}
+        />
       </div>
       <AnimatePresence>
         {show && (
@@ -119,7 +111,11 @@ const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
             exit="hidden"
             variants={variants}
           >
-            <ul className="dropdown-list">
+            <div className="top-bar" onClick={() => setShow(false)}>
+              <span className="selected-title">{title}</span>
+              <span className="close-btn">Close</span>
+            </div>
+            <ul className="dropdown-list multi-selections">
               <li
                 className="list-item"
                 onClick={() => setDisciplines(undefined)}
@@ -129,10 +125,21 @@ const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
               {disciplineList?.map((item) => (
                 <li
                   key={item.id}
-                  className={`list-item${item.active && " active"}`}
+                  className={`list-item${item.active ? " active" : ""}`}
                   onClick={() => disciplineHandler(item)}
                 >
                   <span>{item.title}</span>
+                  <div className="check-circle">
+                    {item.active && (
+                      <Image
+                        src="/icons/check-solid-white.svg"
+                        alt="Checkmark"
+                        width={16}
+                        height={16}
+                        layout="fixed"
+                      />
+                    )}
+                  </div>
                 </li>
               ))}
               {data?.disciplines && data.disciplines.length > 50 && (

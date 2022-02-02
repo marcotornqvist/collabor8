@@ -9,7 +9,7 @@ const Disciplines = ({ disciplines }: DisciplinesLandingQuery) => {
         <h2>Popular Disciplines</h2>
         <div className="grid">
           {disciplines?.map(
-            (item: any) =>
+            (item) =>
               item.image?.small && (
                 <DisciplineItem
                   key={item.id}

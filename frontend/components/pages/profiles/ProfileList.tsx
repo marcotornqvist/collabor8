@@ -1,34 +1,37 @@
 import { useEffect } from "react";
 import { authState } from "store";
 import { useSnapshot } from "valtio";
-import { useUsersLazyQuery } from "generated/graphql";
-import { useRouter } from "next/router";
+import { Sort, useUsersLazyQuery } from "generated/graphql";
 import { isNumbersArray } from "utils/helpers";
+import { useQueryParams, NumericArrayParam } from "next-query-params";
+import { singleStringParam } from "utils/customQueryParams";
 import ProfileItem from "@/components-modules/profileItem/ProfileItem";
 import ProfileSkeleton from "@/components-modules/profileItem/ProfileSkeleton";
 
-// Check that user is not a friend
-// Check that user is not you when returning
-
 const ProfileList = () => {
-  const {
-    query: { country, disciplines },
-  } = useRouter();
+  const [query, setQuery] = useQueryParams({
+    search: singleStringParam,
+    country: singleStringParam,
+    disciplines: NumericArrayParam,
+    sort: singleStringParam,
+  });
 
   const { loading } = useSnapshot(authState);
-  const [users, { data }] = useUsersLazyQuery({
+
+  const [getUsers, { data }] = useUsersLazyQuery({
     variables: {
       data: {
-        // first: 3,
-        // country: typeof country === "string" ? country : undefined,
-        disciplines: isNumbersArray(disciplines),
+        searchText: query.search,
+        country: query.country,
+        disciplines: isNumbersArray(query.disciplines),
+        sort: query.sort !== "asc" ? Sort.Desc : Sort.Asc,
       },
     },
   });
 
   useEffect(() => {
     if (!loading) {
-      users();
+      getUsers();
     }
   }, [loading]);
 

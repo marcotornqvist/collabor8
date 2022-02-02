@@ -1,35 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { imageFadeInVariants } from "utils/variants";
 import Image from "next/image";
-
-const textVariants = {
-  hidden: {
-    opacity: 0,
-    y: 50,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: 0.5,
-      damping: 20,
-      stiffness: 125,
-      type: "spring",
-    },
-  },
-};
-
-const imageVariants = {
-  hidden: {
-    opacity: 0,
-  },
-  visible: {
-    opacity: 1,
-    transition: {
-      duration: 0.5,
-    },
-  },
-};
 
 const Branding = () => {
   const [loaded, setLoaded] = useState(false);
@@ -39,7 +11,7 @@ const Branding = () => {
       <motion.div
         className="image-container"
         animate={loaded ? "visible" : "hidden"}
-        variants={imageVariants}
+        variants={imageFadeInVariants}
       >
         {loaded && (
           <div className="container">
@@ -47,7 +19,7 @@ const Branding = () => {
               className="hero-text"
               initial="hidden"
               animate="visible"
-              variants={textVariants}
+              variants={imageFadeInVariants}
             >
               Find other creative people to collaborate with.
             </motion.h1>

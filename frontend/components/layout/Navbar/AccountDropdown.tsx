@@ -1,21 +1,12 @@
 import React, { useState, useRef } from "react";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLoggedInUsernameQuery, useProfileImageQuery } from "generated/graphql";
+import { dropdownVariants } from "utils/variants";
+import Link from "next/link";
 import SignoutLink from "@/components-modules/global/SignoutLink";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import ProfileImage from "@/components-modules/global/ProfileImage";
 
-const variants = {
-  visible: {
-    opacity: 1,
-    transition: { duration: 0.2 },
-  },
-  hidden: {
-    opacity: 0,
-    transition: { duration: 0.2 },
-  },
-};
 
 const AccountDropdown = () => {
   const [show, setShow] = useState(false);
@@ -51,7 +42,7 @@ const AccountDropdown = () => {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            variants={variants}
+            variants={dropdownVariants.desktop}
           >
             <ul>
               <li onClick={() => setShow(false)}>

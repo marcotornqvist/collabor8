@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, Variants } from "framer-motion";
 import { useCountriesQuery } from "generated/graphql";
-import useOnClickOutside from "@/hooks/useOnClickOutside";
-import Image from "next/image";
-import dropdown from "@/styles-modules/Dropdown.module.scss";
 import { useQueryParam, StringParam, withDefault } from "next-query-params";
+import useOnClickOutside from "@/hooks/useOnClickOutside";
+import dropdown from "@/styles-modules/Dropdown.module.scss";
+import ChevronIcon from "../global/ChevronIcon";
 
 interface IProps {
-  variants: any;
+  variants: Variants;
   isMobile: boolean;
 }
 
@@ -67,20 +67,11 @@ const CountriesFilter = ({ variants, isMobile }: IProps) => {
         <span className={country ? "default-text" : "placeholder"}>
           {country ? country : "Select Country"}
         </span>
-        <motion.div
-          className="icon-container"
-          initial="hidden"
-          animate={{ rotate: !isMobile && show ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <Image
-            src="/icons/chevron-down-solid.svg"
-            alt="Chevron"
-            width={18}
-            height={18}
-            layout="fixed"
-          />
-        </motion.div>
+        <ChevronIcon
+          isMobile={isMobile}
+          show={show}
+          initialRotate={isMobile ? "rotate(90deg)" : "rotate(0deg)"}
+        />
       </div>
       <AnimatePresence>
         {show && (
@@ -91,7 +82,7 @@ const CountriesFilter = ({ variants, isMobile }: IProps) => {
             exit="hidden"
             variants={variants}
           >
-            <div className="header-bar" onClick={() => setShow(false)}>
+            <div className="top-bar" onClick={() => setShow(false)}>
               <span className="selected-title">
                 {country ? country : "Select Country"}
               </span>

@@ -8,27 +8,9 @@ import {
   useBlockUserMutation,
   useUnblockUserMutation,
 } from "generated/graphql";
+import { dropInVariants } from "utils/variants";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
-
-const dropIn = {
-  hidden: {
-    y: "-100px",
-    opacity: 0,
-  },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.1,
-      type: "spring",
-      damping: 25,
-    },
-  },
-  exit: {
-    opacity: 0,
-  },
-};
 
 interface IProps {
   id: string;
@@ -105,7 +87,7 @@ const PendingModal = ({ id, show, onClose, isBlocked }: IProps) => {
       <motion.div
         className="modal pending-modal"
         onClick={(e) => e.stopPropagation()}
-        variants={dropIn}
+        variants={dropInVariants}
         initial="hidden"
         animate="visible"
         exit="exit"

@@ -73,6 +73,12 @@
         display: flex;
         justify-content: center;
         align-items: center;
+
+        .icon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
       }
     }
 
@@ -85,7 +91,7 @@
       background: $white;
       z-index: $z-index4;
 
-      .header-bar {
+      .top-bar {
         position: fixed;
         top: 0;
         display: flex;
@@ -109,7 +115,7 @@
         }
       }
 
-      ul {
+      ul.dropdown-list {
         position: absolute;
         top: 5rem;
         left: 3;
@@ -123,6 +129,7 @@
           align-items: center;
           border-bottom: 1px solid $light-grey;
           padding: 0 1rem;
+          width: 100%;
           height: 4rem;
           cursor: pointer;
 
@@ -143,6 +150,34 @@
           }
         }
       }
+
+      ul.multi-selections li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: none;
+
+        &.active {
+          background: none;
+
+          .check-circle {
+            background: $green;
+          }
+        }
+
+        .check-circle {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding-left: 0.5px;
+          padding-top: 2px;
+          width: 2rem;
+          height: 2rem;
+          border: 1px solid $green;
+          background: $light-green;
+          border-radius: $medium-radius;
+        }
+      }
     }
   }
 }
@@ -161,7 +196,7 @@
         border-radius: $medium-radius;
         box-shadow: $box-shadow4;
 
-        .header-bar {
+        .top-bar {
           display: none;
         }
 

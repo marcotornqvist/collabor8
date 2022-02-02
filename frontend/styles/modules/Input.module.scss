@@ -114,15 +114,18 @@
         font-size: 14px;
         width: 100%;
         text-align: left;
-        background: $grey-bg;
         outline: none;
-        // background: none !important;
+        background: $grey-bg;
       }
 
       &.focus {
         border-color: $green;
         background: $light-green;
         box-shadow: 0 0 0px 1000px $light-green inset;
+
+        input {
+          background: $light-green;
+        }
 
         span {
           color: $green;

@@ -3,16 +3,14 @@ import Image from "next/image";
 import input from "@/styles-modules/Input.module.scss";
 import { useQueryParam, StringParam, withDefault } from "next-query-params";
 
-// interface IProps {
-//   searchText: string;
-//   setSearchText: (searchText: string) => void;
-// }
-
-const SearchFilter = ({ searchText, setSearchText }: any) => {
+const SearchFilter = () => {
   const [isFocus, setIsFocus] = useState(false);
   const inputRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
-  const [name, setName] = useQueryParam("name", withDefault(StringParam, ""));
+  const [search, setSearch] = useQueryParam(
+    "search",
+    withDefault(StringParam, "")
+  );
 
   return (
     <div className={`input-group ${input.search}`}>
@@ -25,12 +23,12 @@ const SearchFilter = ({ searchText, setSearchText }: any) => {
       >
         <input
           name="search"
-          value={searchText}
+          value={search}
           onChange={(e) => {
             if (e.target.value.length > 0) {
-              setName(e.target.value);
+              setSearch(e.target.value);
             } else {
-              setName(undefined);
+              setSearch(undefined);
             }
           }}
           type="text"

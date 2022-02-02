@@ -8,6 +8,7 @@ import {
   LoggedInUserQuery,
   useDeleteImageMutation,
 } from "generated/graphql";
+import { dropInVariants } from "utils/variants";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 
@@ -95,7 +96,7 @@ const DeleteModal = ({ show, onClose }: IProps) => {
       <motion.div
         className="modal delete-modal"
         onClick={(e) => e.stopPropagation()}
-        variants={dropIn}
+        variants={dropInVariants}
         initial="hidden"
         animate="visible"
         exit="exit"

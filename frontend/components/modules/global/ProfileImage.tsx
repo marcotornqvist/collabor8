@@ -2,18 +2,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import image from "@/styles-modules/Image.module.scss";
-
-const variants = {
-  hidden: {
-    opacity: 0,
-  },
-  visible: {
-    opacity: 1,
-    transition: {
-      duration: 0.5,
-    },
-  },
-};
+import { imageFadeInVariants } from "utils/variants";
 
 interface Props {
   profileImage?: string | null;
@@ -36,7 +25,7 @@ const ProfileImage = ({ size = 40, profileImage, priority = false }: Props) => {
             className="image-container"
             initial="hidden"
             animate="visible"
-            variants={variants}
+            variants={imageFadeInVariants}
           >
             <Image
               onError={() => setError(true)}
@@ -56,7 +45,7 @@ const ProfileImage = ({ size = 40, profileImage, priority = false }: Props) => {
             className="image-container"
             initial="hidden"
             animate="visible"
-            variants={variants}
+            variants={imageFadeInVariants}
           >
             <Image
               src="/icons/user-solid-green.svg"

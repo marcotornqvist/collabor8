@@ -9,8 +9,6 @@ import {
 } from "type-graphql";
 import { isAuth } from "../utils/isAuth";
 import { Context } from "../types/Interfaces";
-import { BlockedUser } from "../types/BlockedUser";
-import { UserInputError } from "apollo-server-express";
 import { Contact } from "../types/Contact";
 import { User } from "../types/User";
 import { CONTACT_STATUS } from "../types/Enums";

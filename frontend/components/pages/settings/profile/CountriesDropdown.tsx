@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, Variants } from "framer-motion";
 import { useCountriesQuery } from "generated/graphql";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
-import Image from "next/image";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
+import ChevronIcon from "@/components-modules/global/ChevronIcon";
 
 interface IProps {
   setFieldValue: (
@@ -13,7 +13,7 @@ interface IProps {
   ) => void;
   selected: string | null;
   loading: boolean;
-  variants: any;
+  variants: Variants;
   isMobile: boolean;
   error: string;
   lastSubmitValue?: string | null;
@@ -81,20 +81,11 @@ const CountriesDropdown = ({
         <span className={selected ? "default-text" : "placeholder"}>
           {!loading ? (selected ? selected : "Select Country") : ""}
         </span>
-        <motion.div
-          className="icon-container"
-          initial="hidden"
-          animate={{ rotate: !isMobile && show ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <Image
-            src="/icons/chevron-down-solid.svg"
-            alt="Chevron"
-            width={18}
-            height={18}
-            layout="fixed"
-          />
-        </motion.div>
+        <ChevronIcon
+          isMobile={isMobile}
+          show={show}
+          initialRotate={"rotate(0deg)"}
+        />
       </div>
       <AnimatePresence>
         {show && (
@@ -105,7 +96,7 @@ const CountriesDropdown = ({
             exit="hidden"
             variants={variants}
           >
-            <div className="header-bar" onClick={() => setShow(false)}>
+            <div className="top-bar" onClick={() => setShow(false)}>
               <span className="selected-title">
                 {selected ? selected : "Select Country"}
               </span>

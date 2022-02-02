@@ -10,12 +10,31 @@
   background: $light-green;
 }
 
-.profiles-page .search {
-  min-height: 100%;
+.profiles-page .filters {
+  padding: 1.5rem 0;
+
+  .show-filters-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+    span.text {
+      color: $white;
+      margin-right: 0.5rem;
+    }
+
+    .filter-icon {
+      display: flex;
+      align-items: center;
+      margin-left: 0.5rem;
+    }
+  }
 }
 
-.profiles-page section {
+.profiles-page section.profile-list {
   min-height: 100%;
+  padding: 0;
 
   .grid {
     display: grid;

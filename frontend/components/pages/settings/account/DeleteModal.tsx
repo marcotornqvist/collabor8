@@ -1,37 +1,16 @@
 import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
-import { IS_USER_BLOCKED } from "@/operations-queries/isUserBlocked";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
 import {
-  useBlockUserMutation,
   useDeleteAccountMutation,
-  useUnblockUserMutation,
 } from "generated/graphql";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import { authState } from "store";
 import { useRouter } from "next/router";
-
-const dropIn = {
-  hidden: {
-    y: "-100px",
-    opacity: 0,
-  },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.1,
-      type: "spring",
-      damping: 25,
-    },
-  },
-  exit: {
-    opacity: 0,
-  },
-};
+import { dropInVariants } from "utils/variants";
 
 interface IProps {
   show: boolean;
@@ -85,7 +64,7 @@ const DeleteModal = ({ show, onClose }: IProps) => {
       <motion.div
         className="modal pending-modal"
         onClick={(e) => e.stopPropagation()}
-        variants={dropIn}
+        variants={dropInVariants}
         initial="hidden"
         animate="visible"
         exit="exit"

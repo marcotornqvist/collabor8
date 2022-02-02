@@ -2,7 +2,7 @@
 export const isNotEmptyObject = (object: object) =>
   Object.keys(object).length > 0;
 
-export const isNumbersArray = (value: string | string[] | undefined) => {
+export const isNumbersArray = (value: (number | null)[] | null | undefined) => {
   let result: number[] = [];
 
   if (typeof value === "string") {

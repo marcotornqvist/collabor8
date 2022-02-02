@@ -2,18 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-
-const variants = {
-  hidden: {
-    opacity: 0,
-  },
-  visible: {
-    opacity: 1,
-    transition: {
-      duration: 0.5,
-    },
-  },
-};
+import { imageFadeInVariants } from "utils/variants";
 
 interface IProps {
   title: string;
@@ -36,7 +25,7 @@ const DisciplineItem = ({ title, src, link, alt }: IProps) => {
         <motion.div
           className="image-container"
           animate={loaded ? "visible" : "hidden"}
-          variants={variants}
+          variants={imageFadeInVariants}
         >
           {loaded && <h3>{title}</h3>}
           <Image

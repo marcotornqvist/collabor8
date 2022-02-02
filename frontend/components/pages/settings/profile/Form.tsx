@@ -6,8 +6,6 @@ import { Formik } from "formik";
 import {
   LoggedInUserDocument,
   LoggedInUserQuery,
-  UpdateProfileInput,
-  UpdateProfileMutation,
   useLoggedInProfileDetailsQuery,
   useUpdateProfileMutation,
 } from "generated/graphql";
@@ -19,40 +17,7 @@ import DisciplinesDropdown from "./DisciplinesDropdown";
 import useWindowSize from "@/hooks/useWindowSize";
 import InputField from "@/components-modules/global/InputField";
 import TextareaField from "@/components-modules/global/TextareaField";
-
-const mobileVariants = {
-  hidden: {
-    opacity: 0,
-    y: "100%",
-    transition: {
-      duration: 0.3,
-    },
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.3,
-    },
-  },
-};
-
-const desktopVariants = {
-  hidden: {
-    opacity: 0,
-    scale: 0.8,
-    transition: {
-      duration: 0.2,
-    },
-  },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 0.2,
-    },
-  },
-};
+import { dropdownVariants, menuVariants } from "utils/variants";
 
 interface FormErrors {
   firstName?: string;
@@ -200,7 +165,7 @@ const Form = () => {
                   selected={values.country}
                   setFieldValue={setFieldValue}
                   loading={loading}
-                  variants={isMobile ? mobileVariants : desktopVariants}
+                  variants={isMobile ? menuVariants : dropdownVariants.desktop}
                   isMobile={isMobile}
                   error={error}
                   lastSubmitValue={lastSubmit?.country}
@@ -209,7 +174,7 @@ const Form = () => {
                   setFieldValue={setFieldValue}
                   discipline={values.discipline}
                   loading={loading}
-                  variants={isMobile ? mobileVariants : desktopVariants}
+                  variants={isMobile ? menuVariants : dropdownVariants.desktop}
                   isMobile={isMobile}
                   error={error}
                   lastSubmitValue={lastSubmit?.discipline}
