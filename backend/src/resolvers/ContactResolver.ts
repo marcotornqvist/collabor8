@@ -16,7 +16,6 @@ import { User } from "../types/User";
 import { CONTACT_STATUS } from "../types/Enums";
 import { NotificationCode } from "@prisma/client";
 
-// TODO: Queries/mutations to be implemented:
 // contacts             Return all contacts for logged in user - Done
 // contactStatus        Check what the status is or if a contact request even exist
 // addContact           Add a new user to your contacts - Done
