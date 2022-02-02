@@ -46,8 +46,7 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
   const protectedRoutes = ["/my-profile", "/chat", "/settings", "/report"];
 
   // Check if navbar and footer should be loaded
-  const router = useRouter();
-  const pathname = router.pathname;
+  const {pathname} = useRouter();
 
   // Checks if pathname matches with one of the items in the array below.
   const paths = ["/register", "/login"];

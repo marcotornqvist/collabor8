@@ -15,8 +15,6 @@ const ProfileList = () => {
     query: { country, disciplines },
   } = useRouter();
 
-  console.log(disciplines)
-
   const { loading } = useSnapshot(authState);
   const [users, { data }] = useUsersLazyQuery({
     variables: {

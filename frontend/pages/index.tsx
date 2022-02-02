@@ -6,23 +6,20 @@ import {
   DisciplinesLandingDocument,
   DisciplinesLandingQuery,
   DisciplinesLandingQueryVariables,
-  DisciplinesQuery,
-  DisciplinesQueryVariables,
 } from "generated/graphql";
 import { initializeApollo } from "utils/useApollo";
 
-const Home = ({ disciplines }: any) => {
+const Home = ({ disciplines }: DisciplinesLandingQuery) => {
   // Follow this guide to properly use the useMutation hook with proper caching
   // https://www.apollographql.com/docs/react/data/mutations/
   // https://www.youtube.com/watch?v=4smsVPgZDOo
 
   // https://blog.logrocket.com/implementing-animated-toasts-in-react/
 
-  console.log(disciplines);
   return (
     <div className="landing-page">
       <Showcase />
-      {/* <Disciplines disciplines={disciplines} /> */}
+      <Disciplines disciplines={disciplines} />
       <Profiles first={3} />
       <About />
     </div>
@@ -31,7 +28,9 @@ const Home = ({ disciplines }: any) => {
 
 export const getStaticProps = async () => {
   const client = initializeApollo();
-  const result = await client.query<
+  const {
+    data: { disciplines },
+  } = await client.query<
     DisciplinesLandingQuery,
     DisciplinesLandingQueryVariables
   >({
@@ -45,7 +44,7 @@ export const getStaticProps = async () => {
 
   return {
     props: {
-      disciplines: result?.data.disciplines,
+      disciplines: disciplines,
     },
   };
 };

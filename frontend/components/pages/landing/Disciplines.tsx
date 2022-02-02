@@ -1,19 +1,8 @@
-import {
-  DisciplinesQuery,
-  useDisciplinesLandingQuery,
-} from "generated/graphql";
+import { DisciplinesLandingQuery } from "generated/graphql";
 import React from "react";
 import DisciplineItem from "./DisciplineItem";
 
-const Disciplines = ({ disciplines }: any) => {
-  // const { data } = useDisciplinesLandingQuery({
-  //   variables: {
-  //     data: {
-  //       disciplineIds: [1, 2, 3, 4, 5],
-  //     },
-  //   },
-  // });
-
+const Disciplines = ({ disciplines }: DisciplinesLandingQuery) => {
   return (
     <section className="disciplines">
       <div className="container">
