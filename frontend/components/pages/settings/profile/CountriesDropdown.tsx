@@ -41,7 +41,7 @@ const CountriesDropdown = ({
   }, [isMobile]);
 
   useEffect(() => {
-    if (activeRef.current && listRef.current) {
+    if (activeRef.current && listRef.current && show) {
       const activeElementY = activeRef.current.offsetTop;
       // scrolls screen to center
       listRef.current.scrollIntoView({ block: "center" });
@@ -102,7 +102,7 @@ const CountriesDropdown = ({
               </span>
               <span className="close-btn">Close</span>
             </div>
-            <ul className="dropdown-list" ref={listRef}>
+            <ul className="dropdown-list single-selection" ref={listRef}>
               <li
                 ref={!selected ? activeRef : null}
                 onClick={() => {

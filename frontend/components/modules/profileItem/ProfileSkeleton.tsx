@@ -15,9 +15,9 @@ const ProfileSkeleton = () => {
         </div>
         <div className="skeleton button"></div>
       </div>
-      {/* <div className="shimmer-wrapper">
+      <div className={`shimmer-wrapper ${profile.shimmerWrapper}`}>
         <div className="shimmer"></div>
-      </div> */}
+      </div>
     </div>
   );
 };

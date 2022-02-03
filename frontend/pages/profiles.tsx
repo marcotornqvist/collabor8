@@ -1,21 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NextQueryParamProvider } from "next-query-params";
-import { useRouter } from "next/router";
 import ProfileList from "@/components-pages/profiles/ProfileList";
 import Filters from "@/components-modules/filter/Filters";
+import useWindowSize from "@/hooks/useWindowSize";
 
 const Profiles = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const { width } = useWindowSize();
+
+  useEffect(() => {
+    setLoaded(true);
+    if (width < 768) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  }, [width]);
 
   return (
     <NextQueryParamProvider>
-      <div className="profiles-page">
-        <Filters />
-        <ProfileList
-          // first={3}
-          // country={typeof country === "string" ? country : ""}
-          // disciplines={[]}
-        />
-      </div>
+      <section className="profiles-page">
+        {loaded && (
+          <div className="container">
+            <Filters isMobile={isMobile} />
+            <ProfileList />
+          </div>
+        )}
+      </section>
     </NextQueryParamProvider>
   );
 };

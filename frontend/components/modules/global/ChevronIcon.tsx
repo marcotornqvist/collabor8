@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -29,7 +28,7 @@ const ChevronIcon = ({
       <div className="icon" style={{ transform: initialRotate }}>
         <Image
           src="/icons/chevron-down-solid.svg"
-          alt="Chevron"
+          alt={"Chevron"}
           width={18}
           height={18}
           layout="fixed"

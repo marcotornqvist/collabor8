@@ -131,11 +131,12 @@ select:-webkit-autofill:focus {
 .container {
   padding: 0 1rem;
   min-height: 100%;
+  width: 100%;
   margin: 0 auto;
 }
 
 section {
-  padding: 3rem 0;
+  padding: 1.5rem 0 3rem 0;
 }
 
 @media only screen and (min-width: $breakpoint-sm) {

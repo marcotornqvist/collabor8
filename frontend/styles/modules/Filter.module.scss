@@ -66,15 +66,14 @@
         }
       }
 
-      .filter-container {
+      .filter-wrapper {
         position: absolute;
         top: 5rem;
         left: 3;
-        padding: 1rem;
         min-width: 100%;
         height: 100%;
         overflow-y: scroll;
-        padding-bottom: 5rem;
+        padding-top: 1.5rem;
 
         li {
           display: flex;
@@ -132,11 +131,34 @@
   }
 
   .desktop {
-    display: initial;
-    background: blue;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.5rem;
+    height: 600px;
+    background: $white;
 
-    h2 {
-      color: red;
+    :global {
+      .filter-wrapper {
+        flex: 1;
+
+        .disciplines-dropdown {
+          padding-bottom: 1.5rem;
+          margin-bottom: 1rem;
+          border-bottom: 1px solid $border-color1;
+        }
+
+        .sort-dropdown {
+          margin: 0;
+        }
+      }
     }
   }
+}
+@media only screen and (min-width: $breakpoint-lg) {
+  // .desktop {
+  // }
+
+  // .profile-page .profile-list {
+  // }
 }

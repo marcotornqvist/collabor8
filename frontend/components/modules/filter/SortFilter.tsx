@@ -33,9 +33,10 @@ const SortFilter = ({ variants, isMobile }: IProps) => {
 
   return (
     <div
-      className={`sort-filter ${dropdown.default} ${
+      className={`sort-dropdown ${dropdown.default} ${
         show ? dropdown.active : ""
       }`}
+      ref={dropdownRef}
     >
       <div className="input-text">
         <label htmlFor="sort">Sort</label>
@@ -68,7 +69,7 @@ const SortFilter = ({ variants, isMobile }: IProps) => {
               <span className="title">Sort</span>
               <span className="close-btn">Close</span>
             </div>
-            <ul className="dropdown-list">
+            <ul className="dropdown-list single-selection">
               <li
                 className={`list-item${sort !== "asc" ? " active" : ""}`}
                 onClick={() => {

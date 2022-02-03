@@ -8,10 +8,10 @@ interface Props {
 
 const SettingsLayout = ({ children }: Props) => {
   return (
-    <div className="settings-page">
+    <section className="settings-page">
       <Navigation />
       {children}
-    </div>
+    </section>
   );
 };
 

@@ -21,7 +21,6 @@ const CountriesFilter = ({ variants, isMobile }: IProps) => {
   );
 
   const activeRef = useRef<HTMLLIElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // setShow to false to prevent glitch when variants change in dropdown menu
@@ -30,14 +29,6 @@ const CountriesFilter = ({ variants, isMobile }: IProps) => {
   }, [isMobile]);
 
   useEffect(() => {
-    if (activeRef.current && listRef.current) {
-      const activeElementY = activeRef.current.offsetTop;
-      // scrolls screen to center
-      listRef.current.scrollIntoView({ block: "center" });
-      // Scrolls list to activeElementY y-axis position
-      listRef.current.scroll({ top: activeElementY });
-    }
-
     // Prevent scrolling on body
     isMobile && show
       ? document.body.classList.add("body-prevent-scroll")
@@ -52,7 +43,9 @@ const CountriesFilter = ({ variants, isMobile }: IProps) => {
 
   return (
     <div
-      className={`dropdown ${dropdown.default} ${show ? dropdown.active : ""}`}
+      className={`countries-dropdown ${dropdown.default} ${
+        show ? dropdown.active : ""
+      }`}
       ref={dropdownRef}
     >
       <div className="input-text">
@@ -88,7 +81,7 @@ const CountriesFilter = ({ variants, isMobile }: IProps) => {
               </span>
               <span className="close-btn">Close</span>
             </div>
-            <ul className="dropdown-list" ref={listRef}>
+            <ul className="dropdown-list single-selection">
               <li
                 ref={!country ? activeRef : null}
                 onClick={() => {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { useDisciplinesQuery } from "generated/graphql";
 import {
@@ -54,13 +54,18 @@ const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
 
   // Add boolean property named active to every element
   // with the value of true to elements that are selected
-  const disciplineList = data?.disciplines?.map((item) => {
-    const found = disciplines.some((el) => el === item.id);
-    return {
-      ...item,
-      active: found,
-    };
-  });
+  // useMemo makes disciplineList re-render only if disciplines or data?.disciplines changes
+  const disciplineList = useMemo(
+    () =>
+      data?.disciplines?.map((item) => {
+        const found = disciplines.some((el) => el === item.id);
+        return {
+          ...item,
+          active: found,
+        };
+      }),
+    [disciplines, data?.disciplines]
+  );
 
   // setShow to false to prevent glitch when variants change in dropdown menu
   useEffect(() => {
@@ -84,7 +89,9 @@ const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
 
   return (
     <div
-      className={`dropdown ${dropdown.default} ${show ? dropdown.active : ""}`}
+      className={`disciplines-dropdown ${dropdown.default} ${
+        show ? dropdown.active : ""
+      }`}
       ref={dropdownRef}
     >
       <div className="input-text">
@@ -118,7 +125,10 @@ const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
             <ul className="dropdown-list multi-selections">
               <li
                 className="list-item"
-                onClick={() => setDisciplines(undefined)}
+                onClick={() => {
+                  setDisciplines(undefined);
+                  setShow(false);
+                }}
               >
                 <span>No Selection</span>
               </li>
@@ -134,8 +144,8 @@ const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
                       <Image
                         src="/icons/check-solid-white.svg"
                         alt="Checkmark"
-                        width={16}
-                        height={16}
+                        width={14}
+                        height={14}
                         layout="fixed"
                       />
                     )}
@@ -145,7 +155,10 @@ const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
               {data?.disciplines && data.disciplines.length > 50 && (
                 <li
                   className="list-item"
-                  onClick={() => setDisciplines(undefined)}
+                  onClick={() => {
+                    setDisciplines(undefined);
+                    setShow(false);
+                  }}
                 >
                   <span>No Selection</span>
                 </li>

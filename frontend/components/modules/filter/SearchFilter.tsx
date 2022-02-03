@@ -12,6 +12,14 @@ const SearchFilter = () => {
     withDefault(StringParam, "")
   );
 
+  const handleChange = (value: string) => {
+    if (value && value.length > 0) {
+      setSearch(value);
+    } else {
+      setSearch(undefined);
+    }
+  };
+
   return (
     <div className={`input-group ${input.search}`}>
       <div className="input-text">
@@ -24,13 +32,7 @@ const SearchFilter = () => {
         <input
           name="search"
           value={search}
-          onChange={(e) => {
-            if (e.target.value.length > 0) {
-              setSearch(e.target.value);
-            } else {
-              setSearch(undefined);
-            }
-          }}
+          onChange={(e) => handleChange(e.target.value)}
           type="text"
           className="input"
           placeholder="Search..."
@@ -41,8 +43,8 @@ const SearchFilter = () => {
         <Image
           src="/icons/search-solid.svg"
           alt="Search"
-          width={18}
-          height={18}
+          width={20}
+          height={20}
           layout="fixed"
         />
       </div>

@@ -11,19 +11,12 @@ import RemoveFilters from "./RemoveFilters";
 import button from "@/styles-modules/Button.module.scss";
 import Image from "next/image";
 
-const Filters = () => {
-  const [isMobile, setIsMobile] = useState(false);
+interface IProps {
+  isMobile: boolean;
+}
+
+const Filters = ({ isMobile }: IProps) => {
   const [show, setShow] = useState(false);
-
-  const { width } = useWindowSize();
-
-  useEffect(() => {
-    if (width < 768) {
-      setIsMobile(true);
-    } else {
-      setShow(false);
-    }
-  }, [width]);
 
   useEffect(() => {
     // Prevent scrolling on body
@@ -34,38 +27,38 @@ const Filters = () => {
 
   return (
     <div className="filters">
-      <div className="container">
-        {width < 768 ? (
-          <div className={filterStyles.mobile}>
-            <button
-              onClick={() => setShow(!show)}
-              className={`show-filters-btn ${button.green}`}
-            >
-              <span className="text">Show Filters</span>
-              <div className="filter-icon">
-                <Image
-                  src="/icons/filter-icon-white.svg"
-                  alt="filtration"
-                  width={24}
-                  height={24}
-                  layout="fixed"
-                />
-              </div>
-            </button>
-            <AnimatePresence>
-              {show && (
-                <motion.div
-                  className="filters-menu"
-                  initial="hidden"
-                  animate="visible"
-                  exit="hidden"
-                  variants={menuVariants}
-                >
-                  <div className="top-bar-menu" onClick={() => setShow(false)}>
-                    <span className="title">Filters</span>
-                    <span className="close-btn">Close</span>
-                  </div>
-                  <div className="filter-container">
+      {isMobile ? (
+        <div className={filterStyles.mobile}>
+          <button
+            onClick={() => setShow(!show)}
+            className={`show-filters-btn ${button.green}`}
+          >
+            <span className="text">Show Filters</span>
+            <div className="filter-icon">
+              <Image
+                src="/icons/filter-icon-white.svg"
+                alt="filtration"
+                width={24}
+                height={24}
+                layout="fixed"
+              />
+            </div>
+          </button>
+          <AnimatePresence>
+            {show && (
+              <motion.div
+                className="filters-menu"
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                variants={menuVariants}
+              >
+                <div className="top-bar-menu" onClick={() => setShow(false)}>
+                  <span className="title">Filters</span>
+                  <span className="close-btn">Close</span>
+                </div>
+                <div className="filter-wrapper">
+                  <div className="container">
                     <SearchFilter />
                     <CountriesFilter
                       variants={dropdownVariants.slideIn}
@@ -80,18 +73,17 @@ const Filters = () => {
                       isMobile={true}
                     />
                   </div>
-                  <div className="bottom-bar">
-                    <RemoveFilters />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        ) : (
-          <div className={filterStyles.desktop}>
-            <div className="top-bar">
-              <h2>Desktop</h2>
-            </div>
+                </div>
+                <div className="bottom-bar">
+                  <RemoveFilters />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      ) : (
+        <aside className={`filter-sidebar ${filterStyles.desktop}`}>
+          <div className="filter-wrapper">
             <SearchFilter />
             <CountriesFilter
               variants={dropdownVariants.desktop}
@@ -102,10 +94,10 @@ const Filters = () => {
               isMobile={false}
             />
             <SortFilter variants={dropdownVariants.desktop} isMobile={false} />
-            <RemoveFilters />
           </div>
-        )}
-      </div>
+          <RemoveFilters />
+        </aside>
+      )}
     </div>
   );
 };

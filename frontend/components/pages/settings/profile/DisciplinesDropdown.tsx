@@ -42,7 +42,7 @@ const DisciplinesDropdown = ({
   }, [isMobile]);
 
   useEffect(() => {
-    if (activeRef.current && listRef.current) {
+    if (activeRef.current && listRef.current && show) {
       const activeElementY = activeRef.current.offsetTop;
       // Scrolls list to activeElementY y-axis position
       listRef.current.scroll({ top: activeElementY });
@@ -102,7 +102,7 @@ const DisciplinesDropdown = ({
               </span>
               <span className="close-btn">Close</span>
             </div>
-            <ul className="dropdown-list" ref={listRef}>
+            <ul className="dropdown-list single-selection" ref={listRef}>
               <li
                 ref={!discipline ? activeRef : null}
                 onClick={() => {

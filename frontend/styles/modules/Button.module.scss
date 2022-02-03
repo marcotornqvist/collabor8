@@ -34,11 +34,11 @@
   height: 3rem;
   width: 250px;
   border: none;
-  border-radius: $medium-radius;
-  border: 1px solid $border-color1;
-  background: $light-grey-bg;
-  color: $light-grey;
-  cursor: initial;
+  border-radius: $medium-radius !important;
+  border: 1px solid $border-color1 !important;
+  background: $light-grey-bg !important;
+  color: $light-grey !important;
+  cursor: initial !important;
 }
 
 .red {
