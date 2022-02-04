@@ -163,6 +163,10 @@
 
           .check-circle {
             background: $green;
+
+            img {
+              display: initial !important;
+            }
           }
         }
 
@@ -177,6 +181,10 @@
           border: 1px solid $green;
           background: $light-green;
           border-radius: $medium-radius;
+
+          img {
+            display: none !important;
+          }
         }
       }
     }

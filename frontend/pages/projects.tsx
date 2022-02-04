@@ -1,22 +1,13 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import { useLoggedInUserLazyQuery } from "generated/graphql";
-import { useSnapshot } from "valtio";
-import { authState, layoutState } from "store";
+import { ReactElement } from "react";
+import ProfileList from "@/components-pages/profiles/ProfileList";
+import ContentLayout from "@/components-layout/content/ContentLayout";
 
 const Projects = () => {
-  // const [loggedInUser, { data }] = useLoggedInUserLazyQuery();
-  // const { isAuth, loading } = useSnapshot(authState);
+  return <ProfileList />;
+};
 
-  // console.log(data);
-
-  // useEffect(() => {
-  //   if (isAuth) {
-  //     console.log("sf");
-  //     loggedInUser();
-  //   }
-  // }, [isAuth]);
-  return <div className="projects-page"></div>;
+Projects.getLayout = function getLayout(page: ReactElement) {
+  return <ContentLayout className={"projects-page"}>{page}</ContentLayout>;
 };
 
 export default Projects;

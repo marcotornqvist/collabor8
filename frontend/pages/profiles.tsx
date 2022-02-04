@@ -1,32 +1,13 @@
-import { useState } from "react";
-import { NextQueryParamProvider } from "next-query-params";
+import { ReactElement } from "react";
 import ProfileList from "@/components-pages/profiles/ProfileList";
-import Filters from "@/components-modules/filter/Filters";
-import useWindowSize from "@/hooks/useWindowSize";
-import useIsomorphicLayoutEffect from "@/hooks/useIsomorphicLayoutEffect";
+import ContentLayout from "@/components-layout/content/ContentLayout";
 
 const Profiles = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  const { width } = useWindowSize();
+  return <ProfileList />;
+};
 
-  useIsomorphicLayoutEffect(() => {
-    if (width < 768) {
-      setIsMobile(true);
-    } else {
-      setIsMobile(false);
-    }
-  }, [width]);
-
-  return (
-    <NextQueryParamProvider>
-      <section className="profiles-page">
-        <div className="container">
-          <Filters isMobile={isMobile} />
-          <ProfileList />
-        </div>
-      </section>
-    </NextQueryParamProvider>
-  );
+Profiles.getLayout = function getLayout(page: ReactElement) {
+  return <ContentLayout className={"profiles-page"}>{page}</ContentLayout>;
 };
 
 export default Profiles;

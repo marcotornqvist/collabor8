@@ -4,7 +4,7 @@ import { useQueryParam, withDefault } from "next-query-params";
 import { singleStringParam } from "utils/customQueryParams";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
-import ChevronIcon from "../global/ChevronIcon";
+import ChevronIcon from "@/components-modules/global/ChevronIcon";
 import useIsomorphicLayoutEffect from "@/hooks/useIsomorphicLayoutEffect";
 
 interface IProps {

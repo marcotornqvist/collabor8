@@ -1,12 +1,11 @@
 import React from "react";
 import Navigation from "./Navigation";
 
-interface Props {
+interface IProps {
   children: React.ReactNode;
-  title: String;
 }
 
-const SettingsLayout = ({ children }: Props) => {
+const SettingsLayout = ({ children }: IProps) => {
   return (
     <section className="settings-page">
       <Navigation />

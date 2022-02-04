@@ -44,9 +44,11 @@ const ProfileList = () => {
       notifyOnNetworkStatusChange: true,
     });
 
+  // Get users and setDisableMore to false
   useEffect(() => {
     if (!loading) {
       getUsers();
+      setDisableMore(false);
     }
   }, [loading, query]);
 
@@ -67,13 +69,14 @@ const ProfileList = () => {
   // If element after last grid item is visible, fetch more users if conditions match
   useEffect(() => {
     // Checks if element is visible, if more than or equal to (limit) users fetched
-    // is returned in response and if disableMore is false 
+    // is returned in response and if disableMore is false
     if (
       isVisible &&
       !disableMore &&
       data?.users &&
       data.users.length >= limit
     ) {
+      console.log("inside 2");
       fetchMore<UsersQuery, UsersQueryVariables>({
         variables: {
           data: {
@@ -92,7 +95,7 @@ const ProfileList = () => {
         }
       });
     }
-  }, [isVisible]);
+  }, [isVisible, data?.users]);
 
   return (
     <>

@@ -4,7 +4,7 @@
 @use "../abstracts/zindex" as *;
 @use "../abstracts/border-radius" as *;
 
-.profiles-page .profile-list {
+.projects-page .profile-list {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -54,7 +54,7 @@
 }
 
 @media only screen and (min-width: $breakpoint-md) {
-  .profiles-page .profile-list {
+  .projects-page .profile-list {
     min-width: 100%;
     margin: 0;
 
@@ -69,7 +69,7 @@
 }
 
 @media only screen and (min-width: $breakpoint-lg) {
-  .profiles-page .profile-list {
+  .projects-page .profile-list {
     .grid {
       grid-template-columns: repeat(2, 1fr);
       grid-auto-rows: minmax(100px, 300px);
@@ -104,7 +104,7 @@
 }
 
 @media only screen and (min-width: $breakpoint-xl) {
-  .profiles-page .profile-list .grid {
+  .projects-page .profile-list .grid {
     grid-template-columns: repeat(2, 1fr);
     grid-auto-rows: minmax(100px, 350px);
 
@@ -135,7 +135,7 @@
 }
 
 @media only screen and (min-width: $breakpoint-max) {
-  .profiles-page .profile-list .grid {
+  .projects-page .profile-list .grid {
     grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: minmax(100px, 350px);
   }

@@ -4,9 +4,7 @@ import { dropdownVariants, menuVariants } from "utils/variants";
 import CountriesFilter from "./CountriesFilter";
 import SearchFilter from "./SearchFilter";
 import DisciplinesFilter from "./DisciplinesFilter";
-import useWindowSize from "@/hooks/useWindowSize";
 import SortFilter from "./SortFilter";
-import filterStyles from "@/styles-modules/Filter.module.scss";
 import RemoveFilters from "./RemoveFilters";
 import button from "@/styles-modules/Button.module.scss";
 import Image from "next/image";
@@ -29,7 +27,7 @@ const Filters = ({ isMobile }: IProps) => {
   return (
     <div className="filters">
       {isMobile ? (
-        <div className={filterStyles.mobile}>
+        <div className="filters-mobile">
           <button
             onClick={() => setShow(!show)}
             className={`show-filters-btn ${button.green}`}
@@ -83,7 +81,7 @@ const Filters = ({ isMobile }: IProps) => {
           </AnimatePresence>
         </div>
       ) : (
-        <aside className={`filter-sidebar ${filterStyles.desktop}`}>
+        <aside className="filters-desktop">
           <div className="filter-wrapper">
             <SearchFilter />
             <CountriesFilter

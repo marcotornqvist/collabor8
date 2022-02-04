@@ -9,6 +9,7 @@
 @import "./components/toast";
 
 // Layout
+@import "./layout/content-layout";
 @import "./layout/navbar";
 @import "./layout/menu";
 @import "./layout/footer";
@@ -16,5 +17,6 @@
 // Pages
 @import "./pages/landing";
 @import "./pages/profiles";
+@import "./pages/projects";
 @import "./pages/authentication";
 @import "./pages/settings";

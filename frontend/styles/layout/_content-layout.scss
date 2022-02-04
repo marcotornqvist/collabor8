@@ -5,8 +5,37 @@
 @use "../abstracts/zindex" as *;
 @use "../abstracts/fonts" as *;
 
-.mobile {
-  :global {
+.content-layout {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+  background: $light-green;
+}
+
+.content-layout .filters {
+  padding-bottom: 1.5rem;
+
+  .filters-mobile {
+    .show-filters-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      width: 100%;
+
+      span.text {
+        color: $white;
+        margin-right: 0.5rem;
+      }
+
+      .filter-icon {
+        display: flex;
+        align-items: center;
+        margin-left: 0.5rem;
+      }
+    }
+
     .filters-menu {
       position: fixed;
       top: 0;
@@ -121,24 +150,30 @@
   }
 }
 
-.desktop {
-  display: none;
-}
-
 @media only screen and (min-width: $breakpoint-md) {
-  .mobile {
-    display: none;
+  .content-layout {
+    padding: 1.5rem 0 9rem;
+    position: relative;
+
+    .container {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 1rem;
+    }
   }
 
-  .desktop {
+  .content-layout .filters {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 1.5rem;
-    height: 600px;
-    background: $white;
+    padding: 0;
 
-    :global {
+    .filters-desktop {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.5rem;
+      height: 600px;
+      background: $white;
+
       .filter-wrapper {
         flex: 1;
 
@@ -155,10 +190,29 @@
     }
   }
 }
-@media only screen and (min-width: $breakpoint-lg) {
-  // .desktop {
-  // }
 
-  // .profile-page .profile-list {
-  // }
+@media only screen and (min-width: $breakpoint-lg) {
+  .content-layout {
+    padding-top: 3rem;
+  }
+
+  .content-layout .filters {
+    display: flex;
+  }
+}
+
+@media only screen and (min-width: $breakpoint-xl) {
+  .content-layout .container {
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    gap: 1rem;
+  }
+
+  .content-layout .filters {
+    width: 100%;
+
+    .filter-sidebar {
+      padding: 3rem 2rem;
+    }
+  }
 }

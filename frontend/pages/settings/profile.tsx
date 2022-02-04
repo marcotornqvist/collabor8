@@ -34,7 +34,7 @@ const Profile = () => {
 };
 
 Profile.getLayout = function getLayout(page: ReactElement) {
-  return <SettingsLayout title={"Register"}>{page}</SettingsLayout>;
+  return <SettingsLayout>{page}</SettingsLayout>;
 };
 
 export default Profile;

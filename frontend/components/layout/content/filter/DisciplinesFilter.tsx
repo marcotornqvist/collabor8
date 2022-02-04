@@ -9,8 +9,9 @@ import {
 import { IDiscipline } from "@/types-interfaces/form";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
-import ChevronIcon from "../global/ChevronIcon";
+import ChevronIcon from "@/components-modules/global/ChevronIcon";
 import Image from "next/image";
+import DisciplineItem from "./DisciplineItem";
 
 interface IProps {
   variants: Variants;
@@ -133,24 +134,13 @@ const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
                 <span>No Selection</span>
               </li>
               {disciplineList?.map((item) => (
-                <li
+                <DisciplineItem
                   key={item.id}
-                  className={`list-item${item.active ? " active" : ""}`}
-                  onClick={() => disciplineHandler(item)}
-                >
-                  <span>{item.title}</span>
-                  <div className="check-circle">
-                    {item.active && (
-                      <Image
-                        src="/icons/check-solid-white.svg"
-                        alt="Checkmark"
-                        width={14}
-                        height={14}
-                        layout="fixed"
-                      />
-                    )}
-                  </div>
-                </li>
+                  id={item.id}
+                  title={item.title}
+                  active={item.active}
+                  disciplineHandler={disciplineHandler}
+                />
               ))}
               {data?.disciplines && data.disciplines.length > 50 && (
                 <li
