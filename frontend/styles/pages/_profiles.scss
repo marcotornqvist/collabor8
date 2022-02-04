@@ -76,6 +76,12 @@
     grid-auto-rows: minmax(100px, 350px);
     gap: 1rem;
     width: 100%;
+
+    .bottom-visible {
+      width: 1px;
+      height: 1px;
+      // display: none;
+    }
   }
 }
 
@@ -99,11 +105,11 @@
     display: flex;
     padding: 0;
 
-    .filter-sidebar {
-      position: sticky;
-      position: -webkit-sticky;
-      top: 6.5rem;
-    }
+    // .filter-sidebar {
+    //   position: sticky;
+    //   position: -webkit-sticky;
+    //   top: 6.5rem;
+    // }
   }
 
   .profiles-page .profile-list {
@@ -143,9 +149,9 @@
   .profiles-page .filters {
     display: flex;
 
-    .filter-sidebar {
-      top: 1.5rem;
-    }
+    // .filter-sidebar {
+    //   top: 1.5rem;
+    // }
   }
 
   .profiles-page .profile-list {

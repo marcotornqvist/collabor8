@@ -10,18 +10,18 @@ interface IProps {
 }
 
 // eslint-disable-next-line react/display-name
-const Settings = forwardRef<HTMLDivElement, IProps>((props, settingsRef) => {
-  const { id, username, isVisible } = props;
-
-  return (
-    <div className="settings carousel-item" ref={settingsRef}>
-      <div className="wrapper">
-        <ContactButtons id={id} isVisible={isVisible} username={username} />
-        <ReportButton id={id} />
-        <BlockUser id={id} isVisible={isVisible} />
+const Settings = forwardRef<HTMLDivElement, IProps>(
+  ({ id, username, isVisible }, settingsRef) => {
+    return (
+      <div className="settings carousel-item" ref={settingsRef}>
+        <div className="wrapper">
+          <ContactButtons id={id} isVisible={isVisible} username={username} />
+          <ReportButton id={id} />
+          <BlockUser id={id} isVisible={isVisible} />
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
 export default Settings;

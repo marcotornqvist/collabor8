@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { authState } from "store";
 import { useSnapshot } from "valtio";
 import {
@@ -12,7 +12,9 @@ import { useQueryParams, NumericArrayParam } from "next-query-params";
 import { singleStringParam } from "utils/customQueryParams";
 import ProfileItem from "@/components-modules/profileItem/ProfileItem";
 import ProfileSkeleton from "@/components-modules/profileItem/ProfileSkeleton";
-import button from "@/styles-modules/Button.module.scss";
+import useIntersectionObserver from "@/hooks/useIntersectionObserver";
+
+const limit = 20;
 
 const ProfileList = () => {
   const [preventQuery, setPreventQuery] = useState(false);
@@ -30,14 +32,14 @@ const ProfileList = () => {
     useUsersLazyQuery({
       variables: {
         data: {
-          // first: 2,
+          first: limit,
           searchText: query.search,
           country: query.country,
           disciplines: isNumbersArray(query.disciplines),
           sort: query.sort !== "asc" ? Sort.Desc : Sort.Asc,
         },
       },
-      fetchPolicy: "cache-and-network",
+      // fetchPolicy: "cache-and-network",
       nextFetchPolicy: "cache-first",
       notifyOnNetworkStatusChange: true,
     });
@@ -46,7 +48,6 @@ const ProfileList = () => {
     if (!loading) {
       getUsers();
     }
-    setDisableMore(false);
   }, [loading, query]);
 
   // If no users are returned, prevent additional filtration
@@ -58,19 +59,54 @@ const ProfileList = () => {
     }
   }, [data?.users]);
 
+  // Checks if element after last grid item is visible (infinite scroll)
+  const ref = useRef<HTMLDivElement>(null);
+  const entry = useIntersectionObserver(ref, {});
+  const isVisible = !!entry?.isIntersecting;
+
+  // If element after last grid item is visible, fetch more users if conditions match
+  useEffect(() => {
+    // Checks if element is visible, if more than or equal to (limit) users fetched
+    // is returned in response and if disableMore is false 
+    if (
+      isVisible &&
+      !disableMore &&
+      data?.users &&
+      data.users.length >= limit
+    ) {
+      fetchMore<UsersQuery, UsersQueryVariables>({
+        variables: {
+          data: {
+            after: data.users[data.users.length - 1].id,
+            first: limit,
+            searchText: query.search,
+            country: query.country,
+            disciplines: isNumbersArray(query.disciplines),
+            sort: query.sort !== "asc" ? Sort.Desc : Sort.Asc,
+          },
+        },
+      }).then(({ data: { users } }) => {
+        // Sets disableMore to true if less than limit was in response
+        if (users && users.length < limit) {
+          setDisableMore(true);
+        }
+      });
+    }
+  }, [isVisible]);
+
   return (
     <>
       <div className="profile-list">
         {preventQuery && (
           <div className="no-profiles-found">
             <div className="content">
-              <h3>We couldn't find any profiles.</h3>
+              <h3>We couldn&apos;t find any profiles.</h3>
               <span>Try adjusting the filters...</span>
             </div>
           </div>
         )}
         <div className="grid">
-          {data?.users?.map((item) => (
+          {data?.users?.map((item, index) => (
             <ProfileItem
               key={item.id}
               id={item.id}
@@ -85,33 +121,8 @@ const ProfileList = () => {
             (loading || dataLoading) &&
             [1, 2, 3, 4, 5, 6].map((n) => <ProfileSkeleton key={n} />)}
         </div>
+        <div ref={ref} className="bottom-visible"></div>
       </div>
-      {!preventQuery && (
-        <button
-          disabled={disableMore}
-          className={`more-profiles-btn ${
-            !disableMore ? button.green : button.disabled
-          }`}
-          onClick={() => {
-            if (data?.users && data?.users.length >= 1) {
-              fetchMore<UsersQuery, UsersQueryVariables>({
-                variables: {
-                  data: {
-                    after: data.users[data.users.length - 1].id,
-                    first: 20,
-                  },
-                },
-              }).then(({ data }) => {
-                if (data?.users && data.users.length < 20) {
-                  setDisableMore(true);
-                }
-              });
-            }
-          }}
-        >
-          Get More Profiles
-        </button>
-      )}
     </>
   );
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { dropdownVariants, menuVariants } from "utils/variants";
 import CountriesFilter from "./CountriesFilter";
@@ -10,6 +10,7 @@ import filterStyles from "@/styles-modules/Filter.module.scss";
 import RemoveFilters from "./RemoveFilters";
 import button from "@/styles-modules/Button.module.scss";
 import Image from "next/image";
+import useIsomorphicLayoutEffect from "@/hooks/useIsomorphicLayoutEffect";
 
 interface IProps {
   isMobile: boolean;
@@ -18,7 +19,7 @@ interface IProps {
 const Filters = ({ isMobile }: IProps) => {
   const [show, setShow] = useState(false);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     // Prevent scrolling on body
     isMobile && show
       ? document.body.classList.add("body-prevent-scroll")

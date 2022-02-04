@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { useQueryParam, withDefault } from "next-query-params";
 import { singleStringParam } from "utils/customQueryParams";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
 import ChevronIcon from "../global/ChevronIcon";
+import useIsomorphicLayoutEffect from "@/hooks/useIsomorphicLayoutEffect";
 
 interface IProps {
   variants: Variants;
@@ -21,7 +22,7 @@ const SortFilter = ({ variants, isMobile }: IProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // setShow to false to prevent glitch when variants change in dropdown menu
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setShow(false);
   }, [isMobile]);
 

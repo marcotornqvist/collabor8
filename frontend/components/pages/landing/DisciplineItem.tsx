@@ -18,7 +18,7 @@ const DisciplineItem = ({ title, src, link, alt }: IProps) => {
     <Link
       href={{
         pathname: `/profiles`,
-        query: link ? { discipline: link } : null,
+        query: link ? { disciplines: link } : null,
       }}
     >
       <a className="grid-item">

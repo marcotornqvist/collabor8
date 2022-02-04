@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { authState, layoutState } from "store";
 import { useSnapshot } from "valtio";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,6 +8,7 @@ import Link from "next/link";
 import SignoutLink from "@/components-modules/global/SignoutLink";
 import Image from "next/image";
 import useWindowSize from "@/hooks/useWindowSize";
+import useIsomorphicLayoutEffect from "@/hooks/useIsomorphicLayoutEffect";
 
 const Menu = () => {
   const { pathname, asPath } = useRouter();
@@ -26,7 +26,7 @@ const Menu = () => {
   };
 
   // Closes menu if screen size width goes beyond 920px
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (width >= 920) {
       closeMenu();
     }
