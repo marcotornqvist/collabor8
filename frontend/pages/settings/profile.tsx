@@ -18,7 +18,10 @@ const Profile = () => {
         <div className="thumbnail-panel">
           <ProfileImage
             profileImage={data?.loggedInUser.profile?.profileImage}
+            firstName={data?.loggedInUser.profile?.firstName}
+            lastName={data?.loggedInUser.profile?.lastName}
             priority={true}
+            size="large"
           />
           <div className="buttons">
             <UploadFile />

@@ -3,6 +3,7 @@ import { authState } from "store";
 import { useSnapshot } from "valtio";
 import {
   Sort,
+  UsersDocument,
   UsersQuery,
   UsersQueryVariables,
   useUsersLazyQuery,
@@ -17,7 +18,6 @@ import useIntersectionObserver from "@/hooks/useIntersectionObserver";
 const limit = 20;
 
 const ProfileList = () => {
-  const [preventQuery, setPreventQuery] = useState(false);
   const [disableMore, setDisableMore] = useState(false);
   const [query, setQuery] = useQueryParams({
     search: singleStringParam,
@@ -28,7 +28,7 @@ const ProfileList = () => {
 
   const { loading } = useSnapshot(authState);
 
-  const [getUsers, { data, loading: dataLoading, fetchMore }] =
+  const [getUsers, { data, loading: dataLoading, fetchMore, client }] =
     useUsersLazyQuery({
       variables: {
         data: {
@@ -39,27 +39,19 @@ const ProfileList = () => {
           sort: query.sort !== "asc" ? Sort.Desc : Sort.Asc,
         },
       },
-      // fetchPolicy: "cache-and-network",
       nextFetchPolicy: "cache-first",
       notifyOnNetworkStatusChange: true,
     });
 
   // Get users and setDisableMore to false
   useEffect(() => {
+    // Remove users from cache to prevent bug
+    client.cache.evict({ id: "ROOT_QUERY", fieldName: "users" });
     if (!loading) {
       getUsers();
       setDisableMore(false);
     }
   }, [loading, query]);
-
-  // If no users are returned, prevent additional filtration
-  useEffect(() => {
-    if (data?.users && data.users.length <= 0) {
-      setPreventQuery(true);
-    } else {
-      setPreventQuery(false);
-    }
-  }, [data?.users]);
 
   // Checks if element after last grid item is visible (infinite scroll)
   const ref = useRef<HTMLDivElement>(null);
@@ -68,7 +60,7 @@ const ProfileList = () => {
 
   // If element after last grid item is visible, fetch more users if conditions match
   useEffect(() => {
-    // Checks if element is visible, if more than or equal to (limit) users fetched
+    // Checks if element is visible, if more than or equal to (2) users fetched
     // is returned in response and if disableMore is false
     if (
       isVisible &&
@@ -76,7 +68,6 @@ const ProfileList = () => {
       data?.users &&
       data.users.length >= limit
     ) {
-      console.log("inside 2");
       fetchMore<UsersQuery, UsersQueryVariables>({
         variables: {
           data: {
@@ -100,7 +91,7 @@ const ProfileList = () => {
   return (
     <>
       <div className="profile-list">
-        {preventQuery && (
+        {data?.users && data.users.length === 0 && (
           <div className="no-profiles-found">
             <div className="content">
               <h3>We couldn&apos;t find any profiles.</h3>
@@ -109,7 +100,7 @@ const ProfileList = () => {
           </div>
         )}
         <div className="grid">
-          {data?.users?.map((item, index) => (
+          {data?.users?.map((item) => (
             <ProfileItem
               key={item.id}
               id={item.id}
@@ -120,8 +111,7 @@ const ProfileList = () => {
               title={item.profile?.discipline?.title}
             />
           ))}
-          {!preventQuery &&
-            (loading || dataLoading) &&
+          {(loading || dataLoading) &&
             [1, 2, 3, 4, 5, 6].map((n) => <ProfileSkeleton key={n} />)}
         </div>
         <div ref={ref} className="bottom-visible"></div>

@@ -4,21 +4,43 @@ import { useEffect, useState } from "react";
 import image from "@/styles-modules/Image.module.scss";
 import { imageFadeInVariants } from "utils/variants";
 
+type size = "small" | "medium" | "large";
+
 interface Props {
   profileImage?: string | null;
-  size?: number;
+  size: size;
   priority?: boolean;
+  firstName?: string | null;
+  lastName?: string | null;
 }
 
-const ProfileImage = ({ size = 40, profileImage, priority = false }: Props) => {
+const ProfileImage = ({
+  size = "small",
+  profileImage,
+  priority = false,
+  firstName,
+  lastName,
+}: Props) => {
   const [error, setError] = useState(false);
+
+  const getSize = () => {
+    if (size === "large") return 40;
+    else if (size === "medium") return 40;
+    else return 32;
+  };
+
+  const getClassName = () => {
+    if (size === "large") return image.large;
+    else if (size === "medium") return image.medium;
+    else return image.small;
+  };
 
   useEffect(() => {
     setError(false);
   }, [profileImage]);
 
   return (
-    <div className={`profile-image ${image.profile}`}>
+    <div className={`profile-image ${image.profile} ${getClassName()}`}>
       <AnimatePresence>
         {!error && profileImage && (
           <motion.div
@@ -41,21 +63,35 @@ const ProfileImage = ({ size = 40, profileImage, priority = false }: Props) => {
       </AnimatePresence>
       <AnimatePresence>
         {(error || profileImage === null) && (
-          <motion.div
-            className="image-container"
-            initial="hidden"
-            animate="visible"
-            variants={imageFadeInVariants}
-          >
-            <Image
-              src="/icons/user-solid-green.svg"
-              alt="profile image"
-              width={size}
-              height={size}
-              layout="fixed"
-              className="user-icon"
-            />
-          </motion.div>
+          <>
+            {firstName && lastName ? (
+              <motion.span
+                className="fullname-short"
+                initial="hidden"
+                animate="visible"
+                variants={imageFadeInVariants}
+              >
+                {firstName.charAt(0)}
+                {lastName.charAt(0)}
+              </motion.span>
+            ) : (
+              <motion.div
+                className="image-container"
+                initial="hidden"
+                animate="visible"
+                variants={imageFadeInVariants}
+              >
+                <Image
+                  src="/icons/user-solid-green.svg"
+                  alt="profile image"
+                  width={getSize()}
+                  height={getSize()}
+                  layout="fixed"
+                  className="user-icon"
+                />
+              </motion.div>
+            )}
+          </>
         )}
       </AnimatePresence>
     </div>

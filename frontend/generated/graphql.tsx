@@ -974,7 +974,7 @@ export type LoggedInAccountDetailsQuery = { __typename?: 'Query', loggedInUser: 
 export type ProfileImageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProfileImageQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', profile?: { __typename?: 'Profile', profileImage?: string | null | undefined } | null | undefined } };
+export type ProfileImageQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', profile?: { __typename?: 'Profile', firstName?: string | null | undefined, lastName?: string | null | undefined, profileImage?: string | null | undefined } | null | undefined } };
 
 export type LoggedInUsernameQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1987,6 +1987,8 @@ export const ProfileImageDocument = gql`
     query profileImage {
   loggedInUser {
     profile {
+      firstName
+      lastName
       profileImage
     }
   }

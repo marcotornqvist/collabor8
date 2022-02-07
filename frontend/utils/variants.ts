@@ -97,7 +97,7 @@ export const dropInVariants = {
 };
 
 // Text fade
-const textFadeInVariants = {
+export const textFadeInVariants = {
   hidden: {
     opacity: 0,
     y: 50,

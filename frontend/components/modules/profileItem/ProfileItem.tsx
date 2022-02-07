@@ -77,8 +77,13 @@ const ProfileItem = ({
       <div className="carousel" ref={carouselRef}>
         <div className="profile-content carousel-item" ref={contentRef}>
           <div className="wrapper">
-            <ProfileImage profileImage={profileImage} />
-            <h4>
+            <ProfileImage
+              profileImage={profileImage}
+              size="medium"
+              firstName={firstName}
+              lastName={lastName}
+            />
+            <h4 className="fullname">
               {firstName} {lastName}
             </h4>
             <div className="info">{title && <span>{title}</span>} </div>

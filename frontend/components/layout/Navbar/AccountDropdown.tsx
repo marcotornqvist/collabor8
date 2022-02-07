@@ -1,12 +1,14 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLoggedInUsernameQuery, useProfileImageQuery } from "generated/graphql";
+import {
+  useLoggedInUsernameQuery,
+  useProfileImageQuery,
+} from "generated/graphql";
 import { dropdownVariants } from "utils/variants";
 import Link from "next/link";
 import SignoutLink from "@/components-modules/global/SignoutLink";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import ProfileImage from "@/components-modules/global/ProfileImage";
-
 
 const AccountDropdown = () => {
   const [show, setShow] = useState(false);
@@ -30,7 +32,9 @@ const AccountDropdown = () => {
     <div className="account-dropdown" ref={ref}>
       <div onClick={() => setShow(!show)}>
         <ProfileImage
-          size={24}
+          size="small"
+          firstName={data?.loggedInUser.profile?.firstName}
+          lastName={data?.loggedInUser.profile?.lastName}
           profileImage={data?.loggedInUser.profile?.profileImage}
           priority={true}
         />

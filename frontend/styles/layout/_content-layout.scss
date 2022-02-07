@@ -172,6 +172,7 @@
       justify-content: space-between;
       padding: 1.5rem;
       height: 600px;
+      width: 100%;
       background: $white;
 
       .filter-wrapper {
@@ -204,15 +205,20 @@
 @media only screen and (min-width: $breakpoint-xl) {
   .content-layout .container {
     display: grid;
-    grid-template-columns: min-content 1fr;
-    gap: 1rem;
+    grid-template-columns: 300px 1fr;
   }
 
   .content-layout .filters {
     width: 100%;
 
-    .filter-sidebar {
+    .filter-desktop {
       padding: 3rem 2rem;
     }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-xl) {
+  .content-layout .filters {
+    width: 100%;
   }
 }

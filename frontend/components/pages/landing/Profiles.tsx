@@ -25,6 +25,7 @@ const Profiles = ({
         first,
       },
     },
+    fetchPolicy: "no-cache",
   });
 
   useEffect(() => {

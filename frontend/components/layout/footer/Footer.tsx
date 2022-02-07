@@ -58,6 +58,11 @@ const Footer = () => {
         </Link>
       </li>
       <li>
+        <Link href="/create-project">
+          <a>Create Project</a>
+        </Link>
+      </li>
+      <li>
         <Link href="/register">
           <a>Create Account</a>
         </Link>

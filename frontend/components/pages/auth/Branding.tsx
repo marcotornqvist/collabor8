@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { imageFadeInVariants } from "utils/variants";
+import { fadeInVariants, imageFadeInVariants, textFadeInVariants } from "utils/variants";
 import Image from "next/image";
 
 const Branding = () => {
@@ -19,7 +19,7 @@ const Branding = () => {
               className="hero-text"
               initial="hidden"
               animate="visible"
-              variants={imageFadeInVariants}
+              variants={textFadeInVariants}
             >
               Find other creative people to collaborate with.
             </motion.h1>
@@ -34,6 +34,7 @@ const Branding = () => {
           layout="fill"
           objectFit="cover"
           objectPosition="center"
+          quality={60}
           priority
         />
       </motion.div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { dropdownVariants, menuVariants } from "utils/variants";
 import CountriesFilter from "./CountriesFilter";
@@ -9,6 +9,8 @@ import RemoveFilters from "./RemoveFilters";
 import button from "@/styles-modules/Button.module.scss";
 import Image from "next/image";
 import useIsomorphicLayoutEffect from "@/hooks/useIsomorphicLayoutEffect";
+import { useQueryParams, NumericArrayParam } from "next-query-params";
+import { singleStringParam } from "utils/customQueryParams";
 
 interface IProps {
   isMobile: boolean;
@@ -16,6 +18,12 @@ interface IProps {
 
 const Filters = ({ isMobile }: IProps) => {
   const [show, setShow] = useState(false);
+  const [query, setQuery] = useQueryParams({
+    search: singleStringParam,
+    country: singleStringParam,
+    disciplines: NumericArrayParam,
+    sort: singleStringParam,
+  });
 
   useIsomorphicLayoutEffect(() => {
     // Prevent scrolling on body

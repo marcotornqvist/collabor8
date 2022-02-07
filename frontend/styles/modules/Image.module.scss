@@ -1,17 +1,29 @@
 @use "../abstracts/colors" as *;
 @use "../abstracts/border-radius" as *;
+@use "../abstracts/fonts" as *;
+@use "../abstracts/breakpoints" as *;
 
 .profile {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: $large-radius;
+  border: 3px solid $green;
+  min-width: 6rem;
+  height: 6rem;
+  overflow: hidden;
+  background: $light-green;
+
   :global {
-    width: 3rem;
-    width: 3rem;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: $large-radius;
-    border: 3px solid $green;
-    overflow: hidden;
+    .fullname-short {
+      font-family: $font-title;
+      color: $green;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
 
     .image-container {
       position: relative;
@@ -23,6 +35,52 @@
 
       img {
         border-radius: inherit;
+      }
+    }
+  }
+}
+
+.large {
+  min-width: 4.5rem;
+  height: 4.5rem;
+
+  :global {
+    .fullname-short {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+.medium {
+  min-width: 4.5rem;
+  height: 4.5rem;
+
+  :global {
+    .fullname-short {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+.small {
+  min-width: 3.5rem;
+  height: 3.5rem;
+
+  :global {
+    .fullname-short {
+      font-size: 1rem;
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-md) {
+  .large {
+    min-width: 6rem;
+    height: 6rem;
+
+    :global {
+      .fullname-short {
+        font-size: 1.5rem;
       }
     }
   }

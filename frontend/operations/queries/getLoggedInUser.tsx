@@ -90,6 +90,8 @@ export const GET_PROFILE_IMAGE = gql`
   query profileImage {
     loggedInUser {
       profile {
+        firstName
+        lastName
         profileImage
       }
     }

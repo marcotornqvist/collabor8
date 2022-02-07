@@ -109,6 +109,11 @@ const Navbar = ({ hide = false }: Props) => {
                       <a>Browse Projects</a>
                     </Link>
                   </li>
+                  <li>
+                    <Link href="/create-project">
+                      <a>Create Project</a>
+                    </Link>
+                  </li>
                 </ul>
               </div>
               {width !== 0 && <>{width < 920 ? mobile : desktop}</>}
