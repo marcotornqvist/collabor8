@@ -24,7 +24,7 @@ import { pagination } from "../utils/pagination";
 import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
 import { NotificationCode } from "@prisma/client";
 import { validateFields } from "../validations/validateFields";
-import { CreateProjectValidationSchema } from "../validations/schemas";
+import { projectValidationSchema } from "../validations/schemas";
 import countries from "../data/countries";
 
 // Queries/mutations to be implemented:
@@ -99,7 +99,11 @@ export class ProjectResolver {
         disabled: false,
       },
       include: {
-        disciplines: true,
+        disciplines: {
+          include: {
+            image: true,
+          },
+        },
       },
       orderBy: { createdAt: sort || "desc" },
     });
@@ -182,7 +186,7 @@ export class ProjectResolver {
         title,
         body,
       },
-      validationSchema: CreateProjectValidationSchema,
+      validationSchema: projectValidationSchema,
     });
 
     try {
@@ -425,7 +429,7 @@ export class ProjectResolver {
         title,
         body,
       },
-      validationSchema: CreateProjectValidationSchema,
+      validationSchema: projectValidationSchema,
     });
 
     try {

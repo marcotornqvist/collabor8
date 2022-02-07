@@ -19,6 +19,9 @@ export class Image {
   @Field(() => String, { nullable: true })
   small?: string;
 
+  @Field(() => String, { nullable: true })
+  objectPosition?: string;
+
   @Field(() => [Discipline], { nullable: true })
   disciplines?: Discipline[] | null;
 

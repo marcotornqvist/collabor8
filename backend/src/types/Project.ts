@@ -11,7 +11,7 @@ export class Project {
   @Field(() => ID)
   id: string;
 
-  @Length(10, 50)
+  @Length(10, 64)
   @Field(() => String)
   title: string;
 

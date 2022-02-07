@@ -132,9 +132,9 @@
             span,
             a {
               font-size: 14px;
-              font-weight: 600;
               text-align: center;
               font-family: $font-body;
+              font-weight: $font-body-600;
 
               &:hover {
                 color: initial;
@@ -164,6 +164,7 @@
     position: relative;
     overflow: hidden;
     background: $white;
+    box-shadow: $box-shadow3;
 
     .skeleton-content {
       flex: 1;
@@ -221,10 +222,8 @@
   }
 }
 
-/* animation effects */
 .shimmerWrapper {
   position: absolute;
-  /* parent must be relative position & overflow hidden */
   top: 0;
   left: 0;
   width: 100%;

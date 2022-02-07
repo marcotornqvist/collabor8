@@ -48,12 +48,12 @@ h1,
 h3,
 h2,
 h4 {
-  font-weight: 700; // bold
+  font-weight: $font-title-700; // bold
 }
 
 button,
 a {
-  font-weight: 600; // semibold
+  font-weight: $font-title-600; // semibold
 }
 
 h1 {

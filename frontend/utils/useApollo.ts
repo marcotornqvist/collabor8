@@ -142,6 +142,7 @@ function createApolloClient() {
               merge: true,
             },
             users: concatPagination(),
+            projects: concatPagination(),
           },
         },
       },

@@ -5,7 +5,7 @@ import { PaginationArgs, SearchArgs } from "./GlobalInputs";
 
 @InputType({ description: "Input Arguments for Project" })
 export class CreateProjectInput {
-  @Length(10, 50)
+  @Length(10, 64)
   @Field(() => String)
   title: string;
 
@@ -28,7 +28,7 @@ export class UpdateProjectInput {
   @Field(() => ID)
   id: string;
 
-  @Length(10, 50)
+  @Length(10, 64)
   @Field(() => String)
   title: string;
 

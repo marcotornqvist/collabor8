@@ -75,10 +75,10 @@ export const ReportValidationSchema = Yup.object().shape({
   ),
 });
 
-export const CreateProjectValidationSchema = Yup.object().shape({
+export const projectValidationSchema = Yup.object().shape({
   title: Yup.string()
-    .min(10, "Title cannot be less than 10 or more than 255 characters")
-    .max(50, "Title cannot be less than 10 or more than 50 characters"),
+    .min(10, "Title cannot be less than 10 or more than 64 characters")
+    .max(64, "Title cannot be less than 10 or more than 64 characters"),
   body: Yup.string().max(
     1000,
     "Description cannot be more than 1000 characters"

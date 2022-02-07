@@ -1,9 +1,9 @@
 import { ReactElement } from "react";
-import ProfileList from "@/components-pages/profiles/ProfileList";
 import ContentLayout from "@/components-layout/content/ContentLayout";
+import ProjectList from "@/components-pages/projects/ProjectList";
 
 const Projects = () => {
-  return <ProfileList />;
+  return <ProjectList />;
 };
 
 Projects.getLayout = function getLayout(page: ReactElement) {

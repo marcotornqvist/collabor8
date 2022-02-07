@@ -30,7 +30,7 @@
       padding-bottom: 0.25rem;
 
       label {
-        font-weight: 400;
+        font-weight: $font-body-400;
         white-space: nowrap;
       }
 
@@ -63,7 +63,7 @@
 
       span {
         font-size: 14px;
-        font-weight: 400;
+        font-weight: $font-body-400;
 
         &.placeholder {
           color: $grey;
@@ -106,7 +106,7 @@
 
         span.selected-title {
           font-family: $font-title;
-          font-weight: 800;
+          font-weight: $font-title-700;
           font-size: 1.25rem;
         }
 

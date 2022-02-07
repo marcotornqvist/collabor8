@@ -1,5 +1,6 @@
 @use "../abstracts/colors" as *;
 @use "../abstracts/border-radius" as *;
+@use "../abstracts/fonts" as *;
 
 .group {
   :global {
@@ -15,7 +16,7 @@
       padding-bottom: 0.25rem;
 
       label {
-        font-weight: 400;
+        font-weight: $font-body-400;
         white-space: nowrap;
       }
 
@@ -71,7 +72,7 @@
       padding-bottom: 0.25rem;
 
       label {
-        font-weight: 400;
+        font-weight: $font-body-400;
         white-space: nowrap;
       }
 
@@ -149,7 +150,7 @@
       padding-bottom: 0.25rem;
 
       label {
-        font-weight: 400;
+        font-weight: $font-body-400;
         white-space: nowrap;
       }
 
@@ -220,7 +221,7 @@
       padding-bottom: 0.25rem;
 
       label {
-        font-weight: 400;
+        font-weight: $font-body-400;
         white-space: nowrap;
       }
 

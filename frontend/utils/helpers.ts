@@ -19,3 +19,20 @@ export const isNumbersArray = (value: (number | null)[] | null | undefined) => {
 
   return result;
 };
+
+export const truncateText = function (text: string, limit: number) {
+  if (text.length > limit) {
+    for (let i = limit; i > 0; i--) {
+      if (
+        text.charAt(i) === " " &&
+        (text.charAt(i - 1) != "," ||
+          text.charAt(i - 1) != "." ||
+          text.charAt(i - 1) != ";")
+      ) {
+        return text.substring(0, i) + "...";
+      }
+    }
+  } else {
+    return text;
+  }
+};

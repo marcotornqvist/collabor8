@@ -18,10 +18,10 @@
   :global {
     .fullname-short {
       font-family: $font-title;
+      font-weight: $font-title-700;
       color: $green;
       text-align: center;
       font-size: 1.25rem;
-      font-weight: 700;
       text-transform: uppercase;
     }
 

@@ -190,13 +190,14 @@ model BlockedUser {
 }
 
 model Image {
-  id         String       @id @default(uuid())
-  large      String?
-  medium     String?
-  small      String?
-  alt        String?
-  Discipline Discipline[]
-  createdAt  DateTime     @default(now())
+  id             String       @id @default(uuid())
+  large          String?
+  medium         String?
+  small          String?
+  alt            String?
+  objectPosition String?
+  Discipline     Discipline[]
+  createdAt      DateTime     @default(now())
 }
 
 enum StatusCode {
