@@ -14,10 +14,7 @@ import { authState } from "store";
 import { Subscription } from "zen-observable-ts";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { WebSocketLink } from "@apollo/client/link/ws";
-import {
-  getMainDefinition,
-  concatPagination,
-} from "@apollo/client/utilities";
+import { getMainDefinition, concatPagination } from "@apollo/client/utilities";
 
 let apolloClient: ApolloClient<NormalizedCacheObject | null>;
 
@@ -142,7 +139,7 @@ function createApolloClient() {
               merge: true,
             },
             users: concatPagination(),
-            projects: concatPagination(),
+            projects: concatPagination()
           },
         },
       },

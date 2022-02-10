@@ -19,19 +19,21 @@ import {
 } from "./inputs/ProjectInput";
 import { PaginationArgs } from "./inputs/GlobalInputs";
 import { UserInputError, ForbiddenError } from "apollo-server-express";
-import { isAuth } from "../utils/isAuth";
+import { isAuth, isAuthOrNot } from "../utils/isAuth";
 import { pagination } from "../utils/pagination";
 import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
 import { NotificationCode } from "@prisma/client";
 import { validateFields } from "../validations/validateFields";
 import { projectValidationSchema } from "../validations/schemas";
 import countries from "../data/countries";
+import { Project_Member_Status } from "../types/Enums";
 
 // Queries/mutations to be implemented:
 // projects:                  Return all projects - Done
 // projectById:               Return single project by projectId - Done
 // projectsByUserId:          Return all projects by userId - Done
 // projectsByloggedInUser:    Return projects by loggedInUser - Done
+// projectMemberStatus:       Returns member status of user/guest - In Progress
 // createProject:             Create new project - Done
 // deleteProject:             Delete a project by id - Done
 // leaveProject:              Leave a project by id - Done
@@ -119,7 +121,27 @@ export class ProjectResolver {
         id,
         disabled: false,
       },
+      include: {
+        members: {
+          include: {
+            user: {
+              include: {
+                profile: {
+                  include: {
+                    discipline: true,
+                  },
+                },
+              },
+            },
+          },
+          orderBy: { role: "asc" },
+        },
+      },
     });
+
+    if (!project) {
+      throw new Error("Project doesn't exist");
+    }
 
     return project;
   }
@@ -168,6 +190,50 @@ export class ProjectResolver {
     });
 
     return projects;
+  }
+
+  @Query(() => Project_Member_Status, {
+    nullable: true,
+    description: "Returns member status of auth user or not auth guest",
+  })
+  @UseMiddleware(isAuthOrNot)
+  async projectMemberStatus(
+    @Arg("id") id: string,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    // Check if project exists
+    const project = await prisma.project.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    // Checks if project exists and if user is logged in or a guest
+    if (project && payload?.userId) {
+      const result = await prisma.member.findUnique({
+        where: {
+          userId_projectId: {
+            userId: payload!.userId,
+            projectId: id,
+          },
+        },
+        select: {
+          role: true,
+          status: true,
+        },
+      });
+
+      // Member object found with a status role of "ADMIN", checks also if member status is active
+      if (result?.role === "ADMIN" && result.status === "TRUE")
+        return Project_Member_Status.ADMIN;
+      // Member object found with a status role of "MEMBER", checks also if member status is active
+      else if (result?.role === "MEMBER" && result.status === "TRUE")
+        return Project_Member_Status.MEMBER;
+      // No member object found, meaning authenticated user is not part of the project
+      else return Project_Member_Status.USER;
+    }
+
+    return Project_Member_Status.GUEST;
   }
 
   @Mutation(() => Project, { description: "Creates a new Project" })

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { IDiscipline } from "@/types-interfaces/form";
-import { useDisciplinesQuery } from "generated/graphql";
+import { UpdateProfileMutation, useDisciplinesQuery } from "generated/graphql";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
 import ChevronIcon from "@/components-modules/global/ChevronIcon";
@@ -9,10 +9,11 @@ import ChevronIcon from "@/components-modules/global/ChevronIcon";
 interface IProps {
   setFieldValue: (
     field: "discipline",
-    value: IDiscipline | null,
+    // value: IDiscipline | null,
+    value: NonNullable<UpdateProfileMutation["updateProfile"]>["discipline"],
     shouldValidate?: boolean | undefined
   ) => void;
-  discipline: IDiscipline | null;
+  discipline: NonNullable<UpdateProfileMutation["updateProfile"]>["discipline"];
   loading: boolean;
   variants: Variants;
   isMobile: boolean;

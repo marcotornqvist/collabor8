@@ -1,10 +1,9 @@
 import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
-import { CONTACT_STATUS } from "@/operations-queries/contactStatus";
 import { motion } from "framer-motion";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
-import { useDeleteContactMutation } from "generated/graphql";
+import { ContactStatusDocument, useDeleteContactMutation } from "generated/graphql";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import { dropInVariants } from "utils/variants";
@@ -26,7 +25,7 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
     },
     refetchQueries: [
       {
-        query: CONTACT_STATUS, // DocumentNode object parsed with gql
+        query: ContactStatusDocument, // DocumentNode object parsed with gql
         variables: {
           id,
         },

@@ -19,6 +19,7 @@ const limit = 20;
 
 const ProfileList = () => {
   const [disableMore, setDisableMore] = useState(false);
+  const [showSkeleton, setShowSkeleton] = useState(true);
   const [query, setQuery] = useQueryParams({
     search: singleStringParam,
     country: singleStringParam,
@@ -45,6 +46,7 @@ const ProfileList = () => {
 
   // Get users and setDisableMore to false
   useEffect(() => {
+    setShowSkeleton(true);
     // Remove users from cache to prevent bug
     client.cache.evict({ id: "ROOT_QUERY", fieldName: "users" });
     if (!loading) {
@@ -88,19 +90,32 @@ const ProfileList = () => {
     }
   }, [isVisible, data?.users]);
 
+  // Makes sure that skeleton is active at least 500ms, to prevent skeleton flicker
+  useEffect(() => {
+    if (showSkeleton) {
+      let timer = setTimeout(() => {
+        setShowSkeleton(false);
+      }, 500);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [showSkeleton]);
+
   return (
-    <>
-      <div className="profile-list">
-        {data?.users && data.users.length === 0 && (
-          <div className="no-profiles-found">
-            <div className="content">
-              <h3>We couldn&apos;t find any profiles.</h3>
-              <span>Try adjusting the filters...</span>
-            </div>
+    <div className="profile-list">
+      {!showSkeleton && !dataLoading && data?.users && data.users.length === 0 && (
+        <div className="no-profiles-found">
+          <div className="content">
+            <h3>We couldn&apos;t find any profiles.</h3>
+            <span>Try adjusting the filters...</span>
           </div>
-        )}
-        <div className="grid">
-          {data?.users?.map((item) => (
+        </div>
+      )}
+      <div className="grid">
+        {!showSkeleton &&
+          data?.users?.map((item) => (
             <ProfileItem
               key={item.id}
               id={item.id}
@@ -111,12 +126,11 @@ const ProfileList = () => {
               title={item.profile?.discipline?.title}
             />
           ))}
-          {(loading || dataLoading) &&
-            [1, 2, 3, 4, 5, 6].map((n) => <ProfileSkeleton key={n} />)}
-        </div>
-        <div ref={ref} className="bottom-visible"></div>
+        {(showSkeleton || dataLoading) &&
+          [1, 2, 3, 4, 5, 6].map((n) => <ProfileSkeleton key={n} />)}
       </div>
-    </>
+      <div ref={ref} className="bottom-visible"></div>
+    </div>
   );
 };
 

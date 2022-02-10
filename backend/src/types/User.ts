@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { ObjectType, Field, ID, Int, registerEnumType } from "type-graphql";
+import { ObjectType, Field, ID, Int } from "type-graphql";
 import {
   IsEmail,
   MinLength,
@@ -9,7 +9,6 @@ import {
 } from "class-validator";
 import { Profile } from "./Profile";
 import { Social } from "./Social";
-import { Project } from "./Project";
 import { Contact } from "./Contact";
 import { Member } from "./Member";
 import { Message } from "./Message";

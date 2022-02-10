@@ -4,11 +4,9 @@ import { useEffect, useState } from "react";
 import image from "@/styles-modules/Image.module.scss";
 import { imageFadeInVariants } from "utils/variants";
 
-type size = "small" | "medium" | "large";
-
 interface Props {
   profileImage?: string | null;
-  size: size;
+  size: "small" | "medium" | "large";
   priority?: boolean;
   firstName?: string | null;
   lastName?: string | null;
@@ -25,8 +23,8 @@ const ProfileImage = ({
 
   const getSize = () => {
     if (size === "large") return 40;
-    else if (size === "medium") return 40;
-    else return 32;
+    else if (size === "medium") return 32;
+    else return 24;
   };
 
   const getClassName = () => {

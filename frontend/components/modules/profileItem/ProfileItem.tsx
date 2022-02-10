@@ -32,7 +32,6 @@ const ProfileItem = ({
   lastName,
   profileImage,
   title,
-  country,
 }: IProps) => {
   const [toggle, setToggle] = useState(false);
 

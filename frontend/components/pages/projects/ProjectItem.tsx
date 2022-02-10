@@ -7,12 +7,6 @@ import { objectPositionRegex } from "@/validations/regex";
 import { truncateText } from "utils/helpers";
 import Link from "next/link";
 
-type image = {
-  src?: string | null | undefined;
-  alt?: string | null | undefined;
-  objectPosition?: string | null | undefined;
-};
-
 interface IProps {
   id: string;
   title: string;
@@ -44,6 +38,7 @@ const ProjectItem = ({ id, title, src, alt, objectPosition }: IProps) => {
             layout="fill"
             objectFit="cover"
             objectPosition={objectPositionRegex(objectPosition)}
+            quality={40}
           />
         </motion.div>
       )}
@@ -62,6 +57,7 @@ const ProjectItem = ({ id, title, src, alt, objectPosition }: IProps) => {
             layout="fill"
             objectFit="cover"
             objectPosition={"50% 30%"}
+            quality={40}
           />
         </motion.div>
       )}

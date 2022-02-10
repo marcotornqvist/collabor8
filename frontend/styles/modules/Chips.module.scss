@@ -1,0 +1,23 @@
+@use "../abstracts/colors" as *;
+@use "../abstracts/shadows" as *;
+@use "../abstracts/zindex" as *;
+@use "../abstracts/border-radius" as *;
+@use "../abstracts/fonts" as *;
+@use "../abstracts/breakpoints" as *;
+
+.lightGreen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid $green;
+  height: 1.5rem;
+  padding: 0 0.5rem;
+  border-radius: $large-radius;
+  background: $light-green;
+  :global {
+    span {
+      color: $green;
+      font-size: 12px;
+    }
+  }
+}

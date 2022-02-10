@@ -10,7 +10,6 @@ import { IDiscipline } from "@/types-interfaces/form";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
 import ChevronIcon from "@/components-modules/global/ChevronIcon";
-import Image from "next/image";
 import DisciplineItem from "./DisciplineItem";
 
 interface IProps {
@@ -20,7 +19,7 @@ interface IProps {
 
 const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
   const [show, setShow] = useState(false);
-  const [title, setTitle] = useState("");
+  // const [title, setTitle] = useState("");
   const { data } = useDisciplinesQuery();
 
   const [disciplines, setDisciplines] = useQueryParam(
@@ -39,17 +38,17 @@ const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
     }
   };
 
-  useEffect(() => {
-    // Sets the title
+  // Returns the proper title depending on what disciplines are selected
+  const title: string = useMemo(() => {
     if (data?.disciplines && disciplines.length === 1) {
-      const findTitle = data.disciplines.find((item) => {
+      const find = data.disciplines.find((item) => {
         if (item.id === disciplines[0]) return item.title;
       });
-      setTitle(findTitle?.title || "No Title Found");
+      return find?.title || "No Title Found";
     } else if (disciplines.length > 1) {
-      setTitle("Multiple Disciplines");
+      return "Multiple Disciplines";
     } else {
-      setTitle("Select Discipline");
+      return "Select Discipline";
     }
   }, [disciplines, data]);
 

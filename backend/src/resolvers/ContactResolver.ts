@@ -11,8 +11,9 @@ import { isAuth } from "../utils/isAuth";
 import { Context } from "../types/Interfaces";
 import { Contact } from "../types/Contact";
 import { User } from "../types/User";
-import { CONTACT_STATUS } from "../types/Enums";
+import { Contact_Status } from "../types/Enums";
 import { NotificationCode } from "@prisma/client";
+import { getContactStatus } from "../helpers/getContactStatus";
 
 // contacts             Return all contacts for logged in user - Done
 // contactStatus        Check what the status is or if a contact request even exist
@@ -96,7 +97,7 @@ export class ContactResolver {
     return contacts;
   }
 
-  @Query(() => CONTACT_STATUS, {
+  @Query(() => Contact_Status, {
     description:
       "Return the status for a contact request between loggedInUser and userId",
   })
@@ -120,32 +121,9 @@ export class ContactResolver {
       },
     });
 
-    // No contact exist
-    if (!contact) {
-      return CONTACT_STATUS.NO_CONTACT;
-    }
+    const status = getContactStatus(contact, payload);
 
-    // Contact is sent but not accepted (PENDING)
-    if (contact.status === "PENDING" && contact.userId === payload!.userId) {
-      return CONTACT_STATUS.REQUEST_SENT;
-    }
-
-    // Contact is received but pending (PENDING)
-    if (contact.status === "PENDING" && contact.contactId === payload!.userId) {
-      return CONTACT_STATUS.REQUEST_RECEIVED;
-    }
-
-    // Contact is received but false (FALSE)
-    if (contact.status === "FALSE" && contact.contactId === payload!.userId) {
-      return CONTACT_STATUS.REQUEST_RECEIVED_FALSE;
-    }
-
-    // Contact is active and accepted (TRUE)
-    if (contact.status === "TRUE") {
-      return CONTACT_STATUS.ACTIVE_CONTACT;
-    }
-
-    return CONTACT_STATUS.NO_CONTACT;
+    return status;
   }
 
   @Mutation(() => Contact, {

@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { CONTACT_STATUS } from "@/operations-queries/contactStatus";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
-import { useAddContactMutation } from "generated/graphql";
+import { ContactStatusDocument, useAddContactMutation } from "generated/graphql";
 
 interface IProps {
   id: string;
@@ -16,7 +15,7 @@ const AddContact = ({ id }: IProps) => {
     },
     refetchQueries: [
       {
-        query: CONTACT_STATUS, // DocumentNode object parsed with gql
+        query: ContactStatusDocument, // DocumentNode object parsed with gql
         variables: {
           id,
         },

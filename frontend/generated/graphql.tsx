@@ -34,15 +34,6 @@ export type BlockedUser = {
   userId: Scalars['String'];
 };
 
-/** Contact status enum */
-export enum Contact_Status {
-  ActiveContact = 'ACTIVE_CONTACT',
-  NoContact = 'NO_CONTACT',
-  RequestReceived = 'REQUEST_RECEIVED',
-  RequestReceivedFalse = 'REQUEST_RECEIVED_FALSE',
-  RequestSent = 'REQUEST_SENT'
-}
-
 /** Chat Inputs and Pagination */
 export type ChatInput = {
   after?: InputMaybe<Scalars['String']>;
@@ -90,6 +81,15 @@ export type ContactResponse = {
   usersWithNewMessages?: Maybe<Array<User>>;
   usersWithOldMessages?: Maybe<Array<User>>;
 };
+
+/** Contact status enum */
+export enum Contact_Status {
+  ActiveContact = 'ACTIVE_CONTACT',
+  NoContact = 'NO_CONTACT',
+  RequestReceived = 'REQUEST_RECEIVED',
+  RequestReceivedFalse = 'REQUEST_RECEIVED_FALSE',
+  RequestSent = 'REQUEST_SENT'
+}
 
 export type CountryResponse = {
   __typename?: 'CountryResponse';
@@ -460,6 +460,14 @@ export type Project = {
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
+/** Project member status */
+export enum Project_Member_Status {
+  Admin = 'ADMIN',
+  Guest = 'GUEST',
+  Member = 'MEMBER',
+  User = 'USER'
+}
+
 /** Filter Projects */
 export type ProjectsFilterArgs = {
   after?: InputMaybe<Scalars['String']>;
@@ -500,6 +508,8 @@ export type Query = {
   projectById?: Maybe<Project>;
   /** Return details for a project */
   projectChatRoomDetails?: Maybe<Project>;
+  /** Returns member status of auth user or not auth guest */
+  projectMemberStatus?: Maybe<Project_Member_Status>;
   /** Return messages for a ChatRoom by projectId */
   projectMessages?: Maybe<Array<Message>>;
   /** Returns all projects that are not disabled */
@@ -562,6 +572,11 @@ export type QueryProjectByIdArgs = {
 
 
 export type QueryProjectChatRoomDetailsArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryProjectMemberStatusArgs = {
   id: Scalars['String'];
 };
 
@@ -981,6 +996,20 @@ export type IsUserBlockedQueryVariables = Exact<{
 
 
 export type IsUserBlockedQuery = { __typename?: 'Query', isUserBlocked: boolean };
+
+export type ProjectByIdQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type ProjectByIdQuery = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, members?: Array<{ __typename?: 'Member', userId: string, role: Role, assignedAt: any, user: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', lastName?: string | null | undefined, firstName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined } | null | undefined };
+
+export type ProjectMemberStatusQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type ProjectMemberStatusQuery = { __typename?: 'Query', projectMemberStatus?: Project_Member_Status | null | undefined };
 
 export type ProjectsQueryVariables = Exact<{
   data: ProjectsFilterArgs;
@@ -2051,6 +2080,94 @@ export function useIsUserBlockedLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type IsUserBlockedQueryHookResult = ReturnType<typeof useIsUserBlockedQuery>;
 export type IsUserBlockedLazyQueryHookResult = ReturnType<typeof useIsUserBlockedLazyQuery>;
 export type IsUserBlockedQueryResult = Apollo.QueryResult<IsUserBlockedQuery, IsUserBlockedQueryVariables>;
+export const ProjectByIdDocument = gql`
+    query ProjectById($id: String!) {
+  projectById(id: $id) {
+    id
+    title
+    body
+    country
+    members {
+      userId
+      role
+      assignedAt
+      user {
+        username
+        profile {
+          lastName
+          firstName
+          country
+          profileImage
+          discipline {
+            title
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useProjectByIdQuery__
+ *
+ * To run a query within a React component, call `useProjectByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useProjectByIdQuery(baseOptions: Apollo.QueryHookOptions<ProjectByIdQuery, ProjectByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectByIdQuery, ProjectByIdQueryVariables>(ProjectByIdDocument, options);
+      }
+export function useProjectByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectByIdQuery, ProjectByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectByIdQuery, ProjectByIdQueryVariables>(ProjectByIdDocument, options);
+        }
+export type ProjectByIdQueryHookResult = ReturnType<typeof useProjectByIdQuery>;
+export type ProjectByIdLazyQueryHookResult = ReturnType<typeof useProjectByIdLazyQuery>;
+export type ProjectByIdQueryResult = Apollo.QueryResult<ProjectByIdQuery, ProjectByIdQueryVariables>;
+export const ProjectMemberStatusDocument = gql`
+    query projectMemberStatus($id: String!) {
+  projectMemberStatus(id: $id)
+}
+    `;
+
+/**
+ * __useProjectMemberStatusQuery__
+ *
+ * To run a query within a React component, call `useProjectMemberStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectMemberStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectMemberStatusQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useProjectMemberStatusQuery(baseOptions: Apollo.QueryHookOptions<ProjectMemberStatusQuery, ProjectMemberStatusQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectMemberStatusQuery, ProjectMemberStatusQueryVariables>(ProjectMemberStatusDocument, options);
+      }
+export function useProjectMemberStatusLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectMemberStatusQuery, ProjectMemberStatusQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectMemberStatusQuery, ProjectMemberStatusQueryVariables>(ProjectMemberStatusDocument, options);
+        }
+export type ProjectMemberStatusQueryHookResult = ReturnType<typeof useProjectMemberStatusQuery>;
+export type ProjectMemberStatusLazyQueryHookResult = ReturnType<typeof useProjectMemberStatusLazyQuery>;
+export type ProjectMemberStatusQueryResult = Apollo.QueryResult<ProjectMemberStatusQuery, ProjectMemberStatusQueryVariables>;
 export const ProjectsDocument = gql`
     query projects($data: ProjectsFilterArgs!) {
   projects(data: $data) {

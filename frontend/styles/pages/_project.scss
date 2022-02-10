@@ -1,0 +1,288 @@
+@use "../abstracts/colors" as *;
+@use "../abstracts/breakpoints" as *;
+@use "../abstracts/shadows" as *;
+@use "../abstracts/zindex" as *;
+@use "../abstracts/border-radius" as *;
+@use "../abstracts/fonts" as *;
+
+.project-page {
+  flex: 1;
+  border-radius: $medium-radius;
+  box-shadow: $box-shadow3;
+
+  .container {
+    max-width: $breakpoint-lg;
+  }
+
+  .content {
+    background: $white;
+
+    .title {
+      padding-top: 1.5rem;
+      margin-bottom: 3rem;
+      color: $green;
+    }
+
+    .sub-title {
+      display: inline-block;
+      font-size: 1.125rem;
+      font-family: $font-title;
+      font-family: $font-title-700;
+      color: $green;
+    }
+
+    .about,
+    .members {
+      margin-bottom: 3rem;
+    }
+
+    .about {
+      .sub-title {
+        margin-bottom: 0.1rem;
+      }
+
+      .text {
+        span {
+          color: $green;
+          font-weight: $font-body-700;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .members {
+      margin-bottom: 3rem;
+
+      .sub-title {
+        margin-bottom: 0.5rem;
+      }
+
+      ul {
+        padding: 1.5rem 1rem;
+        max-height: 16.5rem;
+        overflow: scroll;
+        border-radius: $medium-radius;
+        background: $light-green;
+
+        li {
+          margin-bottom: 1.5rem;
+
+          .profile-details {
+            display: flex;
+            flex-direction: row;
+
+            .profile-image {
+              margin-right: 0.75rem;
+            }
+
+            .wrapper {
+              display: flex;
+              justify-content: center;
+              flex-direction: column;
+              overflow: hidden;
+              padding-bottom: 0.25rem;
+
+              .inner-wrapper {
+                display: flex;
+                align-items: center;
+                flex-direction: row;
+                margin-bottom: 0.2rem;
+
+                .name {
+                  font-family: $font-title;
+                  font-weight: $font-title-700;
+                  font-size: 1.125rem;
+                  margin-right: 0.5rem;
+                  white-space: nowrap;
+                  text-overflow: ellipsis;
+                  overflow: hidden;
+                  white-space: nowrap;
+                }
+
+                .chip {
+                  margin-top: 2px;
+                  text-transform: lowercase;
+                  background: $light-green-darker;
+                }
+              }
+
+              .info-text {
+                display: flex;
+                align-items: flex-start;
+                width: 100%;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+
+                span {
+                  font-size: 14px;
+                  color: $black;
+                }
+
+                .pipe {
+                  position: relative;
+                  bottom: 1px;
+                  margin: 1px 2px 0;
+                  font-size: 14px;
+                }
+              }
+            }
+          }
+
+          button {
+            display: none;
+          }
+
+          &:last-child {
+            margin: 0;
+          }
+        }
+      }
+    }
+
+    .settings {
+      min-width: 100%;
+
+      .buttons {
+        display: flex;
+        flex-direction: column;
+        min-width: 100%;
+
+        button {
+          min-width: 100%;
+        }
+
+        .leave-project-btn {
+          margin-bottom: 1rem;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-sm) {
+  .project-page .content {
+    .title {
+      font-size: 2rem;
+      line-height: 2.75rem;
+      margin-bottom: 3rem;
+    }
+
+    .about .sub-title,
+    .members .sub-title {
+      font-size: 1.125rem;
+    }
+
+    .settings .buttons {
+      flex-direction: row;
+
+      button {
+        min-width: 250px;
+      }
+
+      .leave-project-btn {
+        margin: 0 1.5rem 0 0;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-md) {
+  .project-page {
+    background: $light-green;
+    padding-top: 3rem;
+
+    .content {
+      border-radius: $medium-radius;
+      padding: 3rem 2rem 6rem;
+      box-shadow: $box-shadow3;
+
+      .title,
+      .about,
+      .members {
+        margin-bottom: 3rem;
+
+        .sub-title {
+          font-size: 1.25rem;
+          margin-bottom: 1rem;
+        }
+      }
+
+      .title {
+        font-size: 2.5rem;
+        line-height: 3.75rem;
+        padding: 0;
+      }
+
+      .members {
+        .sub-title {
+          margin-bottom: 1.5rem;
+        }
+
+        ul {
+          max-height: 19.5rem;
+          background: $light-green;
+
+          li {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+
+            .profile-details {
+              .profile-image {
+                margin-right: 1rem;
+              }
+
+              .wrapper {
+                .inner-wrapper {
+                  .name {
+                    font-size: 1.25rem;
+                  }
+                }
+                .info-text {
+                  span {
+                    font-size: 1rem;
+                  }
+                }
+              }
+            }
+
+            button {
+              display: initial;
+              width: 180px;
+            }
+          }
+        }
+      }
+
+      .settings .buttons {
+        flex-direction: row;
+
+        .leave-project-btn {
+          margin: 0 1.5rem 0 0;
+        }
+
+        a {
+          max-width: 250px;
+
+          button {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-lg) {
+  .project-page .content {
+    padding: 3rem 4rem 6rem;
+  }
+}
+
+@media only screen and (min-width: $breakpoint-xl) {
+}
+
+@media only screen and (min-width: $breakpoint-max) {
+}

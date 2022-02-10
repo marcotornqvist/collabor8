@@ -1,10 +1,10 @@
 import { MouseEvent, useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
-import { CONTACT_STATUS } from "@/operations-queries/contactStatus";
 import { motion } from "framer-motion";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
 import {
+  ContactStatusDocument,
   useAcceptContactMutation,
   useRejectContactMutation,
 } from "generated/graphql";
@@ -29,7 +29,7 @@ const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
     },
     refetchQueries: [
       {
-        query: CONTACT_STATUS,
+        query: ContactStatusDocument,
         variables: {
           id,
         },
@@ -44,7 +44,7 @@ const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
     },
     refetchQueries: [
       {
-        query: CONTACT_STATUS,
+        query: ContactStatusDocument,
         variables: {
           id,
         },

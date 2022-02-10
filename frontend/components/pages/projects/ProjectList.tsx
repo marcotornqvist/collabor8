@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Sort,
   useProjectsQuery,
@@ -17,6 +17,7 @@ const limit = 20;
 
 const ProjectList = () => {
   const [disableMore, setDisableMore] = useState(false);
+  const [showSkeleton, setShowSkeleton] = useState(true);
   const [query, setQuery] = useQueryParams({
     search: singleStringParam,
     country: singleStringParam,
@@ -24,6 +25,7 @@ const ProjectList = () => {
     sort: singleStringParam,
   });
 
+  // Returns projects based on the filters provided
   const [getProjects, { data, loading, fetchMore, client }] =
     useProjectsLazyQuery({
       variables: {
@@ -39,11 +41,9 @@ const ProjectList = () => {
       notifyOnNetworkStatusChange: true,
     });
 
-  console.log(data);
-
-  // Delete cache and setDisableMore to false
   useEffect(() => {
     client.cache.evict({ id: "ROOT_QUERY", fieldName: "projects" });
+    setShowSkeleton(true);
     getProjects();
     setDisableMore(false);
   }, [query]);
@@ -83,10 +83,50 @@ const ProjectList = () => {
     }
   }, [isVisible, data?.projects]);
 
+  // Makes sure that skeleton is active at least 500ms, to prevent skeleton flicker
+  useEffect(() => {
+    if (showSkeleton) {
+      let timer = setTimeout(() => {
+        setShowSkeleton(false);
+      }, 500);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [showSkeleton]);
+
+  const projects = useMemo(
+    () =>
+      data?.projects?.map((item) => {
+        if (
+          item.disciplines &&
+          item.disciplines.length > 1 &&
+          item.disciplines[0].image
+        ) {
+          const { small, alt, objectPosition } = item.disciplines[0].image;
+          return (
+            <ProjectItem
+              key={item.id}
+              id={item.id}
+              title={item.title}
+              src={small}
+              alt={alt}
+              objectPosition={objectPosition}
+            />
+          );
+        }
+        return <ProjectItem key={item.id} id={item.id} title={item.title} />;
+      }),
+    [data?.projects]
+  );
+
   return (
-    <>
-      <div className="project-list">
-        {data?.projects && data.projects.length === 0 && (
+    <div className="project-list">
+      {!showSkeleton &&
+        !loading &&
+        data?.projects &&
+        data.projects.length === 0 && (
           <div className="no-projects-found">
             <div className="content">
               <h3>We couldn&apos;t find any projects.</h3>
@@ -94,35 +134,13 @@ const ProjectList = () => {
             </div>
           </div>
         )}
-        <div className="grid">
-          {data?.projects?.map((item) => {
-            if (
-              item.disciplines &&
-              item.disciplines.length > 1 &&
-              item.disciplines[0].image
-            ) {
-              const { small, alt, objectPosition } = item.disciplines[0].image;
-              return (
-                <ProjectItem
-                  key={item.id}
-                  id={item.id}
-                  title={item.title}
-                  src={small}
-                  alt={alt}
-                  objectPosition={objectPosition}
-                />
-              );
-            }
-            return (
-              <ProjectItem key={item.id} id={item.id} title={item.title} />
-            );
-          })}
-          {loading &&
-            [1, 2, 3, 4, 5, 6].map((n) => <ProjectSkeleton key={n} />)}
-        </div>
-        <div ref={ref} className="bottom-visible"></div>
+      <div className="grid">
+        {!showSkeleton && projects}
+        {(showSkeleton || loading) &&
+          [1, 2, 3, 4, 5, 6].map((n) => <ProjectSkeleton key={n} />)}
       </div>
-    </>
+      <div ref={ref} className="bottom-visible"></div>
+    </div>
   );
 };
 

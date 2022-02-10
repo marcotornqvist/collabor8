@@ -15,3 +15,20 @@ export const GET_PROJECTS = gql`
     }
   }
 `;
+
+// export const CREATE_PROJECT = gql`
+//   mutation createProject($data: CreateProjectInput!) {
+//     createProject(data: $data) {
+//       id
+//       title
+//       body
+//       country
+//       members {
+//         userId
+//       }
+//       disciplines {
+//         title
+//       }
+//     }
+//   }
+// `;

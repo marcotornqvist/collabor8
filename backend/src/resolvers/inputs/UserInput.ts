@@ -2,10 +2,6 @@ import "reflect-metadata";
 import { InputType, Field, ObjectType } from "type-graphql";
 import {
   IsEmail,
-  IsLowercase,
-  Length,
-  MinLength,
-  MaxLength,
   Min,
 } from "class-validator";
 import { Sort } from "../../types/Enums";
