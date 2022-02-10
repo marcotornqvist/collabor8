@@ -152,7 +152,8 @@
           min-width: 100%;
         }
 
-        .leave-project-btn {
+        .leave-project-btn,
+        .accept-project-btn {
           margin-bottom: 1rem;
         }
       }
@@ -222,6 +223,7 @@
         ul {
           max-height: 19.5rem;
           background: $light-green;
+          padding: 1.5rem;
 
           li {
             display: flex;
@@ -259,7 +261,8 @@
       .settings .buttons {
         flex-direction: row;
 
-        .leave-project-btn {
+        .leave-project-btn,
+        .accept-project-btn {
           margin: 0 1.5rem 0 0;
         }
 
@@ -281,8 +284,8 @@
   }
 }
 
-@media only screen and (min-width: $breakpoint-xl) {
-}
+// @media only screen and (min-width: $breakpoint-xl) {
+// }
 
-@media only screen and (min-width: $breakpoint-max) {
-}
+// @media only screen and (min-width: $breakpoint-max) {
+// }

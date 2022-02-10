@@ -123,6 +123,9 @@ export class ProjectResolver {
       },
       include: {
         members: {
+          where: {
+            status: "TRUE",
+          },
           include: {
             user: {
               include: {
@@ -229,6 +232,12 @@ export class ProjectResolver {
       // Member object found with a status role of "MEMBER", checks also if member status is active
       else if (result?.role === "MEMBER" && result.status === "TRUE")
         return Project_Member_Status.MEMBER;
+      // Member object found with a status role of "MEMBER", checks also if member status is false or pending
+      else if (
+        result?.role === "MEMBER" &&
+        (result.status === "FALSE" || result.status === "PENDING")
+      )
+        return Project_Member_Status.INVITED_USER;
       // No member object found, meaning authenticated user is not part of the project
       else return Project_Member_Status.USER;
     }
@@ -745,8 +754,8 @@ export class ProjectResolver {
       },
     });
 
-    // Checks that the invite exists and that it isn't pending
-    if (!member || member.status !== "PENDING")
+    // If invite exists or the status is true, return error
+    if (!member || member.status === "TRUE")
       throw new Error("Invite doesn't exist");
 
     await prisma.member.update({

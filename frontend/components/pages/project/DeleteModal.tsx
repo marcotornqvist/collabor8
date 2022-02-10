@@ -3,26 +3,27 @@ import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
-import {
-  useDeleteAccountMutation,
-} from "generated/graphql";
+import { useDeleteProjectMutation } from "generated/graphql";
+import { dropInVariants } from "utils/variants";
+import { useRouter } from "next/router";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
-import { authState } from "store";
-import { useRouter } from "next/router";
-import { dropInVariants } from "utils/variants";
 
 interface IProps {
+  id: string;
   show: boolean;
   onClose: () => void;
 }
 
-const DeleteModal = ({ show, onClose }: IProps) => {
+const DeleteModal = ({ id, show, onClose }: IProps) => {
   const router = useRouter();
   const [isBrowser, setIsBrowser] = useState(false);
   const [error, setError] = useState("");
 
-  const [deleteAccount, { loading, client }] = useDeleteAccountMutation({
+  const [deleteProject, { data }] = useDeleteProjectMutation({
+    variables: {
+      id,
+    },
     onError: (error) => setError(error.message),
   });
 
@@ -35,26 +36,20 @@ const DeleteModal = ({ show, onClose }: IProps) => {
     onClose();
   };
 
-  // Deletes account and sets auth state to false
-  const deleteHandler = async () => {
-    try {
-      await deleteAccount();
-      toastState.addToast("Account deleted successfully", ErrorStatus.success);
-      onClose();
-      authState.accessToken = "";
-      authState.isAuth = false;
-      await client!.resetStore();
-      router.push("/");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
+    if (data) {
+      router.push("/projects");
+      router.events.on("routeChangeComplete", () =>
+        toastState.addToast(
+          "Project deleted successfully!",
+          ErrorStatus.success
+        )
+      );
+    }
     if (error) {
       toastState.addToast(error, ErrorStatus.danger);
     }
-  }, [error]);
+  }, [error, data]);
 
   const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, handleCloseClick);
@@ -62,7 +57,7 @@ const DeleteModal = ({ show, onClose }: IProps) => {
   const modalContent = show ? (
     <div className="modal-backdrop">
       <motion.div
-        className="modal delete-account-modal"
+        className="modal delete-project-modal"
         onClick={(e) => e.stopPropagation()}
         variants={dropInVariants}
         initial="hidden"
@@ -76,17 +71,14 @@ const DeleteModal = ({ show, onClose }: IProps) => {
           </div>
         </div>
         <div className="modal-content">
-          <h4>Are you sure you want to delete your account?</h4>
+          <h4>Are you sure you want to delete this project?</h4>
           <p>
-            This will permanently delete your account. All projects and contacts
-            will also be removed in the process.
+            This will permanently delete the project. All chats will be removed
+            in the process.
           </p>
         </div>
-        <button
-          onClick={() => deleteHandler()}
-          className={loading ? button.red : button.lightRed}
-        >
-          Delete Account
+        <button className={button.lightRed} onClick={() => deleteProject()}>
+          Delete Project
         </button>
       </motion.div>
     </div>

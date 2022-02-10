@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Formik } from "formik";
-import { GET_LOGGED_IN_USER } from "@/operations-queries/getLoggedInUser";
 import {
+  LoggedInUserDocument,
   LoggedInUserQuery,
   UpdateEmailMutation,
   useUpdateEmailMutation,
@@ -30,7 +30,7 @@ const UpdateEmail = ({ currentEmail, loading }: IProps) => {
   const [updateEmail, { data }] = useUpdateEmailMutation({
     update(cache, { data }) {
       const user = cache.readQuery<LoggedInUserQuery>({
-        query: GET_LOGGED_IN_USER,
+        query: LoggedInUserDocument,
       });
 
       if (data?.updateEmail && user) {
@@ -39,7 +39,7 @@ const UpdateEmail = ({ currentEmail, loading }: IProps) => {
           email: data.updateEmail,
         };
         cache.writeQuery<LoggedInUserQuery>({
-          query: GET_LOGGED_IN_USER,
+          query: LoggedInUserDocument,
           data: {
             loggedInUser: merge,
           },

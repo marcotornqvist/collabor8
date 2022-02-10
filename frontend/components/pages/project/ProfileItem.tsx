@@ -17,7 +17,6 @@ interface IProps {
 }
 
 const ProfileItem = ({ isMobile, user, role }: IProps) => {
-  const username = "johndoe";
   return (
     <li>
       <div className="profile-details">
@@ -49,9 +48,9 @@ const ProfileItem = ({ isMobile, user, role }: IProps) => {
           </div>
         </div>
       </div>
-      <Link href={`/profile/${username}`}>
+      <Link href={`/profile/${user.username}`}>
         <a className="link-btn">
-          <button className={button.lightGreen}>See Profile</button>
+          <button className={button.green}>See Profile</button>
         </a>
       </Link>
     </li>

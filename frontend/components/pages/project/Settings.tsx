@@ -1,48 +1,79 @@
-import { useEffect } from "react";
-import { useProjectMemberStatusLazyQuery } from "generated/graphql";
-import { useRouter } from "next/router";
-import { authState } from "store";
-import { useSnapshot } from "valtio";
+import { useState } from "react";
+import {
+  Project_Member_Status,
+  useProjectMemberStatusQuery,
+} from "generated/graphql";
+import { fadeInVariants } from "utils/variants";
+import { motion } from "framer-motion";
 import button from "@/styles-modules/Button.module.scss";
-import Link from "next/link";
+import ReportButton from "./ReportButton";
+import DeleteModal from "./DeleteModal";
+import LeaveModal from "./LeaveModal";
+import AcceptButton from "./AcceptButton";
 
-const Settings = () => {
-  const { loading } = useSnapshot(authState);
-  const {
-    query: { id },
-  } = useRouter();
-  const [getStatus, { data }] = useProjectMemberStatusLazyQuery({
+interface IProps {
+  id: string;
+}
+
+const Settings = ({ id }: IProps) => {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  
+  const { data } = useProjectMemberStatusQuery({
     variables: {
-      id: typeof id === "string" ? id : "",
+      id,
     },
   });
-
-  useEffect(() => {
-    if (!loading) {
-      getStatus();
-    }
-  }, [!loading]);
-
-  // console.log(data?.projectMemberStatus);
-
-  // Create modals to delete project, leave project
-  // Animate button after status has loaded
-  // Divide into separate components
-  // Update cache or refetch depending on case
-
+  
+  // Create a accept invitation button for users that have a pending or false status 
+  // After accept refetch the user project
+  const { Member, Admin, InvitedUser } = Project_Member_Status;
+  
   return (
     <div className="settings">
       <div className="buttons">
-        <button className={`leave-project-btn ${button.red}`}>
-          Leave Project
-        </button>
-        <Link href={`/report/project/${id}`}>
-          <a className="report-project-btn">
-            <button className={`report-project-btn ${button.lightRed}`}>
-              Report Project
-            </button>
-          </a>
-        </Link>
+        {(data?.projectMemberStatus === Member ||
+          data?.projectMemberStatus === Admin) && (
+          <>
+            <motion.button
+              onClick={() => setShowLeaveModal(true)}
+              className={`leave-project-btn ${button.red}`}
+              initial="hidden"
+              animate="visible"
+              variants={fadeInVariants}
+            >
+              Leave Project
+            </motion.button>
+            <LeaveModal
+              id={id}
+              show={showLeaveModal}
+              onClose={() => setShowLeaveModal(false)}
+            />
+          </>
+        )}
+        {data?.projectMemberStatus === InvitedUser && (
+          <AcceptButton id={id}/>
+        )}
+        {data?.projectMemberStatus === Admin ? (
+          <>
+            <motion.button
+              onClick={() => setShowDeleteModal(true)}
+              className={`delete-project-btn ${button.lightRed}`}
+              initial="hidden"
+              animate="visible"
+              variants={fadeInVariants}
+            >
+              Delete Project
+            </motion.button>
+            <DeleteModal
+              id={id}
+              show={showDeleteModal}
+              onClose={() => setShowDeleteModal(false)}
+            />
+          </>
+        ) : (
+          <ReportButton id={id} />
+        )}
       </div>
     </div>
   );

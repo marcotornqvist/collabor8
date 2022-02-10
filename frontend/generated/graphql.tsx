@@ -464,6 +464,7 @@ export type Project = {
 export enum Project_Member_Status {
   Admin = 'ADMIN',
   Guest = 'GUEST',
+  InvitedUser = 'INVITED_USER',
   Member = 'MEMBER',
   User = 'USER'
 }
@@ -823,6 +824,13 @@ export type AcceptContactMutationVariables = Exact<{
 
 export type AcceptContactMutation = { __typename?: 'Mutation', acceptContact: { __typename?: 'Contact', id: string } };
 
+export type AcceptInviteMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type AcceptInviteMutation = { __typename?: 'Mutation', acceptInvite: boolean };
+
 export type AddContactMutationVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -860,6 +868,20 @@ export type DeleteImageMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type DeleteImageMutation = { __typename?: 'Mutation', deleteImage: { __typename?: 'Profile', profileImage?: string | null | undefined } };
+
+export type DeleteProjectMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: boolean };
+
+export type LeaveProjectMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type LeaveProjectMutation = { __typename?: 'Mutation', leaveProject: boolean };
 
 export type LoginMutationVariables = Exact<{
   data: LoginInput;
@@ -1066,6 +1088,37 @@ export function useAcceptContactMutation(baseOptions?: Apollo.MutationHookOption
 export type AcceptContactMutationHookResult = ReturnType<typeof useAcceptContactMutation>;
 export type AcceptContactMutationResult = Apollo.MutationResult<AcceptContactMutation>;
 export type AcceptContactMutationOptions = Apollo.BaseMutationOptions<AcceptContactMutation, AcceptContactMutationVariables>;
+export const AcceptInviteDocument = gql`
+    mutation acceptInvite($id: String!) {
+  acceptInvite(projectId: $id)
+}
+    `;
+export type AcceptInviteMutationFn = Apollo.MutationFunction<AcceptInviteMutation, AcceptInviteMutationVariables>;
+
+/**
+ * __useAcceptInviteMutation__
+ *
+ * To run a mutation, you first call `useAcceptInviteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAcceptInviteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [acceptInviteMutation, { data, loading, error }] = useAcceptInviteMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useAcceptInviteMutation(baseOptions?: Apollo.MutationHookOptions<AcceptInviteMutation, AcceptInviteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AcceptInviteMutation, AcceptInviteMutationVariables>(AcceptInviteDocument, options);
+      }
+export type AcceptInviteMutationHookResult = ReturnType<typeof useAcceptInviteMutation>;
+export type AcceptInviteMutationResult = Apollo.MutationResult<AcceptInviteMutation>;
+export type AcceptInviteMutationOptions = Apollo.BaseMutationOptions<AcceptInviteMutation, AcceptInviteMutationVariables>;
 export const AddContactDocument = gql`
     mutation addContact($id: String!) {
   addContact(id: $id) {
@@ -1256,6 +1309,68 @@ export function useDeleteImageMutation(baseOptions?: Apollo.MutationHookOptions<
 export type DeleteImageMutationHookResult = ReturnType<typeof useDeleteImageMutation>;
 export type DeleteImageMutationResult = Apollo.MutationResult<DeleteImageMutation>;
 export type DeleteImageMutationOptions = Apollo.BaseMutationOptions<DeleteImageMutation, DeleteImageMutationVariables>;
+export const DeleteProjectDocument = gql`
+    mutation deleteProject($id: String!) {
+  deleteProject(id: $id)
+}
+    `;
+export type DeleteProjectMutationFn = Apollo.MutationFunction<DeleteProjectMutation, DeleteProjectMutationVariables>;
+
+/**
+ * __useDeleteProjectMutation__
+ *
+ * To run a mutation, you first call `useDeleteProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProjectMutation, { data, loading, error }] = useDeleteProjectMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProjectMutation, DeleteProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, options);
+      }
+export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
+export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
+export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export const LeaveProjectDocument = gql`
+    mutation leaveProject($id: String!) {
+  leaveProject(id: $id)
+}
+    `;
+export type LeaveProjectMutationFn = Apollo.MutationFunction<LeaveProjectMutation, LeaveProjectMutationVariables>;
+
+/**
+ * __useLeaveProjectMutation__
+ *
+ * To run a mutation, you first call `useLeaveProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLeaveProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [leaveProjectMutation, { data, loading, error }] = useLeaveProjectMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useLeaveProjectMutation(baseOptions?: Apollo.MutationHookOptions<LeaveProjectMutation, LeaveProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LeaveProjectMutation, LeaveProjectMutationVariables>(LeaveProjectDocument, options);
+      }
+export type LeaveProjectMutationHookResult = ReturnType<typeof useLeaveProjectMutation>;
+export type LeaveProjectMutationResult = Apollo.MutationResult<LeaveProjectMutation>;
+export type LeaveProjectMutationOptions = Apollo.BaseMutationOptions<LeaveProjectMutation, LeaveProjectMutationVariables>;
 export const LoginDocument = gql`
     mutation login($data: LoginInput!) {
   login(data: $data) {

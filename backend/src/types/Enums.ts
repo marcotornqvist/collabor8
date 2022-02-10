@@ -9,6 +9,7 @@ export enum Sort {
 export enum Project_Member_Status {
   ADMIN = "ADMIN", // Admin of the project
   MEMBER = "MEMBER", // Member of the project
+  INVITED_USER = "INVITED_USER", // Invited users are either pending or false of the project
   USER = "USER", // Authenticated but not a member
   GUEST = "GUEST", // Guest, meaning not authenticated
 }
