@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from "react";
-// import { GET_PROFILE_IMAGE } from "@/operations-queries/getLoggedInProfile";
-import { toastState } from "store";
-import { ErrorStatus } from "@/types-enums/enums";
+import React, { useState } from "react";
 import button from "@/styles-modules/Button.module.scss";
 import {
-  LoggedInProfileDetailsDocument,
   LoggedInUserDocument,
   LoggedInUserQuery,
-  ProfileImageDocument,
-  ProfileImageQuery,
+  SingleUploadMutation,
   useSingleUploadMutation,
 } from "generated/graphql";
+import useToast from "@/hooks/useToast";
 
 export const UploadFile = () => {
   const [error, setError] = useState("");
@@ -20,7 +16,7 @@ export const UploadFile = () => {
         query: LoggedInUserDocument,
       });
 
-      if (data?.singleUpload && user) {
+      if (data?.singleUpload && user?.loggedInUser.profile) {
         cache.writeQuery<LoggedInUserQuery>({
           query: LoggedInUserDocument,
           data: {
@@ -45,14 +41,11 @@ export const UploadFile = () => {
     },
   }: any) => validity.valid && singleUpload({ variables: { file } });
 
-  useEffect(() => {
-    if (data) {
-      toastState.addToast("Image uploaded successfully", ErrorStatus.success);
-    }
-    if (error) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
-  }, [data, error]);
+  useToast<SingleUploadMutation>({
+    data,
+    successMessage: "Image uploaded successfully",
+    error,
+  });
 
   return (
     <button className={`${button.lightGreen} update-image-btn`}>

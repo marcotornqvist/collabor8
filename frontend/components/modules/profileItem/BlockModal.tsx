@@ -2,8 +2,6 @@ import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 import { IS_USER_BLOCKED } from "@/operations-queries/isUserBlocked";
-import { toastState } from "store";
-import { ErrorStatus } from "@/types-enums/enums";
 import {
   useBlockUserMutation,
   useUnblockUserMutation,
@@ -11,6 +9,7 @@ import {
 import { dropInVariants } from "utils/variants";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
+import useToast from "@/hooks/useToast";
 
 interface IProps {
   id: string;
@@ -73,11 +72,9 @@ const PendingModal = ({ id, show, onClose, isBlocked }: IProps) => {
     onClose();
   };
 
-  useEffect(() => {
-    if (error) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
-  }, [error]);
+  useToast({
+    error,
+  });
 
   const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, handleCloseClick);

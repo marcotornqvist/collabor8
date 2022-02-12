@@ -1,20 +1,17 @@
 import { motion } from "framer-motion";
+import { chevronRotate } from "types/types";
 import Image from "next/image";
 
 interface IProps {
   show: boolean;
   isMobile: boolean;
-  initialRotate?:
-    | "rotate(0deg)"
-    | "rotate(90deg)"
-    | "rotate(180deg)"
-    | "rotate(270deg)";
+  chevronRotate?: chevronRotate;
 }
 
 const ChevronIcon = ({
   show,
   isMobile,
-  initialRotate = "rotate(0deg)",
+  chevronRotate = "rotate(0deg)",
 }: IProps) => {
   return (
     <motion.div
@@ -25,7 +22,7 @@ const ChevronIcon = ({
       }}
       transition={{ duration: 0.2 }}
     >
-      <div className="icon" style={{ transform: initialRotate }}>
+      <div className="icon" style={{ transform: chevronRotate }}>
         <Image
           src="/icons/chevron-down-solid.svg"
           alt={"Chevron"}

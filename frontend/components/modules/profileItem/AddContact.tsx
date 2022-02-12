@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
-import { toastState } from "store";
-import { ErrorStatus } from "@/types-enums/enums";
-import { ContactStatusDocument, useAddContactMutation } from "generated/graphql";
+import { useState } from "react";
+import {
+  AddContactMutation,
+  ContactStatusDocument,
+  useAddContactMutation,
+} from "generated/graphql";
+import useToast from "@/hooks/useToast";
 
 interface IProps {
   id: string;
@@ -24,14 +27,11 @@ const AddContact = ({ id }: IProps) => {
     onError: (error) => setError(error.message),
   });
 
-  useEffect(() => {
-    if (data) {
-      toastState.addToast("Contact request sent", ErrorStatus.success);
-    }
-    if (error) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
-  }, [data, error]);
+  useToast<AddContactMutation>({
+    data,
+    successMessage: "Contact request sent",
+    error,
+  });
 
   return (
     <button

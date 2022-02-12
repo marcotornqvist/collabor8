@@ -2,6 +2,10 @@
 export const isNotEmptyObject = (object: object) =>
   Object.keys(object).length > 0;
 
+// Checks if object is empty
+export const isEmptyObject = (object: object) =>
+  Object.keys(object).length === 0;
+
 export const isNumbersArray = (value: (number | null)[] | null | undefined) => {
   let result: number[] = [];
 

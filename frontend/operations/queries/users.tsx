@@ -6,12 +6,14 @@ export const GET_USERS = gql`
       id
       username
       profile {
+        userId
         firstName
         lastName
         profileImage
         country
         discipline {
           title
+          id
         }
       }
     }

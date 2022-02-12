@@ -10,12 +10,12 @@ const About: FC<IProps> = ({ body }) => {
   if (body) {
     return (
       <div className="about">
-        <span className="sub-title">About</span>
+        <span className="sub-title">Description</span>
         <p className="text">
-          {!show && body && body.length > 300
-            ? truncateText(body, 300, "")
+          {!show && body && body.length > 750
+            ? truncateText(body, 750, "")
             : body}
-          {body && body.length > 300 && (
+          {body && body.length > 750 && (
             <span onClick={() => setShow(!show)}>
               {" "}
               {!show ? "Show More" : "Show Less"}

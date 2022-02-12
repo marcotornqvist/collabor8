@@ -18,17 +18,17 @@ interface IProps {
 const Settings = ({ id }: IProps) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showLeaveModal, setShowLeaveModal] = useState(false);
-  
+
   const { data } = useProjectMemberStatusQuery({
     variables: {
       id,
     },
   });
-  
-  // Create a accept invitation button for users that have a pending or false status 
+
+  // Create a accept invitation button for users that have a pending or false status
   // After accept refetch the user project
   const { Member, Admin, InvitedUser } = Project_Member_Status;
-  
+
   return (
     <div className="settings">
       <div className="buttons">
@@ -51,9 +51,7 @@ const Settings = ({ id }: IProps) => {
             />
           </>
         )}
-        {data?.projectMemberStatus === InvitedUser && (
-          <AcceptButton id={id}/>
-        )}
+        {data?.projectMemberStatus === InvitedUser && <AcceptButton id={id} />}
         {data?.projectMemberStatus === Admin ? (
           <>
             <motion.button

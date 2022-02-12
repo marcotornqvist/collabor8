@@ -1,8 +1,6 @@
 import { MouseEvent, useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
-import { toastState } from "store";
-import { ErrorStatus } from "@/types-enums/enums";
 import {
   ContactStatusDocument,
   useAcceptContactMutation,
@@ -11,6 +9,7 @@ import {
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import { dropInVariants } from "utils/variants";
+import useToast from "@/hooks/useToast";
 
 interface IProps {
   id: string;
@@ -77,11 +76,9 @@ const PendingModal = ({ id, show, onClose, hideDelete = false }: IProps) => {
   const ref = useRef(null);
   useOnClickOutside(ref, handleCloseClick);
 
-  useEffect(() => {
-    if (error) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
-  }, [error]);
+  useToast({
+    error,
+  });
 
   const modalContent = show ? (
     <div className="modal-backdrop">

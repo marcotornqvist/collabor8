@@ -7,6 +7,7 @@ export const GET_PROJECTS = gql`
       title
       disciplines {
         image {
+          id
           small
           alt
           objectPosition

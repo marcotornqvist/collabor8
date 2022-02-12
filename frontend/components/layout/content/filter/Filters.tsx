@@ -8,9 +8,6 @@ import SortFilter from "./SortFilter";
 import RemoveFilters from "./RemoveFilters";
 import button from "@/styles-modules/Button.module.scss";
 import Image from "next/image";
-import useIsomorphicLayoutEffect from "@/hooks/useIsomorphicLayoutEffect";
-import { useQueryParams, NumericArrayParam } from "next-query-params";
-import { singleStringParam } from "utils/customQueryParams";
 
 interface IProps {
   isMobile: boolean;
@@ -18,14 +15,8 @@ interface IProps {
 
 const Filters = ({ isMobile }: IProps) => {
   const [show, setShow] = useState(false);
-  const [query, setQuery] = useQueryParams({
-    search: singleStringParam,
-    country: singleStringParam,
-    disciplines: NumericArrayParam,
-    sort: singleStringParam,
-  });
 
-  useIsomorphicLayoutEffect(() => {
+  useEffect(() => {
     // Prevent scrolling on body
     isMobile && show
       ? document.body.classList.add("body-prevent-scroll")

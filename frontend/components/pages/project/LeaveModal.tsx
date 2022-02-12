@@ -1,13 +1,12 @@
 import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
-import { toastState } from "store";
-import { ErrorStatus } from "@/types-enums/enums";
 import { useLeaveProjectMutation } from "generated/graphql";
 import { dropInVariants } from "utils/variants";
+import { useRouter } from "next/router";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
-import { useRouter } from "next/router";
+import useToast from "@/hooks/useToast";
 
 interface IProps {
   id: string;
@@ -15,7 +14,7 @@ interface IProps {
   onClose: () => void;
 }
 
-const DeleteModal = ({ id, show, onClose }: IProps) => {
+const LeaveModal = ({ id, show, onClose }: IProps) => {
   const router = useRouter();
   const [isBrowser, setIsBrowser] = useState(false);
   const [error, setError] = useState("");
@@ -40,10 +39,11 @@ const DeleteModal = ({ id, show, onClose }: IProps) => {
     if (data) {
       router.push("/projects");
     }
-    if (error) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
-  }, [error, data]);
+  }, [data]);
+
+  useToast({
+    error,
+  });
 
   const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, handleCloseClick);
@@ -84,4 +84,4 @@ const DeleteModal = ({ id, show, onClose }: IProps) => {
   }
 };
 
-export default DeleteModal;
+export default LeaveModal;

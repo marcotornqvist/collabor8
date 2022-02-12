@@ -1,13 +1,12 @@
 import { useState, useEffect, ReactElement } from "react";
 import { authState } from "store";
 import { useRouter } from "next/router";
-import { toastState } from "store";
-import { ErrorStatus } from "@/types-enums/enums";
 import { Formik } from "formik";
 import { LoginInput, useLoginMutation } from "generated/graphql";
 import AuthLayout from "@/components-pages/auth/AuthLayout";
 import button from "@/styles-modules/Button.module.scss";
 import InputField from "@/components-modules/global/InputField";
+import useToast from "@/hooks/useToast";
 
 const Login = () => {
   const router = useRouter();
@@ -17,11 +16,9 @@ const Login = () => {
     onError: (error) => setError(error.message),
   });
 
-  useEffect(() => {
-    if (error) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
-  }, [error]);
+  useToast({
+    error,
+  });
 
   const redirect = router.query.redirect;
 

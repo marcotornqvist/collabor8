@@ -1,34 +1,34 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { IDiscipline } from "@/types-interfaces/form";
-import { UpdateProfileMutation, useDisciplinesQuery } from "generated/graphql";
+import { useDisciplinesQuery } from "generated/graphql";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
 import ChevronIcon from "@/components-modules/global/ChevronIcon";
+import DisciplineItem from "@/components-modules/global/DisciplineItem";
 
 interface IProps {
   setFieldValue: (
-    field: "discipline",
-    // value: IDiscipline | null,
-    value: NonNullable<UpdateProfileMutation["updateProfile"]>["discipline"],
+    field: "disciplines",
+    value: number[],
     shouldValidate?: boolean | undefined
   ) => void;
-  discipline: NonNullable<UpdateProfileMutation["updateProfile"]>["discipline"];
+  disciplines: number[];
   loading: boolean;
   variants: Variants;
   isMobile: boolean;
   error: string;
-  lastSubmitValue?: IDiscipline | null;
+  lastSubmittedValues?: number[];
 }
 
-const DisciplinesDropdown = ({
+const Members = ({
   setFieldValue,
-  discipline,
+  disciplines,
   loading,
   variants,
   isMobile,
   error,
-  lastSubmitValue,
+  lastSubmittedValues,
 }: IProps) => {
   const [show, setShow] = useState(false);
   const { data } = useDisciplinesQuery();
@@ -57,6 +57,47 @@ const DisciplinesDropdown = ({
       : document.body.classList.remove("body-prevent-scroll");
   }, [show, isMobile]);
 
+  // Returns the proper title depending on what disciplines are selected
+  const title: string = useMemo(() => {
+    if (data?.disciplines && disciplines.length === 1) {
+      const find = data.disciplines.find((item) => {
+        if (item.id === disciplines[0]) return item.title;
+      });
+      return find?.title || "No Title Found";
+    } else if (disciplines.length > 1) {
+      return "Multiple Disciplines";
+    } else {
+      return "Select Discipline";
+    }
+  }, [disciplines, data]);
+
+  // Add boolean property named active to every element
+  // with the value of true to elements that are selected
+  // useMemo makes disciplineList re-render only if disciplines or data?.disciplines changes
+  const disciplineList = useMemo(
+    () =>
+      data?.disciplines?.map((item) => {
+        const found = disciplines.some((el) => el === item.id);
+        return {
+          ...item,
+          active: found,
+        };
+      }),
+    [disciplines, data?.disciplines]
+  );
+
+  // Handle the discipline and pass them up to parent component
+  const disciplineHandler = (item: IDiscipline) => {
+    const findItem = disciplines.find((el) => el === item.id);
+    // If item exists in array it gets filtered out, else it gets added to array
+    if (findItem) {
+      const filterItem = disciplines.filter((el) => el !== item.id);
+      setFieldValue("disciplines", filterItem);
+    } else {
+      setFieldValue("disciplines", [...disciplines, item.id]);
+    }
+  };
+
   const handleClickOutside = () => {
     setShow(false);
   };
@@ -65,27 +106,24 @@ const DisciplinesDropdown = ({
 
   return (
     <div
-      className={`dropdown ${dropdown.default} ${show ? dropdown.active : ""}`}
+      className={`members-dropdown ${dropdown.default} ${
+        show ? dropdown.active : ""
+      }`}
       ref={dropdownRef}
     >
       <div className="input-text">
-        <label htmlFor="discipline">Discipline</label>
-        {!error && lastSubmitValue?.id === discipline?.id && discipline && (
-          <span className="success-message">Discipline is valid</span>
-        )}
+        <label htmlFor="members">members</label>
       </div>
       <div onClick={() => setShow(!show)} className="show-dropdown-menu-btn">
-        <span className={discipline ? "default-text" : "placeholder"}>
-          {!loading
-            ? discipline
-              ? discipline.title
-              : "Select Discipline"
-            : ""}
-        </span>
+        {/* <span
+          className={members.length >= 1 ? "default-text" : "placeholder"}
+        >
+          {title}
+        </span> */}
         <ChevronIcon
           isMobile={isMobile}
           show={show}
-          chevronRotate="rotate(0deg)"
+          chevronRotate={isMobile ? "rotate(90deg)" : "rotate(0deg)"}
         />
       </div>
       <AnimatePresence>
@@ -98,44 +136,33 @@ const DisciplinesDropdown = ({
             variants={variants}
           >
             <div className="top-bar" onClick={() => setShow(false)}>
-              <span className="selected-title">
-                {discipline ? discipline.title : "Select Discipline"}
-              </span>
+              <span className="selected-title">{title}</span>
               <span className="close-btn">Close</span>
             </div>
-            <ul className="dropdown-list single-selection" ref={listRef}>
+            <ul className="dropdown-list multi-selections">
               <li
-                ref={!discipline ? activeRef : null}
+                className="list-item"
                 onClick={() => {
-                  setFieldValue("discipline", null);
-                  setShow(false);
+                  setFieldValue("disciplines", []);
                 }}
-                className={`list-item${!discipline ? " active" : ""}`}
               >
                 <span>No Selection</span>
               </li>
-              {data?.disciplines?.map((item) => (
-                <li
-                  ref={discipline?.id === item.id ? activeRef : null}
+              {disciplineList?.map((item) => (
+                <DisciplineItem
                   key={item.id}
-                  className={`list-item${
-                    discipline?.id === item.id ? " active" : ""
-                  }`}
-                  onClick={() => {
-                    setFieldValue("discipline", item);
-                    setShow(false);
-                  }}
-                >
-                  <span>{item.title}</span>
-                </li>
+                  id={item.id}
+                  title={item.title}
+                  active={item.active}
+                  disciplineHandler={disciplineHandler}
+                />
               ))}
               {data?.disciplines && data.disciplines.length > 50 && (
                 <li
-                  onClick={() => {
-                    setFieldValue("discipline", null);
-                    setShow(false);
-                  }}
                   className="list-item"
+                  onClick={() => {
+                    setFieldValue("disciplines", []);
+                  }}
                 >
                   <span>No Selection</span>
                 </li>
@@ -148,4 +175,4 @@ const DisciplinesDropdown = ({
   );
 };
 
-export default DisciplinesDropdown;
+export default Members;

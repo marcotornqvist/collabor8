@@ -24,7 +24,7 @@ import { pagination } from "../utils/pagination";
 import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
 import { NotificationCode } from "@prisma/client";
 import { validateFields } from "../validations/validateFields";
-import { projectValidationSchema } from "../validations/schemas";
+import { ProjectValidationSchema } from "../validations/schemas";
 import countries from "../data/countries";
 import { Project_Member_Status } from "../types/Enums";
 
@@ -261,7 +261,7 @@ export class ProjectResolver {
         title,
         body,
       },
-      validationSchema: projectValidationSchema,
+      validationSchema: ProjectValidationSchema,
     });
 
     try {
@@ -504,7 +504,7 @@ export class ProjectResolver {
         title,
         body,
       },
-      validationSchema: projectValidationSchema,
+      validationSchema: ProjectValidationSchema,
     });
 
     try {

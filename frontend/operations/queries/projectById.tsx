@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const PROJECT_BY_ID = gql`
-  query ProjectById($id: String!) {
+  query projectById($id: String!) {
     projectById(id: $id) {
       id
       title
@@ -10,10 +10,11 @@ export const PROJECT_BY_ID = gql`
       members {
         userId
         role
-        assignedAt
         user {
+          id
           username
           profile {
+            userId
             lastName
             firstName
             country

@@ -1,9 +1,8 @@
 import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
-import { toastState } from "store";
-import { ErrorStatus } from "@/types-enums/enums";
 import {
+  DeleteImageMutation,
   LoggedInUserDocument,
   LoggedInUserQuery,
   useDeleteImageMutation,
@@ -11,25 +10,7 @@ import {
 import { dropInVariants } from "utils/variants";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
-
-const dropIn = {
-  hidden: {
-    y: "-100px",
-    opacity: 0,
-  },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.1,
-      type: "spring",
-      damping: 25,
-    },
-  },
-  exit: {
-    opacity: 0,
-  },
-};
+import useToast from "@/hooks/useToast";
 
 interface IProps {
   show: boolean;
@@ -46,7 +27,7 @@ const DeleteModal = ({ show, onClose }: IProps) => {
         query: LoggedInUserDocument,
       });
 
-      if (data?.deleteImage && user) {
+      if (data?.deleteImage && user?.loggedInUser?.profile) {
         cache.writeQuery<LoggedInUserQuery>({
           query: LoggedInUserDocument,
           data: {
@@ -82,14 +63,11 @@ const DeleteModal = ({ show, onClose }: IProps) => {
   const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, handleCloseClick);
 
-  useEffect(() => {
-    if (data) {
-      toastState.addToast("Image deleted successfully", ErrorStatus.success);
-    }
-    if (error) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
-  }, [data, error]);
+  useToast<DeleteImageMutation>({
+    data,
+    successMessage: "Image deleted successfully",
+    error,
+  });
 
   const modalContent = show ? (
     <div className="modal-backdrop">

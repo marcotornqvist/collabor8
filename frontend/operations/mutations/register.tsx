@@ -7,6 +7,7 @@ export const REGISTER_USER = gql`
       user {
         username
         profile {
+          userId
           firstName
           lastName
         }

@@ -1,21 +1,19 @@
-import React, { ChangeEvent, ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import {
   LoggedInUserDocument,
   LoggedInUserQuery,
   SocialInput,
-  UpdateSocialsMutation,
-  UpdateSocialsMutationVariables,
   useLoggedInSocialDetailsQuery,
   useUpdateSocialsMutation,
 } from "generated/graphql";
 import { Formik } from "formik";
 import { UpdateSocialsValidationSchema } from "@/validations/schemas";
 import { isNotEmptyObject } from "utils/helpers";
-import { ErrorStatus } from "@/types-enums/enums";
-import { toastState } from "store";
+
 import SettingsLayout from "@/components-pages/settings/SettingsLayout";
 import button from "@/styles-modules/Button.module.scss";
 import InputSocialField from "@/components-pages/settings/socials/InputSocialField";
+import useToast from "@/hooks/useToast";
 
 interface FormErrors {
   instagram?: string;
@@ -65,15 +63,26 @@ const Socials = () => {
       },
     });
 
+  // useEffect(() => {
+  //   if (error && isEmptyObject(formErrors)) {
+  //     toastState.addToast(error, ErrorStatus.danger);
+  //   }
+  //   if (data) {
+  //     setFormErrors({});
+  //     toastState.addToast("Socials updated successfully", ErrorStatus.success);
+  //   }
+  // }, [error, data]);
+
   useEffect(() => {
-    if (error && !formErrors) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
-    if (data) {
-      setFormErrors({});
-      toastState.addToast("Socials updated successfully", ErrorStatus.success);
-    }
-  }, [error, data]);
+    data && setFormErrors({});
+  }, [data]);
+
+  useToast({
+    data,
+    successMessage: "Socials updated successfully",
+    error,
+    formErrors,
+  });
 
   const { data: formData, loading } = useLoggedInSocialDetailsQuery({
     fetchPolicy: "cache-only", // Fetches from cache only, navbar fetches all the logged in user data when page is loaded and authState is true..

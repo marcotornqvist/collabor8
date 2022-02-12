@@ -7,6 +7,7 @@ export const LOGIN_USER = gql`
       user {
         username
         profile {
+          userId
           firstName
           lastName
           profileImage

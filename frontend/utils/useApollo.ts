@@ -133,13 +133,19 @@ function createApolloClient() {
     link: ApolloLink.from([authMiddleware, refreshLink, splitLink]),
     cache: new InMemoryCache({
       typePolicies: {
+        Profile: {
+          keyFields: ["userId"], // object unique identifier is parent(User) id
+        },
         Query: {
           fields: {
             loggedInUser: {
               merge: true,
             },
+            projectById: {
+              merge: true,
+            },
             users: concatPagination(),
-            projects: concatPagination()
+            projects: concatPagination(),
           },
         },
       },

@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
-import { toastState } from "store";
-import { ErrorStatus } from "@/types-enums/enums";
 import { IDiscipline } from "@/types-interfaces/form";
 import { Formik } from "formik";
 import {
   LoggedInUserDocument,
   LoggedInUserQuery,
+  UpdateProfileMutation,
   useLoggedInProfileDetailsQuery,
   useUpdateProfileMutation,
 } from "generated/graphql";
 import { UpdateProfileValidationSchema } from "@/validations/schemas";
 import { isNotEmptyObject } from "utils/helpers";
+import { dropdownVariants, menuVariants } from "utils/variants";
 import button from "@/styles-modules/Button.module.scss";
-import CountriesDropdown from "./CountriesDropdown";
 import DisciplinesDropdown from "./DisciplinesDropdown";
+import CountriesDropdown from "@/components-modules/global/CountriesDropdown";
 import useWindowSize from "@/hooks/useWindowSize";
 import InputField from "@/components-modules/global/InputField";
 import TextareaField from "@/components-modules/global/TextareaField";
-import { dropdownVariants, menuVariants } from "utils/variants";
+import useToast from "@/hooks/useToast";
 
 interface FormErrors {
   firstName?: string;
@@ -75,14 +75,14 @@ const Form = () => {
     });
 
   useEffect(() => {
-    if (error && !formErrors) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
-    if (data) {
-      setFormErrors({});
-      toastState.addToast("Profile updated successfully", ErrorStatus.success);
-    }
-  }, [error, data]);
+    data && setFormErrors({});
+  }, [data]);
+
+  useToast<UpdateProfileMutation>({
+    data,
+    successMessage: "Profile updated successfully!",
+    error,
+  });
 
   // Get saved form data
   const { data: formData, loading } = useLoggedInProfileDetailsQuery({
@@ -124,9 +124,9 @@ const Form = () => {
           {({
             values,
             errors,
-            setFieldValue,
             handleChange,
             handleSubmit,
+            setFieldValue,
             isSubmitting,
           }) => (
             <form
@@ -169,6 +169,7 @@ const Form = () => {
                   isMobile={isMobile}
                   error={error}
                   lastSubmitValue={lastSubmit?.country}
+                  chevronRotate="rotate(0deg)"
                 />
                 <DisciplinesDropdown
                   setFieldValue={setFieldValue}

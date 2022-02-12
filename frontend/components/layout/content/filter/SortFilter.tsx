@@ -54,7 +54,7 @@ const SortFilter = ({ variants, isMobile }: IProps) => {
         <ChevronIcon
           isMobile={isMobile}
           show={show}
-          initialRotate={isMobile ? "rotate(90deg)" : "rotate(0deg)"}
+          chevronRotate={isMobile ? "rotate(90deg)" : "rotate(0deg)"}
         />
       </div>
       <AnimatePresence>

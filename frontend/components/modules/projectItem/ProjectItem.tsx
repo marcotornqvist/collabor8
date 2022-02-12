@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import button from "@/styles-modules/Button.module.scss";
-import Image from "next/image";
 import { imageFadeInVariants } from "utils/variants";
 import { motion } from "framer-motion";
 import { objectPositionRegex } from "@/validations/regex";
 import { truncateText } from "utils/helpers";
+import button from "@/styles-modules/Button.module.scss";
+import Image from "next/image";
 import Link from "next/link";
 
 interface IProps {
@@ -50,9 +50,7 @@ const ProjectItem = ({ id, title, src, alt, objectPosition }: IProps) => {
           variants={imageFadeInVariants}
         >
           <Image
-            src={
-              "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/more-small.jpg"
-            }
+            src="https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/static/more-small.jpg"
             alt="Person standing looking up"
             layout="fill"
             objectFit="cover"

@@ -1,13 +1,14 @@
 import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
-import { toastState } from "store";
-import { ErrorStatus } from "@/types-enums/enums";
-import { useDeleteProjectMutation } from "generated/graphql";
+import {
+  DeleteProjectMutation,
+  useDeleteProjectMutation,
+} from "generated/graphql";
 import { dropInVariants } from "utils/variants";
-import { useRouter } from "next/router";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
+import useToast from "@/hooks/useToast";
 
 interface IProps {
   id: string;
@@ -16,7 +17,6 @@ interface IProps {
 }
 
 const DeleteModal = ({ id, show, onClose }: IProps) => {
-  const router = useRouter();
   const [isBrowser, setIsBrowser] = useState(false);
   const [error, setError] = useState("");
 
@@ -36,20 +36,12 @@ const DeleteModal = ({ id, show, onClose }: IProps) => {
     onClose();
   };
 
-  useEffect(() => {
-    if (data) {
-      router.push("/projects");
-      router.events.on("routeChangeComplete", () =>
-        toastState.addToast(
-          "Project deleted successfully!",
-          ErrorStatus.success
-        )
-      );
-    }
-    if (error) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
-  }, [error, data]);
+  useToast<DeleteProjectMutation>({
+    data,
+    successMessage: "Project deleted successfully!",
+    error,
+    redirect: "/projects",
+  });
 
   const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, handleCloseClick);

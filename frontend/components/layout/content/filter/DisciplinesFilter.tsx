@@ -10,7 +10,7 @@ import { IDiscipline } from "@/types-interfaces/form";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
 import ChevronIcon from "@/components-modules/global/ChevronIcon";
-import DisciplineItem from "./DisciplineItem";
+import DisciplineItem from "@/components-modules/global/DisciplineItem";
 
 interface IProps {
   variants: Variants;
@@ -19,7 +19,6 @@ interface IProps {
 
 const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
   const [show, setShow] = useState(false);
-  // const [title, setTitle] = useState("");
   const { data } = useDisciplinesQuery();
 
   const [disciplines, setDisciplines] = useQueryParam(
@@ -95,7 +94,7 @@ const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
       ref={dropdownRef}
     >
       <div className="input-text">
-        <label htmlFor="discipline">Discipline</label>
+        <label htmlFor="disciplines">Disciplines</label>
       </div>
       <div onClick={() => setShow(!show)} className="show-dropdown-menu-btn">
         <span
@@ -106,7 +105,7 @@ const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
         <ChevronIcon
           isMobile={isMobile}
           show={show}
-          initialRotate={isMobile ? "rotate(90deg)" : "rotate(0deg)"}
+          chevronRotate={isMobile ? "rotate(90deg)" : "rotate(0deg)"}
         />
       </div>
       <AnimatePresence>

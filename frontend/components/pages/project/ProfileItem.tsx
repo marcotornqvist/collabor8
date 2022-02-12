@@ -23,6 +23,7 @@ const ProfileItem = ({ isMobile, user, role }: IProps) => {
         <ProfileImage
           size={isMobile ? "small" : "medium"}
           profileImage={user.profile?.profileImage}
+          priority={true}
         />
         <div className="wrapper">
           <div className="inner-wrapper">

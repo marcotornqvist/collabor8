@@ -15,9 +15,11 @@
 @import "./layout/footer";
 
 // Pages
+@import "./pages/error";
 @import "./pages/landing";
 @import "./pages/profiles";
 @import "./pages/projects";
 @import "./pages/project";
+@import "./pages/create-project";
 @import "./pages/authentication";
 @import "./pages/settings";

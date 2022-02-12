@@ -1,12 +1,15 @@
 import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
-import { toastState } from "store";
-import { ErrorStatus } from "@/types-enums/enums";
-import { ContactStatusDocument, useDeleteContactMutation } from "generated/graphql";
+import {
+  ContactStatusDocument,
+  DeleteContactMutation,
+  useDeleteContactMutation,
+} from "generated/graphql";
+import { dropInVariants } from "utils/variants";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
-import { dropInVariants } from "utils/variants";
+import useToast from "@/hooks/useToast";
 
 interface IProps {
   id: string;
@@ -54,14 +57,11 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
   const ref = useRef(null);
   useOnClickOutside(ref, handleCloseClick);
 
-  useEffect(() => {
-    if (data) {
-      toastState.addToast("Contact deleted", ErrorStatus.danger);
-    }
-    if (error) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
-  }, [data, error]);
+  useToast<DeleteContactMutation>({
+    data,
+    successMessage: "Contact Deleted",
+    error,
+  });
 
   const modalContent = show ? (
     <div className="modal-backdrop">

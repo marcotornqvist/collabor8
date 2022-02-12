@@ -98,6 +98,7 @@
             line-height: 1.75rem;
             font-family: $font-title;
             font-weight: $font-title-700;
+            overflow: hidden;
           }
         }
 
@@ -281,30 +282,6 @@
         padding: 0 1.5rem 1.5rem;
       }
     }
-
-    // .profile-item {
-    //   .toggle-button-wrapper {
-    //     padding: 1.5rem 1.5rem 0;
-    //   }
-
-    //   .carousel {
-    //     .carousel-item {
-    //       padding: 0 1.5rem 1.5rem;
-    //     }
-
-    //     .profile-content .wrapper {
-    //       padding-top: 3rem;
-    //     }
-    //   }
-    // }
-
-    // .skeleton-item {
-    //   padding: 1.5rem;
-
-    //   .skeleton-content .wrapper {
-    //     padding-top: 3rem;
-    //   }
-    // }
   }
 }
 

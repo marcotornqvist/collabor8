@@ -1,14 +1,14 @@
 import { useState, ReactElement, useEffect } from "react";
-import { authState, toastState } from "store";
+import { authState } from "store";
 import { useRouter } from "next/router";
 import { Formik } from "formik";
 import { RegisterInput, useRegisterMutation } from "generated/graphql";
 import { RegisterValidationSchema } from "@/validations/schemas";
-import { ErrorStatus } from "@/types-enums/enums";
 import { isNotEmptyObject } from "utils/helpers";
 import AuthLayout from "@/components-pages/auth/AuthLayout";
 import button from "@/styles-modules/Button.module.scss";
 import InputField from "@/components-modules/global/InputField";
+import useToast from "@/hooks/useToast";
 
 interface FormErrors {
   firstName?: string;
@@ -70,11 +70,9 @@ const Register = () => {
     }
   };
 
-  useEffect(() => {
-    if (error && !formErrors) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
-  }, [error]);
+  useToast({
+    error,
+  });
 
   return (
     <Formik
@@ -94,7 +92,7 @@ const Register = () => {
           onSubmit={(e) => {
             e.preventDefault();
             isNotEmptyObject(errors) && setFormErrors(errors);
-            handleSubmit(); 
+            handleSubmit();
           }}
         >
           <div className="wrapper">

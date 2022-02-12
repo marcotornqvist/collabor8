@@ -136,6 +136,10 @@
 
           span {
             font-size: 1.125rem;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
           }
 
           &:last-child {
@@ -176,7 +180,7 @@
           align-items: center;
           padding-left: 0.5px;
           padding-top: 2px;
-          width: 1.5rem;
+          min-width: 1.5rem;
           height: 1.5rem;
           border: 1px solid $green;
           background: $light-green;
@@ -199,7 +203,8 @@
       .dropdown-menu {
         position: absolute;
         top: 5.25rem;
-        width: 100%;
+        left: -4px;
+        width: calc(100% + 15.5px);
         max-height: 336px;
         z-index: $z-index2;
         border-radius: $medium-radius;
@@ -233,31 +238,6 @@
             }
           }
         }
-      }
-    }
-  }
-}
-
-@media only screen and (min-width: $breakpoint-lg) {
-  .default {
-    :global {
-      .dropdown-menu {
-        width: calc(100% + 15.5px);
-        left: -4px;
-
-        ul {
-          min-width: 100%;
-        }
-      }
-    }
-  }
-}
-
-@media only screen and (min-width: $breakpoint-xl) {
-  .default {
-    :global {
-      .dropdown-menu {
-        width: calc(100% + 48px);
       }
     }
   }

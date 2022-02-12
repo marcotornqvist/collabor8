@@ -6,12 +6,11 @@ import {
   UpdateEmailMutation,
   useUpdateEmailMutation,
 } from "generated/graphql";
-import { ErrorStatus } from "@/types-enums/enums";
-import { toastState } from "store";
 import { EmailValidationSchema } from "@/validations/schemas";
 import { isNotEmptyObject } from "utils/helpers";
 import button from "@/styles-modules/Button.module.scss";
 import InputField from "@/components-modules/global/InputField";
+import useToast from "@/hooks/useToast";
 
 interface FormErrors {
   email?: string;
@@ -53,15 +52,18 @@ const UpdateEmail = ({ currentEmail, loading }: IProps) => {
   });
 
   useEffect(() => {
-    if (error && !formErrors) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
     if (data) {
       setLastSubmit(data);
       setFormErrors({});
-      toastState.addToast("Email updated successfully", ErrorStatus.success);
     }
-  }, [error, data]);
+  }, [data]);
+
+  useToast<UpdateEmailMutation>({
+    data,
+    successMessage: "Email updated successfully",
+    error,
+    formErrors,
+  });
 
   return (
     <div className="update-email">

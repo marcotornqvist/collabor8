@@ -9,10 +9,10 @@ interface IProps {
   setFieldValue: (
     field: "country",
     value: string | null,
-    shouldValidate?: boolean | undefined
+    shouldValidate?: boolean
   ) => void;
   selected: string | null;
-  loading: boolean;
+  loading?: boolean;
   variants: Variants;
   isMobile: boolean;
   error: string;
@@ -22,7 +22,7 @@ interface IProps {
 const CountriesDropdown = ({
   setFieldValue,
   selected,
-  loading,
+  loading = false,
   variants,
   isMobile,
   error,
@@ -84,7 +84,7 @@ const CountriesDropdown = ({
         <ChevronIcon
           isMobile={isMobile}
           show={show}
-          initialRotate={"rotate(0deg)"}
+          chevronRotate={isMobile ? "rotate(90deg)" : "rotate(0deg)"}
         />
       </div>
       <AnimatePresence>

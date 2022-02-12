@@ -1,0 +1,24 @@
+@use "../abstracts/colors" as *;
+@use "../abstracts/breakpoints" as *;
+@use "../abstracts/shadows" as *;
+@use "../abstracts/zindex" as *;
+@use "../abstracts/fonts" as *;
+@use "../abstracts/border-radius" as *;
+
+.create-project-page {
+  flex: 1;
+  min-width: 100%;
+}
+
+@media only screen and (min-width: $breakpoint-sm) {
+}
+
+@media only screen and (min-width: $breakpoint-md) {
+}
+
+@media only screen and (min-width: $breakpoint-lg) {
+  .create-project-page {
+    margin: 0 auto;
+    max-width: $breakpoint-lg;
+  }
+}

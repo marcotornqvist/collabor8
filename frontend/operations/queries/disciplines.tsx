@@ -20,6 +20,7 @@ export const GET_DISCIPLINES_LANDING = gql`
       id
       title
       image {
+        id
         small
         alt
       }

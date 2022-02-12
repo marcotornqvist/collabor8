@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { Formik } from "formik";
-import { toastState } from "store";
-import { ErrorStatus } from "@/types-enums/enums";
 import {
   UpdatePasswordInput,
+  UpdatePasswordMutation,
   useUpdatePasswordMutation,
 } from "generated/graphql";
 import { UpdatePasswordValidationSchema } from "@/validations/schemas";
 import { isNotEmptyObject } from "utils/helpers";
 import button from "@/styles-modules/Button.module.scss";
 import InputField from "@/components-modules/global/InputField";
+import useToast from "@/hooks/useToast";
 
 interface IProps {
   loading: boolean;
@@ -35,14 +35,15 @@ const UpdatePassword = ({ loading }: IProps) => {
     });
 
   useEffect(() => {
-    if (error && !formErrors) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
-    if (data) {
-      setFormErrors({});
-      toastState.addToast("Password updated successfully", ErrorStatus.success);
-    }
-  }, [error, data]);
+    data && setFormErrors({});
+  }, [data]);
+
+  useToast<UpdatePasswordMutation>({
+    data,
+    successMessage: "Password updated successfully",
+    formErrors,
+    error,
+  });
 
   return (
     <div className="update-password">

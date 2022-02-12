@@ -1,16 +1,11 @@
-import { ChangeEvent } from "react";
+import { FormikHandleChange } from "types/types";
 import input from "@/styles-modules/Input.module.scss";
 
 interface TextareaFieldProps {
   name: string;
   value: string;
   // Formik handleChange type
-  handleChange: {
-    (e: ChangeEvent<any>): void;
-    <T = string | ChangeEvent<any>>(field: T): T extends ChangeEvent<any>
-      ? void
-      : (e: string | ChangeEvent<any>) => void;
-  };
+  handleChange: FormikHandleChange
   label: string;
   placeholder: string;
   successMessage?: string;

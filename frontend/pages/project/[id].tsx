@@ -46,10 +46,7 @@ const Project = () => {
           >
             <h3 className="title">{data?.projectById?.title}</h3>
             <About body={data?.projectById?.body} />
-            <Members
-              members={data?.projectById?.members}
-              id={typeof id === "string" ? id : ""}
-            />
+            <Members members={data?.projectById?.members} />
             <Settings id={typeof id === "string" ? id : ""} />
           </motion.article>
         )}

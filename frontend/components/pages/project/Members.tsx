@@ -6,10 +6,9 @@ import useIsomorphicLayoutEffect from "@/hooks/useIsomorphicLayoutEffect";
 
 interface IProps {
   members: NonNullable<ProjectByIdQuery["projectById"]>["members"];
-  id: string,
 }
 
-const Members = ({ members, id }: IProps) => {
+const Members = ({ members }: IProps) => {
   const [isMobile, setIsMobile] = useState(true);
   const { width } = useWindowSize();
 
@@ -24,8 +23,8 @@ const Members = ({ members, id }: IProps) => {
         <ul>
           {members?.map((item) => (
             <ProfileItem
-              isMobile={isMobile}
               key={item.userId}
+              isMobile={isMobile}
               user={item.user}
               role={item.role}
             />

@@ -68,24 +68,26 @@ export const ReportValidationSchema = Yup.object().shape({
   violation,
   title: Yup.string()
     .min(10, "Title cannot be less than 10 or more than 255 characters")
-    .max(255, "Title cannot be less than 10 or more than 255 characters"),
+    .max(255, "Title cannot be less than 10 or more than 255 characters")
+    .required("Title cannot be less than 10 or more than 255 characters"),
   body: Yup.string().max(
     1000,
     "Description cannot be more than 1000 characters"
   ),
 });
 
-export const projectValidationSchema = Yup.object().shape({
+export const ProjectValidationSchema = Yup.object().shape({
   title: Yup.string()
     .min(10, "Title cannot be less than 10 or more than 64 characters")
-    .max(64, "Title cannot be less than 10 or more than 64 characters"),
+    .max(64, "Title cannot be less than 10 or more than 64 characters")
+    .required("Title cannot be less than 10 or more than 64 characters"),
   body: Yup.string().max(
     1000,
     "Description cannot be more than 1000 characters"
   ),
 });
 
-export const messageValidationSchema = Yup.object().shape({
+export const MessageValidationSchema = Yup.object().shape({
   body: Yup.string()
     .max(255, "Message cannot be empty or longer than 255 characters")
     .required("Message cannot be empty or longer than 255 characters"),

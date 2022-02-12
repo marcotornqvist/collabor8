@@ -1,35 +1,57 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { useCountriesQuery } from "generated/graphql";
-import { useQueryParam, StringParam, withDefault } from "next-query-params";
+import { chevronRotate } from "types/types";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
 import ChevronIcon from "@/components-modules/global/ChevronIcon";
-import useIsomorphicLayoutEffect from "@/hooks/useIsomorphicLayoutEffect";
 
 interface IProps {
+  setFieldValue: (
+    field: "country",
+    value: string | null,
+    shouldValidate?: boolean | undefined
+  ) => void;
+  selected: string | null;
+  loading?: boolean;
   variants: Variants;
   isMobile: boolean;
+  error: string;
+  lastSubmitValue?: string | null;
+  chevronRotate?: chevronRotate;
 }
 
-const CountriesFilter = ({ variants, isMobile }: IProps) => {
+const CountriesDropdown = ({
+  setFieldValue,
+  selected,
+  loading = false,
+  variants,
+  isMobile,
+  error,
+  lastSubmitValue,
+  chevronRotate,
+}: IProps) => {
   const [show, setShow] = useState(false);
   const { data } = useCountriesQuery();
 
-  const [country, setCountry] = useQueryParam(
-    "country",
-    withDefault(StringParam, "")
-  );
-
   const activeRef = useRef<HTMLLIElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // setShow to false to prevent glitch when variants change in dropdown menu
-  useIsomorphicLayoutEffect(() => {
+  useEffect(() => {
     setShow(false);
   }, [isMobile]);
 
   useEffect(() => {
+    if (activeRef.current && listRef.current && show) {
+      const activeElementY = activeRef.current.offsetTop;
+      // scrolls screen to center
+      listRef.current.scrollIntoView({ block: "center" });
+      // Scrolls list to activeElementY y-axis position
+      listRef.current.scroll({ top: activeElementY });
+    }
+
     // Prevent scrolling on body
     isMobile && show
       ? document.body.classList.add("body-prevent-scroll")
@@ -44,13 +66,14 @@ const CountriesFilter = ({ variants, isMobile }: IProps) => {
 
   return (
     <div
-      className={`countries-dropdown ${dropdown.default} ${
-        show ? dropdown.active : ""
-      }`}
+      className={`dropdown ${dropdown.default} ${show ? dropdown.active : ""}`}
       ref={dropdownRef}
     >
       <div className="input-text">
         <label htmlFor="country">Country</label>
+        {!error && lastSubmitValue === selected && selected !== null && (
+          <span className="success-message">Country is valid</span>
+        )}
       </div>
       <div
         onClick={() => {
@@ -58,13 +81,13 @@ const CountriesFilter = ({ variants, isMobile }: IProps) => {
         }}
         className="show-dropdown-menu-btn"
       >
-        <span className={country ? "default-text" : "placeholder"}>
-          {country ? country : "Select Country"}
+        <span className={selected ? "default-text" : "placeholder"}>
+          {!loading ? (selected ? selected : "Select Country") : ""}
         </span>
         <ChevronIcon
           isMobile={isMobile}
           show={show}
-          chevronRotate={isMobile ? "rotate(90deg)" : "rotate(0deg)"}
+          chevronRotate={chevronRotate}
         />
       </div>
       <AnimatePresence>
@@ -78,30 +101,30 @@ const CountriesFilter = ({ variants, isMobile }: IProps) => {
           >
             <div className="top-bar" onClick={() => setShow(false)}>
               <span className="selected-title">
-                {country ? country : "Select Country"}
+                {selected ? selected : "Select Country"}
               </span>
               <span className="close-btn">Close</span>
             </div>
-            <ul className="dropdown-list single-selection">
+            <ul className="dropdown-list single-selection" ref={listRef}>
               <li
-                ref={!country ? activeRef : null}
+                ref={!selected ? activeRef : null}
                 onClick={() => {
-                  setCountry(undefined);
+                  setFieldValue("country", null);
                   setShow(false);
                 }}
-                className={`list-item${!country ? " active" : ""}`}
+                className={`list-item${!selected ? " active" : ""}`}
               >
                 <span>No Selection</span>
               </li>
               {data?.countries?.map((item) => (
                 <li
-                  ref={country === item.country ? activeRef : null}
+                  ref={selected === item.country ? activeRef : null}
                   key={item.key}
                   className={`list-item${
-                    country === item.country ? " active" : ""
+                    selected === item.country ? " active" : ""
                   }`}
                   onClick={() => {
-                    setCountry(item.country);
+                    setFieldValue("country", item.country);
                     setShow(false);
                   }}
                 >
@@ -111,7 +134,7 @@ const CountriesFilter = ({ variants, isMobile }: IProps) => {
               {data?.countries && data.countries.length > 50 && (
                 <li
                   onClick={() => {
-                    setCountry(undefined);
+                    setFieldValue("country", null);
                     setShow(false);
                   }}
                   className="list-item"
@@ -127,4 +150,4 @@ const CountriesFilter = ({ variants, isMobile }: IProps) => {
   );
 };
 
-export default CountriesFilter;
+export default CountriesDropdown;

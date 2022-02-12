@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { Formik } from "formik";
-import { toastState } from "store";
-import { ErrorStatus } from "@/types-enums/enums";
 import {
   LoggedInUserDocument,
   LoggedInUserQuery,
@@ -12,6 +10,7 @@ import { UsernameValidationSchema } from "@/validations/schemas";
 import { isNotEmptyObject } from "utils/helpers";
 import button from "@/styles-modules/Button.module.scss";
 import InputField from "@/components-modules/global/InputField";
+import useToast from "@/hooks/useToast";
 
 interface IProps {
   currentUsername?: string;
@@ -53,15 +52,18 @@ const UpdateUsername = ({ currentUsername, loading }: IProps) => {
   });
 
   useEffect(() => {
-    if (error && !formErrors) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
     if (data) {
       setLastSubmit(data);
       setFormErrors({});
-      toastState.addToast("Username updated successfully", ErrorStatus.success);
     }
-  }, [error, data]);
+  }, [data]);
+
+  useToast<UpdateUsernameMutation>({
+    data,
+    successMessage: "Username updated successfully!",
+    error,
+    formErrors,
+  });
 
   return (
     <div className="update-username">

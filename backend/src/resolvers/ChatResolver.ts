@@ -22,7 +22,7 @@ import { ForbiddenError, UserInputError } from "apollo-server-express";
 import { Message } from "../types/Message";
 import { ChatInput, CreateMessageInput } from "./inputs/ChatInput";
 import { User } from "../types/User";
-import { messageValidationSchema } from "../validations/schemas";
+import { MessageValidationSchema } from "../validations/schemas";
 import { MessageSubscribtionResponse } from "./responses/MessageResponse";
 import { JwtPayload } from "jsonwebtoken";
 
@@ -546,7 +546,7 @@ export class ChatResolver {
     publish: Publisher<MessageSubscribtionResponse>
   ): Promise<Message> {
     // Validate body input
-    await messageValidationSchema.validate({
+    await MessageValidationSchema.validate({
       body,
     });
 
@@ -633,7 +633,7 @@ export class ChatResolver {
     publish: Publisher<MessageSubscribtionResponse>
   ): Promise<Message> {
     // Validate body input
-    await messageValidationSchema.validate({
+    await MessageValidationSchema.validate({
       body,
     });
 

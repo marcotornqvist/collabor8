@@ -3,14 +3,13 @@ import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 import { toastState } from "store";
 import { ErrorStatus } from "@/types-enums/enums";
-import {
-  useDeleteAccountMutation,
-} from "generated/graphql";
+import { useDeleteAccountMutation } from "generated/graphql";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import { authState } from "store";
 import { useRouter } from "next/router";
 import { dropInVariants } from "utils/variants";
+import useToast from "@/hooks/useToast";
 
 interface IProps {
   show: boolean;
@@ -50,11 +49,9 @@ const DeleteModal = ({ show, onClose }: IProps) => {
     }
   };
 
-  useEffect(() => {
-    if (error) {
-      toastState.addToast(error, ErrorStatus.danger);
-    }
-  }, [error]);
+  useToast({
+    error,
+  });
 
   const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, handleCloseClick);

@@ -852,6 +852,13 @@ export type ContactAddMessageMutationVariables = Exact<{
 
 export type ContactAddMessageMutation = { __typename?: 'Mutation', contactAddMessage: { __typename?: 'Message', body: string } };
 
+export type CreateProjectMutationVariables = Exact<{
+  data: CreateProjectInput;
+}>;
+
+
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, members?: Array<{ __typename?: 'Member', userId: string }> | null | undefined, disciplines?: Array<{ __typename?: 'Discipline', title: string }> | null | undefined } };
+
 export type DeleteAccountMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -888,7 +895,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthResponse', accessToken: string, user: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', firstName?: string | null | undefined, lastName?: string | null | undefined, profileImage?: string | null | undefined } | null | undefined } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthResponse', accessToken: string, user: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, profileImage?: string | null | undefined } | null | undefined } } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -900,7 +907,7 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthResponse', accessToken: string, user: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } } };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthResponse', accessToken: string, user: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } } };
 
 export type RejectContactMutationVariables = Exact<{
   id: Scalars['String'];
@@ -935,7 +942,7 @@ export type UpdateProfileMutationVariables = Exact<{
 }>;
 
 
-export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'Profile', firstName?: string | null | undefined, lastName?: string | null | undefined, country?: string | null | undefined, bio?: string | null | undefined, discipline?: { __typename?: 'Discipline', id: number, title: string } | null | undefined } };
+export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, country?: string | null | undefined, bio?: string | null | undefined, discipline?: { __typename?: 'Discipline', id: number, title: string } | null | undefined } };
 
 export type UpdateSocialsMutationVariables = Exact<{
   data: SocialInput;
@@ -980,37 +987,37 @@ export type DisciplinesLandingQueryVariables = Exact<{
 }>;
 
 
-export type DisciplinesLandingQuery = { __typename?: 'Query', disciplines?: Array<{ __typename?: 'Discipline', id: number, title: string, image?: { __typename?: 'Image', small?: string | null | undefined, alt?: string | null | undefined } | null | undefined }> | null | undefined };
+export type DisciplinesLandingQuery = { __typename?: 'Query', disciplines?: Array<{ __typename?: 'Discipline', id: number, title: string, image?: { __typename?: 'Image', id: string, small?: string | null | undefined, alt?: string | null | undefined } | null | undefined }> | null | undefined };
 
 export type LoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', email: string, username: string, profile?: { __typename?: 'Profile', firstName?: string | null | undefined, lastName?: string | null | undefined, bio?: string | null | undefined, profileImage?: string | null | undefined, country?: string | null | undefined, discipline?: { __typename?: 'Discipline', id: number, title: string } | null | undefined } | null | undefined, socials?: { __typename?: 'Social', instagram?: string | null | undefined, linkedin?: string | null | undefined, dribbble?: string | null | undefined, behance?: string | null | undefined, soundcloud?: string | null | undefined, pinterest?: string | null | undefined, spotify?: string | null | undefined, medium?: string | null | undefined, vimeo?: string | null | undefined, youtube?: string | null | undefined, github?: string | null | undefined, discord?: string | null | undefined } | null | undefined } };
+export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', id: string, email: string, username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, bio?: string | null | undefined, profileImage?: string | null | undefined, country?: string | null | undefined, discipline?: { __typename?: 'Discipline', id: number, title: string } | null | undefined } | null | undefined, socials?: { __typename?: 'Social', instagram?: string | null | undefined, linkedin?: string | null | undefined, dribbble?: string | null | undefined, behance?: string | null | undefined, soundcloud?: string | null | undefined, pinterest?: string | null | undefined, spotify?: string | null | undefined, medium?: string | null | undefined, vimeo?: string | null | undefined, youtube?: string | null | undefined, github?: string | null | undefined, discord?: string | null | undefined } | null | undefined } };
 
 export type LoggedInSocialDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LoggedInSocialDetailsQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', socials?: { __typename?: 'Social', instagram?: string | null | undefined, linkedin?: string | null | undefined, dribbble?: string | null | undefined, behance?: string | null | undefined, soundcloud?: string | null | undefined, pinterest?: string | null | undefined, spotify?: string | null | undefined, medium?: string | null | undefined, vimeo?: string | null | undefined, youtube?: string | null | undefined, github?: string | null | undefined, discord?: string | null | undefined } | null | undefined } };
+export type LoggedInSocialDetailsQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', id: string, socials?: { __typename?: 'Social', instagram?: string | null | undefined, linkedin?: string | null | undefined, dribbble?: string | null | undefined, behance?: string | null | undefined, soundcloud?: string | null | undefined, pinterest?: string | null | undefined, spotify?: string | null | undefined, medium?: string | null | undefined, vimeo?: string | null | undefined, youtube?: string | null | undefined, github?: string | null | undefined, discord?: string | null | undefined } | null | undefined } };
 
 export type LoggedInProfileDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LoggedInProfileDetailsQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', profile?: { __typename?: 'Profile', firstName?: string | null | undefined, lastName?: string | null | undefined, bio?: string | null | undefined, country?: string | null | undefined, discipline?: { __typename?: 'Discipline', id: number, title: string } | null | undefined } | null | undefined } };
+export type LoggedInProfileDetailsQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', id: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, bio?: string | null | undefined, country?: string | null | undefined, discipline?: { __typename?: 'Discipline', id: number, title: string } | null | undefined } | null | undefined } };
 
 export type LoggedInAccountDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LoggedInAccountDetailsQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', email: string, username: string } };
+export type LoggedInAccountDetailsQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', id: string, email: string, username: string } };
 
 export type ProfileImageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProfileImageQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', profile?: { __typename?: 'Profile', firstName?: string | null | undefined, lastName?: string | null | undefined, profileImage?: string | null | undefined } | null | undefined } };
+export type ProfileImageQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', id: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, profileImage?: string | null | undefined } | null | undefined } };
 
 export type LoggedInUsernameQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LoggedInUsernameQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', username: string } };
+export type LoggedInUsernameQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', id: string, username: string } };
 
 export type IsUserBlockedQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1024,7 +1031,7 @@ export type ProjectByIdQueryVariables = Exact<{
 }>;
 
 
-export type ProjectByIdQuery = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, members?: Array<{ __typename?: 'Member', userId: string, role: Role, assignedAt: any, user: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', lastName?: string | null | undefined, firstName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined } | null | undefined };
+export type ProjectByIdQuery = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, members?: Array<{ __typename?: 'Member', userId: string, role: Role, user: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, lastName?: string | null | undefined, firstName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined } | null | undefined };
 
 export type ProjectMemberStatusQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1038,14 +1045,14 @@ export type ProjectsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: Array<{ __typename?: 'Project', id: string, title: string, disciplines?: Array<{ __typename?: 'Discipline', image?: { __typename?: 'Image', small?: string | null | undefined, alt?: string | null | undefined, objectPosition?: string | null | undefined } | null | undefined }> | null | undefined }> | null | undefined };
+export type ProjectsQuery = { __typename?: 'Query', projects?: Array<{ __typename?: 'Project', id: string, title: string, disciplines?: Array<{ __typename?: 'Discipline', image?: { __typename?: 'Image', id: string, small?: string | null | undefined, alt?: string | null | undefined, objectPosition?: string | null | undefined } | null | undefined }> | null | undefined }> | null | undefined };
 
 export type UsersQueryVariables = Exact<{
   data: UsersFilterArgs;
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users?: Array<{ __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', firstName?: string | null | undefined, lastName?: string | null | undefined, profileImage?: string | null | undefined, country?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined }> | null | undefined };
+export type UsersQuery = { __typename?: 'Query', users?: Array<{ __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, profileImage?: string | null | undefined, country?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string, id: number } | null | undefined } | null | undefined }> | null | undefined };
 
 export type NewMessageSubscriptionVariables = Exact<{
   id: Scalars['String'];
@@ -1216,6 +1223,48 @@ export function useContactAddMessageMutation(baseOptions?: Apollo.MutationHookOp
 export type ContactAddMessageMutationHookResult = ReturnType<typeof useContactAddMessageMutation>;
 export type ContactAddMessageMutationResult = Apollo.MutationResult<ContactAddMessageMutation>;
 export type ContactAddMessageMutationOptions = Apollo.BaseMutationOptions<ContactAddMessageMutation, ContactAddMessageMutationVariables>;
+export const CreateProjectDocument = gql`
+    mutation createProject($data: CreateProjectInput!) {
+  createProject(data: $data) {
+    id
+    title
+    body
+    country
+    members {
+      userId
+    }
+    disciplines {
+      title
+    }
+  }
+}
+    `;
+export type CreateProjectMutationFn = Apollo.MutationFunction<CreateProjectMutation, CreateProjectMutationVariables>;
+
+/**
+ * __useCreateProjectMutation__
+ *
+ * To run a mutation, you first call `useCreateProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProjectMutation, { data, loading, error }] = useCreateProjectMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOptions<CreateProjectMutation, CreateProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, options);
+      }
+export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
+export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
+export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
 export const DeleteAccountDocument = gql`
     mutation deleteAccount {
   deleteAccount
@@ -1378,6 +1427,7 @@ export const LoginDocument = gql`
     user {
       username
       profile {
+        userId
         firstName
         lastName
         profileImage
@@ -1449,6 +1499,7 @@ export const RegisterDocument = gql`
     user {
       username
       profile {
+        userId
         firstName
         lastName
       }
@@ -1609,6 +1660,7 @@ export type UpdatePasswordMutationOptions = Apollo.BaseMutationOptions<UpdatePas
 export const UpdateProfileDocument = gql`
     mutation updateProfile($data: UpdateProfileInput!) {
   updateProfile(data: $data) {
+    userId
     firstName
     lastName
     country
@@ -1871,6 +1923,7 @@ export const DisciplinesLandingDocument = gql`
     id
     title
     image {
+      id
       small
       alt
     }
@@ -1908,9 +1961,11 @@ export type DisciplinesLandingQueryResult = Apollo.QueryResult<DisciplinesLandin
 export const LoggedInUserDocument = gql`
     query loggedInUser {
   loggedInUser {
+    id
     email
     username
     profile {
+      userId
       firstName
       lastName
       bio
@@ -1968,6 +2023,7 @@ export type LoggedInUserQueryResult = Apollo.QueryResult<LoggedInUserQuery, Logg
 export const LoggedInSocialDetailsDocument = gql`
     query loggedInSocialDetails {
   loggedInUser {
+    id
     socials {
       instagram
       linkedin
@@ -2015,7 +2071,9 @@ export type LoggedInSocialDetailsQueryResult = Apollo.QueryResult<LoggedInSocial
 export const LoggedInProfileDetailsDocument = gql`
     query loggedInProfileDetails {
   loggedInUser {
+    id
     profile {
+      userId
       firstName
       lastName
       bio
@@ -2058,6 +2116,7 @@ export type LoggedInProfileDetailsQueryResult = Apollo.QueryResult<LoggedInProfi
 export const LoggedInAccountDetailsDocument = gql`
     query loggedInAccountDetails {
   loggedInUser {
+    id
     email
     username
   }
@@ -2093,7 +2152,9 @@ export type LoggedInAccountDetailsQueryResult = Apollo.QueryResult<LoggedInAccou
 export const ProfileImageDocument = gql`
     query profileImage {
   loggedInUser {
+    id
     profile {
+      userId
       firstName
       lastName
       profileImage
@@ -2131,6 +2192,7 @@ export type ProfileImageQueryResult = Apollo.QueryResult<ProfileImageQuery, Prof
 export const LoggedInUsernameDocument = gql`
     query loggedInUsername {
   loggedInUser {
+    id
     username
   }
 }
@@ -2196,7 +2258,7 @@ export type IsUserBlockedQueryHookResult = ReturnType<typeof useIsUserBlockedQue
 export type IsUserBlockedLazyQueryHookResult = ReturnType<typeof useIsUserBlockedLazyQuery>;
 export type IsUserBlockedQueryResult = Apollo.QueryResult<IsUserBlockedQuery, IsUserBlockedQueryVariables>;
 export const ProjectByIdDocument = gql`
-    query ProjectById($id: String!) {
+    query projectById($id: String!) {
   projectById(id: $id) {
     id
     title
@@ -2205,10 +2267,11 @@ export const ProjectByIdDocument = gql`
     members {
       userId
       role
-      assignedAt
       user {
+        id
         username
         profile {
+          userId
           lastName
           firstName
           country
@@ -2290,6 +2353,7 @@ export const ProjectsDocument = gql`
     title
     disciplines {
       image {
+        id
         small
         alt
         objectPosition
@@ -2332,12 +2396,14 @@ export const UsersDocument = gql`
     id
     username
     profile {
+      userId
       firstName
       lastName
       profileImage
       country
       discipline {
         title
+        id
       }
     }
   }

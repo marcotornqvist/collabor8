@@ -1,16 +1,12 @@
-import { ChangeEvent, RefObject, useRef, useState } from "react";
+import { RefObject, useRef, useState } from "react";
 import input from "@/styles-modules/Input.module.scss";
+import { FormikHandleChange } from "types/types";
 
 interface InputFieldProps {
   name: string;
   value: string;
   // Formik handleChange type
-  handleChange: {
-    (e: ChangeEvent<any>): void;
-    <T = string | ChangeEvent<any>>(field: T): T extends ChangeEvent<any>
-      ? void
-      : (e: string | ChangeEvent<any>) => void;
-  };
+  handleChange: FormikHandleChange;
   label: string;
   url?: string;
   successMessage: string;
