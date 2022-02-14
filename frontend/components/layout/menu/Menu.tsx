@@ -154,27 +154,27 @@ const Menu = () => {
                   </a>
                 </Link>
               </li>
-              <li
-                onClick={() => closeMenu()}
-                className={`list-item${
-                  pathname === "/create-project" ? " active" : ""
-                }`}
-              >
-                <Link href="/create-project">
-                  <a>
-                    <span>Create Project</span>
-                    <Image
-                      src="/icons/chevron-right-solid.svg"
-                      alt="chevron right"
-                      width={16}
-                      height={16}
-                      layout="fixed"
-                    />
-                  </a>
-                </Link>
-              </li>
               {isAuth ? (
                 <>
+                  <li
+                    onClick={() => closeMenu()}
+                    className={`list-item${
+                      pathname === "/create-project" ? " active" : ""
+                    }`}
+                  >
+                    <Link href="/create-project">
+                      <a>
+                        <span>Create Project</span>
+                        <Image
+                          src="/icons/chevron-right-solid.svg"
+                          alt="chevron right"
+                          width={16}
+                          height={16}
+                          layout="fixed"
+                        />
+                      </a>
+                    </Link>
+                  </li>
                   <li
                     onClick={() => closeMenu()}
                     className={`list-item${

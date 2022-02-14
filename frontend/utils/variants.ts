@@ -100,7 +100,7 @@ export const dropInVariants = {
 export const textFadeInVariants = {
   hidden: {
     opacity: 0,
-    y: 50,
+    y: 500,
   },
   visible: {
     opacity: 1,

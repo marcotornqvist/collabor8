@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Formik } from "formik";
 import {
   CreateProjectInput,
@@ -8,18 +8,22 @@ import {
 import { ProjectValidationSchema } from "@/validations/schemas";
 import { isNotEmptyObject } from "utils/helpers";
 import button from "@/styles-modules/Button.module.scss";
-import useWindowSize from "@/hooks/useWindowSize";
 import Details from "./Details";
 import React from "react";
 import useToast from "@/hooks/useToast";
+import useIsMobile from "@/hooks/useIsMobile";
+import Members from "./Members";
 
 export interface FormErrors {
   title?: string;
   body?: string;
 }
 
-const Form = () => {
-  const [isMobile, setIsMobile] = useState(true);
+interface IProps {
+  navigation: boolean;
+}
+
+const Form = ({ navigation }: IProps) => {
   const [lastSubmit, setLastSubmit] = useState<
     CreateProjectInput | undefined
   >(); // Last submit response values
@@ -41,11 +45,7 @@ const Form = () => {
     redirect: "/projects",
   });
 
-  const { width } = useWindowSize();
-
-  useEffect(() => {
-    setIsMobile(width < 768);
-  }, [width]);
+  const { isMobile } = useIsMobile();
 
   const initialValues: CreateProjectInput = {
     title: "",
@@ -90,26 +90,23 @@ const Form = () => {
             handleSubmit();
           }}
         >
-          <Details
-            values={values}
-            error={error}
-            isMobile={isMobile}
-            handleChange={handleChange}
-            setFieldValue={setFieldValue}
-            lastSubmit={lastSubmit}
-            formErrors={formErrors}
-          />
-          {/* <Members
-            setFieldValue={setFieldValue}
-            disciplines={values.disciplines || []}
-            loading={loading}
-            variants={
-              isMobile ? dropdownVariants.slideIn : dropdownVariants.desktop
-            }
-            isMobile={isMobile}
-            error={error}
-            lastSubmittedValues={lastSubmit?.disciplines}
-          /> */}
+          {navigation ? (
+            <Members
+              setFieldValue={setFieldValue}
+              members={values.members || []}
+              isMobile={isMobile}
+            />
+          ) : (
+            <Details
+              values={values}
+              error={error}
+              isMobile={isMobile}
+              handleChange={handleChange}
+              setFieldValue={setFieldValue}
+              lastSubmit={lastSubmit}
+              formErrors={formErrors}
+            />
+          )}
           <button
             type="submit"
             className={`${

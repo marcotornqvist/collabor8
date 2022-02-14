@@ -102,7 +102,7 @@
       background: $grey-bg;
       color: $black;
       outline: $green;
-      cursor: pointer;
+      cursor: text;
       outline: none;
 
       span {
@@ -180,7 +180,7 @@
       background: $grey-bg;
       color: $black;
       outline: $green;
-      cursor: pointer;
+      cursor: text;
       outline: none;
 
       input {
@@ -205,6 +205,11 @@
         span {
           color: $green;
         }
+      }
+
+      .image-container {
+        display: flex;
+        align-items: center;
       }
     }
   }

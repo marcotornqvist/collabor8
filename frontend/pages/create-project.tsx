@@ -11,19 +11,19 @@ const CreateProject = () => {
           <ul>
             <li
               className={`navigation-item${navigation ? " active" : ""}`}
-              onClick={() => setNavigation(true)}
+              onClick={() => setNavigation(false)}
             >
               Details
             </li>
             <li
               className={`navigation-item${!navigation ? " active" : ""}`}
-              onClick={() => setNavigation(false)}
+              onClick={() => setNavigation(true)}
             >
               Members
             </li>
           </ul>
         </nav>
-        <Form />
+        <Form navigation={navigation} />
       </div>
     </section>
   );

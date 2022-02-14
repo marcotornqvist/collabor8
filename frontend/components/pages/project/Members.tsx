@@ -1,24 +1,18 @@
-import { useState } from "react";
 import ProfileItem from "@/components-pages/project/ProfileItem";
-import useWindowSize from "@/hooks/useWindowSize";
 import { ProjectByIdQuery } from "generated/graphql";
-import useIsomorphicLayoutEffect from "@/hooks/useIsomorphicLayoutEffect";
+import useIsMobile from "@/hooks/useIsMobile";
+import styles from "@/styles-modules/Members.module.scss";
 
 interface IProps {
   members: NonNullable<ProjectByIdQuery["projectById"]>["members"];
 }
 
 const Members = ({ members }: IProps) => {
-  const [isMobile, setIsMobile] = useState(true);
-  const { width } = useWindowSize();
-
-  useIsomorphicLayoutEffect(() => {
-    width < 768 ? setIsMobile(true) : setIsMobile(false);
-  }, [width]);
+  const { isMobile } = useIsMobile();
 
   if (members && members.length > 0) {
     return (
-      <div className="members">
+      <div className={`members ${styles.members}`}>
         <span className="sub-title">Members</span>
         <ul>
           {members?.map((item) => (

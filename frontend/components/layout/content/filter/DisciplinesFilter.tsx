@@ -47,7 +47,7 @@ const DisciplinesFilter = ({ variants, isMobile }: IProps) => {
     } else if (disciplines.length > 1) {
       return "Multiple Disciplines";
     } else {
-      return "Select Discipline";
+      return "Select Disciplines";
     }
   }, [disciplines, data]);
 

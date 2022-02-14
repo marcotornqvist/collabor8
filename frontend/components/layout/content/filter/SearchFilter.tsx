@@ -1,8 +1,8 @@
-import React, { RefObject, useEffect, useRef, useState } from "react";
+import React, { RefObject, useRef, useState } from "react";
 import Image from "next/image";
 import input from "@/styles-modules/Input.module.scss";
 import { useQueryParam, StringParam, withDefault } from "next-query-params";
-import { Formik, useFormikContext } from "formik";
+import { Formik } from "formik";
 
 const SearchFilter = () => {
   const [isFocus, setIsFocus] = useState(false);
@@ -53,13 +53,15 @@ const SearchFilter = () => {
                   setIsFocus(false);
                 }}
               />
-              <Image
-                src="/icons/search-solid.svg"
-                alt="Search"
-                width={20}
-                height={20}
-                layout="fixed"
-              />
+              <div className="image-container">
+                <Image
+                  src="/icons/search-solid.svg"
+                  alt="Search"
+                  width={20}
+                  height={20}
+                  layout="fixed"
+                />
+              </div>
             </div>
           </div>
         </form>

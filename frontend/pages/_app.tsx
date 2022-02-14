@@ -43,7 +43,13 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
   const getLayout = Component.getLayout || ((page: ReactNode) => page);
 
   // These routes are only accessible when authenticated
-  const protectedRoutes = ["/my-profile", "/chat", "/settings", "/report"];
+  const protectedRoutes = [
+    "/my-profile",
+    "/chat",
+    "/settings",
+    "/report",
+    "/create-project",
+  ];
 
   // Check if navbar and footer should be loaded
   const { pathname } = useRouter();

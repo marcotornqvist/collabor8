@@ -1,8 +1,6 @@
-import { useState } from "react";
 import { NextQueryParamProvider } from "next-query-params";
-import useWindowSize from "@/hooks/useWindowSize";
-import useIsomorphicLayoutEffect from "@/hooks/useIsomorphicLayoutEffect";
 import Filters from "./filter/Filters";
+import useIsMobile from "@/hooks/useIsMobile";
 
 interface IProps {
   children: React.ReactNode;
@@ -10,16 +8,7 @@ interface IProps {
 }
 
 const ContentLayout = ({ children, className }: IProps) => {
-  const [isMobile, setIsMobile] = useState(false);
-  const { width } = useWindowSize();
-
-  useIsomorphicLayoutEffect(() => {
-    if (width < 768) {
-      setIsMobile(true);
-    } else {
-      setIsMobile(false);
-    }
-  }, [width]);
+  const { isMobile } = useIsMobile();
 
   return (
     <NextQueryParamProvider>

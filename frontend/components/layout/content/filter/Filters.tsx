@@ -8,6 +8,7 @@ import SortFilter from "./SortFilter";
 import RemoveFilters from "./RemoveFilters";
 import button from "@/styles-modules/Button.module.scss";
 import Image from "next/image";
+import useIsomorphicLayoutEffect from "@/hooks/useIsomorphicLayoutEffect";
 
 interface IProps {
   isMobile: boolean;
@@ -22,6 +23,11 @@ const Filters = ({ isMobile }: IProps) => {
       ? document.body.classList.add("body-prevent-scroll")
       : document.body.classList.remove("body-prevent-scroll");
   }, [show, isMobile]);
+
+  // setShow to false everytime isMobile state changes to prevent glitch
+  useIsomorphicLayoutEffect(() => {
+    setShow(false);
+  }, [isMobile]);
 
   return (
     <div className="filters">

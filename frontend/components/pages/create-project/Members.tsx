@@ -1,176 +1,65 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion, Variants } from "framer-motion";
-import { IDiscipline } from "@/types-interfaces/form";
-import { useDisciplinesQuery } from "generated/graphql";
-import useOnClickOutside from "@/hooks/useOnClickOutside";
-import dropdown from "@/styles-modules/Dropdown.module.scss";
-import ChevronIcon from "@/components-modules/global/ChevronIcon";
-import DisciplineItem from "@/components-modules/global/DisciplineItem";
+import { useState, useMemo, useEffect } from "react";
+import {
+  UsersQuery,
+  useUsersLazyQuery,
+  useUsersQuery,
+} from "generated/graphql";
+import SearchInput from "./SearchInput";
+import ProfileList from "./ProfileList";
+import PendingMembersList from "./PendingMembersList";
+
+export type User = NonNullable<UsersQuery["users"]>[0];
 
 interface IProps {
   setFieldValue: (
-    field: "disciplines",
-    value: number[],
+    field: "members",
+    value: string[],
     shouldValidate?: boolean | undefined
   ) => void;
-  disciplines: number[];
-  loading: boolean;
-  variants: Variants;
+  members: string[];
   isMobile: boolean;
-  error: string;
-  lastSubmittedValues?: number[];
 }
 
-const Members = ({
-  setFieldValue,
-  disciplines,
-  loading,
-  variants,
-  isMobile,
-  error,
-  lastSubmittedValues,
-}: IProps) => {
-  const [show, setShow] = useState(false);
-  const { data } = useDisciplinesQuery();
+const Members = ({ setFieldValue, isMobile, members }: IProps) => {
+  const [selectedMembers, setSelectedMembers] = useState<User[]>([]);
 
-  const activeRef = useRef<HTMLLIElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const { data } = useUsersQuery({ fetchPolicy: "cache-only" });
 
-  // setShow to false to prevent glitch when variants change in dropdown menu
-  useEffect(() => {
-    setShow(false);
-  }, [isMobile]);
-
-  useEffect(() => {
-    if (activeRef.current && listRef.current && show) {
-      const activeElementY = activeRef.current.offsetTop;
-      // Scrolls list to activeElementY y-axis position
-      listRef.current.scroll({ top: activeElementY });
-      // scrolls screen to center
-      listRef.current.scrollIntoView({ block: "center" });
-    }
-
-    // Prevent scrolling on body
-    isMobile && show
-      ? document.body.classList.add("body-prevent-scroll")
-      : document.body.classList.remove("body-prevent-scroll");
-  }, [show, isMobile]);
-
-  // Returns the proper title depending on what disciplines are selected
-  const title: string = useMemo(() => {
-    if (data?.disciplines && disciplines.length === 1) {
-      const find = data.disciplines.find((item) => {
-        if (item.id === disciplines[0]) return item.title;
-      });
-      return find?.title || "No Title Found";
-    } else if (disciplines.length > 1) {
-      return "Multiple Disciplines";
-    } else {
-      return "Select Discipline";
-    }
-  }, [disciplines, data]);
-
-  // Add boolean property named active to every element
-  // with the value of true to elements that are selected
-  // useMemo makes disciplineList re-render only if disciplines or data?.disciplines changes
-  const disciplineList = useMemo(
-    () =>
-      data?.disciplines?.map((item) => {
-        const found = disciplines.some((el) => el === item.id);
-        return {
-          ...item,
-          active: found,
-        };
-      }),
-    [disciplines, data?.disciplines]
+  // Returns a list of all the users and filters out the users that are selected
+  const users = useMemo(
+    () => data?.users?.filter((item) => !members?.some((el) => item.id === el)),
+    [data?.users, members]
   );
 
-  // Handle the discipline and pass them up to parent component
-  const disciplineHandler = (item: IDiscipline) => {
-    const findItem = disciplines.find((el) => el === item.id);
-    // If item exists in array it gets filtered out, else it gets added to array
-    if (findItem) {
-      const filterItem = disciplines.filter((el) => el !== item.id);
-      setFieldValue("disciplines", filterItem);
-    } else {
-      setFieldValue("disciplines", [...disciplines, item.id]);
+  // Adds members list to formik values
+  useEffect(() => {
+    if (selectedMembers) {
+      const members = selectedMembers.map((item) => item.id);
+      setFieldValue("members", members);
     }
+  }, [selectedMembers]);
+
+  // Adds user to selected list
+  const addUser = (user: User) => {
+    setSelectedMembers([...selectedMembers, user]);
   };
 
-  const handleClickOutside = () => {
-    setShow(false);
-  };
+  // Removes user from selected list
+  const removeUser = (user: User) => {
+    const filtered = selectedMembers.filter((item) => item.id !== user.id);
 
-  useOnClickOutside(dropdownRef, handleClickOutside);
+    setSelectedMembers(filtered);
+  };
 
   return (
-    <div
-      className={`members-dropdown ${dropdown.default} ${
-        show ? dropdown.active : ""
-      }`}
-      ref={dropdownRef}
-    >
-      <div className="input-text">
-        <label htmlFor="members">members</label>
-      </div>
-      <div onClick={() => setShow(!show)} className="show-dropdown-menu-btn">
-        {/* <span
-          className={members.length >= 1 ? "default-text" : "placeholder"}
-        >
-          {title}
-        </span> */}
-        <ChevronIcon
-          isMobile={isMobile}
-          show={show}
-          chevronRotate={isMobile ? "rotate(90deg)" : "rotate(0deg)"}
-        />
-      </div>
-      <AnimatePresence>
-        {show && (
-          <motion.div
-            className="dropdown-menu"
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            variants={variants}
-          >
-            <div className="top-bar" onClick={() => setShow(false)}>
-              <span className="selected-title">{title}</span>
-              <span className="close-btn">Close</span>
-            </div>
-            <ul className="dropdown-list multi-selections">
-              <li
-                className="list-item"
-                onClick={() => {
-                  setFieldValue("disciplines", []);
-                }}
-              >
-                <span>No Selection</span>
-              </li>
-              {disciplineList?.map((item) => (
-                <DisciplineItem
-                  key={item.id}
-                  id={item.id}
-                  title={item.title}
-                  active={item.active}
-                  disciplineHandler={disciplineHandler}
-                />
-              ))}
-              {data?.disciplines && data.disciplines.length > 50 && (
-                <li
-                  className="list-item"
-                  onClick={() => {
-                    setFieldValue("disciplines", []);
-                  }}
-                >
-                  <span>No Selection</span>
-                </li>
-              )}
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <div className={"step-two members"}>
+      <SearchInput />
+      <ProfileList members={users} addUser={addUser} isMobile={isMobile} />
+      <PendingMembersList
+        members={selectedMembers}
+        removeUser={removeUser}
+        isMobile={isMobile}
+      />
     </div>
   );
 };

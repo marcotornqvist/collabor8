@@ -24,7 +24,7 @@ const CountriesFilter = ({ variants, isMobile }: IProps) => {
   const activeRef = useRef<HTMLLIElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // setShow to false to prevent glitch when variants change in dropdown menu
+  // setShow to false everytime isMobile state changes to prevent glitch
   useIsomorphicLayoutEffect(() => {
     setShow(false);
   }, [isMobile]);

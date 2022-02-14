@@ -1,0 +1,125 @@
+@use "../abstracts/colors" as *;
+@use "../abstracts/fonts" as *;
+@use "../abstracts/breakpoints" as *;
+
+.members {
+  :global {
+    ul {
+      overflow: scroll;
+
+      li {
+        margin-bottom: 1.5rem;
+
+        .profile-details {
+          display: flex;
+          flex-direction: row;
+
+          .profile-image {
+            margin-right: 0.75rem;
+          }
+
+          .wrapper {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            overflow: hidden;
+            padding-bottom: 0.25rem;
+
+            .inner-wrapper {
+              display: flex;
+              align-items: center;
+              flex-direction: row;
+              margin-bottom: 0.2rem;
+
+              .name {
+                font-family: $font-title;
+                font-weight: $font-title-700;
+                font-size: 1.125rem;
+                margin-right: 0.5rem;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+              }
+
+              .chip {
+                margin-top: 2px;
+                text-transform: lowercase;
+                background: $light-green-darker;
+              }
+            }
+
+            .info-text {
+              display: flex;
+              align-items: flex-start;
+              width: 100%;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
+
+              span {
+                font-size: 14px;
+                color: $black;
+
+                &.country {
+                  width: 100%;
+                  text-overflow: ellipsis;
+                  overflow: hidden;
+                  white-space: nowrap;
+                }
+              }
+
+              .pipe {
+                position: relative;
+                bottom: 1px;
+                margin: 1px 2px 0;
+                font-size: 14px;
+              }
+            }
+          }
+        }
+
+        &:last-child {
+          margin: 0;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-md) {
+  .members {
+    :global {
+      .sub-title {
+        margin-bottom: 0.5rem;
+      }
+
+      ul {
+        li {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+
+          .profile-details {
+            .profile-image {
+              margin-right: 1rem;
+            }
+
+            .wrapper {
+              .inner-wrapper {
+                .name {
+                  font-size: 1.25rem;
+                }
+              }
+              .info-text {
+                span {
+                  font-size: 1rem;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

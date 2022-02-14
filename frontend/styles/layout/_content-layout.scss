@@ -40,19 +40,19 @@
       position: fixed;
       top: 0;
       left: 0;
+      display: flex;
+      flex-direction: column;
       width: 100%;
       height: 100vh;
       background: $white;
       z-index: $z-index4;
 
       .top-bar-menu {
-        position: fixed;
-        top: 0;
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 0 1rem;
-        height: 5rem;
+        min-height: 5rem;
         width: 100%;
         border-bottom: 1px solid $light-grey;
         cursor: pointer;
@@ -69,36 +69,7 @@
         }
       }
 
-      .top-bar {
-        position: fixed;
-        top: 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 1rem;
-        height: 5rem;
-        width: 100%;
-        border-bottom: 1px solid $light-grey;
-        cursor: pointer;
-        z-index: 400;
-
-        span.title,
-        span.selected-title {
-          font-family: $font-title;
-          font-weight: $font-title-700;
-          font-size: 1.25rem;
-        }
-
-        span.close-btn {
-          font-size: 14px;
-          color: $grey;
-        }
-      }
-
       .filter-wrapper {
-        position: absolute;
-        top: 5rem;
-        left: 3;
         min-width: 100%;
         height: 100%;
         overflow-y: scroll;
@@ -131,10 +102,8 @@
       }
 
       .bottom-bar {
-        position: fixed;
+        position: sticky;
         bottom: 0;
-        left: 0;
-        bottom: env(safe-area-inset-bottom);
         display: flex;
         align-items: center;
         padding: 1rem;

@@ -8,12 +8,29 @@
 .create-project-page {
   flex: 1;
   min-width: 100%;
+
+  .members {
+    .profile-list ul {
+      padding: 1.5rem 0rem;
+      max-height: 16.5rem;
+      overflow: hidden;
+
+      li  {
+      }
+    }
+  }
 }
 
 @media only screen and (min-width: $breakpoint-sm) {
 }
 
 @media only screen and (min-width: $breakpoint-md) {
+  .create-project-page .members .profile-list {
+    ul {
+      max-height: 19.5rem;
+      padding: 1.5rem 0;
+    }
+  }
 }
 
 @media only screen and (min-width: $breakpoint-lg) {

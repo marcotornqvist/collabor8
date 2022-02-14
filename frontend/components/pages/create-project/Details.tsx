@@ -9,13 +9,13 @@ import CountriesDropdown from "../settings/profile/CountriesDropdown";
 import DisciplinesDropdown from "./DisciplinesDropdown";
 
 interface IProps {
+  setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void;
+  handleChange: FormikHandleChange;
+  isMobile: boolean;
   values: CreateProjectInput;
   error: string;
-  handleChange: FormikHandleChange;
   formErrors: FormErrors;
   lastSubmit?: CreateProjectInput;
-  isMobile: boolean;
-  setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void;
 }
 
 const Details = ({

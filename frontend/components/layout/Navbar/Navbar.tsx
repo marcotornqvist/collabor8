@@ -2,20 +2,20 @@ import Link from "next/link";
 import InboxIcon from "./InboxIcon";
 import NotificationsIcon from "./NotificationsIcon";
 import AccountDropdown from "./AccountDropdown";
-import useWindowSize from "@/hooks/useWindowSize";
 import { useSnapshot } from "valtio";
 import { authState, layoutState } from "store";
 import { motion } from "framer-motion";
 import { useLoggedInUserLazyQuery } from "generated/graphql";
 import { useEffect } from "react";
 import { fadeInVariants } from "utils/variants";
+import useIsMobile from "@/hooks/useIsMobile";
 
 interface Props {
   hide: boolean;
 }
 
 const Navbar = ({ hide = false }: Props) => {
-  const { width } = useWindowSize();
+  const { width, isMobile } = useIsMobile(920);
   const { isAuth, loading } = useSnapshot(authState);
   const { menuOpen } = useSnapshot(layoutState);
 
@@ -87,7 +87,7 @@ const Navbar = ({ hide = false }: Props) => {
 
   return (
     <>
-      {(width < 920 || !hide) && (
+      {(isMobile || !hide) && (
         <>
           <div className="navbar-shadow"></div>
           <nav className="navbar">
@@ -116,7 +116,7 @@ const Navbar = ({ hide = false }: Props) => {
                   </li>
                 </ul>
               </div>
-              {width !== 0 && <>{width < 920 ? mobile : desktop}</>}
+              {width !== 0 && <>{isMobile ? mobile : desktop}</>}
             </div>
           </nav>
         </>

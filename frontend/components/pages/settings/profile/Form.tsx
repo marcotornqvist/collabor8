@@ -14,10 +14,10 @@ import { dropdownVariants, menuVariants } from "utils/variants";
 import button from "@/styles-modules/Button.module.scss";
 import DisciplinesDropdown from "./DisciplinesDropdown";
 import CountriesDropdown from "@/components-modules/global/CountriesDropdown";
-import useWindowSize from "@/hooks/useWindowSize";
 import InputField from "@/components-modules/global/InputField";
 import TextareaField from "@/components-modules/global/TextareaField";
 import useToast from "@/hooks/useToast";
+import useIsMobile from "@/hooks/useIsMobile";
 
 interface FormErrors {
   firstName?: string;
@@ -34,16 +34,11 @@ interface InitialValues {
 }
 
 const Form = () => {
-  const [isMobile, setIsMobile] = useState(false);
   const [lastSubmit, setLastSubmit] = useState<any>(); // Last submit response values
   const [error, setError] = useState(""); // Error message, server error
   const [formErrors, setFormErrors] = useState<FormErrors>({}); // UserInput Errors
 
-  const { width } = useWindowSize();
-
-  useEffect(() => {
-    setIsMobile(width < 768);
-  }, [width]);
+  const { isMobile } = useIsMobile();
 
   const [updateProfile, { data, loading: updateLoading }] =
     useUpdateProfileMutation({
