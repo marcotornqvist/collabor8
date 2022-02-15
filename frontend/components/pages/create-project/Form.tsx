@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Formik } from "formik";
 import {
-  CreateProjectInput,
   CreateProjectMutation,
+  ProjectByIdDocument,
+  ProjectByIdQuery,
   useCreateProjectMutation,
+  UsersQuery,
 } from "generated/graphql";
 import { ProjectValidationSchema } from "@/validations/schemas";
 import { isNotEmptyObject } from "utils/helpers";
@@ -13,27 +15,55 @@ import React from "react";
 import useToast from "@/hooks/useToast";
 import useIsMobile from "@/hooks/useIsMobile";
 import Members from "./Members";
+import { useRouter } from "next/router";
+
+interface IProps {
+  navigation: string;
+  setNavigation: (navigation: string) => void;
+}
+
+export type User = NonNullable<UsersQuery["users"]>[0];
+
+export interface FormValues {
+  title: "";
+  body: "";
+  country: "";
+  disciplines: number[];
+  members: User[];
+}
 
 export interface FormErrors {
   title?: string;
   body?: string;
 }
 
-interface IProps {
-  navigation: boolean;
-}
-
-const Form = ({ navigation }: IProps) => {
-  const [lastSubmit, setLastSubmit] = useState<
-    CreateProjectInput | undefined
-  >(); // Last submit response values
+const Form = ({ navigation, setNavigation }: IProps) => {
+  const [lastSubmit, setLastSubmit] = useState<FormValues | undefined>(); // Last submit response values
   const [error, setError] = useState(""); // Error message, server error
   const [formErrors, setFormErrors] = useState<FormErrors>({}); // UserInput Errors
+  const router = useRouter();
 
   const [createProject, { data }] = useCreateProjectMutation({
     onError: (error) => {
       setFormErrors(error.graphQLErrors[0].extensions?.errors);
       setError(error.message);
+    },
+    update(cache, { data }) {
+      if (data?.createProject) {
+        const { createProject } = data;
+        // Add logged in user to members list
+        cache.writeQuery<ProjectByIdQuery>({
+          query: ProjectByIdDocument,
+          variables: {
+            id: createProject.id,
+          },
+          data: {
+            projectById: createProject,
+          },
+        });
+
+        router.push(`/project/${createProject.id}`);
+      }
     },
   });
 
@@ -42,12 +72,18 @@ const Form = ({ navigation }: IProps) => {
     successMessage: "Project created successfully!",
     error,
     formErrors,
-    redirect: "/projects",
   });
+
+  useEffect(() => {
+    if (formErrors.title || formErrors.body) {
+      setNavigation("Details");
+      window.scrollTo(0, 0);
+    }
+  }, [formErrors]);
 
   const { isMobile } = useIsMobile();
 
-  const initialValues: CreateProjectInput = {
+  const initialValues: FormValues = {
     title: "",
     body: "",
     country: "",
@@ -62,9 +98,16 @@ const Form = ({ navigation }: IProps) => {
       enableReinitialize
       initialValues={initialValues}
       onSubmit={async (values) => {
+        const membersList = values.members.map((item) => item.id);
         const { data } = await createProject({
           variables: {
-            data: values,
+            data: {
+              title: values.title,
+              body: values.body,
+              country: values.country,
+              disciplines: values.disciplines,
+              members: membersList,
+            },
           },
         });
 
@@ -90,13 +133,7 @@ const Form = ({ navigation }: IProps) => {
             handleSubmit();
           }}
         >
-          {navigation ? (
-            <Members
-              setFieldValue={setFieldValue}
-              members={values.members || []}
-              isMobile={isMobile}
-            />
-          ) : (
+          {navigation === "Details" ? (
             <Details
               values={values}
               error={error}
@@ -105,6 +142,12 @@ const Form = ({ navigation }: IProps) => {
               setFieldValue={setFieldValue}
               lastSubmit={lastSubmit}
               formErrors={formErrors}
+            />
+          ) : (
+            <Members
+              setFieldValue={setFieldValue}
+              members={values.members}
+              isMobile={isMobile}
             />
           )}
           <button

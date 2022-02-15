@@ -15,12 +15,13 @@ import ContentLayout from "@/components-layout/content/ContentLayout";
 import ProfileItem from "@/components-modules/profileItem/ProfileItem";
 import ProfileSkeleton from "@/components-modules/profileItem/ProfileSkeleton";
 import useIntersectionObserver from "@/hooks/useIntersectionObserver";
+import useSkeleton from "@/hooks/useSkeleton";
 
 const limit = 20;
 
 const Profiles = () => {
   const [disableMore, setDisableMore] = useState(false);
-  const [showSkeleton, setShowSkeleton] = useState(true);
+  const { showSkeleton, setShowSkeleton } = useSkeleton();
   const [query, setQuery] = useQueryParams({
     search: singleStringParam,
     country: singleStringParam,
@@ -91,19 +92,6 @@ const Profiles = () => {
     }
   }, [isVisible, data?.users]);
 
-  // Makes sure that skeleton is active at least 500ms, to prevent skeleton flicker
-  useEffect(() => {
-    if (showSkeleton) {
-      let timer = setTimeout(() => {
-        setShowSkeleton(false);
-      }, 500);
-
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-  }, [showSkeleton]);
-  
   return (
     <div className="profile-list">
       {!showSkeleton && !dataLoading && data?.users && data.users.length === 0 && (

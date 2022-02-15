@@ -857,7 +857,7 @@ export type CreateProjectMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, members?: Array<{ __typename?: 'Member', userId: string }> | null | undefined, disciplines?: Array<{ __typename?: 'Discipline', title: string }> | null | undefined } };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, members?: Array<{ __typename?: 'Member', userId: string, role: Role, user: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, lastName?: string | null | undefined, firstName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined } };
 
 export type DeleteAccountMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -1232,9 +1232,21 @@ export const CreateProjectDocument = gql`
     country
     members {
       userId
-    }
-    disciplines {
-      title
+      role
+      user {
+        id
+        username
+        profile {
+          userId
+          lastName
+          firstName
+          country
+          profileImage
+          discipline {
+            title
+          }
+        }
+      }
     }
   }
 }

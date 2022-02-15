@@ -9,9 +9,21 @@ export const CREATE_PROJECT = gql`
       country
       members {
         userId
-      }
-      disciplines {
-        title
+        role
+        user {
+          id
+          username
+          profile {
+            userId
+            lastName
+            firstName
+            country
+            profileImage
+            discipline {
+              title
+            }
+          }
+        }
       }
     }
   }

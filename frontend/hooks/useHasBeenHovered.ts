@@ -7,7 +7,6 @@ function useHasBeenHovered<T>(): [MutableRefObject<T>, boolean] {
   const [value, setValue] = useState<boolean>(false);
   const ref: any = useRef<T | null>(null);
   const handleMouseOver = (): void => setValue(true);
-  const handleMouseOut = (): void => setValue(false);
   useEffect(
     () => {
       const node: any = ref.current;

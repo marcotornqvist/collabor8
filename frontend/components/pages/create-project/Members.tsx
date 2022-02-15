@@ -1,64 +1,70 @@
-import { useState, useMemo, useEffect } from "react";
-import {
-  UsersQuery,
-  useUsersLazyQuery,
-  useUsersQuery,
-} from "generated/graphql";
+import { useMemo, useEffect } from "react";
+import { useUsersQuery } from "generated/graphql";
 import SearchInput from "./SearchInput";
 import ProfileList from "./ProfileList";
 import PendingMembersList from "./PendingMembersList";
-
-export type User = NonNullable<UsersQuery["users"]>[0];
+import useSkeleton from "@/hooks/useSkeleton";
+import { User } from "./Form";
 
 interface IProps {
   setFieldValue: (
     field: "members",
-    value: string[],
+    value: User[],
     shouldValidate?: boolean | undefined
   ) => void;
-  members: string[];
+  members: User[];
   isMobile: boolean;
 }
 
 const Members = ({ setFieldValue, isMobile, members }: IProps) => {
-  const [selectedMembers, setSelectedMembers] = useState<User[]>([]);
-
-  const { data } = useUsersQuery({ fetchPolicy: "cache-only" });
+  const { showSkeleton, setShowSkeleton } = useSkeleton();
+  const { data, loading } = useUsersQuery({
+    fetchPolicy: "cache-only",
+    variables: {
+      data: {
+        first: 20,
+      },
+    },
+  });
 
   // Returns a list of all the users and filters out the users that are selected
   const users = useMemo(
-    () => data?.users?.filter((item) => !members?.some((el) => item.id === el)),
+    () =>
+      data?.users?.filter((item) => !members?.some((el) => item.id === el.id)),
     [data?.users, members]
   );
 
-  // Adds members list to formik values
+  // Sets skeleton loading state to true
   useEffect(() => {
-    if (selectedMembers) {
-      const members = selectedMembers.map((item) => item.id);
-      setFieldValue("members", members);
-    }
-  }, [selectedMembers]);
+    setShowSkeleton(true);
+  }, [data]);
 
   // Adds user to selected list
   const addUser = (user: User) => {
-    setSelectedMembers([...selectedMembers, user]);
+    setFieldValue("members", [user, ...members]);
   };
 
   // Removes user from selected list
   const removeUser = (user: User) => {
-    const filtered = selectedMembers.filter((item) => item.id !== user.id);
-
-    setSelectedMembers(filtered);
+    const filtered = members.filter((item) => item.id !== user.id);
+    setFieldValue("members", filtered);
   };
 
   return (
     <div className={"step-two members"}>
       <SearchInput />
-      <ProfileList members={users} addUser={addUser} isMobile={isMobile} />
+      <ProfileList
+        members={users}
+        addUser={addUser}
+        isMobile={isMobile}
+        loading={loading}
+        showSkeleton={showSkeleton}
+      />
       <PendingMembersList
-        members={selectedMembers}
+        members={members}
         removeUser={removeUser}
         isMobile={isMobile}
+        loading={loading}
       />
     </div>
   );

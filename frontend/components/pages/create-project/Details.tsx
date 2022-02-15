@@ -2,7 +2,7 @@ import React from "react";
 import { dropdownVariants } from "utils/variants";
 import { CreateProjectInput } from "generated/graphql";
 import { FormikHandleChange } from "types/types";
-import { FormErrors } from "./Form";
+import { FormErrors, FormValues } from "./Form";
 import InputField from "@/components-modules/global/InputField";
 import TextareaField from "@/components-modules/global/TextareaField";
 import CountriesDropdown from "../settings/profile/CountriesDropdown";
@@ -12,10 +12,10 @@ interface IProps {
   setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void;
   handleChange: FormikHandleChange;
   isMobile: boolean;
-  values: CreateProjectInput;
+  values: FormValues;
   error: string;
   formErrors: FormErrors;
-  lastSubmit?: CreateProjectInput;
+  lastSubmit?: FormValues;
 }
 
 const Details = ({

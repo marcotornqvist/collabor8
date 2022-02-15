@@ -1,29 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Form from "@/components-pages/create-project/Form";
+import NavigationSlide from "@/components-modules/global/NavigationSlide";
+import { useUsersLazyQuery } from "generated/graphql";
 
 const CreateProject = () => {
-  const [navigation, setNavigation] = useState(true);
+  const [navigation, setNavigation] = useState("Details");
+
   return (
     <section className="create-project-page">
       <div className="container">
         <h2 className="title">Create Project</h2>
-        <nav className="navigation">
-          <ul>
-            <li
-              className={`navigation-item${navigation ? " active" : ""}`}
-              onClick={() => setNavigation(false)}
-            >
-              Details
-            </li>
-            <li
-              className={`navigation-item${!navigation ? " active" : ""}`}
-              onClick={() => setNavigation(true)}
-            >
-              Members
-            </li>
-          </ul>
-        </nav>
-        <Form navigation={navigation} />
+        <NavigationSlide
+          items={["Details", "Members"]}
+          selected={navigation}
+          setNavigation={setNavigation}
+        />
+        <Form setNavigation={setNavigation} navigation={navigation} />
       </div>
     </section>
   );

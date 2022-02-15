@@ -14,10 +14,12 @@
   padding: 0 0.5rem;
   border-radius: $large-radius;
   background: $light-green;
+
   :global {
     span {
       color: $green;
       font-size: 12px;
+      line-height: normal;
     }
   }
 }

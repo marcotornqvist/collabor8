@@ -23,6 +23,8 @@ const ProfileItem = ({ isMobile, user, role }: IProps) => {
         <ProfileImage
           size={isMobile ? "small" : "medium"}
           profileImage={user.profile?.profileImage}
+          firstName={user.profile?.firstName}
+          lastName={user.profile?.lastName}
           priority={true}
         />
         <div className="wrapper">
@@ -50,7 +52,7 @@ const ProfileItem = ({ isMobile, user, role }: IProps) => {
         </div>
       </div>
       <Link href={`/profile/${user.username}`}>
-        <a className="link-btn">
+        <a className="link-btn button-container">
           <button className={button.green}>See Profile</button>
         </a>
       </Link>

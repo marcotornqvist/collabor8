@@ -9,33 +9,117 @@
   flex: 1;
   min-width: 100%;
 
-  .members {
-    .profile-list ul {
-      padding: 1.5rem 0rem;
-      max-height: 16.5rem;
-      overflow: hidden;
+  .container {
+    max-width: $breakpoint-md;
+  }
 
-      li  {
+  h2 {
+    display: block;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid $border-color1;
+  }
+
+  .navigation-slide {
+    margin-bottom: 1rem;
+  }
+
+  .details .input-group textarea {
+    height: 16rem;
+  }
+
+  .members {
+    .profile-list,
+    .pending-members-list {
+      ul {
+        padding-bottom: 1.5rem;
+        overflow-y: scroll;
+        max-height: 20rem;
+
+        li {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1.5rem;
+
+          .button-container button {
+            width: 120px;
+          }
+        }
+
+        li:last-child {
+          margin: 0;
+        }
+      }
+    }
+
+    .profile-list {
+      margin-bottom: 1rem;
+
+      ul {
+        max-height: 15rem;
+      }
+
+      .no-users-found {
+        font-size: 14px;
+        display: inline-block;
+        color: $black;
+      }
+    }
+
+    .pending-members-list {
+      margin-bottom: 1.5rem;
+
+      h3 {
+        margin-bottom: 1rem;
+      }
+
+      .no-members-selected {
+        font-size: 14px;
+        display: inline-block;
+        color: $black;
       }
     }
   }
-}
 
-@media only screen and (min-width: $breakpoint-sm) {
-}
-
-@media only screen and (min-width: $breakpoint-md) {
-  .create-project-page .members .profile-list {
-    ul {
-      max-height: 19.5rem;
-      padding: 1.5rem 0;
+  form {
+    .submit-btn {
+      width: 100%;
     }
   }
 }
 
-@media only screen and (min-width: $breakpoint-lg) {
+@media only screen and (min-width: $breakpoint-md) {
   .create-project-page {
-    margin: 0 auto;
-    max-width: $breakpoint-lg;
+    h2,
+    .navigation-slide {
+      margin-bottom: 1.5rem;
+    }
+
+    .members {
+      .input-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .pending-members-list {
+        margin-bottom: 2.5rem;
+
+        h3 {
+          margin-bottom: 1.5rem;
+        }
+      }
+
+      .profile-list,
+      .pending-members-list {
+        ul {
+          max-height: 18rem;
+        }
+      }
+    }
+
+    form .submit-btn {
+      width: 250px;
+    }
   }
 }

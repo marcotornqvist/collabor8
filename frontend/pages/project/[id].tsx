@@ -1,6 +1,9 @@
 import { authState } from "store";
 import { useSnapshot } from "valtio";
-import { useProjectByIdLazyQuery } from "generated/graphql";
+import {
+  useProjectByIdLazyQuery,
+  useProjectByIdQuery,
+} from "generated/graphql";
 import About from "@/components-pages/project/About";
 import Members from "@/components-pages/project/Members";
 import Settings from "@/components-pages/project/Settings";
@@ -15,18 +18,16 @@ const Project = () => {
     query: { id },
   } = useRouter();
   const { loading } = useSnapshot(authState);
-  const [projectById, { data, error, loading: dataLoading }] =
-    useProjectByIdLazyQuery({
-      variables: {
-        id: typeof id === "string" ? id : "",
-      },
-    });
-
-  useEffect(() => {
-    if (!loading) {
-      projectById();
-    }
-  }, [loading]);
+  const {
+    data,
+    error,
+    loading: dataLoading,
+  } = useProjectByIdQuery({
+    variables: {
+      id: typeof id === "string" ? id : "",
+    },
+    fetchPolicy: "cache-first",
+  });
 
   useEffect(() => {
     if (error) {

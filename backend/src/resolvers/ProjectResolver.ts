@@ -296,8 +296,19 @@ export class ProjectResolver {
         include: {
           disciplines: true,
           members: {
+            where: {
+              status: "TRUE",
+            },
             include: {
-              user: true,
+              user: {
+                include: {
+                  profile: {
+                    include: {
+                      discipline: true,
+                    },
+                  },
+                },
+              },
             },
           },
         },

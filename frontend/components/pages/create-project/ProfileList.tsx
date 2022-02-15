@@ -1,27 +1,48 @@
-import React from "react";
+import { User } from "./Form";
 import ProfileItem from "./ProfileItem";
 import styles from "@/styles-modules/Members.module.scss";
-import { User } from "./Members";
+import MemberSkeleton from "@/components-modules/global/MemberSkeleton";
+import {} from "generated/graphql";
 
 interface IProps {
   members?: User[];
   isMobile: boolean;
   addUser: (user: User) => void;
+  loading: boolean;
+  showSkeleton: boolean;
 }
 
-const ProfileList = ({ isMobile, members, addUser }: IProps) => {
+const ProfileList = ({
+  isMobile,
+  members,
+  addUser,
+  loading,
+  showSkeleton,
+}: IProps) => {
   return (
     <div className={`profile-list ${styles.members}`}>
-      <ul>
-        {members?.map((item) => (
-          <ProfileItem
-            key={item.id}
-            isMobile={isMobile}
-            user={item}
-            addUser={addUser}
-          />
-        ))}
-      </ul>
+      {!showSkeleton && members && members.length > 0 && (
+        <ul>
+          {members?.map((item) => (
+            <ProfileItem
+              key={item.id}
+              isMobile={isMobile}
+              user={item}
+              addUser={addUser}
+            />
+          ))}
+        </ul>
+      )}
+      {(showSkeleton || loading) && (
+        <ul>
+          {[1, 2, 3].map((n) => (
+            <MemberSkeleton key={n} />
+          ))}
+        </ul>
+      )}
+      {!loading && !showSkeleton && members && members.length === 0 && (
+        <span className="no-users-found">No users found...</span>
+      )}
     </div>
   );
 };

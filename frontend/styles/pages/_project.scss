@@ -64,7 +64,7 @@
         max-height: 16.5rem;
 
         li {
-          button {
+          .button-container {
             display: none;
           }
         }
@@ -144,9 +144,12 @@
         max-height: 19.5rem;
         padding: 1.5rem;
 
-        li button {
+        li .button-container {
           display: initial;
-          width: 180px;
+
+          button {
+            width: 180px;
+          }
         }
       }
 

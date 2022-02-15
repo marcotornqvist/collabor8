@@ -134,7 +134,12 @@ function createApolloClient() {
     cache: new InMemoryCache({
       typePolicies: {
         Profile: {
-          keyFields: ["userId"], // object unique identifier is parent(User) id
+          // object unique identifier is parent(User) id
+          keyFields: ["userId"],
+        },
+        Members: {
+          // object unique identifier is parent(Project) id
+          keyFields: ["projectId"],
         },
         Query: {
           fields: {

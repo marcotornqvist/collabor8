@@ -1,6 +1,8 @@
 @use "../abstracts/colors" as *;
 @use "../abstracts/fonts" as *;
 @use "../abstracts/breakpoints" as *;
+@use "../abstracts/border-radius" as *;
+@use "../abstracts/border-radius" as *;
 
 .members {
   :global {
@@ -8,11 +10,29 @@
       overflow: scroll;
 
       li {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
         margin-bottom: 1.5rem;
+
+        .button-container button {
+          width: 120px;
+        }
 
         .profile-details {
           display: flex;
           flex-direction: row;
+          padding-right: 1rem;
+          min-width: 150px;
+
+          span.country,
+          a {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            word-wrap: break-word;
+          }
 
           .profile-image {
             margin-right: 0.75rem;
@@ -42,7 +62,7 @@
               }
 
               .chip {
-                margin-top: 2px;
+                // margin-top: 2px;
                 text-transform: lowercase;
                 background: $light-green-darker;
               }
@@ -86,6 +106,96 @@
   }
 }
 
+.skeleton {
+  :global {
+    display: flex;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+
+    .skeleton-content {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .skeleton {
+        background: $dark-grey-bg;
+        overflow: hidden;
+      }
+
+      .profile-details {
+        flex: 1;
+        display: flex;
+        align-items: center;
+
+        .skeleton.thumbnail {
+          min-width: 3.5rem;
+          height: 3.5rem;
+          border-radius: $large-radius;
+          margin-right: 0.75rem;
+        }
+
+        .wrapper {
+          width: 100%;
+          padding-right: 1rem;
+
+          .skeleton.title {
+            min-width: 100px;
+            height: 1.25rem;
+            margin-bottom: 0.5rem;
+            border-radius: $medium-radius;
+          }
+
+          .skeleton.subtitle {
+            width: 100%;
+            height: 1.25rem;
+            border-radius: $medium-radius;
+          }
+        }
+      }
+
+      .skeleton.button {
+        min-width: 120px;
+        height: 3rem;
+        border-radius: $medium-radius;
+      }
+    }
+  }
+}
+
+.shimmerWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  animation: loading 2.5s infinite;
+
+  :global {
+    .shimmer {
+      width: 50%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: skewX(-20deg);
+      box-shadow: 0 0 30px 30px rgba(255, 255, 255, 0.2);
+    }
+
+    @keyframes loading {
+      0% {
+        transform: translateX(-150%);
+      }
+      50% {
+        transform: translateX(-60%);
+      }
+      100% {
+        transform: translateX(150%);
+      }
+    }
+  }
+}
+
 @media only screen and (min-width: $breakpoint-md) {
   .members {
     :global {
@@ -99,6 +209,10 @@
           flex-direction: row;
           align-items: center;
           justify-content: space-between;
+
+          .button-container button {
+            min-width: 180px;
+          }
 
           .profile-details {
             .profile-image {
@@ -118,6 +232,34 @@
               }
             }
           }
+        }
+      }
+    }
+  }
+
+  .skeleton {
+    :global {
+      display: flex;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+
+      .skeleton-content {
+        .profile-details {
+          .skeleton.thumbnail {
+            min-width: 4.5rem;
+            height: 4.5rem;
+            margin-right: 1rem;
+          }
+
+          .wrapper {
+            padding-right: 1rem;
+          }
+        }
+
+        .skeleton.button {
+          min-width: 180px;
         }
       }
     }

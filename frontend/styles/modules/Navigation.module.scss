@@ -1,0 +1,40 @@
+@use "../abstracts/colors" as *;
+@use "../abstracts/border-radius" as *;
+@use "../abstracts/fonts" as *;
+@use "../abstracts/breakpoints" as *;
+
+.slide {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  :global {
+    li {
+      display: inline-block;
+      margin-right: 1rem;
+      width: auto;
+      color: $black;
+      font-weight: $font-body-400;
+      text-decoration: none;
+      background-image: linear-gradient($green, $green);
+      background-size: 0% 0.1em;
+      background-position-y: 100%;
+      background-position-x: 100%;
+      background-repeat: no-repeat;
+      transition: background-size 0.2s ease-in-out;
+      cursor: pointer;
+
+      &:last-child {
+        margin: 0;
+      }
+    }
+
+    li:hover,
+    li:focus,
+    li.active {
+      background-size: 100% 0.1em;
+      background-position-x: 0%;
+      color: $green;
+    }
+  }
+}
