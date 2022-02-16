@@ -10,16 +10,11 @@ export type User = NonNullable<
 >[0]["user"];
 
 interface IProps {
-  setFieldValue: (
-    field: "members",
-    value: User[],
-    shouldValidate?: boolean | undefined
-  ) => void;
   members: User[];
   isMobile: boolean;
 }
 
-const Members = ({ setFieldValue, isMobile, members }: IProps) => {
+const Members = ({ isMobile, members }: IProps) => {
   const { showSkeleton, setShowSkeleton } = useSkeleton();
   const { data, loading } = useUsersQuery({
     variables: {
@@ -43,13 +38,13 @@ const Members = ({ setFieldValue, isMobile, members }: IProps) => {
 
   // Adds user to selected list
   const addUser = (user: User) => {
-    setFieldValue("members", [user, ...members]);
+    // setFieldValue("members", [user, ...members]);
   };
 
   // Removes user from selected list
   const removeUser = (user: User) => {
-    const filtered = members.filter((item) => item.id !== user.id);
-    setFieldValue("members", filtered);
+    // const filtered = members.filter((item) => item.id !== user.id);
+    // setFieldValue("members", filtered);
   };
 
   return (

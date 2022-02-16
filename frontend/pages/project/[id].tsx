@@ -1,9 +1,6 @@
 import { authState } from "store";
 import { useSnapshot } from "valtio";
-import {
-  useProjectByIdLazyQuery,
-  useProjectByIdQuery,
-} from "generated/graphql";
+import { MemberStatusCode, useProjectByIdQuery } from "generated/graphql";
 import About from "@/components-pages/project/About";
 import Members from "@/components-pages/project/Members";
 import Settings from "@/components-pages/project/Settings";
@@ -24,9 +21,11 @@ const Project = () => {
     loading: dataLoading,
   } = useProjectByIdQuery({
     variables: {
-      id: typeof id === "string" ? id : "",
+      data: {
+        id: typeof id === "string" ? id : "",
+        status: [MemberStatusCode.Accepted],
+      },
     },
-    fetchPolicy: "cache-first",
   });
 
   useEffect(() => {

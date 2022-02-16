@@ -83,7 +83,7 @@ export type ContactResponse = {
 };
 
 /** Contact status enum */
-export enum Contact_Status {
+export enum ContactStatus {
   ActiveContact = 'ACTIVE_CONTACT',
   NoContact = 'NO_CONTACT',
   RequestReceived = 'REQUEST_RECEIVED',
@@ -154,7 +154,7 @@ export type Member = {
   projectId: Scalars['ID'];
   readChatAt: Scalars['DateTime'];
   role: Role;
-  status: StatusCode;
+  status: MemberStatusCode;
   updatedAt?: Maybe<Scalars['DateTime']>;
   user: User;
   userId: Scalars['ID'];
@@ -165,6 +165,14 @@ export type MemberInput = {
   projectId: Scalars['ID'];
   userId: Scalars['ID'];
 };
+
+/** MemberStatus Code enum */
+export enum MemberStatusCode {
+  Accepted = 'ACCEPTED',
+  Kicked = 'KICKED',
+  Pending = 'PENDING',
+  Rejected = 'REJECTED'
+}
 
 export type Message = {
   __typename?: 'Message';
@@ -210,10 +218,10 @@ export type Mutation = {
   deleteContact: Scalars['Boolean'];
   /** Delete Profile Image */
   deleteImage: Profile;
-  /** Delete member from project, by project id */
-  deleteMember: Scalars['Boolean'];
   /** Deletes a Project by projectId */
   deleteProject: Scalars['Boolean'];
+  /** Kick member from project, by project id */
+  kickMember: Scalars['Boolean'];
   /** Leave Project by projectId */
   leaveProject: Scalars['Boolean'];
   /** Login to an account */
@@ -226,7 +234,7 @@ export type Mutation = {
   register: AuthResponse;
   /** Reject contact request */
   rejectContact: Scalars['Boolean'];
-  /** Delete/decline a project invitation */
+  /** Reject a project invitation */
   rejectInvite: Scalars['Boolean'];
   /** Report a Project by id */
   reportProject: ReportProject;
@@ -245,7 +253,7 @@ export type Mutation = {
   /** Update Profile */
   updateProfile: Profile;
   /** Updates a Project by id */
-  updateProjectDetails: Project;
+  updateProject: Project;
   /** Update socials */
   updateSocials: Social;
   /** Update Username */
@@ -293,13 +301,13 @@ export type MutationDeleteContactArgs = {
 };
 
 
-export type MutationDeleteMemberArgs = {
-  data: MemberInput;
+export type MutationDeleteProjectArgs = {
+  id: Scalars['String'];
 };
 
 
-export type MutationDeleteProjectArgs = {
-  id: Scalars['String'];
+export type MutationKickMemberArgs = {
+  data: MemberInput;
 };
 
 
@@ -373,7 +381,7 @@ export type MutationUpdateProfileArgs = {
 };
 
 
-export type MutationUpdateProjectDetailsArgs = {
+export type MutationUpdateProjectArgs = {
   data: UpdateProjectInput;
 };
 
@@ -460,6 +468,13 @@ export type Project = {
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
+/** Project By Id Args */
+export type ProjectById = {
+  id: Scalars['ID'];
+  role?: InputMaybe<Array<Role>>;
+  status?: InputMaybe<Array<MemberStatusCode>>;
+};
+
 /** Project member status */
 export enum Project_Member_Status {
   Admin = 'ADMIN',
@@ -490,7 +505,7 @@ export type Query = {
   /** Return messages for a ChatRoom by contactId */
   contactMessages?: Maybe<Array<Message>>;
   /** Return the status for a contact request between loggedInUser and userId */
-  contactStatus: Contact_Status;
+  contactStatus: ContactStatus;
   /** Returns all contacts for loggedInUser */
   contacts: Array<User>;
   /** Returns all contact chatRooms */
@@ -505,7 +520,7 @@ export type Query = {
   loggedInUser: User;
   /** Query all notifications, project invitations & friend requests for logged in user */
   notificationsByLoggedInUser?: Maybe<User>;
-  /** Return project by projectId */
+  /** Return project by id */
   projectById?: Maybe<Project>;
   /** Return details for a project */
   projectChatRoomDetails?: Maybe<Project>;
@@ -568,7 +583,7 @@ export type QueryNotificationsByLoggedInUserArgs = {
 
 
 export type QueryProjectByIdArgs = {
-  id: Scalars['String'];
+  data: ProjectById;
 };
 
 
@@ -761,7 +776,6 @@ export type UpdateProjectInput = {
   country?: InputMaybe<Scalars['String']>;
   disciplines: Array<Scalars['Float']>;
   id: Scalars['ID'];
-  members: Array<Scalars['String']>;
   title: Scalars['String'];
 };
 
@@ -944,6 +958,13 @@ export type UpdateProfileMutationVariables = Exact<{
 
 export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, country?: string | null | undefined, bio?: string | null | undefined, discipline?: { __typename?: 'Discipline', id: number, title: string } | null | undefined } };
 
+export type UpdateProjectMutationVariables = Exact<{
+  data: UpdateProjectInput;
+}>;
+
+
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, disciplines?: Array<{ __typename?: 'Discipline', id: number, title: string }> | null | undefined } };
+
 export type UpdateSocialsMutationVariables = Exact<{
   data: SocialInput;
 }>;
@@ -970,7 +991,7 @@ export type ContactStatusQueryVariables = Exact<{
 }>;
 
 
-export type ContactStatusQuery = { __typename?: 'Query', contactStatus: Contact_Status };
+export type ContactStatusQuery = { __typename?: 'Query', contactStatus: ContactStatus };
 
 export type CountriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1027,11 +1048,18 @@ export type IsUserBlockedQueryVariables = Exact<{
 export type IsUserBlockedQuery = { __typename?: 'Query', isUserBlocked: boolean };
 
 export type ProjectByIdQueryVariables = Exact<{
-  id: Scalars['String'];
+  data: ProjectById;
 }>;
 
 
 export type ProjectByIdQuery = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, members?: Array<{ __typename?: 'Member', userId: string, role: Role, user: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, lastName?: string | null | undefined, firstName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined } | null | undefined };
+
+export type EditProjectByIdQueryVariables = Exact<{
+  data: ProjectById;
+}>;
+
+
+export type EditProjectByIdQuery = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, disciplines?: Array<{ __typename?: 'Discipline', id: number }> | null | undefined, members?: Array<{ __typename?: 'Member', userId: string, role: Role, user: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, lastName?: string | null | undefined, firstName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined } | null | undefined };
 
 export type ProjectMemberStatusQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1710,6 +1738,46 @@ export function useUpdateProfileMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateProfileMutationHookResult = ReturnType<typeof useUpdateProfileMutation>;
 export type UpdateProfileMutationResult = Apollo.MutationResult<UpdateProfileMutation>;
 export type UpdateProfileMutationOptions = Apollo.BaseMutationOptions<UpdateProfileMutation, UpdateProfileMutationVariables>;
+export const UpdateProjectDocument = gql`
+    mutation updateProject($data: UpdateProjectInput!) {
+  updateProject(data: $data) {
+    id
+    title
+    body
+    country
+    disciplines {
+      id
+      title
+    }
+  }
+}
+    `;
+export type UpdateProjectMutationFn = Apollo.MutationFunction<UpdateProjectMutation, UpdateProjectMutationVariables>;
+
+/**
+ * __useUpdateProjectMutation__
+ *
+ * To run a mutation, you first call `useUpdateProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProjectMutation, { data, loading, error }] = useUpdateProjectMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateProjectMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectMutation, UpdateProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, options);
+      }
+export type UpdateProjectMutationHookResult = ReturnType<typeof useUpdateProjectMutation>;
+export type UpdateProjectMutationResult = Apollo.MutationResult<UpdateProjectMutation>;
+export type UpdateProjectMutationOptions = Apollo.BaseMutationOptions<UpdateProjectMutation, UpdateProjectMutationVariables>;
 export const UpdateSocialsDocument = gql`
     mutation updateSocials($data: SocialInput!) {
   updateSocials(data: $data) {
@@ -2270,8 +2338,8 @@ export type IsUserBlockedQueryHookResult = ReturnType<typeof useIsUserBlockedQue
 export type IsUserBlockedLazyQueryHookResult = ReturnType<typeof useIsUserBlockedLazyQuery>;
 export type IsUserBlockedQueryResult = Apollo.QueryResult<IsUserBlockedQuery, IsUserBlockedQueryVariables>;
 export const ProjectByIdDocument = gql`
-    query projectById($id: String!) {
-  projectById(id: $id) {
+    query projectById($data: ProjectById!) {
+  projectById(data: $data) {
     id
     title
     body
@@ -2310,7 +2378,7 @@ export const ProjectByIdDocument = gql`
  * @example
  * const { data, loading, error } = useProjectByIdQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -2325,6 +2393,65 @@ export function useProjectByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type ProjectByIdQueryHookResult = ReturnType<typeof useProjectByIdQuery>;
 export type ProjectByIdLazyQueryHookResult = ReturnType<typeof useProjectByIdLazyQuery>;
 export type ProjectByIdQueryResult = Apollo.QueryResult<ProjectByIdQuery, ProjectByIdQueryVariables>;
+export const EditProjectByIdDocument = gql`
+    query editProjectById($data: ProjectById!) {
+  projectById(data: $data) {
+    id
+    title
+    body
+    country
+    disciplines {
+      id
+    }
+    members {
+      userId
+      role
+      user {
+        id
+        username
+        profile {
+          userId
+          lastName
+          firstName
+          country
+          profileImage
+          discipline {
+            title
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useEditProjectByIdQuery__
+ *
+ * To run a query within a React component, call `useEditProjectByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEditProjectByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEditProjectByIdQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useEditProjectByIdQuery(baseOptions: Apollo.QueryHookOptions<EditProjectByIdQuery, EditProjectByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EditProjectByIdQuery, EditProjectByIdQueryVariables>(EditProjectByIdDocument, options);
+      }
+export function useEditProjectByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EditProjectByIdQuery, EditProjectByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EditProjectByIdQuery, EditProjectByIdQueryVariables>(EditProjectByIdDocument, options);
+        }
+export type EditProjectByIdQueryHookResult = ReturnType<typeof useEditProjectByIdQuery>;
+export type EditProjectByIdLazyQueryHookResult = ReturnType<typeof useEditProjectByIdLazyQuery>;
+export type EditProjectByIdQueryResult = Apollo.QueryResult<EditProjectByIdQuery, EditProjectByIdQueryVariables>;
 export const ProjectMemberStatusDocument = gql`
     query projectMemberStatus($id: String!) {
   projectMemberStatus(id: $id)

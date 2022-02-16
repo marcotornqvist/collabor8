@@ -1,7 +1,39 @@
+import { MemberStatusCode, Role } from "@prisma/client";
 import { Length, Max } from "class-validator";
 import { Field, InputType, ID, registerEnumType } from "type-graphql";
 import { Sort } from "../../types/Enums";
 import { PaginationArgs, SearchArgs } from "./GlobalInputs";
+
+@InputType({
+  description: "Filter Projects",
+})
+export class ProjectsFilterArgs extends SearchArgs {
+  @Field(() => String, { nullable: true })
+  searchText?: string | null;
+
+  @Field(() => [Number], { nullable: true })
+  disciplines?: number[] | null;
+
+  @Field(() => String, { nullable: true })
+  country?: string | null;
+
+  @Field(() => Sort, { nullable: true })
+  sort?: Sort | null;
+}
+
+@InputType({
+  description: "Project By Id Args",
+})
+export class ProjectById {
+  @Field(() => ID)
+  id: string;
+
+  @Field(() => [MemberStatusCode], { nullable: true })
+  status?: MemberStatusCode[] | null;
+
+  @Field(() => [Role], { nullable: true })
+  role?: Role[] | null;
+}
 
 @InputType({ description: "Input Arguments for Project" })
 export class CreateProjectInput {
@@ -41,9 +73,6 @@ export class UpdateProjectInput {
 
   @Field(() => [Number])
   disciplines?: number[];
-
-  @Field(() => [String])
-  members?: string[];
 }
 
 @InputType({
@@ -55,23 +84,6 @@ export class MemberInput {
 
   @Field(() => ID)
   projectId: string;
-}
-
-@InputType({
-  description: "Filter Projects",
-})
-export class ProjectsFilterArgs extends SearchArgs {
-  @Field(() => String, { nullable: true })
-  searchText?: string | null;
-
-  @Field(() => [Number], { nullable: true })
-  disciplines?: number[] | null;
-
-  @Field(() => String, { nullable: true })
-  country?: string | null;
-
-  @Field(() => Sort, { nullable: true })
-  sort?: Sort | null;
 }
 
 @InputType({

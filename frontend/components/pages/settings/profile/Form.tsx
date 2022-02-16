@@ -19,13 +19,13 @@ import TextareaField from "@/components-modules/global/TextareaField";
 import useToast from "@/hooks/useToast";
 import useIsMobile from "@/hooks/useIsMobile";
 
-interface FormErrors {
+interface IFormErrors {
   firstName?: string;
   lastName?: string;
   bio?: string;
 }
 
-interface InitialValues {
+interface IFormValues {
   firstName: string;
   lastName: string;
   country: string | null;
@@ -34,9 +34,9 @@ interface InitialValues {
 }
 
 const Form = () => {
-  const [lastSubmit, setLastSubmit] = useState<any>(); // Last submit response values
+  const [lastSubmit, setLastSubmit] = useState<IFormValues>(); // Last submit response values
   const [error, setError] = useState(""); // Error message, server error
-  const [formErrors, setFormErrors] = useState<FormErrors>({}); // UserInput Errors
+  const [formErrors, setFormErrors] = useState<IFormErrors>({}); // UserInput Errors
 
   const { isMobile } = useIsMobile();
 
@@ -84,12 +84,12 @@ const Form = () => {
     fetchPolicy: "cache-only", // Fetches from cache only, navbar fetches all the logged in user data when page is loaded and authState is true..
   });
 
-  const initialValues: InitialValues = {
-    firstName: formData?.loggedInUser.profile?.firstName || "",
-    lastName: formData?.loggedInUser.profile?.lastName || "",
-    country: formData?.loggedInUser.profile?.country || null,
-    discipline: formData?.loggedInUser.profile?.discipline || null,
-    bio: formData?.loggedInUser.profile?.bio || "",
+  const initialValues: IFormValues = {
+    firstName: formData?.loggedInUser.profile?.firstName ?? "",
+    lastName: formData?.loggedInUser.profile?.lastName ?? "",
+    country: formData?.loggedInUser.profile?.country ?? null,
+    discipline: formData?.loggedInUser.profile?.discipline ?? null,
+    bio: formData?.loggedInUser.profile?.bio ?? "",
   };
 
   return (

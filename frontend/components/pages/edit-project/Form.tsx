@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Formik } from "formik";
 import {
-  CreateProjectMutation,
+  EditProjectByIdQuery,
+  MemberStatusCode,
   ProjectByIdDocument,
   ProjectByIdQuery,
-  useCreateProjectMutation,
+  Role,
+  UpdateProjectMutation,
+  useEditProjectByIdQuery,
+  useUpdateProjectMutation,
 } from "generated/graphql";
 import { ProjectValidationSchema } from "@/validations/schemas";
 import { isNotEmptyObject } from "utils/helpers";
-import { useRouter } from "next/router";
 import button from "@/styles-modules/Button.module.scss";
 import React from "react";
 import useToast from "@/hooks/useToast";
@@ -17,20 +20,16 @@ import Details from "@/components-modules/project-details/Details";
 import Members from "./Members";
 
 interface IProps {
+  id: string;
   navigation: string;
   setNavigation: (navigation: string) => void;
 }
-
-export type User = NonNullable<
-  CreateProjectMutation["createProject"]["members"]
->[0]["user"];
 
 export interface IFormValues {
   title: string;
   body: string;
   country: string;
   disciplines: number[];
-  members: User[];
 }
 
 export interface IFormErrors {
@@ -38,39 +37,47 @@ export interface IFormErrors {
   body?: string;
 }
 
-const Form = ({ navigation, setNavigation }: IProps) => {
+const Form = ({ id, navigation, setNavigation }: IProps) => {
   const [lastSubmit, setLastSubmit] = useState<IFormValues | undefined>(); // Last submit response values
   const [error, setError] = useState(""); // Error message, server error
   const [formErrors, setFormErrors] = useState<IFormErrors>({}); // UserInput Errors
-  const router = useRouter();
 
-  const [createProject, { data }] = useCreateProjectMutation({
+  const [updateProject, { data: editedData }] = useUpdateProjectMutation({
     onError: (error) => {
       setFormErrors(error.graphQLErrors[0].extensions?.errors);
       setError(error.message);
     },
     update(cache, { data }) {
-      if (data?.createProject) {
-        const { createProject } = data;
-        // Add logged in user to members list
-        cache.writeQuery<ProjectByIdQuery>({
+      if (data?.updateProject) {
+        const { updateProject } = data;
+
+        const previous = cache.readQuery<EditProjectByIdQuery>({
           query: ProjectByIdDocument,
           variables: {
-            id: createProject.id,
-          },
-          data: {
-            projectById: createProject,
+            id: updateProject.id,
           },
         });
 
-        router.push(`/project/${createProject.id}`);
+        // Add logged in user to members list
+        cache.writeQuery<EditProjectByIdQuery>({
+          query: ProjectByIdDocument,
+          variables: {
+            id: updateProject.id,
+          },
+          data: {
+            projectById: {
+              ...updateProject,
+              members: previous?.projectById?.members ?? null,
+            },
+          },
+        });
       }
     },
   });
 
-  useToast<CreateProjectMutation>({
-    data,
-    successMessage: "Project created successfully!",
+  useToast<UpdateProjectMutation>({
+    data: editedData,
+    successMessage: "Project updated successfully!",
     error,
     formErrors,
   });
@@ -84,12 +91,35 @@ const Form = ({ navigation, setNavigation }: IProps) => {
 
   const { isMobile } = useIsMobile();
 
+  const { data } = useEditProjectByIdQuery({
+    variables: {
+      data: {
+        id,
+        status: [MemberStatusCode.Accepted, MemberStatusCode.Pending],
+        role: [Role.Member],
+      },
+    },
+  });
+
+  // Returns all the disciplines as an array of numbers
+  const disciplines: number[] = useMemo(() => {
+    return data?.projectById?.disciplines
+      ? data.projectById.disciplines.map((item) => item.id)
+      : [];
+  }, [data?.projectById?.disciplines]);
+
+  // Returns all the users in a variable called members
+  const members = useMemo(() => {
+    return data?.projectById?.members
+      ? data.projectById?.members.map((item) => item.user)
+      : [];
+  }, [data?.projectById?.members]);
+
   const initialValues: IFormValues = {
-    title: "",
-    body: "",
-    country: "",
-    disciplines: [],
-    members: [],
+    title: data?.projectById?.title ?? "",
+    body: data?.projectById?.body ?? "",
+    country: data?.projectById?.country ?? "",
+    disciplines,
   };
 
   return (
@@ -99,14 +129,14 @@ const Form = ({ navigation, setNavigation }: IProps) => {
       enableReinitialize
       initialValues={initialValues}
       onSubmit={async (values) => {
-        const { data } = await createProject({
+        const { data } = await updateProject({
           variables: {
             data: {
+              id,
               title: values.title,
               body: values.body,
               country: values.country,
               disciplines: values.disciplines,
-              members: values?.members?.map((item) => item.id),
             },
           },
         });
@@ -134,31 +164,29 @@ const Form = ({ navigation, setNavigation }: IProps) => {
           }}
         >
           {navigation === "Details" ? (
-            <Details
-              values={values}
-              error={error}
-              isMobile={isMobile}
-              handleChange={handleChange}
-              setFieldValue={setFieldValue}
-              lastSubmit={lastSubmit}
-              formErrors={formErrors}
-            />
+            <>
+              <Details
+                isMobile={isMobile}
+                error={error}
+                values={values}
+                handleChange={handleChange}
+                setFieldValue={setFieldValue}
+                lastSubmit={lastSubmit}
+                formErrors={formErrors}
+              />
+              <button
+                type="submit"
+                className={`${
+                  isSubmitting ? button.green : button.lightGreen
+                } submit-btn`}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Saving Changes..." : "Edit Project"}
+              </button>
+            </>
           ) : (
-            <Members
-              setFieldValue={setFieldValue}
-              members={values.members}
-              isMobile={isMobile}
-            />
+            <Members members={members} isMobile={isMobile} />
           )}
-          <button
-            type="submit"
-            className={`${
-              isSubmitting ? button.green : button.lightGreen
-            } submit-btn`}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Creating Project..." : "Create Project"}
-          </button>
         </form>
       )}
     </Formik>

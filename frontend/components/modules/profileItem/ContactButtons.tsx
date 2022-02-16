@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Contact_Status, useContactStatusLazyQuery } from "generated/graphql";
+import { ContactStatus, useContactStatusLazyQuery } from "generated/graphql";
 import { useSnapshot } from "valtio";
 import { authState } from "store";
 import Link from "next/link";
@@ -40,15 +40,15 @@ const ContactButtons = ({ id, isVisible, username }: IProps) => {
   // Example: if a user has received a contact request a certain button will be rendered
   if (isAuth) {
     switch (data?.contactStatus) {
-      case Contact_Status.RequestSent:
+      case ContactStatus.RequestSent:
         return <DeleteContact id={id} pendingState={true} />;
-      case Contact_Status.ActiveContact:
+      case ContactStatus.ActiveContact:
         return <DeleteContact id={id} pendingState={false} />;
-      case Contact_Status.RequestReceived:
+      case ContactStatus.RequestReceived:
         return <PendingContact id={id} />;
-      case Contact_Status.RequestReceivedFalse:
+      case ContactStatus.RequestReceivedFalse:
         return <PendingContact id={id} hideDelete={true} />;
-      case Contact_Status.NoContact:
+      case ContactStatus.NoContact:
         return <AddContact id={id} />;
       default:
         return (

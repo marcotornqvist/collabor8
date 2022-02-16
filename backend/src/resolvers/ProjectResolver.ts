@@ -16,6 +16,7 @@ import {
   UpdateProjectInput,
   ProjectsFilterArgs,
   PaginationUserArgs,
+  ProjectById,
 } from "./inputs/ProjectInput";
 import { PaginationArgs } from "./inputs/GlobalInputs";
 import { UserInputError, ForbiddenError } from "apollo-server-express";
@@ -37,7 +38,7 @@ import { Project_Member_Status } from "../types/Enums";
 // createProject:             Create new project - Done
 // deleteProject:             Delete a project by id - Done
 // leaveProject:              Leave a project by id - Done
-// updateProjectDetails:      Update project detais - Done
+// updateProject:      Update project detais - Done
 // addMember:                 Add member to project by Id - Done
 // deleteMember:              Delete member to project by Id - Done
 // toggleProjectDisabled:     Toggle a project disabled boolean state - Done
@@ -113,18 +114,28 @@ export class ProjectResolver {
 
   @Query(() => Project, {
     nullable: true,
-    description: "Return project by projectId",
+    description: "Return project by id",
   })
-  async projectById(@Arg("id") id: string, @Ctx() { prisma }: Context) {
+  async projectById(
+    @Arg("data")
+    { id, status, role }: ProjectById,
+    @Ctx() { prisma }: Context
+  ) {
     const project = await prisma.project.findFirst({
       where: {
         id,
         disabled: false,
       },
       include: {
+        disciplines: true,
         members: {
           where: {
-            status: "TRUE",
+            role: {
+              in: role?.map((item) => item),
+            },
+            status: {
+              in: status?.map((item) => item),
+            },
           },
           include: {
             user: {
@@ -227,15 +238,15 @@ export class ProjectResolver {
       });
 
       // Member object found with a status role of "ADMIN", checks also if member status is active
-      if (result?.role === "ADMIN" && result.status === "TRUE")
+      if (result?.role === "ADMIN" && result.status === "ACCEPTED")
         return Project_Member_Status.ADMIN;
       // Member object found with a status role of "MEMBER", checks also if member status is active
-      else if (result?.role === "MEMBER" && result.status === "TRUE")
+      else if (result?.role === "MEMBER" && result.status === "ACCEPTED")
         return Project_Member_Status.MEMBER;
       // Member object found with a status role of "MEMBER", checks also if member status is false or pending
       else if (
         result?.role === "MEMBER" &&
-        (result.status === "FALSE" || result.status === "PENDING")
+        (result.status === "PENDING" || result.status === "ACCEPTED")
       )
         return Project_Member_Status.INVITED_USER;
       // No member object found, meaning authenticated user is not part of the project
@@ -287,7 +298,11 @@ export class ProjectResolver {
           },
           // Add members to the project and set the logged in user as "ADMIN"
           members: {
-            create: { userId: payload!.userId, role: "ADMIN", status: "TRUE" },
+            create: {
+              userId: payload!.userId,
+              role: "ADMIN",
+              status: "ACCEPTED",
+            },
             createMany: {
               data: members?.map((item) => ({ userId: item })) || [],
             },
@@ -297,7 +312,7 @@ export class ProjectResolver {
           disciplines: true,
           members: {
             where: {
-              status: "TRUE",
+              status: "ACCEPTED",
             },
             include: {
               user: {
@@ -345,7 +360,7 @@ export class ProjectResolver {
       include: {
         members: {
           where: {
-            status: "TRUE",
+            status: "ACCEPTED",
           },
         },
       },
@@ -412,9 +427,7 @@ export class ProjectResolver {
             assignedAt: "asc",
           },
           where: {
-            status: {
-              in: ["TRUE"],
-            },
+            status: "ACCEPTED",
           },
         },
       },
@@ -499,10 +512,10 @@ export class ProjectResolver {
     return true;
   }
 
-  // Update Project Details
+  // Update Project
   @Mutation(() => Project, { description: "Updates a Project by id" })
   @UseMiddleware(isAuth)
-  async updateProjectDetails(
+  async updateProject(
     @Arg("data")
     { id, title, body, country, disciplines }: UpdateProjectInput,
     @Ctx() { payload, prisma }: Context
@@ -531,16 +544,17 @@ export class ProjectResolver {
         throw errors;
       }
 
-      const project = await prisma.project.findUnique({
+      const project = await prisma.project.findFirst({
         where: {
           id,
-        },
-        include: {
           members: {
-            where: {
-              status: "TRUE",
+            some: {
+              userId: payload!.userId,
+              role: "ADMIN",
             },
           },
+        },
+        include: {
           disciplines: true,
         },
       });
@@ -549,19 +563,10 @@ export class ProjectResolver {
         throw new UserInputError("Project doesn't exist");
       }
 
-      // List that disconnects disciplines from project
-      const removeDisciplines = project.disciplines.filter(
-        (item) => !disciplines?.some((item2) => item.id === item2)
+      // Array that disconnects disciplines from project
+      const disciplinesToBeRemoved = project.disciplines.filter(
+        (item) => !disciplines?.some((el) => item.id === el)
       );
-
-      // Returns the logged in user
-      const currentUser = project.members.find(
-        (item) => item.userId === payload!.userId
-      );
-
-      if (!currentUser || currentUser.role !== "ADMIN") {
-        throw new ForbiddenError("Not Authorized");
-      }
 
       const updatedProject = await prisma.project.update({
         where: {
@@ -573,7 +578,9 @@ export class ProjectResolver {
           country,
           disciplines: {
             connect: disciplines?.map((item) => ({ id: item })),
-            disconnect: removeDisciplines?.map((item) => ({ id: item.id })),
+            disconnect: disciplinesToBeRemoved?.map((item) => ({
+              id: item.id,
+            })),
           },
         },
         include: {
@@ -656,10 +663,10 @@ export class ProjectResolver {
   }
 
   @Mutation(() => Boolean, {
-    description: "Delete member from project, by project id",
+    description: "Kick member from project, by project id",
   })
   @UseMiddleware(isAuth)
-  async deleteMember(
+  async kickMember(
     @Arg("data") { userId, projectId }: MemberInput,
     @Ctx() { payload, prisma }: Context
   ) {
@@ -690,12 +697,15 @@ export class ProjectResolver {
       throw new UserInputError("Member doesn't exist");
     }
 
-    await prisma.member.delete({
+    await prisma.member.update({
       where: {
         userId_projectId: {
           userId,
           projectId,
         },
+      },
+      data: {
+        status: "KICKED",
       },
     });
 
@@ -765,8 +775,8 @@ export class ProjectResolver {
       },
     });
 
-    // If invite exists or the status is true, return error
-    if (!member || member.status === "TRUE")
+    // If invite doesn't or the status is "ACCEPTED", return error
+    if (!member || member.status === "ACCEPTED" || member.status === "KICKED")
       throw new Error("Invite doesn't exist");
 
     await prisma.member.update({
@@ -777,7 +787,7 @@ export class ProjectResolver {
         },
       },
       data: {
-        status: "TRUE",
+        status: "ACCEPTED",
       },
     });
 
@@ -785,7 +795,7 @@ export class ProjectResolver {
   }
 
   @Mutation(() => Boolean, {
-    description: "Delete/decline a project invitation",
+    description: "Reject a project invitation",
   })
   @UseMiddleware(isAuth)
   async rejectInvite(
@@ -815,7 +825,7 @@ export class ProjectResolver {
         },
       },
       data: {
-        status: "FALSE",
+        status: "REJECTED",
       },
     });
 

@@ -70,9 +70,12 @@ const DisciplinesDropdown = ({
     >
       <div className="input-text">
         <label htmlFor="discipline">Discipline</label>
-        {!error && lastSubmitValue?.id === discipline?.id && discipline && (
-          <span className="success-message">Discipline is valid</span>
-        )}
+        {!error &&
+          lastSubmitValue?.id &&
+          lastSubmitValue?.id === discipline?.id &&
+          discipline && (
+            <span className="success-message">Discipline is valid</span>
+          )}
       </div>
       <div onClick={() => setShow(!show)} className="show-dropdown-menu-btn">
         <span className={discipline ? "default-text" : "placeholder"}>

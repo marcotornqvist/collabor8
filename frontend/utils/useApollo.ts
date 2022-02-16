@@ -149,6 +149,9 @@ function createApolloClient() {
             projectById: {
               merge: true,
             },
+            editProjectById: {
+              merge: true,
+            },
             users: concatPagination(),
             projects: concatPagination(),
           },

@@ -14,7 +14,7 @@ export enum Project_Member_Status {
   GUEST = "GUEST", // Guest, meaning not authenticated
 }
 
-export enum Contact_Status {
+export enum ContactStatus {
   REQUEST_SENT = "REQUEST_SENT", // if contact request is sent
   REQUEST_RECEIVED = "REQUEST_RECEIVED", // if contact request is received
   REQUEST_RECEIVED_FALSE = "REQUEST_RECEIVED_FALSE", // if contact request is received but is false
@@ -22,8 +22,8 @@ export enum Contact_Status {
   NO_CONTACT = "NO_CONTACT", // if no contact request exist
 }
 
-registerEnumType(Contact_Status, {
-  name: "Contact_Status",
+registerEnumType(ContactStatus, {
+  name: "ContactStatus",
   description: "Contact status enum",
 });
 

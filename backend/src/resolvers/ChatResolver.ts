@@ -311,7 +311,7 @@ export class ChatResolver {
         members: {
           some: {
             userId: payload!.userId,
-            status: "TRUE",
+            status: "ACCEPTED",
           },
         },
         disabled: false,
@@ -404,7 +404,7 @@ export class ChatResolver {
         members: {
           some: {
             userId: payload!.userId,
-            status: "TRUE",
+            status: "ACCEPTED",
           },
         },
         disabled: false,
@@ -559,7 +559,7 @@ export class ChatResolver {
         members: {
           some: {
             userId: payload!.userId,
-            status: "TRUE",
+            status: "ACCEPTED",
           },
         },
         disabled: false,
@@ -572,7 +572,7 @@ export class ChatResolver {
         },
         members: {
           where: {
-            status: "TRUE",
+            status: "ACCEPTED",
           },
           select: {
             userId: true,

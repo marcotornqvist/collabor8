@@ -95,15 +95,15 @@ model Project {
 }
 
 model Member {
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
-  project    Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project    Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId  String
-  role       Role       @default(MEMBER)
-  status     StatusCode @default(PENDING)
-  readChatAt DateTime   @default(now())
-  assignedAt DateTime   @default(now())
-  updatedAt  DateTime?  @default(now()) @updatedAt
+  role       Role             @default(MEMBER)
+  status     MemberStatusCode @default(PENDING)
+  readChatAt DateTime         @default(now())
+  assignedAt DateTime         @default(now())
+  updatedAt  DateTime?        @default(now()) @updatedAt
 
   @@id([userId, projectId])
 }
@@ -204,6 +204,13 @@ enum StatusCode {
   FALSE
   PENDING
   TRUE
+}
+
+enum MemberStatusCode {
+  KICKED // If user has been kicked
+  REJECTED // If user has rejected the invite
+  PENDING // If user hasn't responded to a invite
+  ACCEPTED // if user has accepted invite
 }
 
 enum Role {

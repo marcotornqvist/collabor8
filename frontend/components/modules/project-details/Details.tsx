@@ -1,21 +1,31 @@
 import React from "react";
 import { dropdownVariants } from "utils/variants";
-import { CreateProjectInput } from "generated/graphql";
 import { FormikHandleChange } from "types/types";
-import { FormErrors, FormValues } from "./Form";
 import InputField from "@/components-modules/global/InputField";
 import TextareaField from "@/components-modules/global/TextareaField";
-import CountriesDropdown from "../settings/profile/CountriesDropdown";
+import CountriesDropdown from "@/components-pages/settings/profile/CountriesDropdown";
 import DisciplinesDropdown from "./DisciplinesDropdown";
+
+export interface IFormValues {
+  title: string;
+  body: string;
+  country: string;
+  disciplines: number[];
+}
+
+export interface IFormErrors {
+  title?: string;
+  body?: string;
+}
 
 interface IProps {
   setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void;
   handleChange: FormikHandleChange;
   isMobile: boolean;
-  values: FormValues;
+  values: IFormValues;
   error: string;
-  formErrors: FormErrors;
-  lastSubmit?: FormValues;
+  formErrors: IFormErrors;
+  lastSubmit?: IFormValues;
 }
 
 const Details = ({

@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Form from "@/components-pages/create-project/Form";
 import NavigationSlide from "@/components-modules/global/NavigationSlide";
-import { useUsersLazyQuery } from "generated/graphql";
 
 const CreateProject = () => {
   const [navigation, setNavigation] = useState("Details");

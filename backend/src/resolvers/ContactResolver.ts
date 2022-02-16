@@ -11,7 +11,7 @@ import { isAuth } from "../utils/isAuth";
 import { Context } from "../types/Interfaces";
 import { Contact } from "../types/Contact";
 import { User } from "../types/User";
-import { Contact_Status } from "../types/Enums";
+import { ContactStatus } from "../types/Enums";
 import { NotificationCode } from "@prisma/client";
 import { getContactStatus } from "../helpers/getContactStatus";
 
@@ -97,7 +97,7 @@ export class ContactResolver {
     return contacts;
   }
 
-  @Query(() => Contact_Status, {
+  @Query(() => ContactStatus, {
     description:
       "Return the status for a contact request between loggedInUser and userId",
   })

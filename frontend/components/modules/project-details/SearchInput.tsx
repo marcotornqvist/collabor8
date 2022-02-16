@@ -1,4 +1,4 @@
-import React, { RefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useRef, useState } from "react";
 import { useUsersLazyQuery } from "generated/graphql";
 import input from "@/styles-modules/Input.module.scss";
 import Image from "next/image";
@@ -10,7 +10,7 @@ const SearchInput = () => {
   const [isFocus, setIsFocus] = useState(false);
   const inputRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
-  const [getUsers, { client }] = useUsersLazyQuery();
+  const [getUsers] = useUsersLazyQuery();
 
   const handleSearch = (
     e: React.FormEvent<HTMLInputElement | HTMLDivElement>
@@ -28,16 +28,6 @@ const SearchInput = () => {
       setLastSubmit(search);
     }
   };
-
-  // Fetch users on intial render
-  useEffect(() => {
-    client.cache.evict({ id: "ROOT_QUERY", fieldName: "users" });
-    getUsers({
-      variables: {
-        data: {},
-      },
-    });
-  }, []);
 
   return (
     <div className={`input-group ${input.search}`}>

@@ -71,7 +71,7 @@ const CountriesDropdown = ({
     >
       <div className="input-text">
         <label htmlFor="country">Country</label>
-        {!error && lastSubmitValue === selected && selected !== null && (
+        {!error && selected && lastSubmitValue === selected && (
           <span className="success-message">Country is valid</span>
         )}
       </div>
