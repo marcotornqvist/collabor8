@@ -2,31 +2,36 @@ import React, { useEffect, useState } from "react";
 import {
   Project_Member_Status,
   useProjectMemberStatusLazyQuery,
-  useProjectMemberStatusQuery,
+  useUsersLazyQuery,
 } from "generated/graphql";
 import { useRouter } from "next/router";
+import { useSnapshot } from "valtio";
+import { authState } from "store";
 import Form from "@/components-pages/edit-project/Form";
 import NavigationSlide from "@/components-modules/global/NavigationSlide";
 import Settings from "@/components-pages/edit-project/Settings";
-import { useSnapshot } from "valtio";
-import { authState } from "store";
+import Members from "@/components-pages/edit-project/Members";
+import useSkeleton from "@/hooks/useSkeleton";
+import useIsMobile from "@/hooks/useIsMobile";
 
 const EditProject = () => {
+  const { showSkeleton, setShowSkeleton } = useSkeleton();
   const { loading } = useSnapshot(authState);
   let {
     push,
     query: { id },
   } = useRouter();
-  const [navigation, setNavigation] = useState("Details");
+  const [navigation, setNavigation] = useState("Members");
   // Sets id to a string
   id = typeof id === "string" ? id : "";
 
   // Gets memberStatus of the logged in user or guest
-  const [memberStatus, { data, error }] = useProjectMemberStatusLazyQuery({
-    variables: {
-      id,
-    },
-  });
+  const [memberStatus, { data: statusData, error, client }] =
+    useProjectMemberStatusLazyQuery({
+      variables: {
+        id,
+      },
+    });
 
   // Checks that authState has loaded before executing memberStatus
   useEffect(() => {
@@ -39,14 +44,25 @@ const EditProject = () => {
   useEffect(() => {
     if (
       error ||
-      (data?.projectMemberStatus &&
-        data.projectMemberStatus !== Project_Member_Status.Admin)
+      (statusData?.projectMemberStatus &&
+        statusData.projectMemberStatus !== Project_Member_Status.Admin)
     ) {
       push("/projects");
     }
-  }, [error, data?.projectMemberStatus]);
+  }, [error, statusData?.projectMemberStatus]);
 
-  if (data?.projectMemberStatus === Project_Member_Status.Admin) {
+  const { isMobile } = useIsMobile();
+
+  // Deletes project from cache when component is unmounted (page is changed)
+  useEffect(() => {
+    return () => {
+      const normalizedId = client.cache.identify({ id, __typename: "Project" });
+      client.cache.evict({ id: normalizedId });
+      client.cache.gc();
+    };
+  }, [id]);
+
+  if (statusData?.projectMemberStatus === Project_Member_Status.Admin) {
     return (
       <section className="edit-project-page">
         <div className="container">
@@ -56,11 +72,20 @@ const EditProject = () => {
             selected={navigation}
             setNavigation={setNavigation}
           />
-          {(navigation === "Details" || navigation === "Members") && (
+          {navigation === "Details" && (
             <Form
+              isMobile={isMobile}
               id={id}
               setNavigation={setNavigation}
               navigation={navigation}
+            />
+          )}
+          {navigation === "Members" && (
+            <Members
+              showSkeleton={showSkeleton}
+              setShowSkeleton={setShowSkeleton}
+              id={id}
+              isMobile={isMobile}
             />
           )}
           {navigation === "Settings" && <Settings id={id} />}

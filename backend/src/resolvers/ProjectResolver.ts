@@ -615,6 +615,40 @@ export class ProjectResolver {
 
     if (isBlocked) throw new Error("Blocked user cannot be added to project");
 
+    // Check if member field already exists with a status of kicked
+    const isKickedMember = await prisma.member.findUnique({
+      where: {
+        userId_projectId: {
+          userId,
+          projectId,
+        },
+      },
+      select: {
+        status: true,
+      },
+    });
+
+    // If member object already exists with a status of kicked
+    // Member status gets updated to pending and is returned
+    if (isKickedMember?.status === "KICKED") {
+      // If member object exists, member status gets updated to pending
+      // Meaning that the user has received a new invite to the project
+      const updatedMember = await prisma.member.update({
+        where: {
+          userId_projectId: {
+            userId,
+            projectId,
+          },
+        },
+        data: {
+          status: "PENDING",
+        },
+        include: { user: true },
+      });
+
+      return updatedMember;
+    }
+
     // Check if user exists
     const userExists = await prisma.user.findUnique({
       where: {
@@ -624,6 +658,7 @@ export class ProjectResolver {
 
     if (!userExists) throw new UserInputError("User doesn't exist");
 
+    // Checks if project exists
     const project = await prisma.project.findUnique({
       where: {
         id: projectId,
@@ -640,6 +675,7 @@ export class ProjectResolver {
       (item) => item.userId === payload!.userId
     );
 
+    // Checks if user is authorized to add member to a specific project
     if (!currentUser || currentUser.role !== "ADMIN") {
       throw new ForbiddenError("Not Authorized");
     }
@@ -656,7 +692,17 @@ export class ProjectResolver {
         userId,
         projectId,
       },
-      include: { user: true },
+      include: {
+        user: {
+          include: {
+            profile: {
+              include: {
+                discipline: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     return newMember;
@@ -775,7 +821,7 @@ export class ProjectResolver {
       },
     });
 
-    // If invite doesn't or the status is "ACCEPTED", return error
+    // If invite doesn't exist or the status is "ACCEPTED" or "KICKED", return error
     if (!member || member.status === "ACCEPTED" || member.status === "KICKED")
       throw new Error("Invite doesn't exist");
 

@@ -29,8 +29,8 @@ export const PROJECT_BY_ID = gql`
   }
 `;
 
-export const EDIT_PROJECT_BY_ID = gql`
-  query editProjectById($data: ProjectById!) {
+export const PROJECT_FORM_VALUES = gql`
+  query projectFormValues($data: ProjectById!) {
     projectById(data: $data) {
       id
       title
@@ -39,24 +39,33 @@ export const EDIT_PROJECT_BY_ID = gql`
       disciplines {
         id
       }
-      members {
-        userId
-        role
-        user {
-          id
-          username
-          profile {
-            userId
-            lastName
-            firstName
-            country
-            profileImage
-            discipline {
-              title
-            }
+    }
+  }
+`;
+
+export const PROJECT_MEMBERS = gql`
+  query projectMembers($data: ProjectById!) {
+    projectById(data: $data) {
+    id
+    members {
+      userId
+      role
+      status
+      user {
+        id
+        username
+        profile {
+          userId
+          lastName
+          firstName
+          country
+          profileImage
+          discipline {
+            title
           }
         }
       }
+    }
     }
   }
 `;

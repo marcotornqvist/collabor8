@@ -49,7 +49,7 @@ const Profiles = () => {
   // Get users and setDisableMore to false
   useEffect(() => {
     setShowSkeleton(true);
-    // Remove users from cache to prevent bug
+    // Remove users from cache to prevent caching bug
     client.cache.evict({ id: "ROOT_QUERY", fieldName: "users" });
     if (!loading) {
       getUsers();

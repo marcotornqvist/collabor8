@@ -1,8 +1,8 @@
-import { useMemo, useEffect } from "react";
-import { ProjectByIdQuery, useUsersQuery } from "generated/graphql";
+import { useMemo, useEffect, useState } from "react";
+import { ProjectByIdQuery, useUsersLazyQuery } from "generated/graphql";
 import SearchInput from "@/components-modules/project-details/SearchInput";
 import ProfileList from "./ProfileList";
-import PendingMembersList from "./PendingMembersList";
+import MembersList from "./MembersList";
 import useSkeleton from "@/hooks/useSkeleton";
 
 export type User = NonNullable<
@@ -20,14 +20,21 @@ interface IProps {
 }
 
 const Members = ({ setFieldValue, isMobile, members }: IProps) => {
+  const [search, setSearch] = useState("");
   const { showSkeleton, setShowSkeleton } = useSkeleton();
-  const { data, loading } = useUsersQuery({
-    variables: {
-      data: {
-        first: 20,
+  const [getUsers, { data, loading }] = useUsersLazyQuery();
+
+  useEffect(() => {
+    setShowSkeleton(true);
+    getUsers({
+      variables: {
+        data: {
+          first: 20,
+          searchText: search,
+        },
       },
-    },
-  });
+    });
+  }, [search]);
 
   // Returns a list of all the users and filters out the users that are selected
   const users = useMemo(
@@ -54,15 +61,15 @@ const Members = ({ setFieldValue, isMobile, members }: IProps) => {
 
   return (
     <div className={"step-two members"}>
-      <SearchInput />
+      <SearchInput search={search} setSearch={setSearch} />
       <ProfileList
-        members={users}
+        users={users}
         addUser={addUser}
         isMobile={isMobile}
         loading={loading}
         showSkeleton={showSkeleton}
       />
-      <PendingMembersList
+      <MembersList
         members={members}
         removeUser={removeUser}
         isMobile={isMobile}

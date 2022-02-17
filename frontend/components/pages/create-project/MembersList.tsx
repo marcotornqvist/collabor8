@@ -10,14 +10,9 @@ interface IProps {
   loading: boolean;
 }
 
-const PendingMembersList = ({
-  members,
-  removeUser,
-  isMobile,
-  loading,
-}: IProps) => {
+const MembersList = ({ members, removeUser, isMobile, loading }: IProps) => {
   return (
-    <div className={`pending-members-list ${styles.members}`}>
+    <div className={`members-list ${styles.members}`}>
       {(!loading || (members && members.length > 0)) && (
         <>
           <h3>Members</h3>
@@ -41,4 +36,4 @@ const PendingMembersList = ({
   );
 };
 
-export default PendingMembersList;
+export default MembersList;

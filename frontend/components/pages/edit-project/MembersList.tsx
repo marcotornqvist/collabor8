@@ -6,18 +6,12 @@ import { User } from "./Members";
 interface IProps {
   members?: User[];
   isMobile: boolean;
-  removeUser: (user: User) => void;
   loading: boolean;
 }
 
-const PendingMembersList = ({
-  members,
-  removeUser,
-  isMobile,
-  loading,
-}: IProps) => {
+const MembersList = ({ members, isMobile, loading }: IProps) => {
   return (
-    <div className={`pending-members-list ${styles.members}`}>
+    <div className={`members-list ${styles.members}`}>
       {(!loading || (members && members.length > 0)) && (
         <>
           <h3>Members</h3>
@@ -28,7 +22,7 @@ const PendingMembersList = ({
                   key={item.id}
                   isMobile={isMobile}
                   user={item}
-                  removeUser={removeUser}
+                  isAdded={true}
                 />
               ))}
             </ul>
@@ -41,4 +35,4 @@ const PendingMembersList = ({
   );
 };
 
-export default PendingMembersList;
+export default MembersList;

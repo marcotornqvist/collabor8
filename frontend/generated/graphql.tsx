@@ -852,6 +852,13 @@ export type AddContactMutationVariables = Exact<{
 
 export type AddContactMutation = { __typename?: 'Mutation', addContact: { __typename?: 'Contact', id: string } };
 
+export type AddMemberMutationVariables = Exact<{
+  data: MemberInput;
+}>;
+
+
+export type AddMemberMutation = { __typename?: 'Mutation', addMember: { __typename?: 'Member', userId: string, role: Role, status: MemberStatusCode, projectId: string, user: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, lastName?: string | null | undefined, firstName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } } };
+
 export type BlockUserMutationVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -896,6 +903,13 @@ export type DeleteProjectMutationVariables = Exact<{
 
 
 export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: boolean };
+
+export type KickMemberMutationVariables = Exact<{
+  data: MemberInput;
+}>;
+
+
+export type KickMemberMutation = { __typename?: 'Mutation', kickMember: boolean };
 
 export type LeaveProjectMutationVariables = Exact<{
   id: Scalars['String'];
@@ -1054,12 +1068,19 @@ export type ProjectByIdQueryVariables = Exact<{
 
 export type ProjectByIdQuery = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, members?: Array<{ __typename?: 'Member', userId: string, role: Role, user: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, lastName?: string | null | undefined, firstName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined } | null | undefined };
 
-export type EditProjectByIdQueryVariables = Exact<{
+export type ProjectFormValuesQueryVariables = Exact<{
   data: ProjectById;
 }>;
 
 
-export type EditProjectByIdQuery = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, disciplines?: Array<{ __typename?: 'Discipline', id: number }> | null | undefined, members?: Array<{ __typename?: 'Member', userId: string, role: Role, user: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, lastName?: string | null | undefined, firstName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined } | null | undefined };
+export type ProjectFormValuesQuery = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, disciplines?: Array<{ __typename?: 'Discipline', id: number }> | null | undefined } | null | undefined };
+
+export type ProjectMembersQueryVariables = Exact<{
+  data: ProjectById;
+}>;
+
+
+export type ProjectMembersQuery = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, members?: Array<{ __typename?: 'Member', userId: string, role: Role, status: MemberStatusCode, user: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, lastName?: string | null | undefined, firstName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined } | null | undefined };
 
 export type ProjectMemberStatusQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1187,6 +1208,56 @@ export function useAddContactMutation(baseOptions?: Apollo.MutationHookOptions<A
 export type AddContactMutationHookResult = ReturnType<typeof useAddContactMutation>;
 export type AddContactMutationResult = Apollo.MutationResult<AddContactMutation>;
 export type AddContactMutationOptions = Apollo.BaseMutationOptions<AddContactMutation, AddContactMutationVariables>;
+export const AddMemberDocument = gql`
+    mutation addMember($data: MemberInput!) {
+  addMember(data: $data) {
+    userId
+    role
+    status
+    projectId
+    user {
+      id
+      username
+      profile {
+        userId
+        lastName
+        firstName
+        country
+        profileImage
+        discipline {
+          title
+        }
+      }
+    }
+  }
+}
+    `;
+export type AddMemberMutationFn = Apollo.MutationFunction<AddMemberMutation, AddMemberMutationVariables>;
+
+/**
+ * __useAddMemberMutation__
+ *
+ * To run a mutation, you first call `useAddMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddMemberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addMemberMutation, { data, loading, error }] = useAddMemberMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useAddMemberMutation(baseOptions?: Apollo.MutationHookOptions<AddMemberMutation, AddMemberMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddMemberMutation, AddMemberMutationVariables>(AddMemberDocument, options);
+      }
+export type AddMemberMutationHookResult = ReturnType<typeof useAddMemberMutation>;
+export type AddMemberMutationResult = Apollo.MutationResult<AddMemberMutation>;
+export type AddMemberMutationOptions = Apollo.BaseMutationOptions<AddMemberMutation, AddMemberMutationVariables>;
 export const BlockUserDocument = gql`
     mutation blockUser($id: String!) {
   blockUser(id: $id)
@@ -1429,6 +1500,37 @@ export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
 export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
 export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export const KickMemberDocument = gql`
+    mutation kickMember($data: MemberInput!) {
+  kickMember(data: $data)
+}
+    `;
+export type KickMemberMutationFn = Apollo.MutationFunction<KickMemberMutation, KickMemberMutationVariables>;
+
+/**
+ * __useKickMemberMutation__
+ *
+ * To run a mutation, you first call `useKickMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useKickMemberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [kickMemberMutation, { data, loading, error }] = useKickMemberMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useKickMemberMutation(baseOptions?: Apollo.MutationHookOptions<KickMemberMutation, KickMemberMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<KickMemberMutation, KickMemberMutationVariables>(KickMemberDocument, options);
+      }
+export type KickMemberMutationHookResult = ReturnType<typeof useKickMemberMutation>;
+export type KickMemberMutationResult = Apollo.MutationResult<KickMemberMutation>;
+export type KickMemberMutationOptions = Apollo.BaseMutationOptions<KickMemberMutation, KickMemberMutationVariables>;
 export const LeaveProjectDocument = gql`
     mutation leaveProject($id: String!) {
   leaveProject(id: $id)
@@ -2393,8 +2495,8 @@ export function useProjectByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type ProjectByIdQueryHookResult = ReturnType<typeof useProjectByIdQuery>;
 export type ProjectByIdLazyQueryHookResult = ReturnType<typeof useProjectByIdLazyQuery>;
 export type ProjectByIdQueryResult = Apollo.QueryResult<ProjectByIdQuery, ProjectByIdQueryVariables>;
-export const EditProjectByIdDocument = gql`
-    query editProjectById($data: ProjectById!) {
+export const ProjectFormValuesDocument = gql`
+    query projectFormValues($data: ProjectById!) {
   projectById(data: $data) {
     id
     title
@@ -2403,9 +2505,45 @@ export const EditProjectByIdDocument = gql`
     disciplines {
       id
     }
+  }
+}
+    `;
+
+/**
+ * __useProjectFormValuesQuery__
+ *
+ * To run a query within a React component, call `useProjectFormValuesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectFormValuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectFormValuesQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useProjectFormValuesQuery(baseOptions: Apollo.QueryHookOptions<ProjectFormValuesQuery, ProjectFormValuesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectFormValuesQuery, ProjectFormValuesQueryVariables>(ProjectFormValuesDocument, options);
+      }
+export function useProjectFormValuesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectFormValuesQuery, ProjectFormValuesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectFormValuesQuery, ProjectFormValuesQueryVariables>(ProjectFormValuesDocument, options);
+        }
+export type ProjectFormValuesQueryHookResult = ReturnType<typeof useProjectFormValuesQuery>;
+export type ProjectFormValuesLazyQueryHookResult = ReturnType<typeof useProjectFormValuesLazyQuery>;
+export type ProjectFormValuesQueryResult = Apollo.QueryResult<ProjectFormValuesQuery, ProjectFormValuesQueryVariables>;
+export const ProjectMembersDocument = gql`
+    query projectMembers($data: ProjectById!) {
+  projectById(data: $data) {
+    id
     members {
       userId
       role
+      status
       user {
         id
         username
@@ -2426,32 +2564,32 @@ export const EditProjectByIdDocument = gql`
     `;
 
 /**
- * __useEditProjectByIdQuery__
+ * __useProjectMembersQuery__
  *
- * To run a query within a React component, call `useEditProjectByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useEditProjectByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useProjectMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEditProjectByIdQuery({
+ * const { data, loading, error } = useProjectMembersQuery({
  *   variables: {
  *      data: // value for 'data'
  *   },
  * });
  */
-export function useEditProjectByIdQuery(baseOptions: Apollo.QueryHookOptions<EditProjectByIdQuery, EditProjectByIdQueryVariables>) {
+export function useProjectMembersQuery(baseOptions: Apollo.QueryHookOptions<ProjectMembersQuery, ProjectMembersQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<EditProjectByIdQuery, EditProjectByIdQueryVariables>(EditProjectByIdDocument, options);
+        return Apollo.useQuery<ProjectMembersQuery, ProjectMembersQueryVariables>(ProjectMembersDocument, options);
       }
-export function useEditProjectByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EditProjectByIdQuery, EditProjectByIdQueryVariables>) {
+export function useProjectMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectMembersQuery, ProjectMembersQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<EditProjectByIdQuery, EditProjectByIdQueryVariables>(EditProjectByIdDocument, options);
+          return Apollo.useLazyQuery<ProjectMembersQuery, ProjectMembersQueryVariables>(ProjectMembersDocument, options);
         }
-export type EditProjectByIdQueryHookResult = ReturnType<typeof useEditProjectByIdQuery>;
-export type EditProjectByIdLazyQueryHookResult = ReturnType<typeof useEditProjectByIdLazyQuery>;
-export type EditProjectByIdQueryResult = Apollo.QueryResult<EditProjectByIdQuery, EditProjectByIdQueryVariables>;
+export type ProjectMembersQueryHookResult = ReturnType<typeof useProjectMembersQuery>;
+export type ProjectMembersLazyQueryHookResult = ReturnType<typeof useProjectMembersLazyQuery>;
+export type ProjectMembersQueryResult = Apollo.QueryResult<ProjectMembersQuery, ProjectMembersQueryVariables>;
 export const ProjectMemberStatusDocument = gql`
     query projectMemberStatus($id: String!) {
   projectMemberStatus(id: $id)

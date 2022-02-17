@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 import {
   DeleteProjectMutation,
+  ProjectByIdDocument,
+  ProjectByIdQuery,
   useDeleteProjectMutation,
 } from "generated/graphql";
 import { dropInVariants } from "utils/variants";
@@ -23,6 +25,14 @@ const DeleteModal = ({ id, show, onClose }: IProps) => {
   const [deleteProject, { data }] = useDeleteProjectMutation({
     variables: {
       id,
+    },
+    update(cache, {data}) {
+      // Remove project from cache
+      if (data?.deleteProject) {
+        const normalizedId = cache.identify({ id, __typename: "Project" });
+        cache.evict({ id: normalizedId });
+        cache.gc();
+      }
     },
     onError: (error) => setError(error.message),
   });

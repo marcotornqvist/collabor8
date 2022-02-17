@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Formik } from "formik";
 import {
-  EditProjectByIdQuery,
-  MemberStatusCode,
   ProjectByIdDocument,
   ProjectByIdQuery,
-  Role,
+  ProjectByIdQueryVariables,
   UpdateProjectMutation,
-  useEditProjectByIdQuery,
+  useProjectFormValuesQuery,
   useUpdateProjectMutation,
 } from "generated/graphql";
 import { ProjectValidationSchema } from "@/validations/schemas";
@@ -15,11 +13,10 @@ import { isNotEmptyObject } from "utils/helpers";
 import button from "@/styles-modules/Button.module.scss";
 import React from "react";
 import useToast from "@/hooks/useToast";
-import useIsMobile from "@/hooks/useIsMobile";
 import Details from "@/components-modules/project-details/Details";
-import Members from "./Members";
 
 interface IProps {
+  isMobile: boolean;
   id: string;
   navigation: string;
   setNavigation: (navigation: string) => void;
@@ -37,10 +34,19 @@ export interface IFormErrors {
   body?: string;
 }
 
-const Form = ({ id, navigation, setNavigation }: IProps) => {
+const Form = ({ id, setNavigation, isMobile }: IProps) => {
   const [lastSubmit, setLastSubmit] = useState<IFormValues | undefined>(); // Last submit response values
   const [error, setError] = useState(""); // Error message, server error
   const [formErrors, setFormErrors] = useState<IFormErrors>({}); // UserInput Errors
+
+  // Returns form data about the project
+  const { data } = useProjectFormValuesQuery({
+    variables: {
+      data: {
+        id,
+      },
+    },
+  });
 
   const [updateProject, { data: editedData }] = useUpdateProjectMutation({
     onError: (error) => {
@@ -51,23 +57,30 @@ const Form = ({ id, navigation, setNavigation }: IProps) => {
       if (data?.updateProject) {
         const { updateProject } = data;
 
-        const previous = cache.readQuery<EditProjectByIdQuery>({
+        const previous = cache.readQuery<
+          ProjectByIdQuery,
+          ProjectByIdQueryVariables
+        >({
           query: ProjectByIdDocument,
           variables: {
-            id: updateProject.id,
+            data: {
+              id: updateProject.id,
+            },
           },
         });
 
         // Add logged in user to members list
-        cache.writeQuery<EditProjectByIdQuery>({
+        cache.writeQuery<ProjectByIdQuery, ProjectByIdQueryVariables>({
           query: ProjectByIdDocument,
           variables: {
-            id: updateProject.id,
+            data: {
+              id: updateProject.id,
+            },
           },
           data: {
             projectById: {
               ...updateProject,
-              members: previous?.projectById?.members ?? null,
+              members: previous?.projectById?.members ?? [],
             },
           },
         });
@@ -89,31 +102,12 @@ const Form = ({ id, navigation, setNavigation }: IProps) => {
     }
   }, [formErrors]);
 
-  const { isMobile } = useIsMobile();
-
-  const { data } = useEditProjectByIdQuery({
-    variables: {
-      data: {
-        id,
-        status: [MemberStatusCode.Accepted, MemberStatusCode.Pending],
-        role: [Role.Member],
-      },
-    },
-  });
-
   // Returns all the disciplines as an array of numbers
   const disciplines: number[] = useMemo(() => {
     return data?.projectById?.disciplines
       ? data.projectById.disciplines.map((item) => item.id)
       : [];
   }, [data?.projectById?.disciplines]);
-
-  // Returns all the users in a variable called members
-  const members = useMemo(() => {
-    return data?.projectById?.members
-      ? data.projectById?.members.map((item) => item.user)
-      : [];
-  }, [data?.projectById?.members]);
 
   const initialValues: IFormValues = {
     title: data?.projectById?.title ?? "",
@@ -163,30 +157,24 @@ const Form = ({ id, navigation, setNavigation }: IProps) => {
             handleSubmit();
           }}
         >
-          {navigation === "Details" ? (
-            <>
-              <Details
-                isMobile={isMobile}
-                error={error}
-                values={values}
-                handleChange={handleChange}
-                setFieldValue={setFieldValue}
-                lastSubmit={lastSubmit}
-                formErrors={formErrors}
-              />
-              <button
-                type="submit"
-                className={`${
-                  isSubmitting ? button.green : button.lightGreen
-                } submit-btn`}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Saving Changes..." : "Edit Project"}
-              </button>
-            </>
-          ) : (
-            <Members members={members} isMobile={isMobile} />
-          )}
+          <Details
+            isMobile={isMobile}
+            error={error}
+            values={values}
+            handleChange={handleChange}
+            setFieldValue={setFieldValue}
+            lastSubmit={lastSubmit}
+            formErrors={formErrors}
+          />
+          <button
+            type="submit"
+            className={`${
+              isSubmitting ? button.green : button.lightGreen
+            } submit-btn`}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Saving Changes..." : "Edit Project"}
+          </button>
         </form>
       )}
     </Formik>

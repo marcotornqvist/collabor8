@@ -4,25 +4,25 @@ import styles from "@/styles-modules/Members.module.scss";
 import MemberSkeleton from "@/components-modules/global/MemberSkeleton";
 
 interface IProps {
-  members?: User[];
+  users?: User[];
   isMobile: boolean;
   addUser: (user: User) => void;
   loading: boolean;
   showSkeleton: boolean;
 }
 
-const ProfileList = ({
+const UserList = ({
   isMobile,
-  members,
+  users,
   addUser,
   loading,
   showSkeleton,
 }: IProps) => {
   return (
     <div className={`profile-list ${styles.members}`}>
-      {!showSkeleton && members && members.length > 0 && (
+      {!showSkeleton && users && users.length > 0 && (
         <ul>
-          {members?.map((item) => (
+          {users?.map((item) => (
             <ProfileItem
               key={item.id}
               isMobile={isMobile}
@@ -39,11 +39,11 @@ const ProfileList = ({
           ))}
         </ul>
       )}
-      {!showSkeleton && loading && members && members.length === 0 && (
+      {!showSkeleton && !loading && users && users.length === 0 && (
         <span className="no-users-found">No users found...</span>
       )}
     </div>
   );
 };
 
-export default ProfileList;
+export default UserList;

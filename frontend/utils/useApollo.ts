@@ -137,6 +137,10 @@ function createApolloClient() {
           // object unique identifier is parent(User) id
           keyFields: ["userId"],
         },
+        Disciplines: {
+          // object unique identifier is parent(Project) id
+          keyFields: ["projectId"],
+        },
         Members: {
           // object unique identifier is parent(Project) id
           keyFields: ["projectId"],
@@ -147,9 +151,6 @@ function createApolloClient() {
               merge: true,
             },
             projectById: {
-              merge: true,
-            },
-            editProjectById: {
               merge: true,
             },
             users: concatPagination(),

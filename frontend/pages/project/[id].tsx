@@ -1,10 +1,10 @@
+import React, { useEffect } from "react";
 import { authState } from "store";
 import { useSnapshot } from "valtio";
 import { MemberStatusCode, useProjectByIdQuery } from "generated/graphql";
 import About from "@/components-pages/project/About";
 import Members from "@/components-pages/project/Members";
 import Settings from "@/components-pages/project/Settings";
-import React, { useEffect } from "react";
 import { fadeInVariants } from "utils/variants";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";

@@ -1,21 +1,78 @@
 import { fadeInVariants } from "utils/variants";
 import { motion } from "framer-motion";
+import { User } from "./Members";
+import {
+  ProjectMembersDocument,
+  ProjectMembersQuery,
+  ProjectMembersQueryVariables,
+  Role,
+  useAddMemberMutation,
+} from "generated/graphql";
 import ProfileImage from "@/components-modules/global/ProfileImage";
-import React from "react";
+import React, { useState } from "react";
 import button from "@/styles-modules/Button.module.scss";
 import useHover from "@/hooks/useHover";
-import { User } from "./Members";
+import useToast from "@/hooks/useToast";
 
 interface IProps {
+  id: string;
   isMobile: boolean;
   user: User;
-  addUser?: (user: User) => void;
-  removeUser?: (user: User) => void;
+  isAdded: boolean;
 }
 
-const ProfileItem = ({ isMobile, user, addUser, removeUser }: IProps) => {
+const ProfileItem = ({ id, isMobile, user, isAdded }: IProps) => {
+  const [error, setError] = useState("");
   const { profile } = user;
   const [hoverRef, isHovered] = useHover<HTMLButtonElement>();
+
+  const [addUser] = useAddMemberMutation({
+    variables: {
+      data: {
+        projectId: id,
+        userId: user.id,
+      },
+    },
+    update(cache, { data }) {
+      const previousData = cache.readQuery<
+        ProjectMembersQuery,
+        ProjectMembersQueryVariables
+      >({
+        query: ProjectMembersDocument,
+        variables: {
+          data: {
+            id,
+            role: [Role.Member],
+          },
+        },
+      });
+
+      if (data?.addMember && previousData?.projectById) {
+        cache.writeQuery<ProjectMembersQuery, ProjectMembersQueryVariables>({
+          query: ProjectMembersDocument,
+          variables: {
+            data: {
+              id,
+            },
+          },
+          data: {
+            projectById: {
+              ...previousData.projectById,
+              members: previousData.projectById.members
+                ? [data.addMember, ...previousData.projectById.members]
+                : [data.addMember],
+            },
+          },
+        });
+      }
+    },
+    onError: (error) => setError(error.message),
+  });
+
+  useToast({
+    error,
+  });
+
   return (
     <>
       <motion.li
@@ -47,24 +104,24 @@ const ProfileItem = ({ isMobile, user, addUser, removeUser }: IProps) => {
           </div>
         </div>
         <div className="button-container">
-          {addUser && (
+          {!isAdded && (
             <button
               className={button.lightGreen}
               onClick={(e) => {
                 e.preventDefault();
-                addUser(user);
+                addUser();
               }}
             >
               Add
             </button>
           )}
-          {removeUser && (
+          {isAdded && (
             <button
               ref={hoverRef}
               className={isHovered ? button.red : button.lightGreen}
               onClick={(e) => {
                 e.preventDefault();
-                removeUser(user);
+                addUser();
               }}
             >
               {isHovered ? "Remove" : "Pending"}

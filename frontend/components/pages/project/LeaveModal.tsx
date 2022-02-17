@@ -23,6 +23,14 @@ const LeaveModal = ({ id, show, onClose }: IProps) => {
     variables: {
       id,
     },
+    update(cache, { data }) {
+      // Remove project from cache
+      if (data?.leaveProject) {
+        const normalizedId = cache.identify({ id, __typename: "Project" });
+        cache.evict({ id: normalizedId });
+        cache.gc();
+      }
+    },
     onError: (error) => setError(error.message),
   });
 

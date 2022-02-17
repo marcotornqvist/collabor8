@@ -1,31 +1,24 @@
 import { RefObject, useRef, useState } from "react";
-import { useUsersLazyQuery } from "generated/graphql";
 import input from "@/styles-modules/Input.module.scss";
 import Image from "next/image";
 
-const SearchInput = () => {
+interface IProps {
+  search: string;
+  setSearch: (search: string) => void;
+}
+
+const SearchInput = ({ search, setSearch }: IProps) => {
   // Local search value, get's passed up to parent component "search" state with setSearch
-  const [lastSubmit, setLastSubmit] = useState<string | undefined>();
-  const [search, setSearch] = useState("");
+  const [value, setValue] = useState("");
   const [isFocus, setIsFocus] = useState(false);
   const inputRef: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
-
-  const [getUsers] = useUsersLazyQuery();
 
   const handleSearch = (
     e: React.FormEvent<HTMLInputElement | HTMLDivElement>
   ) => {
     e.preventDefault();
-    if (lastSubmit !== search) {
-      getUsers({
-        variables: {
-          data: {
-            searchText: search,
-            first: 20,
-          },
-        },
-      });
-      setLastSubmit(search);
+    if (search !== value) {
+      setSearch(value);
     }
   };
 
@@ -40,13 +33,11 @@ const SearchInput = () => {
       >
         <input
           name="search"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-          }}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
           type="text"
           className="input"
-          placeholder="Search contacts..."
+          placeholder="Search for users..."
           ref={inputRef}
           onKeyDown={(e) => {
             if (e.key === "Enter") {

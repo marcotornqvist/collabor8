@@ -30,7 +30,7 @@
 
   .members {
     .profile-list,
-    .pending-members-list {
+    .members-list {
       ul {
         padding-bottom: 1.5rem;
         overflow-y: scroll;
@@ -68,7 +68,7 @@
       }
     }
 
-    .pending-members-list {
+    .members-list {
       margin-bottom: 1.5rem;
 
       h3 {
@@ -102,7 +102,7 @@
         margin-bottom: 1.5rem;
       }
 
-      .pending-members-list {
+      .members-list {
         margin-bottom: 2.5rem;
 
         h3 {
@@ -111,7 +111,7 @@
       }
 
       .profile-list,
-      .pending-members-list {
+      .members-list {
         ul {
           max-height: 18rem;
         }
