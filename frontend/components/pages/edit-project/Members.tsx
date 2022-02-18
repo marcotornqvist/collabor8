@@ -1,18 +1,23 @@
 import { useEffect, useMemo, useState } from "react";
 import {
+  MemberStatusCode,
   ProjectByIdQuery,
   Role,
   useProjectMembersQuery,
-  useUsersLazyQuery,
   useUsersQuery,
 } from "generated/graphql";
 import SearchInput from "@/components-modules/project-details/SearchInput";
 import ProfileList from "./ProfileList";
-import MembersList from "./Memberslist";
+import MembersList from "./MembersList";
 
 export type User = NonNullable<
   NonNullable<ProjectByIdQuery["projectById"]>["members"]
 >[0]["user"];
+
+export interface IMember {
+  user: User;
+  status: MemberStatusCode;
+}
 
 interface IProps {
   isMobile: boolean;
@@ -39,27 +44,46 @@ const Members = ({ id, isMobile, showSkeleton, setShowSkeleton }: IProps) => {
     refetch();
   }, [search]);
 
+  // Returns members with a role of "Member"
+  // & Status of Rejected, Pending & Accepted
   const { data: membersData } = useProjectMembersQuery({
     variables: {
       data: {
         id,
         role: [Role.Member],
+        status: [
+          MemberStatusCode.Rejected,
+          MemberStatusCode.Pending,
+          MemberStatusCode.Accepted,
+        ],
       },
     },
   });
 
-  // Returns all the users in a variable called members
+  // Returns users with the status of ACCEPTED & PENDING in an array of objects
   const members = useMemo(() => {
     return membersData?.projectById?.members
-      ? membersData.projectById?.members.map((item) => item.user)
+      ? membersData.projectById?.members.filter((item) => {
+          if (item.status !== MemberStatusCode.Rejected) {
+            return {
+              user: item.user,
+              status: item.status,
+            };
+          }
+        })
       : [];
   }, [membersData?.projectById?.members]);
 
   // Returns a list of all the users and filters out the users that are in the "members" list
   const users = useMemo(
     () =>
-      data?.users?.filter((item) => !members?.some((el) => item.id === el.id)),
-    [data?.users, members]
+      data?.users?.filter(
+        (item) =>
+          !membersData?.projectById?.members?.some(
+            (el) => item.id === el.user.id
+          )
+      ),
+    [data?.users, membersData?.projectById?.members]
   );
 
   return (
@@ -72,7 +96,12 @@ const Members = ({ id, isMobile, showSkeleton, setShowSkeleton }: IProps) => {
         loading={loading}
         showSkeleton={showSkeleton}
       />
-      <MembersList members={members} isMobile={isMobile} loading={loading} />
+      <MembersList
+        id={id}
+        members={members}
+        isMobile={isMobile}
+        loading={loading}
+      />
     </div>
   );
 };

@@ -48,6 +48,7 @@ export const PROJECT_MEMBERS = gql`
     projectById(data: $data) {
       id
       members {
+        projectId
         userId
         role
         status

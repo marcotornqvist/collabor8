@@ -27,7 +27,7 @@ const EditProject = () => {
     push,
     query: { id },
   } = useRouter();
-  const [navigation, setNavigation] = useState("Settings");
+  const [navigation, setNavigation] = useState("Members");
   // Sets id to a string
   id = typeof id === "string" ? id : "";
 

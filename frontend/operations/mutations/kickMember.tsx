@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const ADD_MEMBER = gql`
+export const KICK_MEMBER = gql`
   mutation kickMember($data: MemberInput!) {
     kickMember(data: $data)
   }

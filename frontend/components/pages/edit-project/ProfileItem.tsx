@@ -2,11 +2,15 @@ import { fadeInVariants } from "utils/variants";
 import { motion } from "framer-motion";
 import { User } from "./Members";
 import {
+  MemberStatusCode,
+  ProjectByIdDocument,
+  ProjectByIdQuery,
   ProjectMembersDocument,
   ProjectMembersQuery,
   ProjectMembersQueryVariables,
   Role,
   useAddMemberMutation,
+  useKickMemberMutation,
 } from "generated/graphql";
 import ProfileImage from "@/components-modules/global/ProfileImage";
 import React, { useState } from "react";
@@ -18,15 +22,22 @@ interface IProps {
   id: string;
   isMobile: boolean;
   user: User;
+  status: MemberStatusCode;
   isAdded: boolean;
 }
 
-const ProfileItem = ({ id, isMobile, user, isAdded }: IProps) => {
+const ProfileItem = ({
+  id,
+  isMobile,
+  user,
+  user: { profile },
+  status,
+  isAdded,
+}: IProps) => {
   const [error, setError] = useState("");
-  const { profile } = user;
   const [hoverRef, isHovered] = useHover<HTMLButtonElement>();
 
-  const [addUser] = useAddMemberMutation({
+  const [addMember] = useAddMemberMutation({
     variables: {
       data: {
         projectId: id,
@@ -42,7 +53,6 @@ const ProfileItem = ({ id, isMobile, user, isAdded }: IProps) => {
         variables: {
           data: {
             id,
-            role: [Role.Member],
           },
         },
       });
@@ -69,17 +79,55 @@ const ProfileItem = ({ id, isMobile, user, isAdded }: IProps) => {
     onError: (error) => setError(error.message),
   });
 
+  const [kickMember] = useKickMemberMutation({
+    variables: {
+      data: {
+        projectId: id,
+        userId: user.id,
+      },
+    },
+    update(cache, { data }) {
+      const previousData = cache.readQuery<
+        ProjectMembersQuery,
+        ProjectMembersQueryVariables
+      >({
+        query: ProjectMembersDocument,
+        variables: {
+          data: {
+            id,
+          },
+        },
+      });
+
+      if (data && previousData?.projectById) {
+        cache.writeQuery<ProjectMembersQuery, ProjectMembersQueryVariables>({
+          query: ProjectMembersDocument,
+          variables: {
+            data: {
+              id,
+            },
+          },
+          data: {
+            projectById: {
+              ...previousData.projectById,
+              members: previousData?.projectById?.members?.filter(
+                (item) => item.userId !== user.id
+              ),
+            },
+          },
+        });
+      }
+    },
+    onError: (error) => setError(error.message),
+  });
+
   useToast({
     error,
   });
 
   return (
     <>
-      <motion.li
-        initial={"hidden"}
-        animate={"visible"}
-        variants={fadeInVariants}
-      >
+      <motion.li initial="hidden" animate="visible" variants={fadeInVariants}>
         <div className="profile-details">
           <ProfileImage
             size={isMobile ? "small" : "medium"}
@@ -109,7 +157,7 @@ const ProfileItem = ({ id, isMobile, user, isAdded }: IProps) => {
               className={button.lightGreen}
               onClick={(e) => {
                 e.preventDefault();
-                addUser();
+                addMember();
               }}
             >
               Add
@@ -121,10 +169,14 @@ const ProfileItem = ({ id, isMobile, user, isAdded }: IProps) => {
               className={isHovered ? button.red : button.lightGreen}
               onClick={(e) => {
                 e.preventDefault();
-                addUser();
+                kickMember();
               }}
             >
-              {isHovered ? "Remove" : "Pending"}
+              {isHovered
+                ? "Remove"
+                : status === MemberStatusCode.Accepted
+                ? "Active"
+                : "Pending"}
             </button>
           )}
         </div>

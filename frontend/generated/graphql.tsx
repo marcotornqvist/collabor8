@@ -170,6 +170,7 @@ export type MemberInput = {
 export enum MemberStatusCode {
   Accepted = 'ACCEPTED',
   Kicked = 'KICKED',
+  Left = 'LEFT',
   Pending = 'PENDING',
   Rejected = 'REJECTED'
 }
@@ -1087,7 +1088,7 @@ export type ProjectMembersQueryVariables = Exact<{
 }>;
 
 
-export type ProjectMembersQuery = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, members?: Array<{ __typename?: 'Member', userId: string, role: Role, status: MemberStatusCode, user: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, lastName?: string | null | undefined, firstName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined } | null | undefined };
+export type ProjectMembersQuery = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, members?: Array<{ __typename?: 'Member', projectId: string, userId: string, role: Role, status: MemberStatusCode, user: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, lastName?: string | null | undefined, firstName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined } | null | undefined };
 
 export type ProjectDisabledStatusQueryVariables = Exact<{
   data: ProjectById;
@@ -2586,6 +2587,7 @@ export const ProjectMembersDocument = gql`
   projectById(data: $data) {
     id
     members {
+      projectId
       userId
       role
       status

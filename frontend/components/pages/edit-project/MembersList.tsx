@@ -1,15 +1,16 @@
 import React from "react";
 import ProfileItem from "./ProfileItem";
 import styles from "@/styles-modules/Members.module.scss";
-import { User } from "./Members";
+import { IMember } from "./Members";
 
 interface IProps {
-  members?: User[];
+  id: string;
+  members?: IMember[];
   isMobile: boolean;
   loading: boolean;
 }
 
-const MembersList = ({ members, isMobile, loading }: IProps) => {
+const MembersList = ({ id, members, isMobile, loading }: IProps) => {
   return (
     <div className={`members-list ${styles.members}`}>
       {(!loading || (members && members.length > 0)) && (
@@ -19,9 +20,11 @@ const MembersList = ({ members, isMobile, loading }: IProps) => {
             <ul>
               {members?.map((item) => (
                 <ProfileItem
-                  key={item.id}
+                  key={item.user.id}
+                  id={id}
                   isMobile={isMobile}
-                  user={item}
+                  user={item.user}
+                  status={item.status}
                   isAdded={true}
                 />
               ))}

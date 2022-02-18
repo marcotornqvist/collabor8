@@ -609,6 +609,25 @@ export class ProjectResolver {
     @Arg("data") { userId, projectId }: MemberInput,
     @Ctx() { payload, prisma }: Context
   ): Promise<Member> {
+    // Check that logged in user is authorized (admin) to add member
+    const project = await prisma.project.findFirst({
+      where: {
+        id: projectId,
+        members: {
+          some: {
+            userId: payload!.userId,
+            role: "ADMIN",
+          },
+        },
+      },
+      // Returns a list members
+      select: {
+        members: true,
+      },
+    });
+
+    if (!project) throw new ForbiddenError("Not Authorized");
+
     // Checks if user is blocked
     const isBlocked = await prisma.blockedUser.findUnique({
       where: {
@@ -621,41 +640,48 @@ export class ProjectResolver {
 
     if (isBlocked) throw new Error("Blocked user cannot be added to project");
 
-    // Check if member field already exists with a status of kicked
-    const isKickedMember = await prisma.member.findUnique({
-      where: {
-        userId_projectId: {
-          userId,
-          projectId,
-        },
-      },
-      select: {
-        status: true,
-      },
-    });
+    // Checks if member object already exists
+    const member = project.members.find((item) => item.userId === userId);
 
-    // If member object already exists with a status of kicked
-    // Member status gets updated to pending and is returned
-    if (isKickedMember?.status === "KICKED") {
-      // If member object exists, member status gets updated to pending
-      // Meaning that the user has received a new invite to the project
-      const updatedMember = await prisma.member.update({
-        where: {
-          userId_projectId: {
-            userId,
-            projectId,
+    if (member) {
+      const { status } = member;
+
+      if (status === "KICKED" || status === "LEFT") {
+        // If member object exists with a status of KICKED or LEFT
+        // Member status gets updated to "PENDING"
+        // Meaning that the user has received a new invite to the project
+        const updatedMember = await prisma.member.update({
+          where: {
+            userId_projectId: {
+              userId,
+              projectId,
+            },
           },
-        },
-        data: {
-          status: "PENDING",
-        },
-        include: { user: true },
-      });
+          data: {
+            status: "PENDING",
+          },
+          include: {
+            user: {
+              include: {
+                profile: {
+                  include: {
+                    discipline: true,
+                  },
+                },
+              },
+            },
+          },
+        });
 
-      return updatedMember;
+        return updatedMember;
+      }
+
+      if (status === "ACCEPTED") throw new Error("User is already a member!");
+      if (status === "REJECTED" || "PENDING")
+        throw new Error("User invite is already sent!");
     }
 
-    // Check if user exists
+    // Checks if user exists
     const userExists = await prisma.user.findUnique({
       where: {
         id: userId,
@@ -664,35 +690,7 @@ export class ProjectResolver {
 
     if (!userExists) throw new UserInputError("User doesn't exist");
 
-    // Checks if project exists
-    const project = await prisma.project.findUnique({
-      where: {
-        id: projectId,
-      },
-      select: {
-        members: true,
-      },
-    });
-
-    if (!project) throw new UserInputError("Project doesn't exist");
-
-    // Returns the logged in user
-    const currentUser = project.members.find(
-      (item) => item.userId === payload!.userId
-    );
-
-    // Checks if user is authorized to add member to a specific project
-    if (!currentUser || currentUser.role !== "ADMIN") {
-      throw new ForbiddenError("Not Authorized");
-    }
-
-    // Checks if member exists
-    const memberExists = project.members.find((item) => item.userId === userId);
-
-    if (memberExists) {
-      throw new UserInputError("Member already exists");
-    }
-
+    // Creates a new member object
     const newMember = await prisma.member.create({
       data: {
         userId,
@@ -722,32 +720,33 @@ export class ProjectResolver {
     @Arg("data") { userId, projectId }: MemberInput,
     @Ctx() { payload, prisma }: Context
   ) {
-    const project = await prisma.project.findUnique({
+    // Check that logged in user is authorized (admin) to add member
+    const project = await prisma.project.findFirst({
       where: {
         id: projectId,
+        members: {
+          some: {
+            userId: payload!.userId,
+            role: "ADMIN",
+          },
+        },
       },
-      include: {
+      // Returns a list members
+      select: {
         members: true,
       },
     });
 
-    if (!project) throw new UserInputError("Project doesn't exist");
-
-    // Returns the logged in user
-    const currentUser = project.members.find(
-      (item) => item.userId === payload!.userId
-    );
-
-    if (!currentUser || currentUser.role !== "ADMIN") {
-      throw new ForbiddenError("Not Authorized");
-    }
+    if (!project) throw new ForbiddenError("Not Authorized");
 
     // Checks if member exists
-    const memberExists = project.members.find((item) => item.userId === userId);
+    const member = project.members.find((item) => item.userId === userId);
 
-    if (!memberExists) {
-      throw new UserInputError("Member doesn't exist");
-    }
+    if (!member) throw new UserInputError("Member doesn't exist");
+
+    if (member.status === "KICKED") throw new Error("User is already kicked!");
+    if (member.status === "REJECTED" || member.status === "LEFT")
+      throw new Error("User is neither invited or a member!");
 
     await prisma.member.update({
       where: {
@@ -772,25 +771,19 @@ export class ProjectResolver {
     @Arg("projectId") projectId: string,
     @Ctx() { payload, prisma }: Context
   ): Promise<Boolean> {
-    const project = await prisma.project.findUnique({
+    const project = await prisma.project.findFirst({
       where: {
         id: projectId,
-      },
-      include: {
-        members: true,
+        members: {
+          some: {
+            projectId: projectId,
+            userId: payload!.userId,
+          },
+        },
       },
     });
 
-    if (!project) throw new UserInputError("Project doesn't exist");
-
-    // Returns the logged in user
-    const currentUser = project.members.find(
-      (item) => item.userId === payload!.userId
-    );
-
-    if (!currentUser || currentUser.role !== "ADMIN") {
-      throw new ForbiddenError("Not Authorized");
-    }
+    if (!project) throw new ForbiddenError("Not Authorized");
 
     const toggleDisabled = await prisma.project.update({
       where: {
@@ -827,8 +820,13 @@ export class ProjectResolver {
       },
     });
 
-    // If invite doesn't exist or the status is "ACCEPTED" or "KICKED", return error
-    if (!member || member.status === "ACCEPTED" || member.status === "KICKED")
+    // If invite doesn't exist or the status is "ACCEPTED", "KICKED" or "LEFT", return error
+    if (
+      !member ||
+      member.status === "ACCEPTED" ||
+      member.status === "KICKED" ||
+      member.status === "LEFT"
+    )
       throw new Error("Invite doesn't exist");
 
     await prisma.member.update({

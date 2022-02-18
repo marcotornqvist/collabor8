@@ -103,9 +103,6 @@ const DisciplinesDropdown = ({
 
   useOnClickOutside(dropdownRef, handleClickOutside);
 
-  console.log(compareArr(lastSubmittedValues ?? [], disciplines));
-  console.log(disciplines.length);
-
   return (
     <div
       className={`disciplines-dropdown ${dropdown.default} ${

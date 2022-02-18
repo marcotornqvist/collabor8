@@ -134,16 +134,22 @@ function createApolloClient() {
     cache: new InMemoryCache({
       typePolicies: {
         Profile: {
-          // object unique identifier is parent(User) id
           keyFields: ["userId"],
         },
         Disciplines: {
-          // object unique identifier is parent(Project) id
           keyFields: ["projectId"],
         },
         Members: {
-          // object unique identifier is parent(Project) id
           keyFields: ["projectId"],
+        },
+        Project: {
+          fields: {
+            members: {
+              merge(_existing, incoming) {
+                return incoming;
+              },
+            },
+          },
         },
         Query: {
           fields: {
@@ -152,6 +158,7 @@ function createApolloClient() {
             },
             projectById: {
               merge: true,
+              keyArgs: ["id"],
             },
             users: concatPagination(),
             projects: concatPagination(),
