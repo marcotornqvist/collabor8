@@ -2,17 +2,23 @@ import React, { useEffect, useState } from "react";
 import {
   Project_Member_Status,
   useProjectMemberStatusLazyQuery,
-  useUsersLazyQuery,
 } from "generated/graphql";
 import { useRouter } from "next/router";
 import { useSnapshot } from "valtio";
 import { authState } from "store";
-import Form from "@/components-pages/edit-project/Form";
 import NavigationSlide from "@/components-modules/global/NavigationSlide";
-import Settings from "@/components-pages/edit-project/Settings";
-import Members from "@/components-pages/edit-project/Members";
+import Form from "@/components-pages/edit-project/Form";
 import useSkeleton from "@/hooks/useSkeleton";
 import useIsMobile from "@/hooks/useIsMobile";
+import dynamic from "next/dynamic";
+
+const Members = dynamic(
+  async () => (await import("@/components-pages/edit-project/Members")).default
+);
+
+const Settings = dynamic(
+  async () => (await import("@/components-pages/edit-project/Settings")).default
+);
 
 const EditProject = () => {
   const { showSkeleton, setShowSkeleton } = useSkeleton();
@@ -21,7 +27,7 @@ const EditProject = () => {
     push,
     query: { id },
   } = useRouter();
-  const [navigation, setNavigation] = useState("Members");
+  const [navigation, setNavigation] = useState("Settings");
   // Sets id to a string
   id = typeof id === "string" ? id : "";
 

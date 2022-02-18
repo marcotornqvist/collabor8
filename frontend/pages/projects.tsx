@@ -90,7 +90,7 @@ const Projects = () => {
       data?.projects?.map((item) => {
         if (
           item.disciplines &&
-          item.disciplines.length >= 1 &&
+          item.disciplines.length > 0 &&
           item.disciplines[0].image
         ) {
           const { small, alt, objectPosition } = item.disciplines[0].image;

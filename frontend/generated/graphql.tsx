@@ -944,6 +944,13 @@ export type RejectContactMutationVariables = Exact<{
 
 export type RejectContactMutation = { __typename?: 'Mutation', rejectContact: boolean };
 
+export type ToggleProjectDisabledMutationVariables = Exact<{
+  projectId: Scalars['String'];
+}>;
+
+
+export type ToggleProjectDisabledMutation = { __typename?: 'Mutation', toggleProjectDisabled: boolean };
+
 export type UnblockUserMutationVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -1081,6 +1088,13 @@ export type ProjectMembersQueryVariables = Exact<{
 
 
 export type ProjectMembersQuery = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, members?: Array<{ __typename?: 'Member', userId: string, role: Role, status: MemberStatusCode, user: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, lastName?: string | null | undefined, firstName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined } | null | undefined };
+
+export type ProjectDisabledStatusQueryVariables = Exact<{
+  data: ProjectById;
+}>;
+
+
+export type ProjectDisabledStatusQuery = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, disabled: boolean } | null | undefined };
 
 export type ProjectMemberStatusQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1706,6 +1720,37 @@ export function useRejectContactMutation(baseOptions?: Apollo.MutationHookOption
 export type RejectContactMutationHookResult = ReturnType<typeof useRejectContactMutation>;
 export type RejectContactMutationResult = Apollo.MutationResult<RejectContactMutation>;
 export type RejectContactMutationOptions = Apollo.BaseMutationOptions<RejectContactMutation, RejectContactMutationVariables>;
+export const ToggleProjectDisabledDocument = gql`
+    mutation toggleProjectDisabled($projectId: String!) {
+  toggleProjectDisabled(projectId: $projectId)
+}
+    `;
+export type ToggleProjectDisabledMutationFn = Apollo.MutationFunction<ToggleProjectDisabledMutation, ToggleProjectDisabledMutationVariables>;
+
+/**
+ * __useToggleProjectDisabledMutation__
+ *
+ * To run a mutation, you first call `useToggleProjectDisabledMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleProjectDisabledMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [toggleProjectDisabledMutation, { data, loading, error }] = useToggleProjectDisabledMutation({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useToggleProjectDisabledMutation(baseOptions?: Apollo.MutationHookOptions<ToggleProjectDisabledMutation, ToggleProjectDisabledMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ToggleProjectDisabledMutation, ToggleProjectDisabledMutationVariables>(ToggleProjectDisabledDocument, options);
+      }
+export type ToggleProjectDisabledMutationHookResult = ReturnType<typeof useToggleProjectDisabledMutation>;
+export type ToggleProjectDisabledMutationResult = Apollo.MutationResult<ToggleProjectDisabledMutation>;
+export type ToggleProjectDisabledMutationOptions = Apollo.BaseMutationOptions<ToggleProjectDisabledMutation, ToggleProjectDisabledMutationVariables>;
 export const UnblockUserDocument = gql`
     mutation unblockUser($id: String!) {
   unblockUser(id: $id)
@@ -2590,6 +2635,42 @@ export function useProjectMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type ProjectMembersQueryHookResult = ReturnType<typeof useProjectMembersQuery>;
 export type ProjectMembersLazyQueryHookResult = ReturnType<typeof useProjectMembersLazyQuery>;
 export type ProjectMembersQueryResult = Apollo.QueryResult<ProjectMembersQuery, ProjectMembersQueryVariables>;
+export const ProjectDisabledStatusDocument = gql`
+    query projectDisabledStatus($data: ProjectById!) {
+  projectById(data: $data) {
+    id
+    disabled
+  }
+}
+    `;
+
+/**
+ * __useProjectDisabledStatusQuery__
+ *
+ * To run a query within a React component, call `useProjectDisabledStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectDisabledStatusQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectDisabledStatusQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useProjectDisabledStatusQuery(baseOptions: Apollo.QueryHookOptions<ProjectDisabledStatusQuery, ProjectDisabledStatusQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectDisabledStatusQuery, ProjectDisabledStatusQueryVariables>(ProjectDisabledStatusDocument, options);
+      }
+export function useProjectDisabledStatusLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectDisabledStatusQuery, ProjectDisabledStatusQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectDisabledStatusQuery, ProjectDisabledStatusQueryVariables>(ProjectDisabledStatusDocument, options);
+        }
+export type ProjectDisabledStatusQueryHookResult = ReturnType<typeof useProjectDisabledStatusQuery>;
+export type ProjectDisabledStatusLazyQueryHookResult = ReturnType<typeof useProjectDisabledStatusLazyQuery>;
+export type ProjectDisabledStatusQueryResult = Apollo.QueryResult<ProjectDisabledStatusQuery, ProjectDisabledStatusQueryVariables>;
 export const ProjectMemberStatusDocument = gql`
     query projectMemberStatus($id: String!) {
   projectMemberStatus(id: $id)

@@ -49,10 +49,6 @@ const Form = ({ id, setNavigation, isMobile }: IProps) => {
   });
 
   const [updateProject, { data: editedData }] = useUpdateProjectMutation({
-    onError: (error) => {
-      setFormErrors(error.graphQLErrors[0].extensions?.errors);
-      setError(error.message);
-    },
     update(cache, { data }) {
       if (data?.updateProject) {
         const { updateProject } = data;
@@ -85,6 +81,10 @@ const Form = ({ id, setNavigation, isMobile }: IProps) => {
           },
         });
       }
+    },
+    onError: (error) => {
+      setFormErrors(error.graphQLErrors[0].extensions?.errors);
+      setError(error.message);
     },
   });
 
@@ -135,10 +135,10 @@ const Form = ({ id, setNavigation, isMobile }: IProps) => {
           },
         });
 
-        if (data) {
-          setFormErrors({});
-          setLastSubmit(undefined);
-        }
+        data && setLastSubmit(values);
+        // if (data) {
+        //   setFormErrors({});
+        // }
       }}
     >
       {({

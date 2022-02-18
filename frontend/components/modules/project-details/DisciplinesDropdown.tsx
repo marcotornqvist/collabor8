@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { IDiscipline } from "@/types-interfaces/form";
 import { useDisciplinesQuery } from "generated/graphql";
+import { compareArr } from "utils/helpers";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
 import ChevronIcon from "@/components-modules/global/ChevronIcon";
@@ -25,6 +26,8 @@ const DisciplinesDropdown = ({
   disciplines,
   variants,
   isMobile,
+  error,
+  lastSubmittedValues,
 }: IProps) => {
   const [show, setShow] = useState(false);
   const { data } = useDisciplinesQuery();
@@ -100,6 +103,9 @@ const DisciplinesDropdown = ({
 
   useOnClickOutside(dropdownRef, handleClickOutside);
 
+  console.log(compareArr(lastSubmittedValues ?? [], disciplines));
+  console.log(disciplines.length);
+
   return (
     <div
       className={`disciplines-dropdown ${dropdown.default} ${
@@ -109,10 +115,15 @@ const DisciplinesDropdown = ({
     >
       <div className="input-text">
         <label htmlFor="disciplines">Disciplines</label>
+        {!error &&
+          compareArr(lastSubmittedValues ?? [], disciplines) &&
+          disciplines.length > 0 && (
+            <span className="success-message">Discipline is valid</span>
+          )}
       </div>
       <div onClick={() => setShow(!show)} className="show-dropdown-menu-btn">
         <span
-          className={disciplines.length >= 1 ? "default-text" : "placeholder"}
+          className={disciplines.length > 0 ? "default-text" : "placeholder"}
         >
           {title}
         </span>

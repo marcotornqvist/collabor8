@@ -7,8 +7,8 @@ import { fadeInVariants } from "utils/variants";
 import { motion } from "framer-motion";
 import button from "@/styles-modules/Button.module.scss";
 import ReportButton from "./ReportButton";
-import DeleteModal from "./DeleteModal";
-import LeaveModal from "./LeaveModal";
+import DeleteProjectModal from "@/components-modules/project-settings/DeleteProjectModal";
+import LeaveProjectModal from "@/components-modules/project-settings/LeaveProjectModal";
 import AcceptButton from "./AcceptButton";
 
 interface IProps {
@@ -37,14 +37,14 @@ const Settings = ({ id }: IProps) => {
           <>
             <motion.button
               onClick={() => setShowLeaveModal(true)}
-              className={`leave-project-btn ${button.red}`}
+              className={`leave-project-btn ${button.lightRed}`}
               initial="hidden"
               animate="visible"
               variants={fadeInVariants}
             >
               Leave Project
             </motion.button>
-            <LeaveModal
+            <LeaveProjectModal
               id={id}
               show={showLeaveModal}
               onClose={() => setShowLeaveModal(false)}
@@ -56,14 +56,14 @@ const Settings = ({ id }: IProps) => {
           <>
             <motion.button
               onClick={() => setShowDeleteModal(true)}
-              className={`delete-project-btn ${button.lightRed}`}
+              className={`delete-project-btn ${button.red}`}
               initial="hidden"
               animate="visible"
               variants={fadeInVariants}
             >
               Delete Project
             </motion.button>
-            <DeleteModal
+            <DeleteProjectModal
               id={id}
               show={showDeleteModal}
               onClose={() => setShowDeleteModal(false)}

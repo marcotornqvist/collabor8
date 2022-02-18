@@ -44,3 +44,10 @@ export const truncateText = function (
     return text;
   }
 };
+
+// Compares two arrays of numbers and returns true if they are the same
+export function compareArr(arr1: number[], arr2: number[]) {
+  arr1.sort();
+  arr2.sort();
+  return arr1 + "" == arr2 + "";
+}

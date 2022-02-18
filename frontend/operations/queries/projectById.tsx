@@ -46,26 +46,36 @@ export const PROJECT_FORM_VALUES = gql`
 export const PROJECT_MEMBERS = gql`
   query projectMembers($data: ProjectById!) {
     projectById(data: $data) {
-    id
-    members {
-      userId
-      role
-      status
-      user {
-        id
-        username
-        profile {
-          userId
-          lastName
-          firstName
-          country
-          profileImage
-          discipline {
-            title
+      id
+      members {
+        userId
+        role
+        status
+        user {
+          id
+          username
+          profile {
+            userId
+            lastName
+            firstName
+            country
+            profileImage
+            discipline {
+              title
+            }
           }
         }
       }
     }
+  }
+`;
+
+// Gets status if project is disabled or not
+export const PROJECT_DISABLED_STATUS = gql`
+  query projectDisabledStatus($data: ProjectById!) {
+    projectById(data: $data) {
+      id
+      disabled
     }
   }
 `;

@@ -1,13 +1,9 @@
 import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
-import {
-  DeleteProjectMutation,
-  ProjectByIdDocument,
-  ProjectByIdQuery,
-  useDeleteProjectMutation,
-} from "generated/graphql";
+import { useLeaveProjectMutation } from "generated/graphql";
 import { dropInVariants } from "utils/variants";
+import { useRouter } from "next/router";
 import button from "@/styles-modules/Button.module.scss";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import useToast from "@/hooks/useToast";
@@ -18,17 +14,18 @@ interface IProps {
   onClose: () => void;
 }
 
-const DeleteModal = ({ id, show, onClose }: IProps) => {
+const LeaveProjectModal = ({ id, show, onClose }: IProps) => {
+  const router = useRouter();
   const [isBrowser, setIsBrowser] = useState(false);
   const [error, setError] = useState("");
 
-  const [deleteProject, { data }] = useDeleteProjectMutation({
+  const [leaveProject, { data }] = useLeaveProjectMutation({
     variables: {
       id,
     },
-    update(cache, {data}) {
+    update(cache, { data }) {
       // Remove project from cache
-      if (data?.deleteProject) {
+      if (data?.leaveProject) {
         const normalizedId = cache.identify({ id, __typename: "Project" });
         cache.evict({ id: normalizedId });
         cache.gc();
@@ -46,11 +43,14 @@ const DeleteModal = ({ id, show, onClose }: IProps) => {
     onClose();
   };
 
-  useToast<DeleteProjectMutation>({
-    data,
-    successMessage: "Project deleted successfully!",
+  useEffect(() => {
+    if (data) {
+      router.push("/projects");
+    }
+  }, [data]);
+
+  useToast({
     error,
-    redirect: "/projects",
   });
 
   const ref = useRef<HTMLDivElement>(null);
@@ -59,7 +59,7 @@ const DeleteModal = ({ id, show, onClose }: IProps) => {
   const modalContent = show ? (
     <div className="modal-backdrop">
       <motion.div
-        className="modal delete-project-modal"
+        className="modal leave-project-modal"
         onClick={(e) => e.stopPropagation()}
         variants={dropInVariants}
         initial="hidden"
@@ -73,14 +73,10 @@ const DeleteModal = ({ id, show, onClose }: IProps) => {
           </div>
         </div>
         <div className="modal-content">
-          <h4>Are you sure you want to delete this project?</h4>
-          <p>
-            This will permanently delete the project. All chats will be removed
-            in the process.
-          </p>
+          <h4>Are you sure you want to leave this project?</h4>
         </div>
-        <button className={button.lightRed} onClick={() => deleteProject()}>
-          Delete Project
+        <button className={button.lightRed} onClick={() => leaveProject()}>
+          Leave Project
         </button>
       </motion.div>
     </div>
@@ -96,4 +92,4 @@ const DeleteModal = ({ id, show, onClose }: IProps) => {
   }
 };
 
-export default DeleteModal;
+export default LeaveProjectModal;
