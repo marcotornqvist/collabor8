@@ -208,6 +208,7 @@ enum StatusCode {
 
 enum MemberStatusCode {
   KICKED // If user has been kicked
+  LEFT // If user has left the project
   REJECTED // If user has rejected the invite
   PENDING // If user hasn't responded to a invite
   ACCEPTED // if user has accepted invite

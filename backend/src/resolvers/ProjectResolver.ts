@@ -237,20 +237,23 @@ export class ProjectResolver {
         },
       });
 
-      // Member object found with a status role of "ADMIN", checks also if member status is active
-      if (result?.role === "ADMIN" && result.status === "ACCEPTED")
-        return Project_Member_Status.ADMIN;
-      // Member object found with a status role of "MEMBER", checks also if member status is active
-      else if (result?.role === "MEMBER" && result.status === "ACCEPTED")
-        return Project_Member_Status.MEMBER;
-      // Member object found with a status role of "MEMBER", checks also if member status is false or pending
-      else if (
-        result?.role === "MEMBER" &&
-        (result.status === "PENDING" || result.status === "ACCEPTED")
-      )
-        return Project_Member_Status.INVITED_USER;
-      // No member object found, meaning authenticated user is not part of the project
-      else return Project_Member_Status.USER;
+      if (result) {
+        const { role, status } = result;
+
+        if (role === "ADMIN" && status === "ACCEPTED") {
+          // If user is of role "admin" and has accepted the invite
+          return Project_Member_Status.ADMIN;
+        } else if (role === "MEMBER" && status === "ACCEPTED") {
+          // If user is of role "member" and has accepted the invite
+          return Project_Member_Status.MEMBER;
+        } else if (status === "PENDING" || status === "REJECTED") {
+          // If user is invited or has rejected the invite
+          return Project_Member_Status.INVITED_USER;
+        }
+      }
+
+      // If project exists, user is authenticated and condition above didn't match
+      return Project_Member_Status.USER;
     }
 
     return Project_Member_Status.GUEST;
@@ -469,13 +472,16 @@ export class ProjectResolver {
         });
 
         if (updateMember) {
-          // Delete the previous admin
-          await prisma.member.delete({
+          // Set logged in user status as "LEFT", meaning that user left the project
+          await prisma.member.update({
             where: {
               userId_projectId: {
                 userId: payload!.userId,
                 projectId: id,
               },
+            },
+            data: {
+              status: "LEFT",
             },
           });
 
