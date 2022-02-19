@@ -38,9 +38,8 @@ export class SocialResolver {
   }
 
   @Query(() => Social, {
-    description: `Returns the social data for the user that is currently logged in `,
+    description: `Returns the social data by user id`,
   })
-  @UseMiddleware(isAuth)
   async socialsByUserId(@Arg("id") id: string, @Ctx() { prisma }: Context) {
     const social = await prisma.social.findUnique({
       where: {

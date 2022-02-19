@@ -476,8 +476,8 @@ export type ProjectById = {
   status?: InputMaybe<Array<MemberStatusCode>>;
 };
 
-/** Project member status */
-export enum Project_Member_Status {
+/** Project member status enum */
+export enum ProjectMemberStatus {
   Admin = 'ADMIN',
   Guest = 'GUEST',
   InvitedUser = 'INVITED_USER',
@@ -526,7 +526,7 @@ export type Query = {
   /** Return details for a project */
   projectChatRoomDetails?: Maybe<Project>;
   /** Returns member status of auth user or not auth guest */
-  projectMemberStatus?: Maybe<Project_Member_Status>;
+  projectMemberStatus?: Maybe<ProjectMemberStatus>;
   /** Return messages for a ChatRoom by projectId */
   projectMessages?: Maybe<Array<Message>>;
   /** Returns all projects that are not disabled */
@@ -539,10 +539,10 @@ export type Query = {
   projectsChatRoom?: Maybe<ChatRoomResponse>;
   /** Returns the social data for the user that is currently logged in  */
   socialsByLoggedInUser: Social;
-  /** Returns the social data for the user that is currently logged in  */
+  /** Returns the social data by user id */
   socialsByUserId: Social;
-  /** Returns a single user by ID */
-  userById?: Maybe<User>;
+  /** Returns a user by username */
+  userByUsername?: Maybe<User>;
   /** Returns all users/profiles except logged in user (if authenticated) */
   users?: Maybe<Array<User>>;
 };
@@ -623,8 +623,8 @@ export type QuerySocialsByUserIdArgs = {
 };
 
 
-export type QueryUserByIdArgs = {
-  id: Scalars['String'];
+export type QueryUserByUsernameArgs = {
+  username: Scalars['String'];
 };
 
 
@@ -924,7 +924,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthResponse', accessToken: string, user: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, profileImage?: string | null | undefined } | null | undefined } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthResponse', accessToken: string, user: { __typename?: 'User', id: string, username: string } } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -936,7 +936,7 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthResponse', accessToken: string, user: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } } };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthResponse', accessToken: string, user: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } } };
 
 export type RejectContactMutationVariables = Exact<{
   id: Scalars['String'];
@@ -1037,6 +1037,11 @@ export type LoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', id: string, email: string, username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, bio?: string | null | undefined, profileImage?: string | null | undefined, country?: string | null | undefined, discipline?: { __typename?: 'Discipline', id: number, title: string } | null | undefined } | null | undefined, socials?: { __typename?: 'Social', instagram?: string | null | undefined, linkedin?: string | null | undefined, dribbble?: string | null | undefined, behance?: string | null | undefined, soundcloud?: string | null | undefined, pinterest?: string | null | undefined, spotify?: string | null | undefined, medium?: string | null | undefined, vimeo?: string | null | undefined, youtube?: string | null | undefined, github?: string | null | undefined, discord?: string | null | undefined } | null | undefined } };
 
+export type LoggedInUserUsernameQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LoggedInUserUsernameQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', username: string } };
+
 export type LoggedInSocialDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1068,6 +1073,13 @@ export type IsUserBlockedQueryVariables = Exact<{
 
 
 export type IsUserBlockedQuery = { __typename?: 'Query', isUserBlocked: boolean };
+
+export type ProfileDetailsQueryVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type ProfileDetailsQuery = { __typename?: 'Query', userByUsername?: { __typename?: 'User', id: string, username: string, email: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, bio?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined, memberOf?: Array<{ __typename?: 'Member', project?: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, disciplines?: Array<{ __typename?: 'Discipline', title: string, image?: { __typename?: 'Image', small?: string | null | undefined, alt?: string | null | undefined, objectPosition?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined }> | null | undefined, socials?: { __typename?: 'Social', userId: string, instagram?: string | null | undefined, linkedin?: string | null | undefined, dribbble?: string | null | undefined, behance?: string | null | undefined, soundcloud?: string | null | undefined, pinterest?: string | null | undefined, spotify?: string | null | undefined, medium?: string | null | undefined, youtube?: string | null | undefined, vimeo?: string | null | undefined, github?: string | null | undefined, discord?: string | null | undefined } | null | undefined } | null | undefined };
 
 export type ProjectByIdQueryVariables = Exact<{
   data: ProjectById;
@@ -1102,7 +1114,7 @@ export type ProjectMemberStatusQueryVariables = Exact<{
 }>;
 
 
-export type ProjectMemberStatusQuery = { __typename?: 'Query', projectMemberStatus?: Project_Member_Status | null | undefined };
+export type ProjectMemberStatusQuery = { __typename?: 'Query', projectMemberStatus?: ProjectMemberStatus | null | undefined };
 
 export type ProjectsQueryVariables = Exact<{
   data: ProjectsFilterArgs;
@@ -1582,13 +1594,8 @@ export const LoginDocument = gql`
   login(data: $data) {
     accessToken
     user {
+      id
       username
-      profile {
-        userId
-        firstName
-        lastName
-        profileImage
-      }
     }
   }
 }
@@ -1654,6 +1661,7 @@ export const RegisterDocument = gql`
   register(data: $data) {
     accessToken
     user {
+      id
       username
       profile {
         userId
@@ -2248,6 +2256,40 @@ export function useLoggedInUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type LoggedInUserQueryHookResult = ReturnType<typeof useLoggedInUserQuery>;
 export type LoggedInUserLazyQueryHookResult = ReturnType<typeof useLoggedInUserLazyQuery>;
 export type LoggedInUserQueryResult = Apollo.QueryResult<LoggedInUserQuery, LoggedInUserQueryVariables>;
+export const LoggedInUserUsernameDocument = gql`
+    query loggedInUserUsername {
+  loggedInUser {
+    username
+  }
+}
+    `;
+
+/**
+ * __useLoggedInUserUsernameQuery__
+ *
+ * To run a query within a React component, call `useLoggedInUserUsernameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLoggedInUserUsernameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLoggedInUserUsernameQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLoggedInUserUsernameQuery(baseOptions?: Apollo.QueryHookOptions<LoggedInUserUsernameQuery, LoggedInUserUsernameQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LoggedInUserUsernameQuery, LoggedInUserUsernameQueryVariables>(LoggedInUserUsernameDocument, options);
+      }
+export function useLoggedInUserUsernameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoggedInUserUsernameQuery, LoggedInUserUsernameQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LoggedInUserUsernameQuery, LoggedInUserUsernameQueryVariables>(LoggedInUserUsernameDocument, options);
+        }
+export type LoggedInUserUsernameQueryHookResult = ReturnType<typeof useLoggedInUserUsernameQuery>;
+export type LoggedInUserUsernameLazyQueryHookResult = ReturnType<typeof useLoggedInUserUsernameLazyQuery>;
+export type LoggedInUserUsernameQueryResult = Apollo.QueryResult<LoggedInUserUsernameQuery, LoggedInUserUsernameQueryVariables>;
 export const LoggedInSocialDetailsDocument = gql`
     query loggedInSocialDetails {
   loggedInUser {
@@ -2485,6 +2527,85 @@ export function useIsUserBlockedLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type IsUserBlockedQueryHookResult = ReturnType<typeof useIsUserBlockedQuery>;
 export type IsUserBlockedLazyQueryHookResult = ReturnType<typeof useIsUserBlockedLazyQuery>;
 export type IsUserBlockedQueryResult = Apollo.QueryResult<IsUserBlockedQuery, IsUserBlockedQueryVariables>;
+export const ProfileDetailsDocument = gql`
+    query profileDetails($username: String!) {
+  userByUsername(username: $username) {
+    id
+    username
+    email
+    profile {
+      userId
+      firstName
+      lastName
+      bio
+      country
+      profileImage
+      discipline {
+        title
+      }
+    }
+    memberOf {
+      project {
+        id
+        title
+        body
+        country
+        disciplines {
+          title
+          image {
+            small
+            alt
+            objectPosition
+          }
+        }
+      }
+    }
+    socials {
+      userId
+      instagram
+      linkedin
+      dribbble
+      behance
+      soundcloud
+      pinterest
+      spotify
+      medium
+      youtube
+      vimeo
+      github
+      discord
+    }
+  }
+}
+    `;
+
+/**
+ * __useProfileDetailsQuery__
+ *
+ * To run a query within a React component, call `useProfileDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProfileDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProfileDetailsQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useProfileDetailsQuery(baseOptions: Apollo.QueryHookOptions<ProfileDetailsQuery, ProfileDetailsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProfileDetailsQuery, ProfileDetailsQueryVariables>(ProfileDetailsDocument, options);
+      }
+export function useProfileDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProfileDetailsQuery, ProfileDetailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProfileDetailsQuery, ProfileDetailsQueryVariables>(ProfileDetailsDocument, options);
+        }
+export type ProfileDetailsQueryHookResult = ReturnType<typeof useProfileDetailsQuery>;
+export type ProfileDetailsLazyQueryHookResult = ReturnType<typeof useProfileDetailsLazyQuery>;
+export type ProfileDetailsQueryResult = Apollo.QueryResult<ProfileDetailsQuery, ProfileDetailsQueryVariables>;
 export const ProjectByIdDocument = gql`
     query projectById($data: ProjectById!) {
   projectById(data: $data) {

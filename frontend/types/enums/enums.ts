@@ -4,3 +4,9 @@ export enum ErrorStatus {
   danger = "danger",
   default = "default",
 }
+
+export enum ProfileStatus {
+  Auth = "Auth",
+  User = "User",
+  Guest = "Guest",
+}

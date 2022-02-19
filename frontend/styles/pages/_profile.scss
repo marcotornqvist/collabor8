@@ -1,0 +1,158 @@
+@use "../abstracts/colors" as *;
+@use "../abstracts/breakpoints" as *;
+@use "../abstracts/shadows" as *;
+@use "../abstracts/zindex" as *;
+@use "../abstracts/border-radius" as *;
+@use "../abstracts/fonts" as *;
+
+.profile-page {
+  flex: 1;
+  background: $light-green;
+
+  .container {
+    max-width: $breakpoint-lg;
+  }
+
+  .profile-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 2.5rem 1.5rem;
+    margin-bottom: 1.5rem;
+    min-height: 250px;
+    background: $white;
+    box-shadow: $box-shadow3;
+
+    .profile-image {
+      margin-bottom: 0.5rem;
+    }
+
+    .wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+
+      span,
+      h4 {
+        text-align: center;
+      }
+
+      h4.name {
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+        font-family: $font-title;
+      }
+
+      .info-text {
+        margin-bottom: 0.25rem;
+        color: $grey;
+        font-size: 14px;
+      }
+
+      .bio {
+        margin-bottom: 1.5rem;
+
+        p {
+          text-align: center;
+
+          .show-more-btn {
+            color: $green;
+            cursor: pointer;
+          }
+        }
+      }
+
+      button {
+        width: 100%;
+        height: 3rem;
+        border-radius: $medium-radius;
+
+        &.success-hover {
+          border: 1px solid $green;
+          background: $light-green;
+          color: $green;
+
+          span {
+            color: $green;
+          }
+        }
+
+        &.danger-hover {
+          border: 1px solid $red;
+          background: $light-red;
+
+          span {
+            color: $red;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-sm) {
+}
+
+@media only screen and (min-width: $breakpoint-md) {
+  .profile-page {
+    .profile-card {
+      flex-direction: row;
+      align-items: flex-start;
+
+      .profile-image {
+        margin: 0 1.5rem 0 0;
+      }
+
+      .wrapper {
+        justify-content: flex-start;
+
+        h4,
+        span {
+          text-align: initial;
+        }
+
+        .bio {
+          margin-bottom: 4rem;
+
+          p {
+            text-align: start;
+          }
+        }
+
+        a,
+        button {
+          width: 250px;
+        }
+
+        button:hover {
+          color: $white;
+          
+          span {
+            color: $white;
+          }
+
+          &.success-hover {
+            border: 1px solid $green !important;
+            background: $green !important;
+          }
+
+          &.danger-hover {
+            border: 1px solid $red !important;
+            background: $red !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-lg) {
+}
+
+// @media only screen and (min-width: $breakpoint-xl) {
+// }
+
+// @media only screen and (min-width: $breakpoint-max) {
+// }

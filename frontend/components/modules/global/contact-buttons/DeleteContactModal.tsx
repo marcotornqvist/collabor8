@@ -18,7 +18,7 @@ interface IProps {
   onClose: () => void;
 }
 
-const DeleteModal = ({ id, show, title, onClose }: IProps) => {
+const DeleteContactModal = ({ id, show, title, onClose }: IProps) => {
   const [error, setError] = useState("");
   const [isBrowser, setIsBrowser] = useState(false);
 
@@ -59,7 +59,7 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
 
   useToast<DeleteContactMutation>({
     data,
-    successMessage: "Contact Deleted",
+    successMessage: "Contact deleted",
     error,
   });
 
@@ -99,4 +99,4 @@ const DeleteModal = ({ id, show, title, onClose }: IProps) => {
   }
 };
 
-export default DeleteModal;
+export default DeleteContactModal;

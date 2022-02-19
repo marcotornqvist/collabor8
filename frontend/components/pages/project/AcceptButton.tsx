@@ -8,7 +8,7 @@ import {
   ProjectByIdQuery,
   ProjectMemberStatusDocument,
   ProjectMemberStatusQuery,
-  Project_Member_Status,
+  ProjectMemberStatus,
   Role,
   useAcceptInviteMutation,
 } from "generated/graphql";
@@ -49,7 +49,7 @@ const AcceptButton = ({ id }: IProps) => {
             id,
           },
           data: {
-            projectMemberStatus: Project_Member_Status.Member,
+            projectMemberStatus: ProjectMemberStatus.Member,
           },
         });
 

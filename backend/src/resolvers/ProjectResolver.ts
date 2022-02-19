@@ -26,8 +26,8 @@ import { capitalizeFirstLetter } from "../helpers/capitalizeFirstLetter";
 import { NotificationCode } from "@prisma/client";
 import { validateFields } from "../validations/validateFields";
 import { ProjectValidationSchema } from "../validations/schemas";
+import { ProjectMemberStatus } from "../types/Enums";
 import countries from "../data/countries";
-import { Project_Member_Status } from "../types/Enums";
 
 // Queries/mutations to be implemented:
 // projects:                  Return all projects - Done
@@ -178,6 +178,13 @@ export class ProjectResolver {
         },
         disabled: false,
       },
+      include: {
+        disciplines: {
+          include: {
+            image: true,
+          },
+        },
+      },
     });
 
     return projects;
@@ -206,7 +213,7 @@ export class ProjectResolver {
     return projects;
   }
 
-  @Query(() => Project_Member_Status, {
+  @Query(() => ProjectMemberStatus, {
     nullable: true,
     description: "Returns member status of auth user or not auth guest",
   })
@@ -242,21 +249,21 @@ export class ProjectResolver {
 
         if (role === "ADMIN" && status === "ACCEPTED") {
           // If user is of role "admin" and has accepted the invite
-          return Project_Member_Status.ADMIN;
+          return ProjectMemberStatus.ADMIN;
         } else if (role === "MEMBER" && status === "ACCEPTED") {
           // If user is of role "member" and has accepted the invite
-          return Project_Member_Status.MEMBER;
+          return ProjectMemberStatus.MEMBER;
         } else if (status === "PENDING" || status === "REJECTED") {
           // If user is invited or has rejected the invite
-          return Project_Member_Status.INVITED_USER;
+          return ProjectMemberStatus.INVITED_USER;
         }
       }
 
       // If project exists, user is authenticated and condition above didn't match
-      return Project_Member_Status.USER;
+      return ProjectMemberStatus.USER;
     }
 
-    return Project_Member_Status.GUEST;
+    return ProjectMemberStatus.GUEST;
   }
 
   @Mutation(() => Project, { description: "Creates a new Project" })

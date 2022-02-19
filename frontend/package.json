@@ -55,7 +55,6 @@
   },
   "resolutions": {
     "shelljs": ">=0.8.5",
-    "node-fetch": "2.6.1",
     "graphql": "15.7.2"
   }
 }

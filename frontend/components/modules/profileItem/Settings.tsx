@@ -1,5 +1,5 @@
-import React, { forwardRef } from "react";
-import ContactButtons from "./ContactButtons";
+import { forwardRef } from "react";
+import ContactButtons from "@/components-modules/global/contact-buttons/ContactButtons";
 import BlockUser from "./BlockUser";
 import ReportButton from "./ReportButton";
 

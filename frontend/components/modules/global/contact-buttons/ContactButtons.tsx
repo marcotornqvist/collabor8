@@ -66,9 +66,9 @@ const ContactButtons = ({ id, isVisible, username }: IProps) => {
           query: { redirect: `/profile/${username}` },
         }}
       >
-        <button className="success-hover">
-          <a>Add Person</a>
-        </button>
+        <a>
+          <button className="success-hover">Add Person</button>
+        </a>
       </Link>
     );
   }

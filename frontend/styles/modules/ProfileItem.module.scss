@@ -93,7 +93,6 @@
 
           button {
             width: inherit;
-            background: $white;
 
             &:hover {
               background: $green;
@@ -132,8 +131,8 @@
             a {
               font-size: 14px;
               text-align: center;
-              font-family: $font-body;
-              font-weight: $font-body-600;
+              font-family: $font-title;
+              font-weight: $font-title-600;
 
               &:hover {
                 color: initial;

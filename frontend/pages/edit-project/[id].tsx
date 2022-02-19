@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  Project_Member_Status,
+  ProjectMemberStatus,
   useProjectMemberStatusLazyQuery,
 } from "generated/graphql";
 import { useRouter } from "next/router";
@@ -27,7 +27,7 @@ const EditProject = () => {
     push,
     query: { id },
   } = useRouter();
-  const [navigation, setNavigation] = useState("Members");
+  const [navigation, setNavigation] = useState("Details");
   // Sets id to a string
   id = typeof id === "string" ? id : "";
 
@@ -51,7 +51,7 @@ const EditProject = () => {
     if (
       error ||
       (statusData?.projectMemberStatus &&
-        statusData.projectMemberStatus !== Project_Member_Status.Admin)
+        statusData.projectMemberStatus !== ProjectMemberStatus.Admin)
     ) {
       push("/projects");
     }
@@ -68,7 +68,7 @@ const EditProject = () => {
     };
   }, [id]);
 
-  if (statusData?.projectMemberStatus === Project_Member_Status.Admin) {
+  if (statusData?.projectMemberStatus === ProjectMemberStatus.Admin) {
     return (
       <section className="edit-project-page">
         <div className="container">

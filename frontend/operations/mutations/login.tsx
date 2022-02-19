@@ -5,13 +5,8 @@ export const LOGIN_USER = gql`
     login(data: $data) {
       accessToken
       user {
+        id
         username
-        profile {
-          userId
-          firstName
-          lastName
-          profileImage
-        }
       }
     }
   }

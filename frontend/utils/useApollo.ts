@@ -133,6 +133,13 @@ function createApolloClient() {
     link: ApolloLink.from([authMiddleware, refreshLink, splitLink]),
     cache: new InMemoryCache({
       typePolicies: {
+        User: {
+          fields: {
+            socials: {
+              merge: true,
+            },
+          },
+        },
         Profile: {
           keyFields: ["userId"],
         },
@@ -155,6 +162,10 @@ function createApolloClient() {
           fields: {
             loggedInUser: {
               merge: true,
+            },
+            userByUsername: {
+              merge: true,
+              keyArgs: ["username"],
             },
             projectById: {
               merge: true,

@@ -5,6 +5,7 @@ export const REGISTER_USER = gql`
     register(data: $data) {
       accessToken
       user {
+        id
         username
         profile {
           userId

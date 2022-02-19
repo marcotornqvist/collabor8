@@ -37,13 +37,11 @@ const ProfileItem = ({ isMobile, user, addUser, removeUser }: IProps) => {
                 {profile?.firstName} {profile?.lastName}
               </span>
             </div>
-            <div className="info-text">
-              <span className="discipline">{profile?.discipline?.title}</span>
-              {profile?.discipline?.title && profile?.country && (
-                <span className="pipe">|</span>
-              )}
-              <span className="country">{profile?.country}</span>
-            </div>
+            <span className="info-text">
+              {profile?.discipline?.title}
+              {profile?.discipline?.title && profile?.country && ", "}
+              {profile?.country}
+            </span>
           </div>
         </div>
         <div className="button-container">

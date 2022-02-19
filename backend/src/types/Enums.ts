@@ -6,7 +6,7 @@ export enum Sort {
 }
 
 // Returns the status of the logged in user
-export enum Project_Member_Status {
+export enum ProjectMemberStatus {
   ADMIN = "ADMIN", // Admin of the project
   MEMBER = "MEMBER", // Member of the project
   INVITED_USER = "INVITED_USER", // Invited users are either pending or false of the project
@@ -27,7 +27,12 @@ registerEnumType(ContactStatus, {
   description: "Contact status enum",
 });
 
-registerEnumType(Project_Member_Status, {
-  name: "Project_Member_Status",
-  description: "Project member status",
+registerEnumType(ProjectMemberStatus, {
+  name: "ProjectMemberStatus",
+  description: "Project member status enum",
 });
+
+// registerEnumType(, {
+//   name: "ProjectMemberStatus",
+//   description: "Project member status enum",
+// });

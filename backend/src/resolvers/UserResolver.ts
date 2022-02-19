@@ -135,12 +135,36 @@ export class UserResolver {
 
   @Query(() => User, {
     nullable: true,
-    description: "Returns a single user by ID",
+    description: "Returns a user by username",
   })
-  async userById(@Arg("id") id: string, @Ctx() { prisma }: Context) {
+  async userByUsername(
+    @Arg("username") username: string,
+    @Ctx() { prisma }: Context
+  ) {
     const user = await prisma.user.findUnique({
       where: {
-        id: id,
+        username: username,
+      },
+      include: {
+        profile: {
+          include: {
+            discipline: true,
+          },
+        },
+        memberOf: {
+          include: {
+            project: {
+              include: {
+                disciplines: {
+                  include: {
+                    image: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        socials: true,
       },
     });
 
@@ -316,9 +340,6 @@ export class UserResolver {
       where: {
         email: email,
         disabled: false,
-      },
-      include: {
-        profile: true,
       },
     });
 

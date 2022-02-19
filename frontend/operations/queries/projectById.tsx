@@ -81,7 +81,7 @@ export const PROJECT_DISABLED_STATUS = gql`
   }
 `;
 
-export const PROJECT_MEMBER_STATUS = gql`
+export const ProjectMemberStatus = gql`
   query projectMemberStatus($id: String!) {
     projectMemberStatus(id: $id)
   }

@@ -29,7 +29,7 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
       }).then(async (x) => {
         const { accessToken } = await x.json();
         authState.accessToken = accessToken;
-        if (accessToken !== "") {
+        if (accessToken) {
           authState.isAuth = true;
         }
         authState.loading = false;

@@ -81,7 +81,9 @@ const Form = () => {
 
   // Get saved form data
   const { data: formData, loading } = useLoggedInProfileDetailsQuery({
-    fetchPolicy: "cache-only", // Fetches from cache only, navbar fetches all the logged in user data when page is loaded and authState is true..
+    // Fetches from cache only, navbar fetches all the logged in user data 
+    // when page is loaded and authState is true..
+    fetchPolicy: "cache-only",
   });
 
   const initialValues: IFormValues = {

@@ -40,15 +40,11 @@ const ProfileItem = ({ isMobile, user, role }: IProps) => {
               <span>{role}</span>
             </div>
           </div>
-          <div className="info-text">
-            <span className="discipline">
-              {user.profile?.discipline?.title}
-            </span>
-            {user.profile?.discipline?.title && user.profile?.country && (
-              <span className="pipe">|</span>
-            )}
-            <span className="country">{user.profile?.country}</span>
-          </div>
+          <span className="info-text">
+            {user.profile?.discipline?.title}
+            {user.profile?.discipline?.title && user.profile?.country && ", "}
+            {user.profile?.country}
+          </span>
         </div>
       </div>
       <Link href={`/profile/${user.username}`}>

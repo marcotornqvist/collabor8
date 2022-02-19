@@ -89,7 +89,7 @@ const ProfileItem = ({
           </div>
           <Link href={`/profile/${username}`}>
             <a>
-              <button className={`${button.lightGreen} check-profile-btn`}>
+              <button className={`check-profile-btn ${button.lightGreen}`}>
                 See Profile
               </button>
             </a>

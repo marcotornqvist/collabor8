@@ -100,7 +100,7 @@ const UpdateEmail = ({ currentEmail, loading }: IProps) => {
                 handleChange={handleChange}
                 label="Email"
                 type="text"
-                placeholder={"Please enter your email address"}
+                placeholder="Please enter your email address"
                 successMessage="Email is valid"
                 errorMessage={formErrors.email}
                 lastSubmitValue={lastSubmit?.updateEmail}
