@@ -32,6 +32,7 @@ const ProfileItem = ({
   lastName,
   profileImage,
   title,
+  country,
 }: IProps) => {
   const [toggle, setToggle] = useState(false);
 
@@ -85,7 +86,11 @@ const ProfileItem = ({
             <h4 className="fullname">
               {firstName} {lastName}
             </h4>
-            <div className="info">{title && <span>{title}</span>} </div>
+            <span className="info-text">
+              {title}
+              {title && country && ", "}
+              {country}
+            </span>
           </div>
           <Link href={`/profile/${username}`}>
             <a>

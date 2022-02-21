@@ -429,13 +429,13 @@ export type PaginationArgs = {
   last?: InputMaybe<Scalars['Float']>;
 };
 
-/** Pagination Args With UserId Argument */
+/** Pagination Args With Username Argument */
 export type PaginationUserArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Float']>;
-  id: Scalars['ID'];
   last?: InputMaybe<Scalars['Float']>;
+  username: Scalars['ID'];
 };
 
 export type Profile = {
@@ -531,8 +531,8 @@ export type Query = {
   projectMessages?: Maybe<Array<Message>>;
   /** Returns all projects that are not disabled */
   projects?: Maybe<Array<Project>>;
-  /** Return all projects by userId which are not disabled */
-  projectsByUserId?: Maybe<Array<Project>>;
+  /** Return all projects by username which are not disabled */
+  projectsByUsername?: Maybe<Array<Project>>;
   /** Return all projects for the currently logged in user */
   projectsByloggedInUser?: Maybe<Array<Project>>;
   /** Returns all projects chatRooms */
@@ -608,7 +608,7 @@ export type QueryProjectsArgs = {
 };
 
 
-export type QueryProjectsByUserIdArgs = {
+export type QueryProjectsByUsernameArgs = {
   data: PaginationUserArgs;
 };
 
@@ -1079,7 +1079,7 @@ export type ProfileDetailsQueryVariables = Exact<{
 }>;
 
 
-export type ProfileDetailsQuery = { __typename?: 'Query', userByUsername?: { __typename?: 'User', id: string, username: string, email: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, bio?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined, memberOf?: Array<{ __typename?: 'Member', project?: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, disciplines?: Array<{ __typename?: 'Discipline', title: string, image?: { __typename?: 'Image', small?: string | null | undefined, alt?: string | null | undefined, objectPosition?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined }> | null | undefined, socials?: { __typename?: 'Social', userId: string, instagram?: string | null | undefined, linkedin?: string | null | undefined, dribbble?: string | null | undefined, behance?: string | null | undefined, soundcloud?: string | null | undefined, pinterest?: string | null | undefined, spotify?: string | null | undefined, medium?: string | null | undefined, youtube?: string | null | undefined, vimeo?: string | null | undefined, github?: string | null | undefined, discord?: string | null | undefined } | null | undefined } | null | undefined };
+export type ProfileDetailsQuery = { __typename?: 'Query', userByUsername?: { __typename?: 'User', id: string, username: string, email: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, bio?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined, socials?: { __typename?: 'Social', userId: string, instagram?: string | null | undefined, linkedin?: string | null | undefined, dribbble?: string | null | undefined, behance?: string | null | undefined, soundcloud?: string | null | undefined, pinterest?: string | null | undefined, spotify?: string | null | undefined, medium?: string | null | undefined, youtube?: string | null | undefined, vimeo?: string | null | undefined, github?: string | null | undefined, discord?: string | null | undefined } | null | undefined } | null | undefined };
 
 export type ProjectByIdQueryVariables = Exact<{
   data: ProjectById;
@@ -1122,6 +1122,13 @@ export type ProjectsQueryVariables = Exact<{
 
 
 export type ProjectsQuery = { __typename?: 'Query', projects?: Array<{ __typename?: 'Project', id: string, title: string, disciplines?: Array<{ __typename?: 'Discipline', image?: { __typename?: 'Image', id: string, small?: string | null | undefined, alt?: string | null | undefined, objectPosition?: string | null | undefined } | null | undefined }> | null | undefined }> | null | undefined };
+
+export type ProjectsByUsernameQueryVariables = Exact<{
+  data: PaginationUserArgs;
+}>;
+
+
+export type ProjectsByUsernameQuery = { __typename?: 'Query', projectsByUsername?: Array<{ __typename?: 'Project', id: string, title: string, disciplines?: Array<{ __typename?: 'Discipline', image?: { __typename?: 'Image', id: string, small?: string | null | undefined, alt?: string | null | undefined, objectPosition?: string | null | undefined } | null | undefined }> | null | undefined }> | null | undefined };
 
 export type UsersQueryVariables = Exact<{
   data: UsersFilterArgs;
@@ -2544,22 +2551,6 @@ export const ProfileDetailsDocument = gql`
         title
       }
     }
-    memberOf {
-      project {
-        id
-        title
-        body
-        country
-        disciplines {
-          title
-          image {
-            small
-            alt
-            objectPosition
-          }
-        }
-      }
-    }
     socials {
       userId
       instagram
@@ -2871,6 +2862,50 @@ export function useProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<P
 export type ProjectsQueryHookResult = ReturnType<typeof useProjectsQuery>;
 export type ProjectsLazyQueryHookResult = ReturnType<typeof useProjectsLazyQuery>;
 export type ProjectsQueryResult = Apollo.QueryResult<ProjectsQuery, ProjectsQueryVariables>;
+export const ProjectsByUsernameDocument = gql`
+    query projectsByUsername($data: PaginationUserArgs!) {
+  projectsByUsername(data: $data) {
+    id
+    title
+    disciplines {
+      image {
+        id
+        small
+        alt
+        objectPosition
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useProjectsByUsernameQuery__
+ *
+ * To run a query within a React component, call `useProjectsByUsernameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectsByUsernameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectsByUsernameQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useProjectsByUsernameQuery(baseOptions: Apollo.QueryHookOptions<ProjectsByUsernameQuery, ProjectsByUsernameQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectsByUsernameQuery, ProjectsByUsernameQueryVariables>(ProjectsByUsernameDocument, options);
+      }
+export function useProjectsByUsernameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectsByUsernameQuery, ProjectsByUsernameQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectsByUsernameQuery, ProjectsByUsernameQueryVariables>(ProjectsByUsernameDocument, options);
+        }
+export type ProjectsByUsernameQueryHookResult = ReturnType<typeof useProjectsByUsernameQuery>;
+export type ProjectsByUsernameLazyQueryHookResult = ReturnType<typeof useProjectsByUsernameLazyQuery>;
+export type ProjectsByUsernameQueryResult = Apollo.QueryResult<ProjectsByUsernameQuery, ProjectsByUsernameQueryVariables>;
 export const UsersDocument = gql`
     query users($data: UsersFilterArgs!) {
   users(data: $data) {

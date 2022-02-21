@@ -72,19 +72,13 @@
             word-wrap: break-word;
           }
 
-          .info {
-            display: flex;
-            justify-content: center;
-            width: 250px;
-
-            span {
-              text-align: center;
-              overflow: hidden;
-              display: -webkit-box;
-              -webkit-line-clamp: 2;
-              -webkit-box-orient: vertical;
-              word-wrap: break-word;
-            }
+          span.info-text {
+            max-width: 250px;
+            text-align: center;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
           }
         }
 

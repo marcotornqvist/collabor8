@@ -173,7 +173,7 @@ const ProfileItem = ({
               {isHovered
                 ? "Remove"
                 : status === MemberStatusCode.Accepted
-                ? "Active"
+                ? "Member"
                 : "Pending"}
             </button>
           )}

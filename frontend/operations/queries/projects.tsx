@@ -16,3 +16,20 @@ export const GET_PROJECTS = gql`
     }
   }
 `;
+
+export const GET_PROJECTS_BY_USERNAME = gql`
+  query projectsByUsername($data: PaginationUserArgs!) {
+    projectsByUsername(data: $data) {
+      id
+      title
+      disciplines {
+        image {
+          id
+          small
+          alt
+          objectPosition
+        }
+      }
+    }
+  }
+`;

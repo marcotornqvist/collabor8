@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { authState } from "store";
 import { useSnapshot } from "valtio";
 import { UsersFilterArgs, useUsersLazyQuery } from "generated/graphql";
-import ProfileItem from "../../modules/profileItem/ProfileItem";
-import ProfileSkeleton from "../../modules/profileItem/ProfileSkeleton";
+import ProfileItem from "../../modules/profile-item/ProfileItem";
+import ProfileSkeleton from "../../modules/profile-item/ProfileSkeleton";
 
 // Check that user is not a friend
 // Check that user is not you when returning
@@ -49,6 +49,7 @@ const Profiles = ({
                   lastName={item.profile?.lastName}
                   profileImage={item.profile?.profileImage}
                   title={item.profile?.discipline?.title}
+                  country={item.profile?.country}
                 />
               ))
             : [1, 2, 3].map((n) => <ProfileSkeleton key={n} />)}

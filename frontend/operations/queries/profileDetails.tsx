@@ -17,22 +17,6 @@ export const GET_PROFILE_DETAILS = gql`
           title
         }
       }
-      memberOf {
-        project {
-          id
-          title
-          body
-          country
-          disciplines {
-            title
-            image {
-              small
-              alt
-              objectPosition
-            }
-          }
-        }
-      }
       socials {
         userId
         instagram

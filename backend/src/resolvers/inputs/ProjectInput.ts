@@ -87,11 +87,19 @@ export class MemberInput {
 }
 
 @InputType({
-  description: "Pagination Args With UserId Argument",
+  description: "Pagination Args With Username Argument",
 })
 export class PaginationUserArgs extends PaginationArgs {
   @Field(() => ID)
-  id: string;
+  username: string;
+}
+
+@InputType({
+  description: "Pagination Args With Username Argument",
+})
+export class PaginationUsernameArgs extends PaginationArgs {
+  @Field(() => ID)
+  username: string;
 }
 
 registerEnumType(Sort, {

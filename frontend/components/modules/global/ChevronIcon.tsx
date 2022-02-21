@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
-import { chevronRotate } from "types/types";
+import { ChevronRotate } from "types/types";
 import Image from "next/image";
 
 interface IProps {
   show: boolean;
   isMobile: boolean;
-  chevronRotate?: chevronRotate;
+  chevronRotate?: ChevronRotate;
 }
 
 const ChevronIcon = ({

@@ -12,8 +12,8 @@ import { isNumbersArray } from "utils/helpers";
 import { useQueryParams, NumericArrayParam } from "next-query-params";
 import { singleStringParam } from "utils/customQueryParams";
 import ContentLayout from "@/components-layout/content/ContentLayout";
-import ProfileItem from "@/components-modules/profileItem/ProfileItem";
-import ProfileSkeleton from "@/components-modules/profileItem/ProfileSkeleton";
+import ProfileItem from "@/components-modules/profile-item/ProfileItem";
+import ProfileSkeleton from "@/components-modules/profile-item/ProfileSkeleton";
 import useIntersectionObserver from "@/hooks/useIntersectionObserver";
 import useSkeleton from "@/hooks/useSkeleton";
 
@@ -22,7 +22,7 @@ const limit = 20;
 const Profiles = () => {
   const [disableMore, setDisableMore] = useState(false);
   const { showSkeleton, setShowSkeleton } = useSkeleton();
-  const [query, setQuery] = useQueryParams({
+  const [query] = useQueryParams({
     search: singleStringParam,
     country: singleStringParam,
     disciplines: NumericArrayParam,
@@ -46,7 +46,7 @@ const Profiles = () => {
       notifyOnNetworkStatusChange: true,
     });
 
-  // Get users and setDisableMore to false
+  // Everytime filters are changed
   useEffect(() => {
     setShowSkeleton(true);
     // Remove users from cache to prevent caching bug
@@ -113,6 +113,7 @@ const Profiles = () => {
               lastName={item.profile?.lastName}
               profileImage={item.profile?.profileImage}
               title={item.profile?.discipline?.title}
+              country={item.profile?.country}
             />
           ))}
         {(showSkeleton || dataLoading) &&

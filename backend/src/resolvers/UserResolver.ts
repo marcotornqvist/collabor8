@@ -35,7 +35,7 @@ import countries from "../data/countries";
 
 // TODO: Queries/mutations to be implemented:
 // users:           Return all users - Done
-// userbyId:        Return a single user by id - Done
+// userbyUsername:  Return a single user by username - Done
 // loggedInUser:    Return the currently logged in user - Done
 // updateUsername:  Update the username - Done
 // updateEmail:     Update the email    - Done
@@ -149,19 +149,6 @@ export class UserResolver {
         profile: {
           include: {
             discipline: true,
-          },
-        },
-        memberOf: {
-          include: {
-            project: {
-              include: {
-                disciplines: {
-                  include: {
-                    image: true,
-                  },
-                },
-              },
-            },
           },
         },
         socials: true,

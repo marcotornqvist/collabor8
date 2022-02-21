@@ -6,6 +6,7 @@ import { truncateText } from "utils/helpers";
 import button from "@/styles-modules/Button.module.scss";
 import Image from "next/image";
 import Link from "next/link";
+import styles from "@/styles-modules/ProjectItem.module.scss";
 
 interface IProps {
   id: string;
@@ -19,7 +20,7 @@ const ProjectItem = ({ id, title, src, alt, objectPosition }: IProps) => {
   const [loaded, setLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   return (
-    <div className="project-item">
+    <div className={`project-item ${styles.item}`}>
       {src && (
         <motion.div
           className={`image-container`}

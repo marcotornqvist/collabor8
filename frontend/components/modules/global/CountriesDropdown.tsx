@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { useCountriesQuery } from "generated/graphql";
-import { chevronRotate } from "types/types";
+import { ChevronRotate } from "types/types";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import dropdown from "@/styles-modules/Dropdown.module.scss";
 import ChevronIcon from "@/components-modules/global/ChevronIcon";
@@ -18,7 +18,7 @@ interface IProps {
   isMobile: boolean;
   error: string;
   lastSubmitValue?: string | null;
-  chevronRotate?: chevronRotate;
+  chevronRotate?: ChevronRotate;
 }
 
 const CountriesDropdown = ({

@@ -17,6 +17,7 @@ import {
   ProjectsFilterArgs,
   PaginationUserArgs,
   ProjectById,
+  PaginationUsernameArgs,
 } from "./inputs/ProjectInput";
 import { PaginationArgs } from "./inputs/GlobalInputs";
 import { UserInputError, ForbiddenError } from "apollo-server-express";
@@ -162,10 +163,10 @@ export class ProjectResolver {
 
   @Query(() => [Project], {
     nullable: true,
-    description: "Return all projects by userId which are not disabled",
+    description: "Return all projects by username which are not disabled",
   })
-  async projectsByUserId(
-    @Arg("data") { id, after, before, first, last }: PaginationUserArgs,
+  async projectsByUsername(
+    @Arg("data") { username, after, before, first, last }: PaginationUserArgs,
     @Ctx() { prisma }: Context
   ) {
     const projects = await prisma.project.findMany({
@@ -173,10 +174,13 @@ export class ProjectResolver {
       where: {
         members: {
           some: {
-            userId: id,
+            status: "ACCEPTED",
+            user: {
+              username
+            }
           },
         },
-        disabled: false,
+        disabled: false,  
       },
       include: {
         disciplines: {
