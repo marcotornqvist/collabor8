@@ -51,7 +51,7 @@ const Projects = () => {
 
   // If element after last grid item is visible, fetch more users if conditions match
   useEffect(() => {
-    // Checks if element is visible, if more than or equal to (2) users fetched
+    // Checks if element is visible, if more than or equal to (limit) users fetched
     // is returned in response and if disableMore is false
     if (
       isVisible &&

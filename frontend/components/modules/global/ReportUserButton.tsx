@@ -1,13 +1,13 @@
 import React from "react";
-import Link from "next/link";
 import { useSnapshot } from "valtio";
 import { authState } from "store";
+import Link from "next/link";
 
 interface IProps {
   id: string;
 }
 
-const ReportButton = ({ id }: IProps) => {
+const ReportUserButton = ({ id }: IProps) => {
   const { isAuth } = useSnapshot(authState);
 
   return (
@@ -19,18 +19,22 @@ const ReportButton = ({ id }: IProps) => {
             query: { redirect: `/report/user/${id}` },
           }}
         >
-          <button className="danger-hover">
-            <div className="inner-div">
-              <a>Report User</a>
-            </div>
+          <button className="danger-button">
+            <a>
+              <div className="inner-div">
+                <span>Report User</span>
+              </div>
+            </a>
           </button>
         </Link>
       ) : (
         <Link href={`/report/user/${id}`}>
-          <button className="danger-hover">
-            <div className="inner-div">
-              <a>Report User</a>
-            </div>
+          <button className="danger-button">
+            <a>
+              <div className="inner-div">
+                <span>Report User</span>
+              </div>
+            </a>
           </button>
         </Link>
       )}
@@ -38,4 +42,4 @@ const ReportButton = ({ id }: IProps) => {
   );
 };
 
-export default ReportButton;
+export default ReportUserButton;

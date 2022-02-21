@@ -18,7 +18,7 @@ const DeleteContact = ({ id, pendingState }: IProps) => {
       <button
         onClick={() => setShowModal(true)}
         ref={hoverRef}
-        className="danger-hover"
+        className="danger-button"
       >
         {pendingState ? (
           <span>

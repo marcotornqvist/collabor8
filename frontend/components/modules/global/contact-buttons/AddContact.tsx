@@ -39,7 +39,7 @@ const AddContact = ({ id }: IProps) => {
         setError("");
         addContact();
       }}
-      className="success-hover"
+      className="success-button"
     >
       <span>Add Person</span>
     </button>

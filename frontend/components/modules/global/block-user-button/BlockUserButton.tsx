@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import BlockModal from "./BlockModal";
-import { authState } from "../../../store";
+import { authState } from "store";
 import { useSnapshot } from "valtio";
 import { useIsUserBlockedLazyQuery } from "generated/graphql";
+import BlockModal from "./BlockModal";
 
 interface IProps {
   id: string;
   isVisible: boolean;
 }
 
-const BlockUser = ({ id, isVisible }: IProps) => {
+const BlockUserButton = ({ id, isVisible }: IProps) => {
   const [showModal, setShowModal] = useState(false);
   const { isAuth } = useSnapshot(authState);
 
@@ -29,7 +29,7 @@ const BlockUser = ({ id, isVisible }: IProps) => {
     <>
       <button
         onClick={() => setShowModal(true)}
-        className={data?.isUserBlocked ? "success-hover" : "danger-hover"}
+        className={data?.isUserBlocked ? "success-button" : "danger-button"}
       >
         <span>{data?.isUserBlocked ? "Unblock" : "Block"} User</span>
       </button>
@@ -43,4 +43,4 @@ const BlockUser = ({ id, isVisible }: IProps) => {
   ) : null;
 };
 
-export default BlockUser;
+export default BlockUserButton;

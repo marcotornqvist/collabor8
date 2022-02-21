@@ -260,12 +260,12 @@
       }
 
       .carousel .carousel-item {
-        button.success-hover:hover {
+        button.success-button:hover {
           border: 1px solid $green;
           background: $light-green;
         }
 
-        button.danger-hover:hover {
+        button.danger-button:hover {
           border: 1px solid $red;
           background: $light-red;
         }

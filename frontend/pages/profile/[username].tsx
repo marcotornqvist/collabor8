@@ -31,7 +31,7 @@ const Profile = () => {
   const [profileStatus, setProfileStatus] = useState<ProfileStatus>(
     ProfileStatus.Guest
   );
-  const [navigation, setNavigation] = useState("Projects");
+  const [navigation, setNavigation] = useState("Socials");
   const { loading } = useSnapshot(authState);
   const { data: usernameData, loading: usernameLoading } =
     useLoggedInUsernameQuery({
@@ -83,8 +83,16 @@ const Profile = () => {
               setNavigation={setNavigation}
             />
             {navigation === "Projects" && <Projects username={username} />}
-            {navigation === "Socials" && <Socials />}
-            {navigation === "Settings" && <Settings id={"id"} />}
+            {navigation === "Socials" && (
+              <Socials socials={data?.userByUsername?.socials} />
+            )}
+            {navigation === "Settings" && data?.userByUsername?.id && (
+              <Settings
+                id={data.userByUsername.id}
+                username={username}
+                profileStatus={profileStatus}
+              />
+            )}
           </>
         )}
       </div>

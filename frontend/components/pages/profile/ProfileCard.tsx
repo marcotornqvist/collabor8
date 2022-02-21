@@ -34,26 +34,28 @@ const ProfileCard = ({ profile, profileStatus, username }: IProps) => {
         priority={true}
       />
       <div className="wrapper">
-        <h3 className="name">
-          {profile.firstName} {profile.lastName}
-        </h3>
-        <span className="info-text">
-          {profile.discipline?.title}
-          {profile.discipline?.title && profile.country && ", "}
-          {profile.country}
-        </span>
-        <div className="bio">
-          <p className="text">
-            {!show && profile.bio && profile.bio.length > 250
-              ? truncateText(profile.bio, 250, "")
-              : profile.bio}
-            {profile.bio && profile.bio.length > 250 && (
-              <span onClick={() => setShow(!show)} className="show-more-btn">
-                {" "}
-                {!show ? "Show More" : "Show Less"}
-              </span>
-            )}
-          </p>
+        <div className="inner-wrapper">
+          <h3 className="name">
+            {profile.firstName} {profile.lastName}
+          </h3>
+          <span className="info-text">
+            {profile.discipline?.title}
+            {profile.discipline?.title && profile.country && ", "}
+            {profile.country}
+          </span>
+          <div className="bio">
+            <p className="text">
+              {!show && profile.bio && profile.bio.length > 300
+                ? truncateText(profile.bio, 300, "")
+                : profile.bio}
+              {profile.bio && profile.bio.length > 300 && (
+                <span onClick={() => setShow(!show)} className="show-more-btn">
+                  {" "}
+                  {!show ? "Show More" : "Show Less"}
+                </span>
+              )}
+            </p>
+          </div>
         </div>
         {profileStatus === ProfileStatus.Auth ? (
           <Link href="/settings/profile">

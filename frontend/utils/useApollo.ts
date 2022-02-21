@@ -171,6 +171,13 @@ function createApolloClient() {
               merge: true,
               keyArgs: ["id"],
             },
+            projectsByUsername: {
+              merge(_existing, incoming) {
+                return incoming;
+              },
+              // merge: true,
+              // keyArgs: ["id"],
+            },
             users: concatPagination(),
             projects: concatPagination(),
           },

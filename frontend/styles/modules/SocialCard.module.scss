@@ -1,0 +1,57 @@
+@use "../abstracts/colors" as *;
+@use "../abstracts/border-radius" as *;
+@use "../abstracts/fonts" as *;
+@use "../abstracts/breakpoints" as *;
+@use "../abstracts/shadows" as *;
+
+.default {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border: 1px solid $light-grey-bg;
+  border-radius: $medium-radius;
+  box-shadow: $box-shadow3;
+  background: $white;
+  cursor: pointer;
+  min-height: 100px;
+
+  :global {
+    .wrapper {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden !important;
+      text-overflow: ellipsis;
+      padding-right: 1.5rem;
+
+      span {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+.selected {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border: 1px solid $green;
+  border-radius: $medium-radius;
+  box-shadow: $box-shadow3;
+  background: $light-green;
+  cursor: pointer;
+  
+
+  :global {
+    .wrapper {
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden !important;
+      text-overflow: ellipsis;
+      padding-right: 1.5rem;
+
+      span {
+        font-size: 14px;
+      }
+    }
+  }
+}

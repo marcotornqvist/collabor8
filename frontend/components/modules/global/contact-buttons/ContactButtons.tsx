@@ -67,7 +67,7 @@ const ContactButtons = ({ id, isVisible, username }: IProps) => {
         }}
       >
         <a>
-          <button className="success-hover">Add Person</button>
+          <button className="success-button">Add Person</button>
         </a>
       </Link>
     );

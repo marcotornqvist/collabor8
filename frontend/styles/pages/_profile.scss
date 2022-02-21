@@ -7,10 +7,38 @@
 
 .profile-page {
   flex: 1;
-  background: $light-green;
+  background: $light-grey-bg;
 
   .container {
-    max-width: $breakpoint-lg;
+    max-width: $breakpoint-xl;
+  }
+
+  button.danger-button,
+  button.success-button {
+    width: 100%;
+    height: 3rem;
+    border-radius: $medium-radius;
+
+    &.success-button {
+      border: 1px solid $green;
+      background: $light-green;
+      color: $green;
+
+      a,
+      span {
+        color: $green;
+      }
+    }
+
+    &.danger-button {
+      border: 1px solid $red;
+      background: $light-red;
+
+      a,
+      span {
+        color: $red;
+      }
+    }
   }
 
   .profile-card {
@@ -29,63 +57,44 @@
     }
 
     .wrapper {
-      flex: 1;
+      width: 100%;
       display: flex;
-      justify-content: center;
       flex-direction: column;
 
-      span,
-      h3 {
-        text-align: center;
-      }
+      .inner-wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
 
-      h3.name {
-        margin-bottom: 0.1rem;
-        font-weight: 600;
-        font-family: $font-title;
-      }
-
-      .info-text {
-        margin-bottom: 0.25rem;
-        color: $grey;
-        font-size: 14px;
-      }
-
-      .bio {
-        margin-bottom: 1.5rem;
-
-        p {
+        span,
+        h3 {
           text-align: center;
-
-          .show-more-btn {
-            color: $green;
-            cursor: pointer;
-            white-space: nowrap;
-          }
-        }
-      }
-
-      button {
-        width: 100%;
-        height: 3rem;
-        border-radius: $medium-radius;
-
-        &.success-hover {
-          border: 1px solid $green;
-          background: $light-green;
-          color: $green;
-
-          span {
-            color: $green;
-          }
         }
 
-        &.danger-hover {
-          border: 1px solid $red;
-          background: $light-red;
+        h3.name {
+          margin-bottom: 0.1rem;
+          font-weight: 600;
+          font-family: $font-title;
+        }
 
-          span {
-            color: $red;
+        .info-text {
+          margin-bottom: 0.25rem;
+          color: $grey;
+          font-size: 14px;
+        }
+
+        .bio {
+          margin-bottom: 1.5rem;
+
+          p {
+            text-align: center;
+
+            .show-more-btn {
+              color: $green;
+              cursor: pointer;
+              white-space: nowrap;
+            }
           }
         }
       }
@@ -116,13 +125,65 @@
       }
     }
   }
+
+  .socials {
+    .social-card {
+      margin-bottom: 1rem;
+    }
+
+    .social-card:last-child {
+      margin: 0;
+    }
+  }
+
+  .settings {
+    button {
+      margin-bottom: 1rem;
+    }
+  }
 }
 
 @media only screen and (min-width: $breakpoint-sm) {
+  .profile-page .project-list {
+    min-width: 100%;
+    margin: 0;
+
+    .grid {
+      grid-auto-rows: minmax(100px, 400px);
+
+      .project-item .image-container {
+        min-height: 12rem;
+      }
+
+      .skeleton-item .skeleton-content .skeleton.image {
+        min-height: 12rem;
+      }
+    }
+  }
 }
 
 @media only screen and (min-width: $breakpoint-md) {
   .profile-page {
+    button.success-button:hover,
+    button.danger-button:hover {
+      color: $white;
+
+      a,
+      span {
+        color: $white;
+      }
+
+      &.success-button {
+        border: 1px solid $green !important;
+        background: $green !important;
+      }
+
+      &.danger-button {
+        border: 1px solid $red !important;
+        background: $red !important;
+      }
+    }
+
     .profile-card {
       flex-direction: row;
       align-items: flex-start;
@@ -135,40 +196,24 @@
       .wrapper {
         justify-content: flex-start;
 
-        h3,
-        span {
-          text-align: initial;
-        }
+        .inner-wrapper {
+          h3,
+          span {
+            text-align: initial;
+          }
 
-        .bio {
-          margin-bottom: 4rem;
+          .bio {
+            margin-bottom: 4rem;
 
-          p {
-            text-align: start;
+            p {
+              text-align: start;
+            }
           }
         }
 
         a,
         button {
           width: 250px;
-        }
-
-        button:hover {
-          color: $white;
-
-          span {
-            color: $white;
-          }
-
-          &.success-hover {
-            border: 1px solid $green !important;
-            background: $green !important;
-          }
-
-          &.danger-hover {
-            border: 1px solid $red !important;
-            background: $red !important;
-          }
         }
       }
     }
@@ -178,7 +223,37 @@
       margin: 0;
 
       .grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: minmax(100px, 350px);
         width: 100%;
+
+        .project-item .image-container {
+          min-height: 10rem;
+        }
+
+        .skeleton-item .skeleton-content .skeleton.image {
+          min-height: 12rem;
+        }
+      }
+    }
+
+    .socials {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+
+      .social-card {
+        margin: 0;
+      }
+    }
+
+    .settings {
+      display: flex;
+      gap: 1.5rem;
+
+      button {
+        margin: 0;
+        width: 250px;
       }
     }
   }
@@ -187,64 +262,50 @@
 @media only screen and (min-width: $breakpoint-lg) {
   .profile-page {
     .project-list .grid {
-      grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: minmax(100px, 300px);
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: minmax(100px, 350px);
 
       .project-item {
-        .image-container {
-          min-height: 8rem;
-        }
-
         .wrapper {
           padding: 0 1rem 1rem;
         }
       }
 
       .skeleton-item .skeleton-content {
-        .skeleton.image {
-          min-height: 8rem;
-        }
-
         .wrapper {
           padding: 0 1rem 1rem;
         }
       }
+    }
+
+    .socials {
+      gap: 1.5rem;
     }
   }
 }
 
 @media only screen and (min-width: $breakpoint-xl) {
   .profile-page {
-    .project-list .grid {
-      grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: minmax(100px, 350px);
+    .profile-card {
+      padding: 4rem;
+      height: 400px;
 
-      .project-item {
-        .image-container {
-          min-height: 10rem;
-        }
+      .wrapper {
+        height: 100%;
 
-        .wrapper {
-          padding: 0 1.5rem 1.5rem;
+        .inner-wrapper {
+          justify-content: flex-start !important;
         }
       }
+    }
 
+    .project-list .grid {
+      .project-item,
       .skeleton-item .skeleton-content {
-        .skeleton.image {
-          min-height: 10rem;
-        }
-
         .wrapper {
           padding: 0 1.5rem 1.5rem;
         }
       }
     }
-  }
-}
-
-@media only screen and (min-width: $breakpoint-max) {
-  .profile-page .project-list .grid {
-    grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: minmax(100px, 350px);
   }
 }

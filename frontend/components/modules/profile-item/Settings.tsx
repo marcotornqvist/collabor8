@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import ContactButtons from "@/components-modules/global/contact-buttons/ContactButtons";
-import BlockUser from "./BlockUser";
-import ReportButton from "./ReportButton";
+import BlockUserButton from "@/components-modules/global/block-user-button/BlockUserButton";
+import ReportUserButton from "@/components-modules/global/ReportUserButton";
 
 interface IProps {
   id: string;
@@ -16,8 +16,8 @@ const Settings = forwardRef<HTMLDivElement, IProps>(
       <div className="settings carousel-item" ref={settingsRef}>
         <div className="wrapper">
           <ContactButtons id={id} isVisible={isVisible} username={username} />
-          <ReportButton id={id} />
-          <BlockUser id={id} isVisible={isVisible} />
+          <ReportUserButton id={id} />
+          <BlockUserButton id={id} isVisible={isVisible} />
         </div>
       </div>
     );

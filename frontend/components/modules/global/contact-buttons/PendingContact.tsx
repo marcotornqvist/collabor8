@@ -18,7 +18,7 @@ const PendingContact = ({ id, hideDelete }: IProps) => {
       <button
         onClick={() => setShowModal(true)}
         ref={hoverRef}
-        className="success-hover"
+        className="success-button"
       >
         <span>{isHovered ? "Respond" : "Contact Received"}</span>
       </button>
