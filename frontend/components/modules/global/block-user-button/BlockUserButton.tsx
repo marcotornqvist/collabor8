@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { authState } from "store";
 import { useSnapshot } from "valtio";
 import { useIsUserBlockedLazyQuery } from "generated/graphql";
+import button from "@/styles-modules/Button.module.scss";
 import BlockModal from "./BlockModal";
 
 interface IProps {
@@ -29,9 +30,13 @@ const BlockUserButton = ({ id, isVisible }: IProps) => {
     <>
       <button
         onClick={() => setShowModal(true)}
-        className={data?.isUserBlocked ? "success-button" : "danger-button"}
+        className={
+          data?.isUserBlocked
+            ? `success-button ${button.lightGreen}`
+            : `danger-button ${button.lightRed}`
+        }
       >
-        <span>{data?.isUserBlocked ? "Unblock" : "Block"} User</span>
+        {data?.isUserBlocked ? "Unblock" : "Block"} User
       </button>
       <BlockModal
         id={id}

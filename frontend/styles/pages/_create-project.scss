@@ -123,3 +123,9 @@
     }
   }
 }
+
+@media only screen and (min-width: $breakpoint-lg) {
+  .create-project-page {
+    padding: 3rem 0rem 9rem;
+  }
+}

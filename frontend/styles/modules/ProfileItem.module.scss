@@ -108,38 +108,23 @@
           align-items: center;
           flex-direction: column;
           padding-bottom: 1.5rem;
+          gap: 0.5rem;
 
+          a,
           button {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
-            height: 3rem;
-            margin-bottom: 0.5rem;
+            font-size: 14px;
+            text-align: center;
+            font-family: $font-title;
+            font-weight: $font-title-600;
             border: none;
             border-radius: $medium-radius;
             background: $grey-bg;
+            color: $black;
             cursor: pointer;
-
-            span,
-            a {
-              font-size: 14px;
-              text-align: center;
-              font-family: $font-title;
-              font-weight: $font-title-600;
-
-              &:hover {
-                color: initial;
-              }
-            }
-
-            &:hover {
-              background: $dark-grey-bg;
-            }
-          }
-
-          button:last-child {
-            margin: 0;
           }
         }
       }
@@ -260,14 +245,16 @@
       }
 
       .carousel .carousel-item {
-        button.success-button:hover {
-          border: 1px solid $green;
-          background: $light-green;
+        .danger-button:hover {
+          background: $light-red;
+          border: 1px solid $red;
+          color: $red;
         }
 
-        button.danger-button:hover {
-          border: 1px solid $red;
-          background: $light-red;
+        .success-button:hover {
+          background: $light-green;
+          border: 1px solid $green;
+          color: $green;
         }
       }
     }

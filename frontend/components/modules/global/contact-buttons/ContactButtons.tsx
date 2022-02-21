@@ -6,6 +6,7 @@ import Link from "next/link";
 import AddContact from "./AddContact";
 import DeleteContact from "./DeleteContact";
 import PendingContact from "./PendingContact";
+import button from "@/styles-modules/Button.module.scss";
 
 interface IProps {
   id: string;
@@ -67,7 +68,9 @@ const ContactButtons = ({ id, isVisible, username }: IProps) => {
         }}
       >
         <a>
-          <button className="success-button">Add Person</button>
+          <button className={`success-button ${button.lightGreen}`}>
+            Add Person
+          </button>
         </a>
       </Link>
     );

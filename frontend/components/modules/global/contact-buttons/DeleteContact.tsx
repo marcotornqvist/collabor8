@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useHover from "@/hooks/useHover";
 import DeleteContactModal from "./DeleteContactModal";
+import button from "@/styles-modules/Button.module.scss";
 
 interface IProps {
   id: string;
@@ -18,15 +19,13 @@ const DeleteContact = ({ id, pendingState }: IProps) => {
       <button
         onClick={() => setShowModal(true)}
         ref={hoverRef}
-        className="danger-button"
+        className={`danger-button ${button.lightRed}`}
       >
-        {pendingState ? (
-          <span>
-            {isHovered ? "Delete Contact Request" : "Pending Contact"}
-          </span>
-        ) : (
-          <span>Delete Contact</span>
-        )}
+        {pendingState
+          ? isHovered
+            ? "Delete Contact Request"
+            : "Pending Contact"
+          : "Delete Contact"}
       </button>
       <DeleteContactModal
         id={id}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useHover from "@/hooks/useHover";
 import PendingModal from "./PendingModal";
+import button from "@/styles-modules/Button.module.scss";
 
 interface IProps {
   id: string;
@@ -18,9 +19,9 @@ const PendingContact = ({ id, hideDelete }: IProps) => {
       <button
         onClick={() => setShowModal(true)}
         ref={hoverRef}
-        className="success-button"
+        className={button.lightGreen}
       >
-        <span>{isHovered ? "Respond" : "Contact Received"}</span>
+        {isHovered ? "Respond" : "Contact Received"}
       </button>
       <PendingModal
         id={id}

@@ -5,6 +5,7 @@ import {
   useAddContactMutation,
 } from "generated/graphql";
 import useToast from "@/hooks/useToast";
+import button from "@/styles-modules/Button.module.scss";
 
 interface IProps {
   id: string;
@@ -39,9 +40,9 @@ const AddContact = ({ id }: IProps) => {
         setError("");
         addContact();
       }}
-      className="success-button"
+      className={`success-button ${button.lightGreen}`}
     >
-      <span>Add Person</span>
+      Add Person
     </button>
   );
 };

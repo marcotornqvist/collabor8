@@ -127,16 +127,37 @@
   }
 
   .socials {
-    .social-card {
-      margin-bottom: 1rem;
+    .grid {
+      .social-card {
+        margin-bottom: 1rem;
+      }
+
+      .social-card:last-child {
+        margin: 0;
+      }
     }
 
-    .social-card:last-child {
-      margin: 0;
+    .no-socials-found {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      border-radius: $medium-radius;
+      padding: 1rem;
+      min-height: 10rem;
+      background: $light-red;
+      border: 1px solid $red;
+      margin-bottom: 1rem;
+
+      h3 {
+        text-align: center;
+      }
     }
   }
 
   .settings {
+    padding-bottom: 6rem;
+
     button {
       margin-bottom: 1rem;
     }
@@ -238,12 +259,18 @@
     }
 
     .socials {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
 
-      .social-card {
-        margin: 0;
+        .social-card {
+          margin: 0;
+        }
+      }
+
+      .no-socials-found {
+        max-width: 558px;
       }
     }
 
@@ -261,6 +288,8 @@
 
 @media only screen and (min-width: $breakpoint-lg) {
   .profile-page {
+    padding: 3rem 0rem 9rem;
+
     .project-list .grid {
       grid-template-columns: repeat(3, 1fr);
       grid-auto-rows: minmax(100px, 350px);

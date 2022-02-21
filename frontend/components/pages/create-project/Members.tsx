@@ -22,9 +22,10 @@ interface IProps {
 const Members = ({ setFieldValue, isMobile, members }: IProps) => {
   const [search, setSearch] = useState("");
   const { showSkeleton, setShowSkeleton } = useSkeleton();
-  const [getUsers, { data, loading }] = useUsersLazyQuery();
+  const [getUsers, { data, loading, client }] = useUsersLazyQuery();
 
   useEffect(() => {
+    client.cache.evict({ id: "ROOT_QUERY", fieldName: "users" });
     setShowSkeleton(true);
     getUsers({
       variables: {
