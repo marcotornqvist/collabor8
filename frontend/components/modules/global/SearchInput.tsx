@@ -37,7 +37,7 @@ const SearchInput = ({ search, setSearch }: IProps) => {
           onChange={(e) => setValue(e.target.value)}
           type="text"
           className="input"
-          placeholder="Search for users..."
+          placeholder="Search..."
           ref={inputRef}
           onKeyDown={(e) => {
             if (e.key === "Enter") {

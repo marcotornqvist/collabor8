@@ -132,6 +132,407 @@ export class ChatResolver {
     description: "Returns all contact chatRooms",
   })
   @UseMiddleware(isAuth)
+  async contactsChatroom(
+    @Arg("data") { searchText, after, before, first, last }: SearchArgs,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    const filters = {};
+
+    // Checks if there's any searchText if so apply that, else search all contacts for a certain user
+    if (searchText) {
+      Object.assign(filters, {
+        OR: [
+          {
+            user: {
+              profile: {
+                fullName: {
+                  contains: searchText,
+                  mode: "insensitive",
+                },
+              },
+            },
+            contactId: payload!.userId,
+          },
+          {
+            contact: {
+              profile: {
+                fullName: {
+                  contains: searchText,
+                  mode: "insensitive",
+                },
+              },
+            },
+            userId: payload!.userId,
+          },
+        ],
+      });
+    } else {
+      Object.assign(filters, {
+        OR: [
+          {
+            contactId: payload!.userId,
+          },
+          {
+            userId: payload!.userId,
+          },
+        ],
+      });
+    }
+
+    const contacts = await prisma.contact
+      .findMany({
+        ...pagination({ after, before, first, last }),
+        where: {
+          ...filters,
+          status: "TRUE",
+        },
+        select: {
+          id: true,
+          contactId: true,
+          userId: true,
+          contactReadChatAt: true,
+          userReadChatAt: true,
+          contact: {
+            select: {
+              id: true,
+              profile: true,
+            },
+          },
+          user: {
+            select: {
+              id: true,
+              profile: true,
+            },
+          },
+          chatRoom: {
+            select: {
+              id: true,
+            },
+          },
+        },
+        orderBy: {
+          
+        },
+      })
+      .then((contacts) =>
+        contacts.map((item) => {
+          if (item.userId === payload!.userId) {
+            return {
+              id: item.id,
+              user: item.contact,
+              loggedInUserReadChatAt: item.userReadChatAt,
+              // contactId: item.contactId,
+              // userId: item.userId,
+            };
+          } else {
+            return {
+              id: item.id,
+              user: item.user,
+              loggedInUserReadChatAt: item.contactReadChatAt,
+              // contactId: item.userId,
+              // userId: item.contactId,
+            };
+          }
+        })
+      );
+
+    console.log("----NEW QUERY----");
+    console.log(contacts);
+
+    // Fetch all contacts where userId matches the payload!.user, (apply pagination)
+    // Return only contacts which have a status of "TRUE" in a variable called contacts
+    // Create a new list called contactsNewMessages that fetches contacts with new messages only
+    // Return only contact row id and readChatAt, add a boolean field called newMessages: true
+    // Create a new list that takes that contactsList and filters out values that are included in the contactsNewMessages
+    // Merge contactsNewMessages and contacts
+
+    // New messages that logged in user has not read
+    // By contacts that logged in user has "added"
+    const contactsWithNewMessages = await prisma.contact
+      .findMany({
+        where: {
+          chatRoom: {
+            OR: contacts.map((item) => ({
+              contactId: item.id,
+              messages: {
+                some: {
+                  userId: {
+                    not: payload!.userId,
+                  },
+                  createdAt: {
+                    gte: new Date(item.loggedInUserReadChatAt),
+                  },
+                },
+              },
+            })),
+          },
+        },
+        select: {
+          id: true,
+        },
+      })
+      .then((data) => data.map((item) => item.id));
+
+    console.log(contactsWithNewMessages);
+
+    const result = contacts.map((item) => {
+      const found = contactsWithNewMessages.some((el) => el === item.id);
+      return {
+        ...item,
+        newMessage: found,
+      };
+    });
+
+    console.log(result);
+
+    return {
+      // usersWithNewMessages,
+      // usersWithNoNewMessages,
+    };
+  }
+
+  // @Query(() => ContactResponse, {
+  //   nullable: true,
+  //   description: "Returns all contact chatRooms",
+  // })
+  // @UseMiddleware(isAuth)
+  // async contactsChatroom(
+  //   @Arg("data") { searchText, after, before, first, last }: SearchArgs,
+  //   @Ctx() { payload, prisma }: Context
+  // ) {
+  //   const filters = {};
+
+  //   // Checks if there's any searchText if so apply that, else search all contacts for a certain user
+  //   if (searchText) {
+  //     Object.assign(filters, {
+  //       OR: [
+  //         {
+  //           user: {
+  //             profile: {
+  //               fullName: {
+  //                 contains: searchText,
+  //                 mode: "insensitive",
+  //               },
+  //             },
+  //           },
+  //           contactId: payload!.userId,
+  //         },
+  //         {
+  //           contact: {
+  //             profile: {
+  //               fullName: {
+  //                 contains: searchText,
+  //                 mode: "insensitive",
+  //               },
+  //             },
+  //           },
+  //           userId: payload!.userId,
+  //         },
+  //       ],
+  //     });
+  //   } else {
+  //     Object.assign(filters, {
+  //       OR: [
+  //         {
+  //           contactId: payload!.userId,
+  //         },
+  //         {
+  //           userId: payload!.userId,
+  //         },
+  //       ],
+  //     });
+  //   }
+
+  //   // Returns a list of all the contacts for the logged in user
+  //   const contacts = await prisma.user.findFirst({
+  //     where: {
+  //       id: payload!.userId,
+  //     },
+  //     include: {
+  //       contactsRcvd: {
+  //         where: {
+  //           ...filters,
+  //           status: "TRUE",
+  //         },
+  //         select: {
+  //           id: true,
+  //           contactReadChatAt: true,
+  //         },
+  //       },
+  //       contactsSent: {
+  //         where: {
+  //           ...filters,
+  //           status: "TRUE",
+  //         },
+  //         select: {
+  //           id: true,
+  //           userReadChatAt: true,
+  //         },
+  //       },
+  //     },
+  //   });
+
+  //   // Fetch all contacts where userId matches the payload!.user, (apply pagination)
+  //   // Return only contacts which have a status of "TRUE" in a variable called contacts
+  //   // Create a new list called contactsNewMessages that fetches contacts with new messages only
+  //   // by comparing the readChatAt to the latest message date
+  //   // Return only contact row id and readChatAt
+  //   // Create a new list that takes that contactsList and filters out values that are included in the contactsNewMessages
+  //   //
+
+  //   // New messages that logged in user has not read
+  //   // By contacts that have "added" logged in user
+  //   const contactsRcvdWithNewMessages = await prisma.contact
+  //     .findMany({
+  //       where: {
+  //         contactId: payload!.userId,
+  //         chatRoom: {
+  //           OR: contacts?.contactsRcvd.map((item) => ({
+  //             contactId: item.id,
+  //             messages: {
+  //               some: {
+  //                 userId: {
+  //                   not: payload!.userId,
+  //                 },
+  //                 createdAt: {
+  //                   gte: new Date(item.contactReadChatAt),
+  //                 },
+  //               },
+  //             },
+  //           })),
+  //         },
+  //       },
+  //       select: {
+  //         id: true,
+  //         chatRoom: {
+  //           select: {
+  //             id: true,
+  //           },
+  //         },
+  //         contactReadChatAt: true,
+  //         user: {
+  //           include: {
+  //             profile: true,
+  //           },
+  //         },
+  //       },
+  //     })
+  //     .then((data) => {
+  //       return data.map((item) => ({
+  //         id: item.id,
+  //         chatroomId: item.chatRoom?.id,
+  //         userReadChatAt: item.contactReadChatAt,
+  //         user: item.user,
+  //       }));
+  //     });
+
+  //   // New messages that logged in user has not read
+  //   // By contacts that logged in user has "added"
+  //   const contactsSentWithNewMessages = await prisma.contact
+  //     .findMany({
+  //       where: {
+  //         userId: payload!.userId,
+  //         chatRoom: {
+  //           OR: contacts?.contactsSent.map((item) => ({
+  //             contactId: item.id,
+  //             messages: {
+  //               some: {
+  //                 userId: {
+  //                   not: payload!.userId,
+  //                 },
+  //                 createdAt: {
+  //                   gte: new Date(item.userReadChatAt),
+  //                 },
+  //               },
+  //             },
+  //           })),
+  //         },
+  //       },
+  //       select: {
+  //         id: true,
+  //         chatRoom: {
+  //           select: {
+  //             id: true,
+  //           },
+  //         },
+  //         userReadChatAt: true,
+  //         contact: {
+  //           include: {
+  //             profile: true,
+  //           },
+  //         },
+  //       },
+  //     })
+  //     .then((data) => {
+  //       return data.map((item) => ({
+  //         id: item.id,
+  //         chatroomId: item.chatRoom?.id,
+  //         userReadChatAt: item.userReadChatAt,
+  //         user: item.contact,
+  //       }));
+  //     });
+
+  //   const merged = contactsRcvdWithNewMessages
+  //     .concat(contactsSentWithNewMessages)
+  //     .sort((a: any, b: any) => b.userReadChatAt - a.userReadChatAt);
+
+  //   console.log(contactsRcvdWithNewMessages);
+  //   console.log(contactsSentWithNewMessages);
+  //   console.log(merged);
+
+  //   // Returns all users who don't have new messages
+  //   // const contactsWithNoNewMessages = await prisma.contact.findMany({
+  //   //   where: {
+  //   //     ...pagination({ after, before, first, last }),
+  //   //     OR: [
+  //   //       {
+  //   //         contactId: payload!.userId,
+  //   //       },
+  //   //       {
+  //   //         userId: payload!.userId,
+  //   //       },
+  //   //     ],
+  //   //     id: {
+  //   //       notIn: merged.map((item) => item.id),
+  //   //     },
+  //   //   },
+  //   //   select: {
+  //   //     id: true,
+  //   //     chatRoom: {
+  //   //       select: {
+  //   //         id: true,
+  //   //       },
+  //   //     },
+  //   //     userId: true,
+  //   //     contactId: true,
+  //   //     user: {
+  //   //       include: {
+  //   //         profile: true,
+  //   //       },
+  //   //     },
+  //   //     contact: {
+  //   //       include: {
+  //   //         profile: true,
+  //   //       },
+  //   //     },
+  //   //     userReadChatAt: true,
+  //   //     contactReadChatAt: true,
+  //   //   },
+  //   // });
+
+  //   // console.log(contactsWithNoNewMessages);
+
+  //   return {
+  //     // usersWithNewMessages,
+  //     // usersWithNoNewMessages,
+  //   };
+  // }
+
+  @Query(() => ContactResponse, {
+    nullable: true,
+    description: "Returns all contact chatRooms",
+  })
+  @UseMiddleware(isAuth)
   async contactsChatRoom(
     @Arg("data") { searchText, after, before, first, last }: SearchArgs,
     @Ctx() { payload, prisma }: Context
@@ -220,7 +621,8 @@ export class ChatResolver {
                 userId: {
                   not: item.userId,
                 },
-                // Checks if there are any new message with never datetime values than when the logged in user visited the chatroom.
+                // Checks if there are any new message with never datetime values
+                // than when the logged in user visited the chatroom.
                 createdAt: {
                   gte: new Date(item.userReadChatAt),
                 },
@@ -268,8 +670,8 @@ export class ChatResolver {
 
     // Returns all users who don't have new messages
     const usersWithNoNewMessages = await prisma.user.findMany({
+      ...pagination({ after, before, first, last }),
       where: {
-        ...pagination({ after, before, first, last }),
         OR: remainingContacts,
       },
       select: {

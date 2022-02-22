@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useState } from "react";
 import { ProjectByIdQuery, useUsersLazyQuery } from "generated/graphql";
-import SearchInput from "@/components-modules/project-details/SearchInput";
+import SearchInput from "@/components-modules/global/SearchInput";
 import ProfileList from "./ProfileList";
 import MembersList from "./MembersList";
 import useSkeleton from "@/hooks/useSkeleton";
