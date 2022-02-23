@@ -3,12 +3,9 @@ import { motion } from "framer-motion";
 import { User } from "./Members";
 import {
   MemberStatusCode,
-  ProjectByIdDocument,
-  ProjectByIdQuery,
   ProjectMembersDocument,
   ProjectMembersQuery,
   ProjectMembersQueryVariables,
-  Role,
   useAddMemberMutation,
   useKickMemberMutation,
 } from "generated/graphql";
@@ -17,6 +14,7 @@ import React, { useState } from "react";
 import button from "@/styles-modules/Button.module.scss";
 import useHover from "@/hooks/useHover";
 import useToast from "@/hooks/useToast";
+import KickMemberModal from "./KickMemberModal";
 
 interface IProps {
   id: string;
@@ -34,6 +32,7 @@ const ProfileItem = ({
   status,
   isAdded,
 }: IProps) => {
+  const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
   const [hoverRef, isHovered] = useHover<HTMLButtonElement>();
 
@@ -71,48 +70,6 @@ const ProfileItem = ({
               members: previousData.projectById.members
                 ? [data.addMember, ...previousData.projectById.members]
                 : [data.addMember],
-            },
-          },
-        });
-      }
-    },
-    onError: (error) => setError(error.message),
-  });
-
-  const [kickMember] = useKickMemberMutation({
-    variables: {
-      data: {
-        projectId: id,
-        userId: user.id,
-      },
-    },
-    update(cache, { data }) {
-      const previousData = cache.readQuery<
-        ProjectMembersQuery,
-        ProjectMembersQueryVariables
-      >({
-        query: ProjectMembersDocument,
-        variables: {
-          data: {
-            id,
-          },
-        },
-      });
-
-      if (data && previousData?.projectById) {
-        cache.writeQuery<ProjectMembersQuery, ProjectMembersQueryVariables>({
-          query: ProjectMembersDocument,
-          variables: {
-            data: {
-              id,
-            },
-          },
-          data: {
-            projectById: {
-              ...previousData.projectById,
-              members: previousData?.projectById?.members?.filter(
-                (item) => item.userId !== user.id
-              ),
             },
           },
         });
@@ -162,20 +119,28 @@ const ProfileItem = ({
             </button>
           )}
           {isAdded && (
-            <button
-              ref={hoverRef}
-              className={isHovered ? button.red : button.lightGreen}
-              onClick={(e) => {
-                e.preventDefault();
-                kickMember();
-              }}
-            >
-              {isHovered
-                ? "Remove"
-                : status === MemberStatusCode.Accepted
-                ? "Member"
-                : "Pending"}
-            </button>
+            <>
+              <button
+                ref={hoverRef}
+                className={isHovered ? button.red : button.lightGreen}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowModal(true);
+                }}
+              >
+                {isHovered
+                  ? "Remove"
+                  : status === MemberStatusCode.Accepted
+                  ? "Member"
+                  : "Pending"}
+              </button>
+              <KickMemberModal
+                id={id}
+                userId={user.id}
+                show={showModal}
+                onClose={() => setShowModal(false)}
+              />
+            </>
           )}
         </div>
       </motion.li>

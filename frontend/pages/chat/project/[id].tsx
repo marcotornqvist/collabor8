@@ -1,12 +1,12 @@
 import { ReactElement } from "react";
 import ChatLayout from "@/components-pages/chat/ChatLayout";
 
-const Chatroom = () => {
-  return <div>Chatroom</div>;
+const Project = () => {
+  return <div>Project</div>;
 };
 
-Chatroom.getLayout = function getLayout(page: ReactElement) {
+Project.getLayout = function getLayout(page: ReactElement) {
   return <ChatLayout>{page}</ChatLayout>;
 };
 
-export default Chatroom;
+export default Project;

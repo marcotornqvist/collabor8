@@ -14,8 +14,10 @@ import { User } from "../types/User";
 import { ContactStatus } from "../types/Enums";
 import { NotificationCode } from "@prisma/client";
 import { getContactStatus } from "../helpers/getContactStatus";
+import { ForbiddenError } from "apollo-server-express";
 
 // contacts             Return all contacts for logged in user - Done
+// contactById          Return contact by id - Done
 // contactStatus        Check what the status is or if a contact request even exist
 // addContact           Add a new user to your contacts - Done
 // deleteContact        Delete contact request - Done
@@ -95,6 +97,66 @@ export class ContactResolver {
       );
 
     return contacts;
+  }
+
+  @Query(() => User, {
+    description: "Return contact user by id",
+  })
+  @UseMiddleware(isAuth)
+  async contactById(
+    @Arg("id") id: string,
+    @Ctx() { payload, prisma }: Context
+  ) {
+    const contact = await prisma.contact
+      .findFirst({
+        where: {
+          id,
+          OR: [
+            {
+              userId: payload!.userId,
+            },
+            {
+              contactId: payload!.userId,
+            },
+          ],
+          status: "TRUE",
+        },
+        select: {
+          user: {
+            include: {
+              profile: {
+                include: {
+                  discipline: true,
+                },
+              },
+            },
+          },
+          contact: {
+            include: {
+              profile: {
+                include: {
+                  discipline: true,
+                },
+              },
+            },
+          },
+        },
+      })
+      .then((data) => {
+        if (data?.user.id === payload!.userId) {
+          return data.contact;
+        } else if (data?.contact.id === payload!.userId) {
+          return data.user;
+        } else {
+          return null;
+        }
+      });
+
+    if (!contact) {
+      throw new ForbiddenError("Not Authorized");
+    }
+
+    return contact;
   }
 
   @Query(() => ContactStatus, {

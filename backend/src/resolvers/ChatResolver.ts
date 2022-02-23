@@ -169,13 +169,21 @@ export class ChatResolver {
           contact: {
             select: {
               id: true,
-              profile: true,
+              profile: {
+                include: {
+                  discipline: true,
+                },
+              },
             },
           },
           user: {
             select: {
               id: true,
-              profile: true,
+              profile: {
+                include: {
+                  discipline: true,
+                },
+              },
             },
           },
         },

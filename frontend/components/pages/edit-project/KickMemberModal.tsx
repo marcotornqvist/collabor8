@@ -1,9 +1,12 @@
-import { useEffect, useState, useRef, MouseEvent } from "react";
 import ReactDOM from "react-dom";
+import { useEffect, useState, useRef, MouseEvent } from "react";
 import { motion } from "framer-motion";
 import {
-  DeleteProjectMutation,
-  useDeleteProjectMutation,
+  KickMemberMutation,
+  ProjectMembersDocument,
+  ProjectMembersQuery,
+  ProjectMembersQueryVariables,
+  useKickMemberMutation,
 } from "generated/graphql";
 import { dropInVariants } from "utils/variants";
 import button from "@/styles-modules/Button.module.scss";
@@ -12,27 +15,59 @@ import useToast from "@/hooks/useToast";
 
 interface IProps {
   id: string;
+  userId: string;
   show: boolean;
   onClose: () => void;
 }
 
-const DeleteProjectModal = ({ id, show, onClose }: IProps) => {
+const KickMemberModal = ({ id, userId, show, onClose }: IProps) => {
   const [isBrowser, setIsBrowser] = useState(false);
   const [error, setError] = useState("");
 
-  const [deleteProject, { data }] = useDeleteProjectMutation({
+  const [kickMember] = useKickMemberMutation({
     variables: {
-      id,
+      data: {
+        projectId: id,
+        userId,
+      },
     },
-    update(cache, {data}) {
-      // Remove project from cache
-      if (data?.deleteProject) {
-        const normalizedId = cache.identify({ id, __typename: "Project" });
-        cache.evict({ id: normalizedId });
-        cache.gc();
+    update(cache, { data }) {
+      const previousData = cache.readQuery<
+        ProjectMembersQuery,
+        ProjectMembersQueryVariables
+      >({
+        query: ProjectMembersDocument,
+        variables: {
+          data: {
+            id,
+          },
+        },
+      });
+
+      if (data && previousData?.projectById) {
+        cache.writeQuery<ProjectMembersQuery, ProjectMembersQueryVariables>({
+          query: ProjectMembersDocument,
+          variables: {
+            data: {
+              id,
+            },
+          },
+          data: {
+            projectById: {
+              ...previousData.projectById,
+              members: previousData?.projectById?.members?.filter(
+                (item) => item.userId !== userId
+              ),
+            },
+          },
+        });
       }
     },
     onError: (error) => setError(error.message),
+  });
+
+  useToast({
+    error,
   });
 
   useEffect(() => {
@@ -43,13 +78,6 @@ const DeleteProjectModal = ({ id, show, onClose }: IProps) => {
     e.preventDefault();
     onClose();
   };
-
-  useToast<DeleteProjectMutation>({
-    data,
-    successMessage: "Project deleted successfully!",
-    error,
-    redirect: "/projects",
-  });
 
   const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, handleCloseClick);
@@ -71,14 +99,10 @@ const DeleteProjectModal = ({ id, show, onClose }: IProps) => {
           </div>
         </div>
         <div className="modal-content">
-          <h4>Are you sure you want to delete this project?</h4>
-          <p>
-            This will permanently delete the project. All chats will be removed
-            in the process.
-          </p>
+          <h4>Are you sure you want to remove this member?</h4>
         </div>
-        <button className={button.lightRed} onClick={() => deleteProject()}>
-          Delete Project
+        <button className={button.lightRed} onClick={() => kickMember()}>
+          Remove Member
         </button>
       </motion.div>
     </div>
@@ -94,4 +118,4 @@ const DeleteProjectModal = ({ id, show, onClose }: IProps) => {
   }
 };
 
-export default DeleteProjectModal;
+export default KickMemberModal;

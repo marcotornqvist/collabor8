@@ -10,6 +10,10 @@ export const CONTACT_CHATS = gql`
           userId
           firstName
           lastName
+          country
+          discipline {
+            title
+          }
           profileImage
         }
       }

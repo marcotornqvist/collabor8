@@ -11,7 +11,7 @@
   box-shadow: $box-shadow3;
 
   .container {
-    max-width: $breakpoint-lg;
+    max-width: $breakpoint-xl;
   }
 
   .content {
@@ -189,8 +189,11 @@
   }
 }
 
-// @media only screen and (min-width: $breakpoint-xl) {
-// }
+@media only screen and (min-width: $breakpoint-xl) {
+  .project-page .content {
+    padding: 3rem 9rem 6rem;
+  }
+}
 
 // @media only screen and (min-width: $breakpoint-max) {
 // }

@@ -21,6 +21,16 @@
   color: $white;
 }
 
+.lightGrey {
+  height: 3rem;
+  width: 250px;
+  border: none;
+  border-radius: $medium-radius;
+  border: 1px solid $grey;
+  background: $light-grey-bg;
+  color: $white;
+}
+
 .green {
   height: 3rem;
   width: 250px;

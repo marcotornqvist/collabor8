@@ -505,6 +505,8 @@ export type Query = {
   __typename?: 'Query';
   /** Returns all blocked users */
   blockedUsers: Array<BlockedUser>;
+  /** Return contact user by id */
+  contactById: User;
   /** Return all contact chats */
   contactChats?: Maybe<Array<ContactResponse>>;
   /** Return messages for contact by contactId */
@@ -545,6 +547,11 @@ export type Query = {
   userByUsername?: Maybe<User>;
   /** Returns all users/profiles except logged in user (if authenticated) */
   users?: Maybe<Array<User>>;
+};
+
+
+export type QueryContactByIdArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -1010,19 +1017,19 @@ export type SingleUploadMutationVariables = Exact<{
 
 export type SingleUploadMutation = { __typename?: 'Mutation', singleUpload: { __typename?: 'UploadedFileResponse', filename: string, mimetype: string, encoding: string, url: string } };
 
-export type Unnamed_1_QueryVariables = Exact<{
-  data: ProjectById;
+export type ContactByIdQueryVariables = Exact<{
+  id: Scalars['String'];
 }>;
 
 
-export type Unnamed_1_Query = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, members?: Array<{ __typename?: 'Member', userId: string, role: Role, user: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, lastName?: string | null | undefined, firstName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined } | null | undefined };
+export type ContactByIdQuery = { __typename?: 'Query', contactById: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } };
 
 export type ContactChatsQueryVariables = Exact<{
   data: SearchArgs;
 }>;
 
 
-export type ContactChatsQuery = { __typename?: 'Query', contactChats?: Array<{ __typename?: 'ContactResponse', id: string, newMessages: boolean, loggedInUserReadChatAt: any, user: { __typename?: 'User', profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, profileImage?: string | null | undefined } | null | undefined } }> | null | undefined };
+export type ContactChatsQuery = { __typename?: 'Query', contactChats?: Array<{ __typename?: 'ContactResponse', id: string, newMessages: boolean, loggedInUserReadChatAt: any, user: { __typename?: 'User', profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined };
 
 export type ContactStatusQueryVariables = Exact<{
   id: Scalars['String'];
@@ -2128,29 +2135,18 @@ export function useSingleUploadMutation(baseOptions?: Apollo.MutationHookOptions
 export type SingleUploadMutationHookResult = ReturnType<typeof useSingleUploadMutation>;
 export type SingleUploadMutationResult = Apollo.MutationResult<SingleUploadMutation>;
 export type SingleUploadMutationOptions = Apollo.BaseMutationOptions<SingleUploadMutation, SingleUploadMutationVariables>;
-export const Document = gql`
-    query ($data: ProjectById!) {
-  projectById(data: $data) {
-    id
-    title
-    body
-    country
-    members {
+export const ContactByIdDocument = gql`
+    query contactById($id: String!) {
+  contactById(id: $id) {
+    username
+    profile {
       userId
-      role
-      user {
-        id
-        username
-        profile {
-          userId
-          lastName
-          firstName
-          country
-          profileImage
-          discipline {
-            title
-          }
-        }
+      firstName
+      lastName
+      country
+      profileImage
+      discipline {
+        title
       }
     }
   }
@@ -2158,32 +2154,32 @@ export const Document = gql`
     `;
 
 /**
- * __useQuery__
+ * __useContactByIdQuery__
  *
- * To run a query within a React component, call `useQuery` and pass it any options that fit your needs.
- * When your component renders, `useQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useContactByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContactByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useQuery({
+ * const { data, loading, error } = useContactByIdQuery({
  *   variables: {
- *      data: // value for 'data'
+ *      id: // value for 'id'
  *   },
  * });
  */
-export function useQuery(baseOptions: Apollo.QueryHookOptions<Query, QueryVariables>) {
+export function useContactByIdQuery(baseOptions: Apollo.QueryHookOptions<ContactByIdQuery, ContactByIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<Query, QueryVariables>(Document, options);
+        return Apollo.useQuery<ContactByIdQuery, ContactByIdQueryVariables>(ContactByIdDocument, options);
       }
-export function useLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Query, QueryVariables>) {
+export function useContactByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ContactByIdQuery, ContactByIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<Query, QueryVariables>(Document, options);
+          return Apollo.useLazyQuery<ContactByIdQuery, ContactByIdQueryVariables>(ContactByIdDocument, options);
         }
-export type QueryHookResult = ReturnType<typeof useQuery>;
-export type LazyQueryHookResult = ReturnType<typeof useLazyQuery>;
-export type QueryResult = Apollo.QueryResult<Query, QueryVariables>;
+export type ContactByIdQueryHookResult = ReturnType<typeof useContactByIdQuery>;
+export type ContactByIdLazyQueryHookResult = ReturnType<typeof useContactByIdLazyQuery>;
+export type ContactByIdQueryResult = Apollo.QueryResult<ContactByIdQuery, ContactByIdQueryVariables>;
 export const ContactChatsDocument = gql`
     query contactChats($data: SearchArgs!) {
   contactChats(data: $data) {
@@ -2194,6 +2190,10 @@ export const ContactChatsDocument = gql`
         userId
         firstName
         lastName
+        country
+        discipline {
+          title
+        }
         profileImage
       }
     }

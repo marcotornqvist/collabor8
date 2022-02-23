@@ -30,17 +30,19 @@ const InputField = ({
 }: InputFieldProps) => {
   return (
     <div className={`input-group ${input.group}`}>
-      <div className="input-text">
-        <label htmlFor={name}>{label}</label>
-        {errorMessage ? (
-          <span className="error-message">{errorMessage}</span>
-        ) : (
-          lastSubmitValue === value &&
-          value.length > 0 && (
-            <span className="success-message">{successMessage}</span>
-          )
-        )}
-      </div>
+      {(label || successMessage || errorMessage) && (
+        <div className="input-text">
+          <label htmlFor={name}>{label}</label>
+          {errorMessage ? (
+            <span className="error-message">{errorMessage}</span>
+          ) : (
+            lastSubmitValue === value &&
+            value.length > 0 && (
+              <span className="success-message">{successMessage}</span>
+            )
+          )}
+        </div>
+      )}
       <input
         name={name}
         value={value}

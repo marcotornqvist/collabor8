@@ -1,12 +1,18 @@
 import React from "react";
 import Contacts from "./Contacts";
 import Projects from "./Projects";
+import styles from "@/styles-modules/ChatMenu.module.scss";
 
-const Menu = () => {
+interface IProps {
+  id: string;
+  isMobile: boolean;
+}
+
+const Menu = ({ id, isMobile }: IProps) => {
   return (
-    <div className="menu">
-      <Projects />
-      <Contacts />
+    <div className={`menu ${styles.menu}`}>
+      <Projects id={id} isMobile={isMobile} />
+      <Contacts id={id} isMobile={isMobile} />
     </div>
   );
 };

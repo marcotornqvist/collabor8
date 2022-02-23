@@ -1,17 +1,25 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import {
   useContactAddMessageMutation,
   useNewMessageSubscription,
 } from "generated/graphql";
 import input from "@/styles-modules/Input.module.scss";
+import Form from "./Form";
+import ContactHeader from "./ContactHeader";
+import { AnimatePresence } from "framer-motion";
+import { dropdownVariants, fadeInVariants } from "utils/variants";
+import { motion } from "framer-motion";
+import styles from "@/styles-modules/Chatbox.module.scss";
 
-const ContactChatbox = () => {
-  const {
-    query: { id },
-  } = useRouter();
-  const chatId = typeof id === "string" ? id : "";
+interface IProps {
+  chatId: string;
+  isMobile: boolean;
+  isVisible: boolean;
+  slide: boolean;
+}
 
+const ContactChatbox = ({ chatId, isMobile, isVisible, slide }: IProps) => {
   // Use below in future to request messages and subscribe
   // https://www.apollographql.com/docs/react/data/subscriptions/
   // const { subscribeToMore, ...result } = useQuery(CONTACT_MESSAGES, {
@@ -20,49 +28,50 @@ const ContactChatbox = () => {
   //   },
   // });
 
-  const { data, loading } = useNewMessageSubscription({
-    variables: {
-      chatId,
-    },
-  });
+  // const { data, loading } = useNewMessageSubscription({
+  //   variables: {
+  //     chatId,
+  //   },
+  // });
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
-  const [message, setMessage] = useState("");
-
-  const [contactAddMessage] = useContactAddMessageMutation({
-    variables: {
-      data: {
-        id: chatId,
-        body: message,
-      },
-    },
-  });
+  // useEffect(() => {
+  //   console.log(data);
+  // }, [data]);
 
   return (
-    <div className="chatbox">
-      {loading && "loading"}
-      <input
-        onChange={(e) => setMessage(e.target.value)}
-        value={message}
-        id="message"
-        name="message"
-        type="text"
-        className={input.default}
-        placeholder={!loading ? "Your first name" : ""}
-        autoComplete="on"
-      />
-      <button
-        onClick={() => {
-          setMessage("");
-          contactAddMessage();
-        }}
-      >
-        Add Message
-      </button>
-    </div>
+    <>
+      {isMobile ? (
+        <AnimatePresence>
+          {isVisible && (
+            <motion.div
+              className="content content-mobile"
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={slide ? dropdownVariants.slideIn : undefined}
+            >
+              <ContactHeader chatId={chatId} />
+              <div className={`chatbox ${styles.chatbox}`}>
+                <div className="messages"></div>
+                <Form chatId={chatId} />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      ) : (
+        <>
+          {isVisible && (
+            <div className="content content-desktop">
+              <ContactHeader chatId={chatId} />
+              <div className={`chatbox ${styles.chatbox}`}>
+                <div className="messages"></div>
+                <Form chatId={chatId} />
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </>
   );
 };
 

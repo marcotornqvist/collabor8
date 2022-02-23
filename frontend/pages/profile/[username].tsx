@@ -11,6 +11,8 @@ import dynamic from "next/dynamic";
 import NavigationSlide from "@/components-modules/global/NavigationSlide";
 import ProfileCard from "@/components-pages/profile/ProfileCard";
 import Projects from "@/components-pages/profile/Projects";
+import { fadeInVariants } from "utils/variants";
+import { motion } from "framer-motion";
 
 const Socials = dynamic(
   async () => (await import("@/components-pages/profile/Socials")).default
@@ -69,7 +71,12 @@ const Profile = () => {
     <section className="profile-page">
       <div className="container">
         {!usernameLoading && !dataLoading && (
-          <>
+          <motion.div
+            className="content"
+            initial="hidden"
+            animate="visible"
+            variants={fadeInVariants}
+          >
             {data?.userByUsername?.profile && (
               <ProfileCard
                 profile={data.userByUsername.profile}
@@ -96,7 +103,7 @@ const Profile = () => {
                 profileStatus={profileStatus}
               />
             )}
-          </>
+          </motion.div>
         )}
       </div>
     </section>
