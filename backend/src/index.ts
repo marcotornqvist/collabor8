@@ -77,8 +77,12 @@ const PORT = process.env.PORT || 4000;
       execute,
       subscribe,
       async onConnect(connectionParams: any) {
-        if (connectionParams.authorization) {
-          const currentUser = await findUser(connectionParams.authorization);
+        // console.log(connectionParams);
+        if (connectionParams.authorization || connectionParams.Authorization) {
+          const currentUser = await findUser(
+            connectionParams.authorization || connectionParams.Authorization
+          );
+
           return currentUser;
         }
 

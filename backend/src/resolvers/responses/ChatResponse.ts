@@ -1,22 +1,25 @@
 import "reflect-metadata";
 import { ObjectType, Field, ID } from "type-graphql";
-import { ChatRoom } from "../../types/ChatRoom";
+import { Project } from "../../types/Project";
 import { User } from "../../types/User";
 
 @ObjectType()
-export class ChatRoomResponse {
-  @Field(() => [ChatRoom], { nullable: true })
-  unreadChatRooms?: [ChatRoom] | null;
-
-  @Field(() => [ChatRoom], { nullable: true })
-  readChatRooms?: [ChatRoom] | null;
+export class ProjectResponse extends Project {
+  @Field(() => Boolean)
+  newMessages: boolean;
 }
 
 @ObjectType()
 export class ContactResponse {
-  @Field(() => [User], { nullable: true })
-  usersWithNewMessages?: [User] | null;
+  @Field(() => ID)
+  id: string;
 
-  @Field(() => [User], { nullable: true })
-  usersWithOldMessages?: [User] | null;
+  @Field(() => Boolean)
+  newMessages: boolean;
+
+  @Field(() => User)
+  user: User;
+
+  @Field(() => Date)
+  loggedInUserReadChatAt: Date;
 }

@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const NEW_MESSAGE = gql`
-  subscription newMessage($chatId: String!) {
-    newMessage(chatId: $chatId) {
+export const PROJECT_ADD_MESSAGE = gql`
+  mutation projectAddMessage($data: CreateMessageInput!) {
+    projectAddMessage(data: $data) {
       id
       body
       user {

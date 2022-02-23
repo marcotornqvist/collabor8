@@ -176,11 +176,11 @@ export class ProjectResolver {
           some: {
             status: "ACCEPTED",
             user: {
-              username
-            }
+              username,
+            },
           },
         },
-        disabled: false,  
+        disabled: false,
       },
       include: {
         disciplines: {
@@ -342,15 +342,6 @@ export class ProjectResolver {
           },
         },
       });
-
-      // Initialize row in ChatRoom table based on the new projectId
-      if (project) {
-        await prisma.chatRoom.create({
-          data: {
-            projectId: project.id,
-          },
-        });
-      }
 
       return project;
     } catch (err) {

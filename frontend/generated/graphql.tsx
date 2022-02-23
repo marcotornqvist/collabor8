@@ -43,32 +43,15 @@ export type ChatInput = {
   last?: InputMaybe<Scalars['Float']>;
 };
 
-export type ChatRoom = {
-  __typename?: 'ChatRoom';
-  contact?: Maybe<Contact>;
-  contactId: Scalars['ID'];
-  createdAt: Scalars['DateTime'];
-  id: Scalars['ID'];
-  messages?: Maybe<Array<Message>>;
-  project?: Maybe<Project>;
-  projectId: Scalars['ID'];
-  updatedAt?: Maybe<Scalars['DateTime']>;
-};
-
-export type ChatRoomResponse = {
-  __typename?: 'ChatRoomResponse';
-  readChatRooms?: Maybe<Array<ChatRoom>>;
-  unreadChatRooms?: Maybe<Array<ChatRoom>>;
-};
-
 export type Contact = {
   __typename?: 'Contact';
-  chatRoom?: Maybe<ChatRoom>;
   contact?: Maybe<Contact>;
   contactId: Scalars['ID'];
   contactReadChatAt: Scalars['DateTime'];
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
+  latestMessageDate?: Maybe<Scalars['DateTime']>;
+  messages?: Maybe<Array<Message>>;
   status: StatusCode;
   updatedAt?: Maybe<Scalars['DateTime']>;
   user?: Maybe<User>;
@@ -78,8 +61,10 @@ export type Contact = {
 
 export type ContactResponse = {
   __typename?: 'ContactResponse';
-  usersWithNewMessages?: Maybe<Array<User>>;
-  usersWithOldMessages?: Maybe<Array<User>>;
+  id: Scalars['ID'];
+  loggedInUserReadChatAt: Scalars['DateTime'];
+  newMessages: Scalars['Boolean'];
+  user: User;
 };
 
 /** Contact status enum */
@@ -178,10 +163,12 @@ export enum MemberStatusCode {
 export type Message = {
   __typename?: 'Message';
   body: Scalars['String'];
-  chatId: Scalars['ID'];
-  chatRoom?: Maybe<ChatRoom>;
+  contact?: Maybe<Contact>;
+  contactId?: Maybe<Scalars['ID']>;
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
+  project?: Maybe<Project>;
+  projectId?: Maybe<Scalars['ID']>;
   user?: Maybe<User>;
   userId?: Maybe<Scalars['ID']>;
 };
@@ -192,9 +179,8 @@ export type MessageSubscribtionResponse = {
   body: Scalars['String'];
   chatId: Scalars['ID'];
   createdAt: Scalars['DateTime'];
-  fullname?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
-  profileImage?: Maybe<Scalars['String']>;
+  user?: Maybe<User>;
 };
 
 export type Mutation = {
@@ -209,7 +195,7 @@ export type Mutation = {
   addMember: Member;
   /** Block a user by id */
   blockUser: Scalars['Boolean'];
-  /** Add Message to contact by contact id */
+  /** Add new message by contact id */
   contactAddMessage: Message;
   /** Creates a new Project */
   createProject: Project;
@@ -457,13 +443,14 @@ export type Profile = {
 export type Project = {
   __typename?: 'Project';
   body: Scalars['String'];
-  chatRoom?: Maybe<ChatRoom>;
   country?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   disabled: Scalars['Boolean'];
   disciplines?: Maybe<Array<Discipline>>;
   id: Scalars['ID'];
+  latestMessageDate?: Maybe<Scalars['DateTime']>;
   members?: Maybe<Array<Member>>;
+  messages?: Maybe<Array<Message>>;
   reports?: Maybe<Array<ReportProject>>;
   title: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
@@ -485,6 +472,23 @@ export enum ProjectMemberStatus {
   User = 'USER'
 }
 
+export type ProjectResponse = {
+  __typename?: 'ProjectResponse';
+  body: Scalars['String'];
+  country?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
+  disabled: Scalars['Boolean'];
+  disciplines?: Maybe<Array<Discipline>>;
+  id: Scalars['ID'];
+  latestMessageDate?: Maybe<Scalars['DateTime']>;
+  members?: Maybe<Array<Member>>;
+  messages?: Maybe<Array<Message>>;
+  newMessages: Scalars['Boolean'];
+  reports?: Maybe<Array<ReportProject>>;
+  title: Scalars['String'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
 /** Filter Projects */
 export type ProjectsFilterArgs = {
   after?: InputMaybe<Scalars['String']>;
@@ -501,16 +505,14 @@ export type Query = {
   __typename?: 'Query';
   /** Returns all blocked users */
   blockedUsers: Array<BlockedUser>;
-  /** Return details for a contact */
-  contactChatRoomDetails?: Maybe<User>;
-  /** Return messages for a ChatRoom by contactId */
+  /** Return all contact chats */
+  contactChats?: Maybe<Array<ContactResponse>>;
+  /** Return messages for contact by contactId */
   contactMessages?: Maybe<Array<Message>>;
   /** Return the status for a contact request between loggedInUser and userId */
   contactStatus: ContactStatus;
   /** Returns all contacts for loggedInUser */
   contacts: Array<User>;
-  /** Returns all contact chatRooms */
-  contactsChatRoom?: Maybe<ContactResponse>;
   /** Returns countries */
   countries?: Maybe<Array<CountryResponse>>;
   /** Returns disciplines */
@@ -523,11 +525,11 @@ export type Query = {
   notificationsByLoggedInUser?: Maybe<User>;
   /** Return project by id */
   projectById?: Maybe<Project>;
-  /** Return details for a project */
-  projectChatRoomDetails?: Maybe<Project>;
+  /** Returns all project chats */
+  projectChats?: Maybe<Array<ProjectResponse>>;
   /** Returns member status of auth user or not auth guest */
   projectMemberStatus?: Maybe<ProjectMemberStatus>;
-  /** Return messages for a ChatRoom by projectId */
+  /** Return messages for a project by projectId */
   projectMessages?: Maybe<Array<Message>>;
   /** Returns all projects that are not disabled */
   projects?: Maybe<Array<Project>>;
@@ -535,8 +537,6 @@ export type Query = {
   projectsByUsername?: Maybe<Array<Project>>;
   /** Return all projects for the currently logged in user */
   projectsByloggedInUser?: Maybe<Array<Project>>;
-  /** Returns all projects chatRooms */
-  projectsChatRoom?: Maybe<ChatRoomResponse>;
   /** Returns the social data for the user that is currently logged in  */
   socialsByLoggedInUser: Social;
   /** Returns the social data by user id */
@@ -548,8 +548,8 @@ export type Query = {
 };
 
 
-export type QueryContactChatRoomDetailsArgs = {
-  id: Scalars['String'];
+export type QueryContactChatsArgs = {
+  data: SearchArgs;
 };
 
 
@@ -560,11 +560,6 @@ export type QueryContactMessagesArgs = {
 
 export type QueryContactStatusArgs = {
   id: Scalars['String'];
-};
-
-
-export type QueryContactsChatRoomArgs = {
-  data: SearchArgs;
 };
 
 
@@ -588,8 +583,8 @@ export type QueryProjectByIdArgs = {
 };
 
 
-export type QueryProjectChatRoomDetailsArgs = {
-  id: Scalars['String'];
+export type QueryProjectChatsArgs = {
+  data: SearchArgs;
 };
 
 
@@ -872,7 +867,7 @@ export type ContactAddMessageMutationVariables = Exact<{
 }>;
 
 
-export type ContactAddMessageMutation = { __typename?: 'Mutation', contactAddMessage: { __typename?: 'Message', body: string } };
+export type ContactAddMessageMutation = { __typename?: 'Mutation', contactAddMessage: { __typename?: 'Message', id: string, body: string, createdAt: any, user?: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', userId: string, fullName?: string | null | undefined, profileImage?: string | null | undefined } | null | undefined } | null | undefined } };
 
 export type CreateProjectMutationVariables = Exact<{
   data: CreateProjectInput;
@@ -930,6 +925,13 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
+
+export type ProjectAddMessageMutationVariables = Exact<{
+  data: CreateMessageInput;
+}>;
+
+
+export type ProjectAddMessageMutation = { __typename?: 'Mutation', projectAddMessage: { __typename?: 'Message', id: string, body: string, createdAt: any, user?: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', userId: string, fullName?: string | null | undefined, profileImage?: string | null | undefined } | null | undefined } | null | undefined } };
 
 export type RegisterMutationVariables = Exact<{
   data: RegisterInput;
@@ -1007,6 +1009,20 @@ export type SingleUploadMutationVariables = Exact<{
 
 
 export type SingleUploadMutation = { __typename?: 'Mutation', singleUpload: { __typename?: 'UploadedFileResponse', filename: string, mimetype: string, encoding: string, url: string } };
+
+export type Unnamed_1_QueryVariables = Exact<{
+  data: ProjectById;
+}>;
+
+
+export type Unnamed_1_Query = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, title: string, body: string, country?: string | null | undefined, members?: Array<{ __typename?: 'Member', userId: string, role: Role, user: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, lastName?: string | null | undefined, firstName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined } | null | undefined };
+
+export type ContactChatsQueryVariables = Exact<{
+  data: SearchArgs;
+}>;
+
+
+export type ContactChatsQuery = { __typename?: 'Query', contactChats?: Array<{ __typename?: 'ContactResponse', id: string, newMessages: boolean, loggedInUserReadChatAt: any, user: { __typename?: 'User', profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, profileImage?: string | null | undefined } | null | undefined } }> | null | undefined };
 
 export type ContactStatusQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1116,6 +1132,13 @@ export type ProjectMemberStatusQueryVariables = Exact<{
 
 export type ProjectMemberStatusQuery = { __typename?: 'Query', projectMemberStatus?: ProjectMemberStatus | null | undefined };
 
+export type ProjectChatsQueryVariables = Exact<{
+  data: SearchArgs;
+}>;
+
+
+export type ProjectChatsQuery = { __typename?: 'Query', projectChats?: Array<{ __typename?: 'ProjectResponse', id: string, title: string, newMessages: boolean, latestMessageDate?: any | null | undefined, members?: Array<{ __typename?: 'Member', readChatAt: any }> | null | undefined }> | null | undefined };
+
 export type ProjectsQueryVariables = Exact<{
   data: ProjectsFilterArgs;
 }>;
@@ -1138,11 +1161,11 @@ export type UsersQueryVariables = Exact<{
 export type UsersQuery = { __typename?: 'Query', users?: Array<{ __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, profileImage?: string | null | undefined, country?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string, id: number } | null | undefined } | null | undefined }> | null | undefined };
 
 export type NewMessageSubscriptionVariables = Exact<{
-  id: Scalars['String'];
+  chatId: Scalars['String'];
 }>;
 
 
-export type NewMessageSubscription = { __typename?: 'Subscription', newMessage: { __typename?: 'MessageSubscribtionResponse', body: string } };
+export type NewMessageSubscription = { __typename?: 'Subscription', newMessage: { __typename?: 'MessageSubscribtionResponse', id: string, body: string, createdAt: any, user?: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', userId: string, fullName?: string | null | undefined, profileImage?: string | null | undefined } | null | undefined } | null | undefined } };
 
 
 export const AcceptContactDocument = gql`
@@ -1326,7 +1349,17 @@ export type BlockUserMutationOptions = Apollo.BaseMutationOptions<BlockUserMutat
 export const ContactAddMessageDocument = gql`
     mutation contactAddMessage($data: CreateMessageInput!) {
   contactAddMessage(data: $data) {
+    id
     body
+    user {
+      username
+      profile {
+        userId
+        fullName
+        profileImage
+      }
+    }
+    createdAt
   }
 }
     `;
@@ -1663,6 +1696,49 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const ProjectAddMessageDocument = gql`
+    mutation projectAddMessage($data: CreateMessageInput!) {
+  projectAddMessage(data: $data) {
+    id
+    body
+    user {
+      username
+      profile {
+        userId
+        fullName
+        profileImage
+      }
+    }
+    createdAt
+  }
+}
+    `;
+export type ProjectAddMessageMutationFn = Apollo.MutationFunction<ProjectAddMessageMutation, ProjectAddMessageMutationVariables>;
+
+/**
+ * __useProjectAddMessageMutation__
+ *
+ * To run a mutation, you first call `useProjectAddMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useProjectAddMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [projectAddMessageMutation, { data, loading, error }] = useProjectAddMessageMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useProjectAddMessageMutation(baseOptions?: Apollo.MutationHookOptions<ProjectAddMessageMutation, ProjectAddMessageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ProjectAddMessageMutation, ProjectAddMessageMutationVariables>(ProjectAddMessageDocument, options);
+      }
+export type ProjectAddMessageMutationHookResult = ReturnType<typeof useProjectAddMessageMutation>;
+export type ProjectAddMessageMutationResult = Apollo.MutationResult<ProjectAddMessageMutation>;
+export type ProjectAddMessageMutationOptions = Apollo.BaseMutationOptions<ProjectAddMessageMutation, ProjectAddMessageMutationVariables>;
 export const RegisterDocument = gql`
     mutation register($data: RegisterInput!) {
   register(data: $data) {
@@ -2052,6 +2128,107 @@ export function useSingleUploadMutation(baseOptions?: Apollo.MutationHookOptions
 export type SingleUploadMutationHookResult = ReturnType<typeof useSingleUploadMutation>;
 export type SingleUploadMutationResult = Apollo.MutationResult<SingleUploadMutation>;
 export type SingleUploadMutationOptions = Apollo.BaseMutationOptions<SingleUploadMutation, SingleUploadMutationVariables>;
+export const Document = gql`
+    query ($data: ProjectById!) {
+  projectById(data: $data) {
+    id
+    title
+    body
+    country
+    members {
+      userId
+      role
+      user {
+        id
+        username
+        profile {
+          userId
+          lastName
+          firstName
+          country
+          profileImage
+          discipline {
+            title
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useQuery__
+ *
+ * To run a query within a React component, call `useQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useQuery(baseOptions: Apollo.QueryHookOptions<Query, QueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Query, QueryVariables>(Document, options);
+      }
+export function useLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Query, QueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Query, QueryVariables>(Document, options);
+        }
+export type QueryHookResult = ReturnType<typeof useQuery>;
+export type LazyQueryHookResult = ReturnType<typeof useLazyQuery>;
+export type QueryResult = Apollo.QueryResult<Query, QueryVariables>;
+export const ContactChatsDocument = gql`
+    query contactChats($data: SearchArgs!) {
+  contactChats(data: $data) {
+    id
+    newMessages
+    user {
+      profile {
+        userId
+        firstName
+        lastName
+        profileImage
+      }
+    }
+    loggedInUserReadChatAt
+  }
+}
+    `;
+
+/**
+ * __useContactChatsQuery__
+ *
+ * To run a query within a React component, call `useContactChatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContactChatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContactChatsQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useContactChatsQuery(baseOptions: Apollo.QueryHookOptions<ContactChatsQuery, ContactChatsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ContactChatsQuery, ContactChatsQueryVariables>(ContactChatsDocument, options);
+      }
+export function useContactChatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ContactChatsQuery, ContactChatsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ContactChatsQuery, ContactChatsQueryVariables>(ContactChatsDocument, options);
+        }
+export type ContactChatsQueryHookResult = ReturnType<typeof useContactChatsQuery>;
+export type ContactChatsLazyQueryHookResult = ReturnType<typeof useContactChatsLazyQuery>;
+export type ContactChatsQueryResult = Apollo.QueryResult<ContactChatsQuery, ContactChatsQueryVariables>;
 export const ContactStatusDocument = gql`
     query contactStatus($id: String!) {
   contactStatus(id: $id)
@@ -2818,6 +2995,47 @@ export function useProjectMemberStatusLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type ProjectMemberStatusQueryHookResult = ReturnType<typeof useProjectMemberStatusQuery>;
 export type ProjectMemberStatusLazyQueryHookResult = ReturnType<typeof useProjectMemberStatusLazyQuery>;
 export type ProjectMemberStatusQueryResult = Apollo.QueryResult<ProjectMemberStatusQuery, ProjectMemberStatusQueryVariables>;
+export const ProjectChatsDocument = gql`
+    query projectChats($data: SearchArgs!) {
+  projectChats(data: $data) {
+    id
+    title
+    newMessages
+    latestMessageDate
+    members {
+      readChatAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useProjectChatsQuery__
+ *
+ * To run a query within a React component, call `useProjectChatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectChatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectChatsQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useProjectChatsQuery(baseOptions: Apollo.QueryHookOptions<ProjectChatsQuery, ProjectChatsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectChatsQuery, ProjectChatsQueryVariables>(ProjectChatsDocument, options);
+      }
+export function useProjectChatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectChatsQuery, ProjectChatsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectChatsQuery, ProjectChatsQueryVariables>(ProjectChatsDocument, options);
+        }
+export type ProjectChatsQueryHookResult = ReturnType<typeof useProjectChatsQuery>;
+export type ProjectChatsLazyQueryHookResult = ReturnType<typeof useProjectChatsLazyQuery>;
+export type ProjectChatsQueryResult = Apollo.QueryResult<ProjectChatsQuery, ProjectChatsQueryVariables>;
 export const ProjectsDocument = gql`
     query projects($data: ProjectsFilterArgs!) {
   projects(data: $data) {
@@ -2954,9 +3172,19 @@ export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
 export const NewMessageDocument = gql`
-    subscription newMessage($id: String!) {
-  newMessage(chatId: $id) {
+    subscription newMessage($chatId: String!) {
+  newMessage(chatId: $chatId) {
+    id
     body
+    user {
+      username
+      profile {
+        userId
+        fullName
+        profileImage
+      }
+    }
+    createdAt
   }
 }
     `;
@@ -2973,7 +3201,7 @@ export const NewMessageDocument = gql`
  * @example
  * const { data, loading, error } = useNewMessageSubscription({
  *   variables: {
- *      id: // value for 'id'
+ *      chatId: // value for 'chatId'
  *   },
  * });
  */

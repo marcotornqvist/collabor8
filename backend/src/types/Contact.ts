@@ -3,6 +3,7 @@ import { ObjectType, Field, ID } from "type-graphql";
 import { User } from "./User";
 import { ChatRoom } from "./ChatRoom";
 import { StatusCode } from ".prisma/client";
+import { Message } from "./Message";
 
 @ObjectType()
 export class Contact {
@@ -27,8 +28,11 @@ export class Contact {
   @Field(() => Date)
   contactReadChatAt: Date;
 
-  @Field(() => ChatRoom, { nullable: true })
-  chatRoom?: ChatRoom | null;
+  @Field(() => [Message], { nullable: true })
+  messages?: Message[] | null;
+
+  @Field(() => Date, { nullable: true })
+  latestMessageDate?: Date | null;
 
   @Field(() => StatusCode)
   status: StatusCode;

@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import input from "@/styles-modules/Input.module.scss";
 import {
   useContactAddMessageMutation,
   useNewMessageSubscription,
 } from "generated/graphql";
+import input from "@/styles-modules/Input.module.scss";
 
-const Chatbox = () => {
+const ContactChatbox = () => {
   const {
-    query: { chatroom },
+    query: { id },
   } = useRouter();
-  const chatroomId = chatroom === "string" ? chatroom : "";
-  // const chatroomId: string =
-  //   typeof router.query.chatroom === "string" ? router.query.chatroom : "";
+  const chatId = typeof id === "string" ? id : "";
 
   // Use below in future to request messages and subscribe
   // https://www.apollographql.com/docs/react/data/subscriptions/
@@ -24,7 +22,7 @@ const Chatbox = () => {
 
   const { data, loading } = useNewMessageSubscription({
     variables: {
-      id: chatroomId,
+      chatId,
     },
   });
 
@@ -37,7 +35,7 @@ const Chatbox = () => {
   const [contactAddMessage] = useContactAddMessageMutation({
     variables: {
       data: {
-        id: chatroomId,
+        id: chatId,
         body: message,
       },
     },
@@ -68,4 +66,4 @@ const Chatbox = () => {
   );
 };
 
-export default Chatbox;
+export default ContactChatbox;

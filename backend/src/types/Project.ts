@@ -5,6 +5,7 @@ import { Member } from "./Member";
 import { ReportProject } from "./Report";
 import { ChatRoom } from "./ChatRoom";
 import { Discipline } from "./Discipline";
+import { Message } from "./Message";
 
 @ObjectType()
 export class Project {
@@ -31,8 +32,11 @@ export class Project {
   @Field(() => [ReportProject], { nullable: true })
   reports?: ReportProject[] | null;
 
-  @Field(() => ChatRoom, { nullable: true })
-  chatRoom?: ChatRoom | null;
+  @Field(() => [Message], { nullable: true })
+  messages?: Message[] | null;
+
+  @Field(() => Date, { nullable: true })
+  latestMessageDate?: Date | null;
 
   @Field(() => Boolean)
   disabled: boolean;

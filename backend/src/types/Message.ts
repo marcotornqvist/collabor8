@@ -1,8 +1,9 @@
 import "reflect-metadata";
 import { ObjectType, Field, ID } from "type-graphql";
 import { User } from "./User";
-import { ChatRoom } from "./ChatRoom";
 import { Length } from "class-validator";
+import { Project } from "./Project";
+import { Contact } from "./Contact";
 
 @ObjectType()
 export class Message {
@@ -19,11 +20,17 @@ export class Message {
   @Field(() => ID, { nullable: true })
   userId?: string | null;
 
-  @Field(() => ChatRoom, { nullable: true })
-  chatRoom?: ChatRoom | null;
+  @Field(() => Project, { nullable: true })
+  project?: Project | null;
 
-  @Field(() => ID)
-  chatId: string;
+  @Field(() => ID, { nullable: true })
+  projectId?: string | null;
+
+  @Field(() => Contact, { nullable: true })
+  contact?: Contact | null;
+
+  @Field(() => ID, { nullable: true })
+  contactId?: string | null;
 
   @Field(() => Date)
   createdAt: Date;

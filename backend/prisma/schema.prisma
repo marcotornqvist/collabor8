@@ -81,17 +81,18 @@ model Discipline {
 }
 
 model Project {
-  id          String          @id @default(uuid())
-  title       String
-  body        String
-  country     String?
-  chatRoom    ChatRoom?
-  members     Member[]
-  reports     ReportProject[]
-  disciplines Discipline[]
-  disabled    Boolean         @default(false)
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime?       @default(now()) @updatedAt
+  id                String          @id @default(uuid())
+  title             String
+  body              String
+  country           String?
+  members           Member[]
+  disciplines       Discipline[]
+  reports           ReportProject[]
+  messages          Message[]
+  latestMessageDate DateTime?
+  disabled          Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime?       @default(now()) @updatedAt
 }
 
 model Member {
@@ -116,7 +117,8 @@ model Contact {
   contact           User       @relation(fields: [contactId], references: [id], onDelete: Cascade)
   contactId         String
   contactReadChatAt DateTime   @default(now())
-  chatRoom          ChatRoom?
+  messages          Message[]
+  latestMessageDate DateTime?
   status            StatusCode @default(PENDING)
   createdAt         DateTime   @default(now())
   updatedAt         DateTime?  @default(now()) @updatedAt
@@ -124,24 +126,15 @@ model Contact {
   @@id([userId, contactId])
 }
 
-model ChatRoom {
-  id        String    @id @default(uuid())
-  project   Project?  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId String?   @unique
-  contact   Contact?  @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  contactId String?   @unique
-  messages  Message[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @default(now()) @updatedAt
-}
-
 model Message {
   id        String   @id @default(uuid())
   body      String
   user      User?    @relation("Message", fields: [userId], references: [id])
   userId    String?
-  chat      ChatRoom @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  chatId    String
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String?
+  contact   Contact? @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId String?
   createdAt DateTime @default(now())
 }
 
