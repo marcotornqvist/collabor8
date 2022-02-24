@@ -3,6 +3,7 @@ import { useContactByIdQuery } from "generated/graphql";
 import ProfileImage from "@/components-modules/global/ProfileImage";
 import Link from "next/link";
 import Image from "next/image";
+import { layoutState } from "store";
 
 interface IProps {
   chatId: string;
@@ -49,19 +50,22 @@ const ContactHeader = ({ chatId }: IProps) => {
           </span>
         </div>
       </div>
-      <Link href="/chat">
-        <a>
-          <div className="go-back-btn">
-            <Image
-              src="/icons/chevron-solid-left-white.svg"
-              alt={"Chevron"}
-              width={18}
-              height={18}
-              layout="fixed"
-            />
-          </div>
-        </a>
-      </Link>
+      <a>
+        <div
+          className="go-back-btn"
+          onClick={() => {
+            layoutState.slide = false;
+          }}
+        >
+          <Image
+            src="/icons/chevron-solid-left-white.svg"
+            alt={"Chevron"}
+            width={18}
+            height={18}
+            layout="fixed"
+          />
+        </div>
+      </a>
     </div>
   );
 };

@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { fadeInVariants } from "utils/variants";
 import { motion } from "framer-motion";
-import button from "@/styles-modules/Button.module.scss";
+import { layoutState } from "store";
 import React from "react";
-import useHover from "@/hooks/useHover";
 import ProfileImage from "@/components-modules/global/ProfileImage";
 
 interface IProps {
@@ -33,6 +32,9 @@ const ContactItem = ({
       initial={"hidden"}
       animate={"visible"}
       variants={fadeInVariants}
+      onClick={() => {
+        layoutState.slide = true;
+      }}
     >
       <Link href={`/chat/contact/${id}`}>
         <a>

@@ -8,6 +8,7 @@ export interface IAuthState {
 
 export interface ILayoutState {
   menuOpen: boolean;
+  slide: boolean;
 }
 
 export interface IToast {

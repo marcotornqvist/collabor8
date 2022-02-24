@@ -12,7 +12,7 @@ const Menu = ({ id, isMobile }: IProps) => {
   return (
     <div className={`menu ${styles.menu}`}>
       <Projects id={id} isMobile={isMobile} />
-      <Contacts id={id} isMobile={isMobile} />
+      <Contacts isMobile={isMobile} />
     </div>
   );
 };

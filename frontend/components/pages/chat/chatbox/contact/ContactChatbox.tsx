@@ -16,10 +16,9 @@ interface IProps {
   chatId: string;
   isMobile: boolean;
   isVisible: boolean;
-  slide: boolean;
 }
 
-const ContactChatbox = ({ chatId, isMobile, isVisible, slide }: IProps) => {
+const ContactChatbox = ({ chatId, isMobile, isVisible }: IProps) => {
   // Use below in future to request messages and subscribe
   // https://www.apollographql.com/docs/react/data/subscriptions/
   // const { subscribeToMore, ...result } = useQuery(CONTACT_MESSAGES, {
@@ -48,7 +47,7 @@ const ContactChatbox = ({ chatId, isMobile, isVisible, slide }: IProps) => {
               initial="hidden"
               animate="visible"
               exit="hidden"
-              variants={slide ? dropdownVariants.slideIn : undefined}
+              variants={dropdownVariants.slideIn}
             >
               <ContactHeader chatId={chatId} />
               <div className={`chatbox ${styles.chatbox}`}>

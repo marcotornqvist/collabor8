@@ -6,11 +6,10 @@ import ContactItem from "./ContactItem";
 import SearchInput from "@/components-modules/global/SearchInput";
 
 interface IProps {
-  id: string;
   isMobile: boolean;
 }
 
-const Contacts = ({ id, isMobile }: IProps) => {
+const Contacts = ({ isMobile }: IProps) => {
   const [search, setSearch] = useState("");
 
   const { data } = useContactChatsQuery({
@@ -25,8 +24,8 @@ const Contacts = ({ id, isMobile }: IProps) => {
   return (
     <div className="contacts">
       <motion.h4
-        initial={"hidden"}
-        animate={"visible"}
+        initial="hidden"
+        animate="visible"
         variants={fadeInVariants}
       >
         Contacts

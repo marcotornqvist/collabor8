@@ -15,6 +15,7 @@ export const authState = proxy<IAuthState>({
 
 export const layoutState = proxy<ILayoutState>({
   menuOpen: false,
+  slide: false,
 });
 
 export const toastState = proxy<IToastState>({
