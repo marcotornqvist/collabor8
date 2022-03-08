@@ -31,6 +31,18 @@ const Projects = ({ id, isMobile }: IProps) => {
           newMessages={false}
           title={"Creative Project Name"}
         />
+        <ProjectItem
+          id={id}
+          selected={!isMobile && id === `/chat/project/${"asf"}`}
+          newMessages={false}
+          title={"Creative Project Name"}
+        />
+        <ProjectItem
+          id={id}
+          selected={!isMobile && id === `/chat/project/${"asf"}`}
+          newMessages={false}
+          title={"Creative Project Name"}
+        />
       </ul>
     </div>
   );

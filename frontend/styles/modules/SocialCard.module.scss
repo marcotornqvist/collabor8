@@ -8,7 +8,7 @@
   display: flex;
   justify-content: space-between;
   padding: 1.5rem;
-  border: 1px solid $light-grey-bg;
+  border: 1px solid $light-grey-bg; 
   border-radius: $medium-radius;
   box-shadow: $box-shadow3;
   background: $white;
@@ -39,7 +39,6 @@
   box-shadow: $box-shadow3;
   background: $light-green;
   cursor: pointer;
-  
 
   :global {
     .wrapper {

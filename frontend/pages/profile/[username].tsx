@@ -7,12 +7,12 @@ import {
   useProfileDetailsQuery,
 } from "generated/graphql";
 import { useRouter } from "next/router";
+import { fadeInVariants } from "utils/variants";
+import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import NavigationSlide from "@/components-modules/global/NavigationSlide";
 import ProfileCard from "@/components-pages/profile/ProfileCard";
 import Projects from "@/components-pages/profile/Projects";
-import { fadeInVariants } from "utils/variants";
-import { motion } from "framer-motion";
 
 const Socials = dynamic(
   async () => (await import("@/components-pages/profile/Socials")).default

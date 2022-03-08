@@ -21,3 +21,22 @@ export const CONTACT_CHATS = gql`
     }
   }
 `;
+
+export const CONTACT_MESSAGES = gql`
+  query contactMessages($data: ChatInput!) {
+    contactMessages(data: $data) {
+      id
+      body
+      user {
+        id
+        username
+        profile {
+          userId
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+`;
+

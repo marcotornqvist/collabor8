@@ -13,7 +13,7 @@ const Menu = ({ id, isMobile }: IProps) => {
     <div className={`menu ${styles.menu}`}>
       <Projects id={id} isMobile={isMobile} />
       <Contacts isMobile={isMobile} />
-    </div>
+    </div> 
   );
 };
 

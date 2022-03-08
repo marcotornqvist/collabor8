@@ -509,7 +509,7 @@ export type Query = {
   contactById: User;
   /** Return all contact chats */
   contactChats?: Maybe<Array<ContactResponse>>;
-  /** Return messages for contact by contactId */
+  /** Return messages for contact by id */
   contactMessages?: Maybe<Array<Message>>;
   /** Return the status for a contact request between loggedInUser and userId */
   contactStatus: ContactStatus;
@@ -1030,6 +1030,13 @@ export type ContactChatsQueryVariables = Exact<{
 
 
 export type ContactChatsQuery = { __typename?: 'Query', contactChats?: Array<{ __typename?: 'ContactResponse', id: string, newMessages: boolean, loggedInUserReadChatAt: any, user: { __typename?: 'User', profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, country?: string | null | undefined, profileImage?: string | null | undefined, discipline?: { __typename?: 'Discipline', title: string } | null | undefined } | null | undefined } }> | null | undefined };
+
+export type ContactMessagesQueryVariables = Exact<{
+  data: ChatInput;
+}>;
+
+
+export type ContactMessagesQuery = { __typename?: 'Query', contactMessages?: Array<{ __typename?: 'Message', id: string, body: string, user?: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } | null | undefined }> | null | undefined };
 
 export type ContactStatusQueryVariables = Exact<{
   id: Scalars['String'];
@@ -2229,6 +2236,51 @@ export function useContactChatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type ContactChatsQueryHookResult = ReturnType<typeof useContactChatsQuery>;
 export type ContactChatsLazyQueryHookResult = ReturnType<typeof useContactChatsLazyQuery>;
 export type ContactChatsQueryResult = Apollo.QueryResult<ContactChatsQuery, ContactChatsQueryVariables>;
+export const ContactMessagesDocument = gql`
+    query contactMessages($data: ChatInput!) {
+  contactMessages(data: $data) {
+    id
+    body
+    user {
+      id
+      username
+      profile {
+        userId
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useContactMessagesQuery__
+ *
+ * To run a query within a React component, call `useContactMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContactMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContactMessagesQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useContactMessagesQuery(baseOptions: Apollo.QueryHookOptions<ContactMessagesQuery, ContactMessagesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ContactMessagesQuery, ContactMessagesQueryVariables>(ContactMessagesDocument, options);
+      }
+export function useContactMessagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ContactMessagesQuery, ContactMessagesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ContactMessagesQuery, ContactMessagesQueryVariables>(ContactMessagesDocument, options);
+        }
+export type ContactMessagesQueryHookResult = ReturnType<typeof useContactMessagesQuery>;
+export type ContactMessagesLazyQueryHookResult = ReturnType<typeof useContactMessagesLazyQuery>;
+export type ContactMessagesQueryResult = Apollo.QueryResult<ContactMessagesQuery, ContactMessagesQueryVariables>;
 export const ContactStatusDocument = gql`
     query contactStatus($id: String!) {
   contactStatus(id: $id)

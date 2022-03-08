@@ -23,11 +23,7 @@ const Contacts = ({ isMobile }: IProps) => {
 
   return (
     <div className="contacts">
-      <motion.h4
-        initial="hidden"
-        animate="visible"
-        variants={fadeInVariants}
-      >
+      <motion.h4 initial="hidden" animate="visible" variants={fadeInVariants}>
         Contacts
       </motion.h4>
       <SearchInput search={search} setSearch={setSearch} />
@@ -37,7 +33,22 @@ const Contacts = ({ isMobile }: IProps) => {
             key={item.id}
             id={item.id}
             selected={!isMobile && true}
-            newMessages={item.newMessages}
+            // newMessages={item.newMessages}
+            newMessages={true}
+            title={item.user.profile?.discipline?.title}
+            country={item.user.profile?.country}
+            firstName={item.user.profile?.firstName}
+            lastName={item.user.profile?.lastName}
+            profileImage={item.user.profile?.profileImage}
+          />
+        ))}
+        {data?.contactChats?.map((item) => (
+          <ContactItem
+            key={item.id}
+            id={item.id}
+            selected={!isMobile && true}
+            // newMessages={item.newMessages}
+            newMessages={true}
             title={item.user.profile?.discipline?.title}
             country={item.user.profile?.country}
             firstName={item.user.profile?.firstName}

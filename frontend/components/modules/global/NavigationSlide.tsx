@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "@/styles-modules/Navigation.module.scss";
 
 interface IProps {
@@ -8,6 +8,10 @@ interface IProps {
 }
 
 const NavigationSlide = ({ selected, setNavigation, items }: IProps) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [selected]);
+  
   return (
     <nav className={`navigation-slide ${styles.slide}`}>
       <ul>

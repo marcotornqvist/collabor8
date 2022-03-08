@@ -12,7 +12,7 @@ const Form = ({ chatId }: IProps) => {
   // const [message, setMessage] = useState("");
 
   const [contactAddMessage] = useContactAddMessageMutation();
-  
+
   return (
     <div className="form-container">
       <Formik

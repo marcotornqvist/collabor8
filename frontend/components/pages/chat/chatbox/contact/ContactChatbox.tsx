@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import {
   useContactAddMessageMutation,
+  useContactMessagesQuery,
   useNewMessageSubscription,
 } from "generated/graphql";
 import input from "@/styles-modules/Input.module.scss";
@@ -19,6 +20,9 @@ interface IProps {
 }
 
 const ContactChatbox = ({ chatId, isMobile, isVisible }: IProps) => {
+  // const {
+  //   query: { chatId },
+  // } = useRouter();
   // Use below in future to request messages and subscribe
   // https://www.apollographql.com/docs/react/data/subscriptions/
   // const { subscribeToMore, ...result } = useQuery(CONTACT_MESSAGES, {
@@ -36,6 +40,14 @@ const ContactChatbox = ({ chatId, isMobile, isVisible }: IProps) => {
   // useEffect(() => {
   //   console.log(data);
   // }, [data]);
+
+  // const { data } = useContactMessagesQuery({
+  //   variables: {
+  //     data: {
+  //       id: "",
+  //     },
+  //   },
+  // });
 
   return (
     <>

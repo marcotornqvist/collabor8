@@ -28,7 +28,9 @@ const ContactItem = ({
 }: IProps) => {
   return (
     <motion.li
-      className={`list-item${selected ? " active" : ""}`}
+      className={`list-item${selected ? " active" : ""}${
+        newMessages ? " new-messages-available" : ""
+      }`}
       initial={"hidden"}
       animate={"visible"}
       variants={fadeInVariants}

@@ -54,6 +54,9 @@ export class ChatResolver {
         },
         disabled: false,
       },
+      orderBy: {
+        latestMessageDate: "desc",
+      },
       include: {
         members: {
           where: {
@@ -306,7 +309,7 @@ export class ChatResolver {
 
   @Query(() => [Message], {
     nullable: true,
-    description: "Return messages for contact by contactId",
+    description: "Return messages for contact by id",
   })
   @UseMiddleware(isAuth)
   async contactMessages(
@@ -316,14 +319,13 @@ export class ChatResolver {
     // Checks that contact exists and logged in user is part of it
     const contact = await prisma.contact.findFirst({
       where: {
+        id,
         OR: [
           {
             userId: payload!.userId,
-            contactId: id,
           },
           {
             contactId: payload!.userId,
-            userId: id,
           },
         ],
         status: "TRUE",

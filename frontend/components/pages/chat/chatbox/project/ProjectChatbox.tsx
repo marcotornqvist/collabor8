@@ -26,9 +26,6 @@ const ProjectChatbox = () => {
     },
   });
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   const [message, setMessage] = useState("");
 

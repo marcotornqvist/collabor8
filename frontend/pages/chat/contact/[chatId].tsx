@@ -4,11 +4,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { dropdownVariants } from "utils/variants";
 import { layoutState } from "store";
 import { useSnapshot } from "valtio";
+import { useContactMessagesQuery } from "generated/graphql";
 import Form from "@/components-pages/chat/chatbox/contact/Form";
 import ChatLayout from "@/components-pages/chat/ChatLayout";
 import ContactHeader from "@/components-pages/chat/chatbox/contact/ContactHeader";
-import styles from "@/styles-modules/Chatbox.module.scss";
+import styles from "@/styles-modules/Chat.module.scss";
 import useIsMobile from "@/hooks/useIsMobile";
+import Messages from "@/components-pages/chat/chatbox/Messages";
 
 const Contact = () => {
   const { push, query } = useRouter();
@@ -21,6 +23,14 @@ const Contact = () => {
     layoutState.slide = true;
   }, []);
 
+  const { data } = useContactMessagesQuery({
+    variables: {
+      data: {
+        id: chatId,
+      },
+    },
+  });
+
   return (
     <>
       {isMobile ? (
@@ -32,25 +42,25 @@ const Contact = () => {
         >
           {slide && (
             <motion.div
-              className="content content-mobile"
+              className={`chat ${styles.mobile}`}
               initial="hidden"
               animate="visible"
               exit="hidden"
               variants={dropdownVariants.slideIn}
             >
               <ContactHeader chatId={chatId} />
-              <div className={`chatbox ${styles.chatbox}`}>
-                <div className="messages"></div>
+              <div className="chatbox">
+                <Messages messages={data?.contactMessages} />
                 <Form chatId={chatId} />
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       ) : (
-        <div className="content content-desktop">
+        <div className={`chat ${styles.desktop}`}>
           <ContactHeader chatId={chatId} />
-          <div className={`chatbox ${styles.chatbox}`}>
-            <div className="messages"></div>
+          <div className="chatbox">
+            <Messages messages={data?.contactMessages} />
             <Form chatId={chatId} />
           </div>
         </div>

@@ -1,0 +1,114 @@
+@use "../abstracts/colors" as *;
+@use "../abstracts/breakpoints" as *;
+@use "../abstracts/shadows" as *;
+@use "../abstracts/zindex" as *;
+@use "../abstracts/border-radius" as *;
+@use "../abstracts/fonts" as *;
+
+.item {
+  :global {
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      width: fit-content;
+      min-width: 100px;
+      max-width: $breakpoint-sm;
+
+      .name {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        padding: 0 1.5rem;
+        color: $light-grey;
+        margin-bottom: 0.5rem;
+
+        small {
+          font-size: 12px;
+          color: $light-grey;
+        }
+      }
+
+      .message-box {
+        border-radius: $large-radius;
+        padding: 0.75rem 1.5rem 1rem;
+        background: $white;
+        box-shadow: $box-shadow3;
+
+        p  {
+          font-size: 14px;
+          line-height: 1.75rem;
+        }
+      }
+    }
+  }
+}
+
+.left {
+  display: flex;
+  justify-content: flex-start;
+
+  :global {
+    .wrapper {
+      .name {
+        text-align: left;
+      }
+    }
+  }
+}
+
+.right {
+  display: flex;
+  flex-flow: row-reverse;
+
+  :global {
+    .wrapper {
+      .name {
+        text-align: right;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-sm) {
+  .left {
+    :global {
+      .profile-image {
+        margin: 2rem 1rem 0 0;
+      }
+
+      .wrapper .name {
+        text-align: left;
+      }
+    }
+  }
+
+  .right {
+    :global {
+      .profile-image {
+        margin: 2rem 0 0 1rem;
+      }
+
+      .wrapper .name {
+        text-align: right;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-md) {
+  .item {
+    :global {
+      .wrapper {
+        .name small {
+          font-size: 14px;
+        }
+
+        .message-box p {
+          font-size: 14px;
+          line-height: 1.75rem;
+        }
+      }
+    }
+  }
+}
