@@ -171,59 +171,44 @@ function createApolloClient() {
               merge: true,
               keyArgs: ["id"],
             },
-            contactMessages: {
+            projectMessages: {
               keyArgs: false,
-              // keyArgs: ["id"],
               merge(existing, incoming, { args }: any) {
                 if (!incoming) {
-                  // console.log("Return empty array");
                   return [];
                 }
 
-                // console.log("incoming", incoming);
-
                 if (!existing?.messages || !args.data.before) {
-                  console.log("ettan");
                   return incoming;
                 }
 
-                // console.log("tvåan");
+                return Object.assign({}, incoming, {
+                  messages: [...incoming.messages, ...existing.messages],
+                });
+              },  
+            },
+            contactMessages: {
+              keyArgs: false,
+              merge(existing, incoming, { args }: any) {
+                if (!incoming) {
+                  return [];
+                }
+
+                if (!existing?.messages || !args.data.before) {
+                  return incoming;
+                }
 
                 return Object.assign({}, incoming, {
                   messages: [...incoming.messages, ...existing.messages],
                 });
               },
             },
-            // contactMessages: {
-            //   // keyArgs: false,
-            //   keyArgs: ["id"],
-            //   merge(existing, incoming, { args }: any) {
-            //     if (existing === undefined) {
-            //       //for initial messages
-            //       return incoming;
-            //     }
-
-            //     console.log("incoming", incoming);
-
-            //     if (args.data.before && existing?.messages) {
-            //       return Object.assign({}, incoming, {
-            //         messages: [...existing.messages, ...incoming.messages],
-            //       });
-            //     }
-
-            //     return {
-            //       ...incoming,
-            //       hasMore: true,
-            //       messages: [...existing.messages, ...incoming.messages],
-            //       typename: "ChatMessageResponse",
-            //     };
-            //   },
-            // },
             projectsByUsername: {
               merge(_existing, incoming) {
                 return incoming;
               },
             },
+            projectChats: concatPagination(),
             contactChats: concatPagination(),
             users: concatPagination(),
             projects: concatPagination(),

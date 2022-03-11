@@ -2,18 +2,23 @@ import React from "react";
 import Contacts from "./Contacts";
 import Projects from "./Projects";
 import styles from "@/styles-modules/ChatMenu.module.scss";
+import { useRouter } from "next/router";
 
 interface IProps {
-  id: string;
   isMobile: boolean;
 }
 
-const Menu = ({ id, isMobile }: IProps) => {
+const Menu = ({ isMobile }: IProps) => {
+  let {
+    query: { chatId },
+  } = useRouter();
+  chatId = typeof chatId === "string" ? chatId : "";
+
   return (
     <div className={`menu ${styles.menu}`}>
-      <Projects id={id} isMobile={isMobile} />
-      <Contacts isMobile={isMobile} />
-    </div> 
+      <Projects chatId={chatId} isMobile={isMobile} />
+      <Contacts chatId={chatId} isMobile={isMobile} />
+    </div>
   );
 };
 

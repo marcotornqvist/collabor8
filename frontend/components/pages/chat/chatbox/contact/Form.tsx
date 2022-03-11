@@ -42,7 +42,6 @@ const Form = ({ chatId }: IProps) => {
               name="body"
               value={values.body}
               handleChange={handleChange}
-              label=""
               type="text"
               placeholder="Send message..."
             />

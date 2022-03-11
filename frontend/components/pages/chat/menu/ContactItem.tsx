@@ -2,7 +2,7 @@ import Link from "next/link";
 import { fadeInVariants } from "utils/variants";
 import { motion } from "framer-motion";
 import { layoutState } from "store";
-import React from "react";
+import React, { useState } from "react";
 import ProfileImage from "@/components-modules/global/ProfileImage";
 
 interface IProps {
@@ -26,15 +26,17 @@ const ContactItem = ({
   country,
   profileImage,
 }: IProps) => {
+  const [hideNewMessages, setHideNewMessages] = useState(false);
   return (
     <motion.li
       className={`list-item${selected ? " active" : ""}${
         newMessages ? " new-messages-available" : ""
       }`}
-      initial={"hidden"}
-      animate={"visible"}
+      initial="hidden"
+      animate="visible"
       variants={fadeInVariants}
       onClick={() => {
+        setHideNewMessages(true);
         layoutState.slide = true;
       }}
     >
@@ -61,7 +63,7 @@ const ContactItem = ({
               </span>
             </div>
           </div>
-          {newMessages && (
+          {!hideNewMessages && newMessages && (
             <div className="new-messages-box">
               <span>1</span>
             </div>

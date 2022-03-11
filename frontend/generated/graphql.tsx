@@ -537,8 +537,8 @@ export type Query = {
   projectChats?: Maybe<Array<ProjectResponse>>;
   /** Returns member status of auth user or not auth guest */
   projectMemberStatus?: Maybe<ProjectMemberStatus>;
-  /** Return messages for a project by projectId */
-  projectMessages?: Maybe<Array<Message>>;
+  /** Return messages for a project by id */
+  projectMessages?: Maybe<ChatMessagesResponse>;
   /** Returns all projects that are not disabled */
   projects?: Maybe<Array<Project>>;
   /** Return all projects by username which are not disabled */
@@ -1152,7 +1152,21 @@ export type ProjectChatsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectChatsQuery = { __typename?: 'Query', projectChats?: Array<{ __typename?: 'ProjectResponse', id: string, title: string, newMessages: boolean, latestMessageDate?: any | null | undefined, members?: Array<{ __typename?: 'Member', readChatAt: any }> | null | undefined }> | null | undefined };
+export type ProjectChatsQuery = { __typename?: 'Query', projectChats?: Array<{ __typename?: 'ProjectResponse', id: string, title: string, newMessages: boolean }> | null | undefined };
+
+export type ProjectTitleQueryVariables = Exact<{
+  data: ProjectById;
+}>;
+
+
+export type ProjectTitleQuery = { __typename?: 'Query', projectById?: { __typename?: 'Project', id: string, title: string } | null | undefined };
+
+export type ProjectMessagesQueryVariables = Exact<{
+  data: ChatInput;
+}>;
+
+
+export type ProjectMessagesQuery = { __typename?: 'Query', projectMessages?: { __typename?: 'ChatMessagesResponse', hasMore: boolean, messages: Array<{ __typename?: 'Message', id: string, body: string, user?: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, profileImage?: string | null | undefined } | null | undefined } | null | undefined }> } | null | undefined };
 
 export type ProjectsQueryVariables = Exact<{
   data: ProjectsFilterArgs;
@@ -3024,10 +3038,6 @@ export const ProjectChatsDocument = gql`
     id
     title
     newMessages
-    latestMessageDate
-    members {
-      readChatAt
-    }
   }
 }
     `;
@@ -3059,6 +3069,91 @@ export function useProjectChatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type ProjectChatsQueryHookResult = ReturnType<typeof useProjectChatsQuery>;
 export type ProjectChatsLazyQueryHookResult = ReturnType<typeof useProjectChatsLazyQuery>;
 export type ProjectChatsQueryResult = Apollo.QueryResult<ProjectChatsQuery, ProjectChatsQueryVariables>;
+export const ProjectTitleDocument = gql`
+    query projectTitle($data: ProjectById!) {
+  projectById(data: $data) {
+    id
+    title
+  }
+}
+    `;
+
+/**
+ * __useProjectTitleQuery__
+ *
+ * To run a query within a React component, call `useProjectTitleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectTitleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectTitleQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useProjectTitleQuery(baseOptions: Apollo.QueryHookOptions<ProjectTitleQuery, ProjectTitleQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectTitleQuery, ProjectTitleQueryVariables>(ProjectTitleDocument, options);
+      }
+export function useProjectTitleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectTitleQuery, ProjectTitleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectTitleQuery, ProjectTitleQueryVariables>(ProjectTitleDocument, options);
+        }
+export type ProjectTitleQueryHookResult = ReturnType<typeof useProjectTitleQuery>;
+export type ProjectTitleLazyQueryHookResult = ReturnType<typeof useProjectTitleLazyQuery>;
+export type ProjectTitleQueryResult = Apollo.QueryResult<ProjectTitleQuery, ProjectTitleQueryVariables>;
+export const ProjectMessagesDocument = gql`
+    query projectMessages($data: ChatInput!) {
+  projectMessages(data: $data) {
+    messages {
+      id
+      body
+      user {
+        id
+        username
+        profile {
+          userId
+          firstName
+          lastName
+          profileImage
+        }
+      }
+    }
+    hasMore
+  }
+}
+    `;
+
+/**
+ * __useProjectMessagesQuery__
+ *
+ * To run a query within a React component, call `useProjectMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectMessagesQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useProjectMessagesQuery(baseOptions: Apollo.QueryHookOptions<ProjectMessagesQuery, ProjectMessagesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectMessagesQuery, ProjectMessagesQueryVariables>(ProjectMessagesDocument, options);
+      }
+export function useProjectMessagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectMessagesQuery, ProjectMessagesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectMessagesQuery, ProjectMessagesQueryVariables>(ProjectMessagesDocument, options);
+        }
+export type ProjectMessagesQueryHookResult = ReturnType<typeof useProjectMessagesQuery>;
+export type ProjectMessagesLazyQueryHookResult = ReturnType<typeof useProjectMessagesLazyQuery>;
+export type ProjectMessagesQueryResult = Apollo.QueryResult<ProjectMessagesQuery, ProjectMessagesQueryVariables>;
 export const ProjectsDocument = gql`
     query projects($data: ProjectsFilterArgs!) {
   projects(data: $data) {

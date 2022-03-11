@@ -6,10 +6,37 @@ export const PROJECT_CHATS = gql`
       id
       title
       newMessages
-      latestMessageDate
-      members {
-        readChatAt
+    }
+  }
+`;
+
+export const PROJECT_TITLE = gql`
+  query projectTitle($data: ProjectById!) {
+    projectById(data: $data) {
+      id
+      title
+    }
+  }
+`;
+
+export const PROJECT_MESSAGES = gql`
+  query projectMessages($data: ChatInput!) {
+    projectMessages(data: $data) {
+      messages {
+        id
+        body
+        user {
+          id
+          username
+          profile {
+            userId
+            firstName
+            lastName
+            profileImage
+          }
+        }
       }
+      hasMore
     }
   }
 `;

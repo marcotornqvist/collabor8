@@ -249,9 +249,9 @@ export class ChatResolver {
     return result;
   }
 
-  @Query(() => [Message], {
+  @Query(() => ChatMessagesResponse, {
     nullable: true,
-    description: "Return messages for a project by projectId",
+    description: "Return messages for a project by id",
   })
   @UseMiddleware(isAuth)
   async projectMessages(
@@ -308,7 +308,12 @@ export class ChatResolver {
       orderBy: { createdAt: "asc" },
     });
 
-    return messages;
+    const hasMore = messages.length >= (last ?? 20);
+
+    return {
+      messages,
+      hasMore,
+    };
   }
 
   @Query(() => ChatMessagesResponse, {
@@ -380,8 +385,7 @@ export class ChatResolver {
       orderBy: { createdAt: "asc" },
     });
 
-    const hasMore = messages.length >= 20;
-    // const hasMore = messages.length >= (last ?? 20);
+    const hasMore = messages.length >= (last ?? 20);
 
     return {
       messages,
@@ -553,7 +557,7 @@ export class ChatResolver {
         chatId: newMessage.contactId,
         body: newMessage.body,
         user: newMessage.user,
-        authReceivers: [payload!.userId, id],
+        authReceivers: [contact.contactId, contact.userId],
         createdAt: newMessage.createdAt,
       });
     }
@@ -564,8 +568,6 @@ export class ChatResolver {
   @Subscription({
     topics: "NEW_MESSAGE",
     filter: ({ payload, args }) => {
-      // console.log(payload);
-      // console.log(args);
       return payload.chatId === args.chatId;
     },
   })

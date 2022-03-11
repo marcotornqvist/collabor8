@@ -16,7 +16,7 @@
   z-index: $z-index4;
 
   :global {
-    .contact-header {
+    .header {
       position: sticky;
       display: flex;
       justify-content: space-between;
@@ -27,6 +27,32 @@
       box-shadow: 0px 2px 8px 2px rgba(0, 0, 0, 0.04);
       z-index: $z-index4;
 
+      .go-back-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 3rem;
+        height: 3rem;
+        background: $black;
+        border-radius: $extra-large-radius;
+        padding-right: 2px;
+      }
+    }
+
+    .project-header {
+      .title {
+        overflow: hidden;
+        padding-right: 1rem;
+
+        h4 {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .contact-header {
       .profile-details {
         display: flex;
         flex-direction: row;
@@ -72,17 +98,6 @@
           }
         }
       }
-
-      .go-back-btn {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 3rem;
-        height: 3rem;
-        background: $black;
-        border-radius: $extra-large-radius;
-        padding-right: 2px;
-      }
     }
 
     .chatbox {
@@ -96,7 +111,7 @@
         flex: 1;
         overflow: scroll;
         padding: 1rem 0 6.5rem;
-        background: $light-grey-bg;
+        background: $light-green;
 
         .container {
           display: flex;
@@ -146,7 +161,6 @@
           flex: 1;
           overflow: scroll;
           padding: 1rem 0 6.5rem;
-          background: $light-grey-bg;
 
           .container {
             display: flex;
@@ -167,7 +181,7 @@
   width: 100%;
 
   :global {
-    .contact-header {
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -176,7 +190,9 @@
       margin-bottom: 1rem;
       background: $white;
       box-shadow: $box-shadow3;
+    }
 
+    .contact-header {
       .profile-details {
         display: flex;
         min-width: 150px;
@@ -238,7 +254,7 @@
         padding: 1rem 0 1.5rem;
         height: 0;
         border-radius: $medium-radius;
-        background: $light-grey-bg;
+        background: $light-green;
 
         .container {
           display: flex;

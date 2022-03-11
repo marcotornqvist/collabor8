@@ -33,7 +33,7 @@ const Contact = () => {
     layoutState.slide = true;
   }, []);
 
-  const { data, loading, error, fetchMore, subscribeToMore, client } =
+  const { data, loading, error, fetchMore, subscribeToMore } =
     useContactMessagesQuery({
       variables: {
         data: {
@@ -46,13 +46,11 @@ const Contact = () => {
       notifyOnNetworkStatusChange: true,
     });
 
-  // Remove contact messages from cache when [chatId] page is left
-  // useEffect(() => {
-  //   // client.cache.evict({ id: "ROOT_QUERY", fieldName: "contactMessages" });
-  //   setIsAtTop(false);
-  // }, [query]);
+  useEffect(() => {
+    setIsAtTop(false);
+  }, [query]);
 
-  // Redirect to /chat if user is not authorized to read chat
+  // Redirect to /chat if error occurs (user is not authorized)
   useEffect(() => {
     if (error) {
       push("/chat");
@@ -62,7 +60,7 @@ const Contact = () => {
   // If element after last grid item is visible, fetch more messages if conditions match
   useEffect(() => {
     if (!loading && isAtTop && data?.contactMessages?.hasMore) {
-      console.log("Fetch more called");
+      // console.log("Fetch more called");
       fetchMore<ContactMessagesQuery, ContactMessagesQueryVariables>({
         variables: {
           data: {

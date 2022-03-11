@@ -34,11 +34,11 @@ const Messages = ({
   });
 
   // Scroll to bottom of list
-  // useEffect(() => {
-  //   if (ref.current && !dataLoading && !isAtTop) {
-  //     ref.current.scrollTo(0, ref.current.scrollHeight);
-  //   }
-  // }, [ref.current, dataLoading, chatId, messages]);
+  useEffect(() => {
+    if (ref.current && !dataLoading && !isAtTop) {
+      ref.current.scrollTo(0, ref.current.scrollHeight);
+    }
+  }, [ref.current, dataLoading, chatId, messages]);
 
   // Checks if scroll position is at top, if so fetch more messages
   const onScroll = () => {

@@ -6,7 +6,7 @@ interface InputFieldProps {
   value: string;
   // Formik handleChange type
   handleChange: FormikHandleChange;
-  label: string;
+  label?: string;
   type: "text" | "password";
   placeholder: string;
   successMessage?: string;
@@ -32,7 +32,7 @@ const InputField = ({
     <div className={`input-group ${input.group}`}>
       {(label || successMessage || errorMessage) && (
         <div className="input-text">
-          <label htmlFor={name}>{label}</label>
+          {label && <label htmlFor={name}>{label}</label>}
           {errorMessage ? (
             <span className="error-message">{errorMessage}</span>
           ) : (

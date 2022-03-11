@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { fadeInVariants } from "utils/variants";
 import { motion } from "framer-motion";
+import { layoutState } from "store";
 import Image from "next/image";
 import button from "@/styles-modules/Button.module.scss";
-import React from "react";
+import React, { useState } from "react";
 import useHover from "@/hooks/useHover";
 
 interface IProps {
@@ -15,18 +16,21 @@ interface IProps {
 
 const ProjectItem = ({ id, selected, newMessages, title }: IProps) => {
   const [hoverRef, isHovered] = useHover<HTMLLIElement>();
+  const [hideNewMessages, setHideNewMessages] = useState(false);
+
   return (
     <motion.li
       className={`list-item${selected ? " active" : ""}`}
       ref={hoverRef}
-      initial={"hidden"}
-      animate={"visible"}
+      initial="hidden"
+      animate="visible"
       variants={fadeInVariants}
+      onClick={() => {
+        setHideNewMessages(true);
+        layoutState.slide = true;
+      }}
     >
-      <Link
-        href={`/chat/project/5c072e18-0add-4eb8-9bcd-0c2f3605de61`}
-        scroll={false}
-      >
+      <Link href={`/chat/project/${id}`} scroll={false}>
         <a>
           <button className={`${button.lightGrey}`}>
             <div className="wrapper">
@@ -45,7 +49,7 @@ const ProjectItem = ({ id, selected, newMessages, title }: IProps) => {
                 />
               </div>
             </div>
-            {newMessages && (
+            {!hideNewMessages && newMessages && (
               <div className="new-messages-box">
                 <span>1</span>
               </div>

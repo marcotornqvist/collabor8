@@ -11,11 +11,7 @@ interface IProps {
 }
 
 const ChatLayout = ({ children }: IProps) => {
-  let {
-    pathname,
-    query: { id },
-  } = useRouter();
-  id = typeof id === "string" ? id : "";
+  let { pathname } = useRouter();
   const { isMobile } = useIsMobile(920);
 
   useEffect(() => {
@@ -35,7 +31,7 @@ const ChatLayout = ({ children }: IProps) => {
     <NextQueryParamProvider>
       <section className={`chat-layout chat-page`}>
         <div className="container">
-          <Menu id={id} isMobile={isMobile} />
+          <Menu isMobile={isMobile} />
           {children}
         </div>
       </section>

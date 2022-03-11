@@ -4,30 +4,44 @@ import { motion } from "framer-motion";
 import {
   ContactChatsQuery,
   ContactChatsQueryVariables,
-  useContactChatsQuery,
+  useContactChatsLazyQuery,
 } from "generated/graphql";
 import ContactItem from "./ContactItem";
 import SearchInput from "@/components-modules/global/SearchInput";
 
 interface IProps {
+  chatId: string;
   isMobile: boolean;
 }
 
 const limit = 15;
 
-const Contacts = ({ isMobile }: IProps) => {
+const Contacts = ({ chatId, isMobile }: IProps) => {
   const [disableMore, setDisableMore] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [search, setSearch] = useState("");
 
-  const { data, fetchMore } = useContactChatsQuery({
-    variables: {
-      data: {
-        first: limit,
-        searchText: search,
+  const [getContacts, { data, loading, client, fetchMore }] =
+    useContactChatsLazyQuery({
+      variables: {
+        data: {
+          first: limit,
+          searchText: search,
+        },
       },
-    },
-  });
+      nextFetchPolicy: "cache-first",
+      notifyOnNetworkStatusChange: true,
+    });
+
+  // If search value is changed remove contactChats from cache
+  // Get contacts with new search argument
+  useEffect(() => {
+    client.cache.evict({ id: "ROOT_QUERY", fieldName: "contactChats" });
+    if (!loading) {
+      getContacts();
+      setDisableMore(false);
+    }
+  }, [search]);
 
   const listRef = useRef(null);
 
@@ -47,6 +61,7 @@ const Contacts = ({ isMobile }: IProps) => {
       data?.contactChats &&
       data.contactChats.length >= limit
     ) {
+      console.log("Fetch more called");
       fetchMore<ContactChatsQuery, ContactChatsQueryVariables>({
         variables: {
           data: {
@@ -74,7 +89,7 @@ const Contacts = ({ isMobile }: IProps) => {
           <ContactItem
             key={item.id}
             id={item.id}
-            selected={!isMobile && true}
+            selected={!isMobile && item.id === chatId}
             newMessages={item.newMessages}
             title={item.user.profile?.discipline?.title}
             country={item.user.profile?.country}

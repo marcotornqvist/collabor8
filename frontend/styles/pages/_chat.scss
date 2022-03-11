@@ -22,22 +22,6 @@
         margin: 0;
       }
     }
-
-    // .projects {
-    //   ul li {
-    //     margin-bottom: 1rem;
-    //   }
-
-    //   ul li:last-child {
-    //     margin: 0;
-    //   }
-    // }
-
-    // .contacts {
-    //   ul li {
-    //     margin-bottom: 1.5rem;
-    //   }
-    // }
   }
 }
 
@@ -49,7 +33,7 @@
 
 @media only screen and (min-width: $breakpoint-lg) {
   .chat-page {
-    background: $light-grey-bg;
+    background: $light-green;
 
     .container {
       display: flex;
