@@ -27,7 +27,6 @@ const Form = ({ chatId }: IProps) => {
           const { data } = await projectAddMessage({
             variables: {
               data: {
-                // Project Id
                 id: chatId,
                 body: values.body,
               },
@@ -46,6 +45,7 @@ const Form = ({ chatId }: IProps) => {
               type="text"
               placeholder="Send message..."
             />
+
             <button type="submit" className={button.lightGreen}>
               Send
             </button>

@@ -36,7 +36,7 @@
 
       ul {
         overflow-y: scroll;
-        height: 190px;
+        max-height: 190px;
         padding-top: 0.75rem;
         margin-bottom: 1.5rem;
 
@@ -190,7 +190,7 @@
 
 @media only screen and (min-width: $breakpoint-lg) {
   .menu {
-    min-width: 350px;
+    width: 300px;
     max-height: 700px;
     padding: 1.5rem 0.5rem;
     border-radius: $medium-radius;

@@ -21,7 +21,7 @@
   position: fixed;
   top: 5rem;
   width: 100%;
-  height: calc(100vh - 80px);
+  min-height: calc(100vh - 5rem);
   overflow: scroll;
   z-index: $z-index3;
   background: $white;

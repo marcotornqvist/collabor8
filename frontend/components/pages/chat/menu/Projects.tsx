@@ -29,13 +29,13 @@ const Projects = ({ chatId, isMobile }: IProps) => {
     notifyOnNetworkStatusChange: true,
   });
 
-  const listRef = useRef(null);
+  const listRef = useRef<null | HTMLUListElement>(null);
 
   // Checks if scroll position is at bottom
   const onScroll = () => {
     if (listRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = listRef.current;
-      setIsAtBottom(scrollTop + clientHeight === scrollHeight);
+      const position = listRef.current.scrollTop + listRef.current.clientHeight;
+      setIsAtBottom(position === listRef.current.scrollHeight);
     }
   };
 
