@@ -185,7 +185,7 @@ function createApolloClient() {
                 return Object.assign({}, incoming, {
                   messages: [...incoming.messages, ...existing.messages],
                 });
-              },  
+              },
             },
             contactMessages: {
               keyArgs: false,

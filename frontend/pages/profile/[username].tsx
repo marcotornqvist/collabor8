@@ -57,7 +57,6 @@ const Profile = () => {
       username,
     },
     nextFetchPolicy: "cache-first",
-    notifyOnNetworkStatusChange: true,
   });
 
   // Redirects client to "/profiles" if profile doesn't exist

@@ -54,6 +54,7 @@ export class ChatResolver {
         members: {
           some: {
             userId: payload!.userId,
+            status: "ACCEPTED",
           },
         },
         disabled: false,

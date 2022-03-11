@@ -2,18 +2,19 @@ import React, { useEffect } from "react";
 import { authState } from "store";
 import { useSnapshot } from "valtio";
 import { MemberStatusCode, useProjectByIdQuery } from "generated/graphql";
-import About from "@/components-pages/project/About";
-import Members from "@/components-pages/project/Members";
-import Settings from "@/components-pages/project/Settings";
 import { fadeInVariants } from "utils/variants";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
+import About from "@/components-pages/project/About";
+import Members from "@/components-pages/project/Members";
+import Settings from "@/components-pages/project/Settings";
 
 const Project = () => {
-  const {
+  let {
     push,
     query: { id },
   } = useRouter();
+  id = typeof id === "string" ? id : "";
   const { loading } = useSnapshot(authState);
   const {
     data,
@@ -22,10 +23,11 @@ const Project = () => {
   } = useProjectByIdQuery({
     variables: {
       data: {
-        id: typeof id === "string" ? id : "",
+        id,
         status: [MemberStatusCode.Accepted],
       },
     },
+    fetchPolicy: "network-only",
   });
 
   useEffect(() => {

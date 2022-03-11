@@ -5,23 +5,27 @@
 @use "../abstracts/border-radius" as *;
 @use "../abstracts/fonts" as *;
 
-.projects-page .project-list {
-  display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-  padding: 0;
-  margin-bottom: 1.5rem;
+.projects-page {
+  padding-bottom: 9rem;
+  
+  .project-list {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 0;
+    margin-bottom: 1.5rem;
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    grid-auto-rows: minmax(100px, 350px);
-    gap: 1rem;
-    width: 100%;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      grid-auto-rows: minmax(100px, 350px);
+      gap: 1rem;
+      width: 100%;
 
-    .bottom-visible {
-      width: 1px;
-      height: 1px;
+      .bottom-visible {
+        width: 1px;
+        height: 1px;
+      }
     }
   }
 }
