@@ -8,10 +8,10 @@ interface IProps {
 }
 
 const NavigationSlide = ({ selected, setNavigation, items }: IProps) => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [selected]);
-  
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, [selected]);
+
   return (
     <nav className={`navigation-slide ${styles.slide}`}>
       <ul>

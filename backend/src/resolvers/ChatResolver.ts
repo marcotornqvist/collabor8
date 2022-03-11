@@ -14,7 +14,11 @@ import {
 import { ChatRoom } from "../types/ChatRoom";
 import { isAuth } from "../utils/isAuth";
 import { Context } from "../types/Interfaces";
-import { ProjectResponse, ContactResponse } from "./responses/ChatResponse";
+import {
+  ProjectResponse,
+  ContactResponse,
+  ChatMessagesResponse,
+} from "./responses/ChatResponse";
 import { SearchArgs } from "./inputs/GlobalInputs";
 import { pagination } from "../utils/pagination";
 import { ForbiddenError, UserInputError } from "apollo-server-express";
@@ -301,13 +305,13 @@ export class ChatResolver {
         },
         createdAt: true,
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "asc" },
     });
 
     return messages;
   }
 
-  @Query(() => [Message], {
+  @Query(() => ChatMessagesResponse, {
     nullable: true,
     description: "Return messages for contact by id",
   })
@@ -373,10 +377,16 @@ export class ChatResolver {
         },
         createdAt: true,
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "asc" },
     });
 
-    return messages;
+    const hasMore = messages.length >= 20;
+    // const hasMore = messages.length >= (last ?? 20);
+
+    return {
+      messages,
+      hasMore,
+    };
   }
 
   @Mutation(() => Message, {

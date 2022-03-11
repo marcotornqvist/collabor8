@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import { ObjectType, Field, ID } from "type-graphql";
+import { Message } from "../../types/Message";
 import { Project } from "../../types/Project";
 import { User } from "../../types/User";
 
@@ -22,4 +23,13 @@ export class ContactResponse {
 
   @Field(() => Date)
   loggedInUserReadChatAt: Date;
+}
+
+@ObjectType()
+export class ChatMessagesResponse {
+  @Field(() => [Message])
+  messages: Message[];
+
+  @Field(() => Boolean)
+  hasMore: boolean;
 }

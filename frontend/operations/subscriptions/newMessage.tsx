@@ -6,14 +6,15 @@ export const NEW_MESSAGE = gql`
       id
       body
       user {
+        id
         username
         profile {
           userId
-          fullName
+          firstName
+          lastName
           profileImage
         }
       }
-      createdAt
     }
   }
 `;

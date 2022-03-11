@@ -43,6 +43,12 @@ export type ChatInput = {
   last?: InputMaybe<Scalars['Float']>;
 };
 
+export type ChatMessagesResponse = {
+  __typename?: 'ChatMessagesResponse';
+  hasMore: Scalars['Boolean'];
+  messages: Array<Message>;
+};
+
 export type Contact = {
   __typename?: 'Contact';
   contact?: Maybe<Contact>;
@@ -510,7 +516,7 @@ export type Query = {
   /** Return all contact chats */
   contactChats?: Maybe<Array<ContactResponse>>;
   /** Return messages for contact by id */
-  contactMessages?: Maybe<Array<Message>>;
+  contactMessages?: Maybe<ChatMessagesResponse>;
   /** Return the status for a contact request between loggedInUser and userId */
   contactStatus: ContactStatus;
   /** Returns all contacts for loggedInUser */
@@ -1036,7 +1042,7 @@ export type ContactMessagesQueryVariables = Exact<{
 }>;
 
 
-export type ContactMessagesQuery = { __typename?: 'Query', contactMessages?: Array<{ __typename?: 'Message', id: string, body: string, user?: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } | null | undefined }> | null | undefined };
+export type ContactMessagesQuery = { __typename?: 'Query', contactMessages?: { __typename?: 'ChatMessagesResponse', hasMore: boolean, messages: Array<{ __typename?: 'Message', id: string, body: string, user?: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, profileImage?: string | null | undefined } | null | undefined } | null | undefined }> } | null | undefined };
 
 export type ContactStatusQueryVariables = Exact<{
   id: Scalars['String'];
@@ -1066,11 +1072,6 @@ export type LoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LoggedInUserQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', id: string, email: string, username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, bio?: string | null | undefined, profileImage?: string | null | undefined, country?: string | null | undefined, discipline?: { __typename?: 'Discipline', id: number, title: string } | null | undefined } | null | undefined, socials?: { __typename?: 'Social', instagram?: string | null | undefined, linkedin?: string | null | undefined, dribbble?: string | null | undefined, behance?: string | null | undefined, soundcloud?: string | null | undefined, pinterest?: string | null | undefined, spotify?: string | null | undefined, medium?: string | null | undefined, vimeo?: string | null | undefined, youtube?: string | null | undefined, github?: string | null | undefined, discord?: string | null | undefined } | null | undefined } };
-
-export type LoggedInUserUsernameQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type LoggedInUserUsernameQuery = { __typename?: 'Query', loggedInUser: { __typename?: 'User', username: string } };
 
 export type LoggedInSocialDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1179,7 +1180,7 @@ export type NewMessageSubscriptionVariables = Exact<{
 }>;
 
 
-export type NewMessageSubscription = { __typename?: 'Subscription', newMessage: { __typename?: 'MessageSubscribtionResponse', id: string, body: string, createdAt: any, user?: { __typename?: 'User', username: string, profile?: { __typename?: 'Profile', userId: string, fullName?: string | null | undefined, profileImage?: string | null | undefined } | null | undefined } | null | undefined } };
+export type NewMessageSubscription = { __typename?: 'Subscription', newMessage: { __typename?: 'MessageSubscribtionResponse', id: string, body: string, user?: { __typename?: 'User', id: string, username: string, profile?: { __typename?: 'Profile', userId: string, firstName?: string | null | undefined, lastName?: string | null | undefined, profileImage?: string | null | undefined } | null | undefined } | null | undefined } };
 
 
 export const AcceptContactDocument = gql`
@@ -2239,17 +2240,21 @@ export type ContactChatsQueryResult = Apollo.QueryResult<ContactChatsQuery, Cont
 export const ContactMessagesDocument = gql`
     query contactMessages($data: ChatInput!) {
   contactMessages(data: $data) {
-    id
-    body
-    user {
+    messages {
       id
-      username
-      profile {
-        userId
-        firstName
-        lastName
+      body
+      user {
+        id
+        username
+        profile {
+          userId
+          firstName
+          lastName
+          profileImage
+        }
       }
     }
+    hasMore
   }
 }
     `;
@@ -2492,40 +2497,6 @@ export function useLoggedInUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type LoggedInUserQueryHookResult = ReturnType<typeof useLoggedInUserQuery>;
 export type LoggedInUserLazyQueryHookResult = ReturnType<typeof useLoggedInUserLazyQuery>;
 export type LoggedInUserQueryResult = Apollo.QueryResult<LoggedInUserQuery, LoggedInUserQueryVariables>;
-export const LoggedInUserUsernameDocument = gql`
-    query loggedInUserUsername {
-  loggedInUser {
-    username
-  }
-}
-    `;
-
-/**
- * __useLoggedInUserUsernameQuery__
- *
- * To run a query within a React component, call `useLoggedInUserUsernameQuery` and pass it any options that fit your needs.
- * When your component renders, `useLoggedInUserUsernameQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useLoggedInUserUsernameQuery({
- *   variables: {
- *   },
- * });
- */
-export function useLoggedInUserUsernameQuery(baseOptions?: Apollo.QueryHookOptions<LoggedInUserUsernameQuery, LoggedInUserUsernameQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<LoggedInUserUsernameQuery, LoggedInUserUsernameQueryVariables>(LoggedInUserUsernameDocument, options);
-      }
-export function useLoggedInUserUsernameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoggedInUserUsernameQuery, LoggedInUserUsernameQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<LoggedInUserUsernameQuery, LoggedInUserUsernameQueryVariables>(LoggedInUserUsernameDocument, options);
-        }
-export type LoggedInUserUsernameQueryHookResult = ReturnType<typeof useLoggedInUserUsernameQuery>;
-export type LoggedInUserUsernameLazyQueryHookResult = ReturnType<typeof useLoggedInUserUsernameLazyQuery>;
-export type LoggedInUserUsernameQueryResult = Apollo.QueryResult<LoggedInUserUsernameQuery, LoggedInUserUsernameQueryVariables>;
 export const LoggedInSocialDetailsDocument = gql`
     query loggedInSocialDetails {
   loggedInUser {
@@ -3229,14 +3200,15 @@ export const NewMessageDocument = gql`
     id
     body
     user {
+      id
       username
       profile {
         userId
-        fullName
+        firstName
+        lastName
         profileImage
       }
     }
-    createdAt
   }
 }
     `;

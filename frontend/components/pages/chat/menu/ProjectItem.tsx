@@ -23,7 +23,10 @@ const ProjectItem = ({ id, selected, newMessages, title }: IProps) => {
       animate={"visible"}
       variants={fadeInVariants}
     >
-      <Link href={`/chat/project/5c072e18-0add-4eb8-9bcd-0c2f3605de61`}>
+      <Link
+        href={`/chat/project/5c072e18-0add-4eb8-9bcd-0c2f3605de61`}
+        scroll={false}
+      >
         <a>
           <button className={`${button.lightGrey}`}>
             <div className="wrapper">

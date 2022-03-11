@@ -66,6 +66,10 @@
       .name {
         text-align: right;
       }
+
+      .message-box {
+        background: $light-green;
+      }
     }
   }
 }
@@ -74,7 +78,7 @@
   .left {
     :global {
       .profile-image {
-        margin: 2rem 1rem 0 0;
+        margin: 1.8rem 1rem 0 0;
       }
 
       .wrapper .name {
@@ -86,7 +90,7 @@
   .right {
     :global {
       .profile-image {
-        margin: 2rem 0 0 1rem;
+        margin: 1.8rem 0 0 1rem;
       }
 
       .wrapper .name {
@@ -100,10 +104,6 @@
   .item {
     :global {
       .wrapper {
-        .name small {
-          font-size: 14px;
-        }
-
         .message-box p {
           font-size: 14px;
           line-height: 1.75rem;

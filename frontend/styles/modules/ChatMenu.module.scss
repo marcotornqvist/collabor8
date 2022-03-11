@@ -17,7 +17,6 @@
       width: 1.75rem;
       height: 1.75rem;
       border-radius: $extra-large-radius;
-      box-shadow: $box-shadow4;
       overflow: hidden;
       background: $green;
 
@@ -32,6 +31,7 @@
     .projects {
       h4 {
         padding: 0 1rem;
+        margin-bottom: 1rem;
       }
 
       ul {
@@ -81,7 +81,6 @@
     }
 
     .contacts {
-      margin-bottom: 1rem;
       padding: 0 1rem;
 
       h4 {
@@ -93,7 +92,8 @@
       }
 
       ul {
-        height: 216px;
+        max-height: 360px;
+        padding-bottom: 1.5rem;
         overflow-y: scroll;
 
         li {
@@ -190,10 +190,41 @@
 
 @media only screen and (min-width: $breakpoint-lg) {
   .menu {
-    min-width: 300px;
-    background: $white;
-    padding: 1.5rem;
+    min-width: 350px;
+    max-height: 700px;
+    padding: 1.5rem 0.5rem;
     border-radius: $medium-radius;
-    height: 700px;
+    box-shadow: $box-shadow3;
+    background: $white;
+
+    :global {
+      .contacts {
+        ul {
+          height: 240px;
+          overflow-y: scroll;
+
+          li.list-item {
+            margin-bottom: 1.5rem;
+
+            a .profile-details {
+              .wrapper {
+                padding-bottom: 0.25rem;
+                padding-right: 1rem;
+
+                .inner-wrapper {
+                  .name {
+                    font-size: 1.125rem;
+                  }
+                }
+
+                .info-text {
+                  font-size: 14px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

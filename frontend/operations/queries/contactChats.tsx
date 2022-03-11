@@ -25,18 +25,21 @@ export const CONTACT_CHATS = gql`
 export const CONTACT_MESSAGES = gql`
   query contactMessages($data: ChatInput!) {
     contactMessages(data: $data) {
-      id
-      body
-      user {
+      messages {
         id
-        username
-        profile {
-          userId
-          firstName
-          lastName
+        body
+        user {
+          id
+          username
+          profile {
+            userId
+            firstName
+            lastName
+            profileImage
+          }
         }
       }
+      hasMore
     }
   }
 `;
-

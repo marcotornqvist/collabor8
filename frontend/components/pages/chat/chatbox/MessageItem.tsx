@@ -5,14 +5,14 @@ import styles from "@/styles-modules/MessageItem.module.scss";
 interface IProps {
   side: "left" | "right";
   body: string;
-  profileImage: string;
-  firstName: string;
-  lastName: string;
+  profileImage?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
   isMobile: boolean;
 }
 
 const MessageItem = ({
-  side = "left",
+  side,
   body,
   profileImage,
   firstName,
@@ -25,14 +25,14 @@ const MessageItem = ({
         side === "left" ? styles.left : styles.right
       }`}
     >
-      {!isMobile && (
+      {/* {!isMobile && (
         <ProfileImage
           profileImage={profileImage}
           size="small"
-          firstName={firstName.trim()}
-          lastName={lastName.trim()}
+          firstName={firstName && firstName.trim()}
+          lastName={lastName && lastName.trim()}
         />
-      )}
+      )} */}
       <div className="wrapper">
         <div className="name">
           <small>
@@ -40,7 +40,7 @@ const MessageItem = ({
           </small>
         </div>
         <div className="message-box">
-          <p>{body.trim()}</p>
+          <p>{body && body.trim()}</p>
         </div>
       </div>
     </div>

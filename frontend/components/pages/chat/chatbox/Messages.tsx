@@ -1,74 +1,68 @@
-import { ContactMessagesQuery } from "generated/graphql";
+import {
+  ContactMessagesQuery,
+  useLoggedInUsernameQuery,
+} from "generated/graphql";
 import React, { useEffect, useRef } from "react";
 import MessageItem from "./MessageItem";
 import useIsMobile from "@/hooks/useIsMobile";
 
-type Message = NonNullable<ContactMessagesQuery["contactMessages"]>[0];
+type Message = NonNullable<
+  ContactMessagesQuery["contactMessages"]
+>["messages"][0];
 
 interface IProps {
   messages?: Message[] | null;
+  dataLoading: boolean;
+  chatId: string;
+  isAtTop: boolean;
+  setIsAtTop: (isAtTop: boolean) => void;
 }
 
-const Messages = ({ messages }: IProps) => {
+const Messages = ({
+  messages,
+  dataLoading,
+  chatId,
+  isAtTop,
+  setIsAtTop,
+}: IProps) => {
   const { isMobile } = useIsMobile(480);
-
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  // Gets logged in user id
+  const { data, loading } = useLoggedInUsernameQuery({
+    fetchPolicy: "cache-only",
+  });
+
+  // Scroll to bottom of list
+  // useEffect(() => {
+  //   if (ref.current && !dataLoading && !isAtTop) {
+  //     ref.current.scrollTo(0, ref.current.scrollHeight);
+  //   }
+  // }, [ref.current, dataLoading, chatId, messages]);
+
+  // Checks if scroll position is at top, if so fetch more messages
+  const onScroll = () => {
     if (ref.current) {
-      ref.current.scrollTo(0, 100000);
+      // Returns either true or false
+      setIsAtTop(ref.current.scrollTop === 0);
     }
-  }, []);
+  };
 
   return (
-    <div className="messages" ref={ref}>
+    <div className="messages" ref={ref} onScroll={onScroll}>
       <div className="container">
-        <MessageItem
-          side="left"
-          body={
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit esse fuga in quia voluptas vitae doloribus facilis ratione nemo suscipit eveniet libero facere, reiciendis laboriosam impedit iure voluptatum commodi labore!"
-          }
-          profileImage={
-            "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/6e2b31d6-89b2-4340-abee-ce0b8567246a.jpg"
-          }
-          firstName={"Marco"}
-          lastName={"Törnqvist"}
-          isMobile={isMobile}
-        />
-        <MessageItem
-          side="right"
-          body={
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit esse fuga in quia voluptas vitae doloribus facilis ratione nemo suscipit eveniet libero facere, reiciendis laboriosam impedit iure voluptatum commodi labore!"
-          }
-          profileImage={
-            "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/6e2b31d6-89b2-4340-abee-ce0b8567246a.jpg"
-          }
-          firstName={"Marco"}
-          lastName={"Törnqvist"}
-          isMobile={isMobile}
-        />
-        <MessageItem
-          side="left"
-          body={"Lorem"}
-          profileImage={
-            "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/6e2b31d6-89b2-4340-abee-ce0b8567246a.jpg"
-          }
-          firstName={"Marco"}
-          lastName={"Törnqvist"}
-          isMobile={isMobile}
-        />
-        <MessageItem
-          side="right"
-          body={
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit esse fuga in quia voluptas vitae doloribus facilis ratione nemo suscipit eveniet libero facere, reiciendis laboriosam impedit iure voluptatum commodi labore!"
-          }
-          profileImage={
-            "https://collabor8-image-bucket.s3.eu-west-1.amazonaws.com/6e2b31d6-89b2-4340-abee-ce0b8567246a.jpg"
-          }
-          firstName={"Marco"}
-          lastName={"Törnqvist"}
-          isMobile={isMobile}
-        />
+        {!loading &&
+          messages?.map((item) => (
+            <MessageItem
+              key={item.id}
+              side={item.user?.id === data?.loggedInUser.id ? "right" : "left"}
+              body={item.body}
+              profileImage={item.user?.profile?.profileImage}
+              firstName={item.user?.profile?.firstName}
+              lastName={item.user?.profile?.lastName}
+              isMobile={isMobile}
+            />
+          ))}
       </div>
     </div>
   );

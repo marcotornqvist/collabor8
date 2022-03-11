@@ -37,15 +37,6 @@ export const GET_LOGGED_IN_USER = gql`
   }
 `;
 
-// Return logged in users username
-export const GET_LOGGED_IN_USER_ID = gql`
-  query loggedInUserUsername {
-    loggedInUser {
-      username
-    }
-  }
-`;
-
 // Get details about the logged in user socials
 export const GET_LOGGED_IN_SOCIAL_DETAILS = gql`
   query loggedInSocialDetails {

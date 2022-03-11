@@ -1,32 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik } from "formik";
 import { useContactAddMessageMutation } from "generated/graphql";
 import button from "@/styles-modules/Button.module.scss";
 import InputField from "@/components-modules/global/InputField";
+import useToast from "@/hooks/useToast";
 
 interface IProps {
   chatId: string;
 }
 
 const Form = ({ chatId }: IProps) => {
-  // const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [contactAddMessage] = useContactAddMessageMutation({
+    onError: (error) => setError(error.message),
+  });
 
-  const [contactAddMessage] = useContactAddMessageMutation();
+  useToast({
+    error,
+  });
 
   return (
     <div className="form-container">
       <Formik
         initialValues={{ body: "" }}
-        onSubmit={(values) =>
-          contactAddMessage({
+        onSubmit={async (values, { resetForm }) => {
+          const { data } = await contactAddMessage({
             variables: {
               data: {
                 id: chatId,
                 body: values.body,
               },
             },
-          })
-        }
+          });
+
+          data && resetForm();
+        }}
       >
         {({ values, handleChange, handleSubmit }) => (
           <form onSubmit={handleSubmit}>

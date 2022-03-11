@@ -38,7 +38,7 @@ const ContactItem = ({
         layoutState.slide = true;
       }}
     >
-      <Link href={`/chat/contact/${id}`}>
+      <Link href={`/chat/contact/${id}`} scroll={false}>
         <a>
           <div className="profile-details">
             <ProfileImage
