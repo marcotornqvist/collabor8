@@ -32,6 +32,7 @@ import {
 } from "../validations/schemas";
 import { validateFields } from "../validations/validateFields";
 import countries from "../data/countries";
+import { sendEmail } from "../helpers/sendEmail";
 
 // TODO: Queries/mutations to be implemented:
 // users:           Return all users - Done
@@ -304,6 +305,8 @@ export class UserResolver {
       }
 
       sendRefreshToken(res, createRefreshToken(newUser));
+
+      await sendEmail("User Created", `User ID: ${newUser.id} was created`);
 
       return {
         accessToken: createAccessToken(newUser),

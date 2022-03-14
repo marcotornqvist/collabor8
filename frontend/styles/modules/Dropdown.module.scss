@@ -14,6 +14,7 @@
       span {
         color: $green !important;
       }
+       
     }
   }
 }
@@ -88,7 +89,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      min-height: 100vh;
+      height: 100vh;
       background: $white;
       z-index: $z-index4;
 
@@ -206,7 +207,7 @@
         left: -4px;
         width: calc(100% + 15.5px);
         max-height: 336px;
-        z-index: $z-index2;
+        z-index: $z-index3;
         border-radius: $medium-radius;
         box-shadow: $box-shadow4;
 

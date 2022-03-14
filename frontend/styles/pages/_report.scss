@@ -1,0 +1,55 @@
+@use "../abstracts/colors" as *;
+@use "../abstracts/breakpoints" as *;
+@use "../abstracts/shadows" as *;
+@use "../abstracts/zindex" as *;
+@use "../abstracts/fonts" as *;
+@use "../abstracts/border-radius" as *;
+
+.report-project-page,
+.report-user-page,
+.report-user-page {
+  flex: 1;
+  min-width: 100%;
+  padding-bottom: 9rem;
+
+  .container {
+    max-width: $breakpoint-md;
+  }
+
+  h2 {
+    display: block;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid $border-color1;
+  }
+
+  textarea {
+    height: 16rem;
+  }
+
+  form {
+    .submit-btn {
+      width: 100%;
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-md) {
+  .report-project-page,
+  .report-user-page {
+    h2 {
+      margin-bottom: 1.5rem;
+    }
+
+    form .submit-btn {
+      width: 250px;
+    }
+  }
+}
+
+@media only screen and (min-width: $breakpoint-lg) {
+  .report-project-page,
+  .report-user-page {
+    padding: 3rem 0rem 9rem;
+  }
+}

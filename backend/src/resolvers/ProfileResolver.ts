@@ -22,9 +22,10 @@ import { uuidFilenameTransform } from "../helpers/uuidFileNameTransform";
 import { Discipline } from "../types/Discipline";
 import { UpdateProfileValidationSchema } from "../validations/schemas";
 import { validateFields } from "../validations/validateFields";
+import { DisciplineInput } from "./inputs/DisciplineInput";
 import countries from "../data/countries";
 import sharp from "sharp";
-import { DisciplineInput } from "./inputs/DisciplineInput";
+import { sendEmail } from "../helpers/sendEmail";
 
 // TODO: Queries/mutations to be implemented:
 // countries:             Return all countries - Done
@@ -266,6 +267,11 @@ export class ProfileResolver {
       // Delete image object from S3 Bucket
       s3.deleteObject(params, function (err, data) {});
     }
+
+    await sendEmail(
+      "Updated Profile Picture",
+      `User ID: ${payload?.userId} updated profile picture`
+    );
 
     return {
       filename,

@@ -17,7 +17,6 @@ import {
   ProjectsFilterArgs,
   PaginationUserArgs,
   ProjectById,
-  PaginationUsernameArgs,
 } from "./inputs/ProjectInput";
 import { PaginationArgs } from "./inputs/GlobalInputs";
 import { UserInputError, ForbiddenError } from "apollo-server-express";
@@ -28,6 +27,7 @@ import { NotificationCode } from "@prisma/client";
 import { validateFields } from "../validations/validateFields";
 import { ProjectValidationSchema } from "../validations/schemas";
 import { ProjectMemberStatus } from "../types/Enums";
+import { sendEmail } from "../helpers/sendEmail";
 import countries from "../data/countries";
 
 // Queries/mutations to be implemented:
@@ -343,6 +343,11 @@ export class ProjectResolver {
         },
       });
 
+      await sendEmail(
+        "Project Created",
+        `Project ID: ${project.id} \ntitle:${project.title}\nbody:${project.body}`
+      );
+
       return project;
     } catch (err) {
       console.log(err);
@@ -595,6 +600,13 @@ export class ProjectResolver {
           disciplines: true,
         },
       });
+
+      if (updatedProject) {
+        await sendEmail(
+          "Updated Project",
+          `User ID: ${payload?.userId} updated project ${updatedProject.id}`
+        );
+      }
 
       return updatedProject;
     } catch (err) {

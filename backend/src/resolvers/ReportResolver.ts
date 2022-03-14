@@ -8,6 +8,7 @@ import { ReportUserInput, ReportProjectInput } from "./inputs/ReportInput";
 import { FormErrors } from "../types/Interfaces";
 import { validateFields } from "../validations/validateFields";
 import { ReportValidationSchema } from "../validations/schemas";
+import { sendEmail } from "../helpers/sendEmail";
 
 // TODO: Queries/mutations to be implemented:
 // reportUser - In Progress (implement send email to host)
@@ -60,6 +61,18 @@ export class ReportResolver {
         },
       });
 
+      if (user) {
+        await sendEmail(
+          "User Reported",
+          `Sender ID: ${user.senderId} 
+          \nreported User ID: ${user.userId}
+          \ntitle: ${user.title}
+          \nbody: ${user.body}
+          \nviolation: ${user.violation}
+          `
+        );
+      }
+
       return user;
     } catch (err) {
       console.log(err);
@@ -111,6 +124,18 @@ export class ReportResolver {
           projectId,
         },
       });
+
+      if (project) {
+        await sendEmail(
+          "Project Report",
+          `Sender ID: ${project.senderId} 
+          \nreported Project ID: ${project.projectId}
+          \ntitle: ${project.title}
+          \nbody: ${project.body}
+          \nviolation: ${project.violation}
+          `
+        );
+      }
 
       return project;
     } catch (err) {

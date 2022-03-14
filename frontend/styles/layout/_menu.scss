@@ -21,16 +21,14 @@
   position: fixed;
   top: 5rem;
   width: 100%;
-  min-height: calc(100vh - 5rem);
-  overflow: scroll;
-  z-index: $z-index3;
+  height: 100%;
+  overflow-y: scroll;
+  z-index: $z-index4;
   background: $white;
-  padding-bottom: 8rem;
+  padding-bottom: 9rem;
   border-top: 1px solid $border-color1;
 
   ul {
-    overflow-y: scroll;
-
     li {
       height: 4rem;
       min-width: 100%;
