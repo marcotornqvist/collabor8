@@ -49,7 +49,7 @@ const Form = ({ navigation, setNavigation }: IProps) => {
       setFormErrors(error.graphQLErrors[0].extensions?.errors);
       setError(error.message);
     },
-    update(cache, { data }) {w
+    update(cache, { data }) {
       if (data?.createProject) {
         const { createProject } = data;
         // Add logged in user to members list
