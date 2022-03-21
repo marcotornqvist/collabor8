@@ -40,7 +40,7 @@ const Navbar = ({ hide = false }: Props) => {
               variants={fadeInVariants}
             >
               <InboxIcon />
-              <NotificationsIcon />
+              {/* <NotificationsIcon /> */}
               <AccountDropdown />
             </motion.div>
           ) : (

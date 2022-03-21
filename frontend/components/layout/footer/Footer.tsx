@@ -87,14 +87,14 @@ const Footer = () => {
             <ul>{isAuth ? authLinks : guestLinks}</ul>
           </div>
           <div className="contact-links">
-            <h4>About</h4>
+            <h4>Contact</h4>
             <ul>
               <li>
                 <a href="mailto:marcotornqvist@gmail.com">
                   marcotornqvist@gmail.com
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <Link href="/terms">
                   <a>Terms</a>
                 </Link>
@@ -103,7 +103,7 @@ const Footer = () => {
                 <Link href="/privacy">
                   <a>Privacy</a>
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

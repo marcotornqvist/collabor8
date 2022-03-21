@@ -55,7 +55,7 @@ const Menu = () => {
             <ul className="links">
               {isAuth && (
                 <>
-                  <li
+                  {/* <li
                     onClick={() => closeMenu()}
                     className={`list-item${
                       pathname === "/notifications" ? " active" : ""
@@ -73,7 +73,7 @@ const Menu = () => {
                         />
                       </a>
                     </Link>
-                  </li>
+                  </li> */}
                   <li
                     onClick={() => closeMenu()}
                     className={`list-item${
