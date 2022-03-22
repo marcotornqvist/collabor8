@@ -5,6 +5,12 @@
 ![Collabor8 Landing Page](landing-collabor8.png)
 `Demo:` https://collabor8-frontend.vercel.app/
 
+Incase you want to try the application as a signed in user without having to register a new account, use this account:
+
+email: sebastiandoe@gmail.com
+
+password: sebastian123
+
 # Contents
 
 - [Why?](#why)

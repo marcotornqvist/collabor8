@@ -80,6 +80,11 @@ const Login = () => {
             type="password"
             placeholder="Please enter your password"
           />
+          <span className="message">
+            Incase you want to try the application as a signed in user without having to
+            register a new account, use this account:
+            "sebastiandoe@gmail.com", "sebastian123"
+          </span>
           <button
             type="submit"
             className={`${
